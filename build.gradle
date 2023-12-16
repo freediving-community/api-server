@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = 21
+    targetCompatibility = 21
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter'
+        annotationProcessor 'org.projectlombok:lombok'
+        compileOnly 'org.projectlombok:lombok'
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        //	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        //	implementation 'org.springframework.boot:spring-boot-starter-web'
+    }
+}
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+//checkstyle {
+//    maxWarnings = 0 // 규칙이 어긋나는 코드가 하나라도 있을 경우 빌드 fail을 내고 싶다면 이 선언을 추가한다.
+//    configFile = file("${rootDir}/naver-checkstyle-rules.xml")
+//    configProperties = ["suppressionFile": "${rootDir}/naver-checkstyle-suppressions.xml"]
+//    toolVersion = "8.24"  // checkstyle 버전 8.24 이상 선언
+//}
+tasks.named('test') {
+    useJUnitPlatform()
+}

@@ -1,0 +1,5 @@
+rootProject.name = 'gofda'
+include 'member-service'
+include 'community-service'
+include 'buddy-service'
+
