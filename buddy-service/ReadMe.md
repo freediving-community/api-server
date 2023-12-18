@@ -27,7 +27,7 @@
 
 ## Package Architecture 
 ```bash
-├── com.freediving
+├── com.freediving.buddyservice
 │   ├── adapter
 │   │   ├── in.web
 │   │   │   ├── BuddyEventController.java
