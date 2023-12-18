@@ -6,27 +6,26 @@
  
 
 ## 비즈니스 인터페이스
+### Query
+  - 버디 일정 이벤트 조회 하기 ( 'searchBuddyEvents' )
+    > GET buddy-service/v1/buddyEvents
+  - 내가 모집 중인 버디 일정 조회 하기 ( 'listMyRecruitingEvents' )
+    > GET buddy-service/v1/myEvents/recruiting
+  - 버디 일정 참가 신청자 조회 하기 ( 'viewEventApplicants' )
+    > GET buddy-service/v1/buddyEvents/{eventId}/applicants
+  - 사용자 맞춤형 버디 일정 추천 ( 'recommendCustomBuddyEvents' )
+    > GET buddy-service/v1/buddyEvents/recommendations
+### Command
+  - 버디 일정 이벤트 생성 하기 ( 'createBuddyEvent' )
+    > POST buddy-service/v1/buddyEvents
+    - 버디 일정 참가 신청 요청 하기 ( 'requestEventParticipation' )
+    > POST buddy-service/v1/buddyEvents/{eventId}/participations
+  - 버디 일정 이벤트 삭제 하기 ( 'deleteBuddyEvent' )
+    > DELETE buddy-service/v1/buddyEvents/{eventId}
+  - 버디 일정 이벤트 수정 하기 ( 'updateBuddyEvent' )
+    > PUT buddy-service/v1/buddyEvents/{eventId}
 
-- 버디 일정 이벤트 생성 하기 ( 'createBuddyEvent' )
->POST buddy-service/v1/buddyEvents
-- 버디 일정 이벤트 조회 하기 ( 'searchBuddyEvents' )
->GET buddy-service/v1/buddyEvents
-- 버디 일정 이벤트 삭제 하기 ( 'deleteBuddyEvent' )
->DELETE buddy-service/v1/buddyEvents/{eventId}
-- 버디 일정 이벤트 수정 하기 ( 'updateBuddyEvent' )
->PUT buddy-service/v1/buddyEvents/{eventId}
-- 내가 모집 중인 버디 일정 조회 하기 ( 'listMyRecruitingEvents' )
->GET buddy-service/v1/myEvents/recruiting
-- 버디 일정 참가 신청 요청 하기 ( 'requestEventParticipation' )
->POST buddy-service/v1/buddyEvents/{eventId}/participations
-- 버디 일정 참가 신청자 조회 하기 ( 'viewEventApplicants' )
->GET buddy-service/v1/buddyEvents/{eventId}/applicants
-- 사용자 맞춤형 버디 일정 추천 ( 'recommendCustomBuddyEvents' )
->GET buddy-service/v1/buddyEvents/recommendations
-
-
-
-## Package Architecture
+## Package Architecture 
 ```bash
 ├── com.freediving
 │   ├── adapter
@@ -45,6 +44,9 @@
 │   │   │   │   ├── UpdateBuddyEventCommand.java
 │   │   │   │   └── BuddyEventManagementUseCase.java
 │   │   │   └── out
+│   │   │   │   ├── CreateBuddyEventPort.java
+│   │   │   │   ├── UpdateBuddyEventPort.java
+│   │   │   │   └── BuddyEventManagementPort.java
 │   │   └── service
 │   │           └── out
 │   │               └── BuddyEventService.java
