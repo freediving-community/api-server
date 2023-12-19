@@ -1,8 +1,10 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.2.0'
-    id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.springframework.boot' version '3.2.0' apply false
+    id 'io.spring.dependency-management' version '1.1.4' apply false
 }
+
+jar { enabled = true }
 
 configurations {
     compileOnly {
@@ -10,21 +12,21 @@ configurations {
     }
 }
 
-repositories {
-    mavenCentral()
+allprojects {
+    group = "com.freediving"
+    version = "0.0.1"
+
+    repositories {
+        mavenCentral()
+    }
+
+
 }
 
 subprojects {
     apply plugin: 'java'
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
-
-    sourceCompatibility = 21
-    targetCompatibility = 21
-
-    repositories {
-        mavenCentral()
-    }
 
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter'
@@ -34,6 +36,10 @@ subprojects {
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         //	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         //	implementation 'org.springframework.boot:spring-boot-starter-web'
+    }
+
+    repositories {
+        mavenCentral()
     }
 }
 

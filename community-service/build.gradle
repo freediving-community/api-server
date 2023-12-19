@@ -2,15 +2,24 @@ plugins {
     id 'java'
 }
 
-group = 'com.freediving'
+bootJar { enabled = true }
+jar { enabled = false }
 
-repositories {
-    mavenCentral()
-}
+//group = 'com.freediving.community-service'
+//version = '0.0.1'
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.data:spring-data-rest-hal-explorer'
+//    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+//	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+//	runtimeOnly 'com.h2database:h2'
 }
 
 test {
