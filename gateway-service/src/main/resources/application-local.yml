@@ -1,0 +1,28 @@
+server:
+  port: 8000
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes: # 라우팅 설정
+        # TODO : 기능 / 서비스 별 라우팅 등록
+        - id: member-service # 구분하기 위한 id 값으로 임의로 작성해도 무관
+          predicates: # 조건
+            - Path=/member-service/** # 패턴으로 요청이 들어오면
+          uri: lb://MEMBER-SERVICE # 유레카 서버에서 MEMBER-SERVICE 를 찾아서 그곳으로 요청을 보낸다.
+          filters:
+            - AuthorizationFilter
+            - RewritePath=/member-service/?(?<segment>.*), /$\{segment} # /member-service/xxx 로 요청이 오면 /xxx 로 변경하여 요청한다.
+jwt:
+  key: ${JWT_KEY}
