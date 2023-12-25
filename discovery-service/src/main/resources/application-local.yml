@@ -1,0 +1,13 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: discovery-service
+
+eureka:
+  client:
+    # eureka의 registry에 등록할지 여부 설정
+    register-with-eureka: false
+    # eureka의 registry에 있는 정보를 가져올지 여부 설정
+    fetch-registry: false

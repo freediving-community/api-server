@@ -2,4 +2,7 @@ rootProject.name = 'gofda'
 include 'member-service'
 include 'community-service'
 include 'buddy-service'
+include 'discovery-service'
+include 'discovery-service'
+include 'gateway-service'
 
