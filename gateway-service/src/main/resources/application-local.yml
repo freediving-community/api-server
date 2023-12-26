@@ -24,5 +24,19 @@ spring:
           filters:
             - AuthorizationFilter
             - RewritePath=/member-service/?(?<segment>.*), /$\{segment} # /member-service/xxx 로 요청이 오면 /xxx 로 변경하여 요청한다.
+        # Buddy Service Route Set
+        - id: buddy-service-with-auth
+          predicates:
+            - Path=/buddy-service/**
+          uri: lb://BUDDY-SERVICE
+          filters:
+            - AuthorizationFilter
+            - RewritePath=/buddy-service/?(?<segment>.*), /$\{segment}
+        - id: buddy-service-without-auth
+          predicates:
+            - Path=/buddy-service/v1/ping
+          uri: lb://BUDDY-SERVICE
+          filters:
+            - RewritePath=/buddy-service/?(?<segment>.*), /$\{segment}
 jwt:
   key: ${JWT_KEY}
