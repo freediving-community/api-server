@@ -1,4 +1,4 @@
-package com.freediving;
+package com.freediving.community;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
