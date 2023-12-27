@@ -5,4 +5,5 @@ include 'buddy-service'
 include 'discovery-service'
 include 'discovery-service'
 include 'gateway-service'
+include 'common'
 
