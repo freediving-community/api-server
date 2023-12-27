@@ -14,6 +14,13 @@ import com.freediving.buddyservice.domain.CreatedBuddyEvent;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 외부 web으로의 RestAPI 요청을 받아내는 Adapter 역할
+ *
+ * @author 준희조
+ * @version 1.0.0
+ * 작성일 2023-12-27
+ **/
 @RestController
 @RequiredArgsConstructor
 public class CreateBuddyEventControllerV1 {
@@ -26,15 +33,16 @@ public class CreateBuddyEventControllerV1 {
 		Random random = new Random();
 		Long userId = random.nextLong();
 
-		CreatedBuddyEvent createdBuddyEvent = createBuddyEventUseCase.createBuddyEvent(CreateBuddyEventCommand.builder()
-			.userId(userId)
-			.eventStartDate(request.getEventStartDate())
-			.eventEndDate(request.getEventEndDate())
-			.participantCount(request.getParticipantCount())
-			.eventConcepts(request.getEventConcepts())
-			.carShareYn(request.getCarShareYn())
-			.comment(request.getComment())
-			.build());
+		CreatedBuddyEvent createdBuddyEvent = createBuddyEventUseCase.createBuddyEventV1(
+			CreateBuddyEventCommand.builder()
+				.userId(userId)
+				.eventStartDate(request.getEventStartDate())
+				.eventEndDate(request.getEventEndDate())
+				.participantCount(request.getParticipantCount())
+				.eventConcepts(request.getEventConcepts())
+				.carShareYn(request.getCarShareYn())
+				.comment(request.getComment())
+				.build());
 
 		// 2. Command 요청 및 응답 리턴.
 		return ResponseEntity.ok(createdBuddyEvent);

@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.freediving.buddyservice.common.enumeration.EventConcept;
 import com.freediving.buddyservice.common.enumeration.EventStatus;
+import com.freediving.common.AuditableEntity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -26,7 +28,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Table(name = "buddy_events")
-public class BuddyEventsJpaEntity {
+public class BuddyEventsJpaEntity extends AuditableEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,16 +36,22 @@ public class BuddyEventsJpaEntity {
 
 	private Long userId;
 
+	@Column(nullable = false)
 	private LocalDateTime eventStartTime;
+
+	@Column(nullable = false)
 	private LocalDateTime eventEndTime;
 
+	@Column(nullable = false)
 	private Integer participantCount;
 
 	@Convert(converter = EventConceptsListConverter.class)
 	private List<EventConcept> eventConcepts;
 
+	@Column(nullable = false)
 	private Boolean carShareYn;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private EventStatus status;
 
@@ -51,16 +59,9 @@ public class BuddyEventsJpaEntity {
 
 	@Override
 	public String toString() {
-		return "BuddyEventsJpaEntity{" +
-			"eventId=" + eventId +
-			", userId=" + userId +
-			", eventStartTime=" + eventStartTime +
-			", eventEndTime=" + eventEndTime +
-			", participantCount=" + participantCount +
-			", eventConcepts=" + eventConcepts +
-			", carShareYn=" + carShareYn +
-			", status=" + status +
-			", comment='" + comment + '\'' +
-			'}';
+		return "BuddyEventsJpaEntity{" + "eventId=" + eventId + ", userId=" + userId + ", eventStartTime="
+			+ eventStartTime + ", eventEndTime=" + eventEndTime + ", participantCount=" + participantCount
+			+ ", eventConcepts=" + eventConcepts + ", carShareYn=" + carShareYn + ", status=" + status + ", comment='"
+			+ comment + '\'' + '}';
 	}
 }
