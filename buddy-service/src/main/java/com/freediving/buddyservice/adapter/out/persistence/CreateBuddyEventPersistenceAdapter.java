@@ -20,12 +20,6 @@ public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort 
 
 	private final BuddyEventsRepository buddyEventsRepository;
 
-	/**
-	 * jpa 버디 일정 이벤트 생성 save
-	 *
-	 * @param createdBuddyEvent 서비스 비즈니스가 적용된 new 버디 일정 이벤트
-	 * @return 생성된 버디 일정 이벤트 JPA 객체
-	 */
 	@Override
 	public BuddyEventsJpaEntity createBuddyEvent(CreatedBuddyEvent createdBuddyEvent) {
 
@@ -42,5 +36,10 @@ public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort 
 				.build()
 		);
 
+	}
+
+	@Override
+	public Boolean isValidBuddyEventOverlap() {
+		return true;
 	}
 }

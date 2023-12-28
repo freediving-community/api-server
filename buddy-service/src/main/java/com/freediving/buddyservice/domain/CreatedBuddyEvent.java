@@ -24,8 +24,7 @@ public class CreatedBuddyEvent {
 
 	//TODO 버디 일정 이벤트 컨셉 옵셔널 정책 확정 후 수정 필요.
 	private final List<EventConcept> eventConcepts;
-
-	// Default Value is False
+	
 	private final Boolean carShareYn;
 	private final EventStatus status;
 	private final String comment;

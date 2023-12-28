@@ -23,18 +23,19 @@ import lombok.RequiredArgsConstructor;
  * 작성일 2023-12-27
  **/
 @WebAdapter
-@RestController
+@RestController("/buddy-event/v1.0")
 @RequiredArgsConstructor
 public class CreateBuddyEventControllerV1 {
 
 	private final CreateBuddyEventUseCase createBuddyEventUseCase;
 
-	@PostMapping("/buddy-event")
+	@PostMapping("/")
 	public ResponseEntity<CreatedBuddyEvent> createBuddyEvent(@Valid @RequestBody CreateBuddyEventRequestV1 request) {
 		// 1. JWT 유저 토큰에서 사용자 식별 ID 가져오기.
 		Random random = new Random();
 		Long userId = random.nextLong();
 
+		// 2. Use Case Command 전달.
 		CreatedBuddyEvent createdBuddyEvent = createBuddyEventUseCase.createBuddyEventV1(
 			CreateBuddyEventCommand.builder()
 				.userId(userId)
@@ -46,7 +47,7 @@ public class CreateBuddyEventControllerV1 {
 				.comment(request.getComment())
 				.build());
 
-		// 2. Command 요청 및 응답 리턴.
+		// 3. Command 요청 및 응답 리턴.
 		return ResponseEntity.ok(createdBuddyEvent);
 	}
 }

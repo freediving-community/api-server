@@ -15,6 +15,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -27,13 +28,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @Getter
-@Table(name = "buddy_events")
+@Table(name = "buddy_events", indexes = {
+	@Index(name = "idx_userid", columnList = "userId"),
+	@Index(name = "idx_eventStartDate", columnList = "eventStartDate")
+})
 public class BuddyEventsJpaEntity extends AuditableEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long eventId;
 
+	@Column(nullable = false)
 	private Long userId;
 
 	@Column(nullable = false)
@@ -55,6 +60,7 @@ public class BuddyEventsJpaEntity extends AuditableEntity {
 	@Enumerated(EnumType.STRING)
 	private EventStatus status;
 
+	@Column(length = 1000)
 	private String comment;
 
 	@Override

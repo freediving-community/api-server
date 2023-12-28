@@ -16,4 +16,11 @@ public interface CreateBuddyEventPort {
 		CreatedBuddyEvent createdBuddyEvent
 	);
 
+	/**
+	 * 생성하려는 버디 이벤트 시간에 이미 생성된 버디 이벤트가 존재하는지 유효성 체크를 한다.
+	 *
+	 * @return true - 겹치는 이벤트가 없어 유효하다. false - 겹치는 이벤트가 존재하여 유요하지 않는다.
+	 */
+	Boolean isValidBuddyEventOverlap();
+
 }
