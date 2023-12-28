@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;
+import com.freediving.common.config.annotation.WebAdapter;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
  * @version 1.0.0
  * 작성일 2023-12-27
  **/
+@WebAdapter
 @RestController
 @RequiredArgsConstructor
 public class CreateBuddyEventControllerV1 {

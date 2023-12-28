@@ -1,9 +1,8 @@
 package com.freediving.buddyservice.adapter.out.persistence;
 
-import org.springframework.stereotype.Component;
-
 import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;
+import com.freediving.common.config.annotation.PersistenceAdapter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +15,7 @@ import lombok.RequiredArgsConstructor;
  * 작성일 2023-12-27
  **/
 @RequiredArgsConstructor
-@Component
+@PersistenceAdapter
 public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort {
 
 	private final BuddyEventsRepository buddyEventsRepository;

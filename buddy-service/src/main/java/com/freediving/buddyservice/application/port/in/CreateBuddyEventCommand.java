@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.freediving.buddyservice.common.enumeration.EventConcept;
 import com.freediving.buddyservice.common.enumeration.EventStatus;
-import com.freediving.buddyservice.common.enumeration.SelfValidating;
+import com.freediving.common.SelfValidating;
 
 import jakarta.validation.ConstraintDeclarationException;
 import jakarta.validation.constraints.FutureOrPresent;

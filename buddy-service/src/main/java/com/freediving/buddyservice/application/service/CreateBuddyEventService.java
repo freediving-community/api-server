@@ -1,18 +1,17 @@
 package com.freediving.buddyservice.application.service;
 
-import org.springframework.stereotype.Service;
-
 import com.freediving.buddyservice.adapter.out.persistence.BuddyEventsJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.CreatedBuddyEventMapper;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;
+import com.freediving.common.config.annotation.UseCase;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-@Service
+@UseCase
 @RequiredArgsConstructor
 @Transactional
 public class CreateBuddyEventService implements CreateBuddyEventUseCase {
