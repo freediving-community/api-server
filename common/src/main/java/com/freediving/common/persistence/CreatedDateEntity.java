@@ -1,4 +1,4 @@
-package com.freediving.common;
+package com.freediving.common.persistence;
 
 import java.time.LocalDateTime;
 
