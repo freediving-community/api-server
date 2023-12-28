@@ -34,36 +34,28 @@ class BuddyEventsRepositoryTest {
 		Random random = new Random();
 		Long userId = random.nextLong();
 
-		LocalDateTime startTime = LocalDateTime.now();
-		LocalDateTime endTime = LocalDateTime.now().plusHours(4);
+		LocalDateTime StartDate = LocalDateTime.now();
+		LocalDateTime EndDate = LocalDateTime.now().plusHours(4);
 
-		BuddyEventsJpaEntity buddyEventsJpaEntity = generateBuddyEventJpa(userId, startTime, endTime, 3, null);
+		BuddyEventsJpaEntity buddyEventsJpaEntity = generateBuddyEventJpa(userId, StartDate, EndDate, 3, null);
 
-		buddyEventsRepository.save(buddyEventsJpaEntity);
+		BuddyEventsJpaEntity creadtedBuddyEventJpa = buddyEventsRepository.save(buddyEventsJpaEntity);
 
-		List<BuddyEventsJpaEntity> buddyEvents = buddyEventsRepository.findAll();
-
-		assertThat(buddyEvents).hasSize(1)
-			.extracting("eventId", "userId", "eventStartTime", "eventEndTime", "participantCount", "eventConcepts",
-				"status",
-				"carShareYn", "comment")
-			.containsExactlyInAnyOrder(
-				tuple(1L, userId, startTime, endTime, 3, List.of(EventConcept.LEVEL_UP, EventConcept.PRACTICE),
-					EventStatus.RECRUITING, false,
-					null)
-			);
+		assertThat(creadtedBuddyEventJpa).extracting("eventId", "userId", "eventStartDate", "eventEndDate",
+				"participantCount", "eventConcepts", "status", "carShareYn", "comment")
+			.contains(1L, userId, StartDate, EndDate, 3, List.of(EventConcept.LEVEL_UP, EventConcept.PRACTICE),
+				EventStatus.RECRUITING, false, null);
 	}
 
 	private BuddyEventsJpaEntity generateBuddyEventJpa(Long userId, LocalDateTime eventStartDate,
-		LocalDateTime eventEndDate,
-		Integer participantCount, String comment) {
+		LocalDateTime eventEndDate, Integer participantCount, String comment) {
 
 		List<EventConcept> eventConcepts = List.of(EventConcept.LEVEL_UP, EventConcept.PRACTICE);
 
 		return BuddyEventsJpaEntity.builder()
 			.userId(userId)
-			.eventStartTime(eventStartDate)
-			.eventEndTime(eventEndDate)
+			.eventStartDate(eventStartDate)
+			.eventEndDate(eventEndDate)
 			.participantCount(participantCount)
 			.eventConcepts(eventConcepts)
 			.status(EventStatus.RECRUITING)

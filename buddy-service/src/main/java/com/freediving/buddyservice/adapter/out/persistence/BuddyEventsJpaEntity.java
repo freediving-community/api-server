@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.freediving.buddyservice.common.enumeration.EventConcept;
 import com.freediving.buddyservice.common.enumeration.EventStatus;
-import com.freediving.common.AuditableEntity;
+import com.freediving.common.persistence.AuditableEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -37,10 +37,10 @@ public class BuddyEventsJpaEntity extends AuditableEntity {
 	private Long userId;
 
 	@Column(nullable = false)
-	private LocalDateTime eventStartTime;
+	private LocalDateTime eventStartDate;
 
 	@Column(nullable = false)
-	private LocalDateTime eventEndTime;
+	private LocalDateTime eventEndDate;
 
 	@Column(nullable = false)
 	private Integer participantCount;
@@ -59,8 +59,8 @@ public class BuddyEventsJpaEntity extends AuditableEntity {
 
 	@Override
 	public String toString() {
-		return "BuddyEventsJpaEntity{" + "eventId=" + eventId + ", userId=" + userId + ", eventStartTime="
-			+ eventStartTime + ", eventEndTime=" + eventEndTime + ", participantCount=" + participantCount
+		return "BuddyEventsJpaEntity{" + "eventId=" + eventId + ", userId=" + userId + ", eventStartDate="
+			+ eventStartDate + ", eventEndDate=" + eventEndDate + ", participantCount=" + participantCount
 			+ ", eventConcepts=" + eventConcepts + ", carShareYn=" + carShareYn + ", status=" + status + ", comment='"
 			+ comment + '\'' + '}';
 	}

@@ -32,8 +32,8 @@ public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort 
 		return buddyEventsRepository.save(
 			BuddyEventsJpaEntity.builder()
 				.userId(createdBuddyEvent.getUserId())
-				.eventStartTime(createdBuddyEvent.getEventStartDate())
-				.eventEndTime(createdBuddyEvent.getEventEndDate())
+				.eventStartDate(createdBuddyEvent.getEventStartDate())
+				.eventEndDate(createdBuddyEvent.getEventEndDate())
 				.participantCount(createdBuddyEvent.getParticipantCount())
 				.eventConcepts(createdBuddyEvent.getEventConcepts())
 				.carShareYn(createdBuddyEvent.getCarShareYn())

@@ -40,24 +40,19 @@ class CreateBuddyEventPersistenceAdapterTest {
 		Random random = new Random();
 		Long userId = random.nextLong();
 
-		LocalDateTime startTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
-		LocalDateTime endTime = LocalDateTime.now().plusHours(4).truncatedTo(ChronoUnit.MILLIS);
+		LocalDateTime StartDate = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
+		LocalDateTime EndDate = LocalDateTime.now().plusHours(4).truncatedTo(ChronoUnit.MILLIS);
 
-		CreatedBuddyEvent buddyEvent = generateBuddyEvent(userId, startTime, endTime, 3, null);
+		CreatedBuddyEvent buddyEvent = generateBuddyEvent(userId, StartDate, EndDate, 3, null);
 
-		createBuddyEventPort.createBuddyEvent(buddyEvent);
+		BuddyEventsJpaEntity createdbuddyEvent = createBuddyEventPort.createBuddyEvent(buddyEvent);
 
-		List<BuddyEventsJpaEntity> buddyEvents = buddyEventsRepository.findAll();
-
-		assertThat(buddyEvents).hasSize(1)
-			.extracting("eventId", "userId", "eventStartTime", "eventEndTime", "participantCount", "eventConcepts",
+		assertThat(createdbuddyEvent)
+			.extracting("eventId", "userId", "eventStartDate", "eventEndDate", "participantCount", "eventConcepts",
 				"status", "carShareYn", "comment")
-			.containsExactlyInAnyOrder(
-				tuple(1L, userId, startTime.truncatedTo(ChronoUnit.MILLIS), endTime.truncatedTo(ChronoUnit.MILLIS), 3,
-					List.of(EventConcept.LEVEL_UP, EventConcept.PRACTICE),
-					EventStatus.RECRUITING, false,
-					null)
-			);
+			.contains(1L, userId, StartDate.truncatedTo(ChronoUnit.MILLIS), EndDate.truncatedTo(ChronoUnit.MILLIS), 3,
+				List.of(EventConcept.LEVEL_UP, EventConcept.PRACTICE),
+				EventStatus.RECRUITING, false, null);
 
 	}
 

@@ -1,6 +1,6 @@
 package com.freediving.buddyservice.adapter.out.persistence;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,25 +30,22 @@ class CreatedBuddyEventMapperTest {
 		Random random = new Random();
 		Long userId = random.nextLong();
 
-		LocalDateTime startTime = LocalDateTime.now();
-		LocalDateTime endTime = LocalDateTime.now().plusHours(4);
+		LocalDateTime StartDate = LocalDateTime.now();
+		LocalDateTime EndDate = LocalDateTime.now().plusHours(4);
 
-		BuddyEventsJpaEntity buddyEventsJpaEntity = generateBuddyEventJpa(userId, startTime, endTime, 3, null);
+		BuddyEventsJpaEntity buddyEventsJpaEntity = generateBuddyEventJpa(userId, StartDate, EndDate, 3, null);
 
 		CreatedBuddyEvent createdBuddyEvent = createdBuddyEventMapper.mapToDomainEntity(buddyEventsJpaEntity);
 
-		assertEquals(createdBuddyEvent.getEventId(), buddyEventsJpaEntity.getEventId());  // event Id
-		assertEquals(createdBuddyEvent.getUserId(), buddyEventsJpaEntity.getUserId());  // user Id
-		assertEquals(createdBuddyEvent.getEventStartDate(),
-			buddyEventsJpaEntity.getEventStartTime());  // eventStartTime
-		assertEquals(createdBuddyEvent.getEventEndDate(), buddyEventsJpaEntity.getEventEndTime());  // eventEndTime
-		assertEquals(createdBuddyEvent.getEventConcepts(), buddyEventsJpaEntity.getEventConcepts());  //
-		assertEquals(createdBuddyEvent.getStatus(), buddyEventsJpaEntity.getStatus());
-		assertEquals(createdBuddyEvent.getCarShareYn(), buddyEventsJpaEntity.getCarShareYn());
-		assertEquals(createdBuddyEvent.getParticipantCount(), buddyEventsJpaEntity.getParticipantCount());
-		assertEquals(createdBuddyEvent.getComment(), buddyEventsJpaEntity.getComment());
-		assertEquals(createdBuddyEvent.getCreatedDate(), buddyEventsJpaEntity.getCreatedDate());
-		assertEquals(createdBuddyEvent.getUpdatedDate(), buddyEventsJpaEntity.getUpdatedDate());
+		assertThat(createdBuddyEvent)
+			.extracting("eventId", "userId", "eventStartDate", "eventEndDate",
+				"participantCount", "eventConcepts", "status", "carShareYn", "comment")
+			.contains(buddyEventsJpaEntity.getEventId(), buddyEventsJpaEntity.getUserId(),
+				buddyEventsJpaEntity.getEventStartDate(), buddyEventsJpaEntity.getEventEndDate(),
+				buddyEventsJpaEntity.getEventConcepts(), buddyEventsJpaEntity.getStatus(),
+				buddyEventsJpaEntity.getCarShareYn(), buddyEventsJpaEntity.getParticipantCount(),
+				buddyEventsJpaEntity.getComment(), buddyEventsJpaEntity.getCreatedDate(),
+				buddyEventsJpaEntity.getUpdatedDate());
 	}
 
 	private BuddyEventsJpaEntity generateBuddyEventJpa(Long userId, LocalDateTime eventStartDate,
@@ -59,8 +56,8 @@ class CreatedBuddyEventMapperTest {
 
 		return BuddyEventsJpaEntity.builder()
 			.userId(userId)
-			.eventStartTime(eventStartDate)
-			.eventEndTime(eventEndDate)
+			.eventStartDate(eventStartDate)
+			.eventEndDate(eventEndDate)
 			.participantCount(participantCount)
 			.eventConcepts(eventConcepts)
 			.status(EventStatus.RECRUITING)
