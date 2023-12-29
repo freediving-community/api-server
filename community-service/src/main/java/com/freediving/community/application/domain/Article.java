@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
@@ -22,7 +23,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,31 +40,42 @@ import lombok.ToString;
 public class Article {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
-	@Setter
-	@Column(nullable = false, length = 20)
-	private String boardId;
-
-	@Setter
-	@Column(nullable = false, length = 20)
-	private String memberId;
+	private Long articleId;
 
 	@Setter
 	@Column(nullable = false, length = 255)
 	private String title;
 
 	@Setter
-	@Column(nullable = false, length = 5000)
+	@Column(nullable = false, columnDefinition="TEXT")
 	private String content;
+
+	@Setter
+	@Column(nullable = false, length = 20)
+	private Long boardId;
+
+	// @ElementCollection
+	// @ToString.Exclude
+	// private final Set<HashTag> tags = new LinkedHashSet<>();
+
+	@OneToMany(mappedBy = "article")
+	private List<ArticleHashtag> hashtags = new ArrayList<>();
+
+	@Setter
+	@Column(nullable = false, length = 20)
+	private Long memberId;
+
+	@Setter
+	@Column(nullable = false, length = 20)
+	private String authorName;
 
 	@Setter
 	@ColumnDefault("'true'")
 	@Column(nullable = false, length = 10)
 	private String enableComment;
 
-	@OrderBy("id")
-	@OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+	// @OrderBy("id")
+	@OneToMany(mappedBy = "commentId", cascade = CascadeType.ALL)
 	@ToString.Exclude
 	private final Set<Comment> comments = new LinkedHashSet<>();
 
@@ -88,14 +99,14 @@ public class Article {
 	protected Article() {
 	}
 
-	private Article(String boardId, String memberId, String title, String content) {
+	private Article(Long boardId, Long memberId, String title, String content) {
 		this.boardId = boardId;
 		this.memberId = memberId;
 		this.title = title;
 		this.content = content;
 	}
 
-	public static Article of(String boardId, String memberId, String title, String content) {
+	public static Article of(Long boardId, Long memberId, String title, String content) {
 		return new Article(boardId, memberId, title, content);
 	}
 
@@ -105,12 +116,12 @@ public class Article {
 			return true;
 		if (!(o instanceof Article article))
 			return false;
-		return id != null && id.equals(article.id);
+		return articleId != null && articleId.equals(article.articleId);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return Objects.hash(articleId);
 	}
 }
 

@@ -27,10 +27,10 @@ import lombok.ToString;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 public class Comment {
-
+//TODO articleId가 필수임. 게시물처럼 커서 방식을 적용. hasChild와 parentId를 기반으로 답글 기능 포함.
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long commentId;
 
 	@Setter
 	@ManyToOne(optional = false)
@@ -74,11 +74,11 @@ public class Comment {
 			return true;
 		if (!(o instanceof Comment comment))
 			return false;
-		return id != null && Objects.equals(id, comment.id);
+		return commentId != null && Objects.equals(commentId, comment.commentId);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return Objects.hash(commentId);
 	}
 }

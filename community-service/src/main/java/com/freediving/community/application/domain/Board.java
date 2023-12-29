@@ -1,16 +1,19 @@
 package com.freediving.community.application.domain;
 
+import com.freediving.community.application.domain.constant.BoardType;
+import com.freediving.community.application.domain.constant.ListOrderType;
+import jakarta.persistence.*;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.time.LocalDateTime;
 
 @Getter
 @ToString
@@ -24,11 +27,36 @@ public class Board {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Enumerated(EnumType.STRING)
+	private BoardType boardType;
+
+	@Setter
+	@Column(nullable = false, length = 50)
 	private String boardName;
 
+	@Setter
+	@Column(nullable = false)
 	private String description;
 
-	private Integer displayOrder;
+	@Enumerated(EnumType.STRING)
+	private ListOrderType listOrderType;
+
+	// Auditing
+	@Column(nullable = false)
+	@CreatedDate
+	private LocalDateTime createdAt;
+
+	@Column(nullable = false)
+	@LastModifiedDate
+	private LocalDateTime modifiedAt;
+
+	@Column(nullable = false)
+	@CreatedBy
+	private String createdBy;
+
+	@Column(nullable = false)
+	@LastModifiedBy
+	private String modifiedBy;
 
 	public void setId(Long id) {
 		this.id = id;
