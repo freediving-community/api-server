@@ -5,6 +5,7 @@ import java.util.Random;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
@@ -23,8 +24,9 @@ import lombok.RequiredArgsConstructor;
  * 작성일 2023-12-27
  **/
 @WebAdapter
-@RestController("/buddy-event/v1.0")
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/v1/event")
 public class CreateBuddyEventControllerV1 {
 
 	private final CreateBuddyEventUseCase createBuddyEventUseCase;

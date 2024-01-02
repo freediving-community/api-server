@@ -6,7 +6,9 @@ import java.util.List;
 import com.freediving.buddyservice.common.enumeration.EventConcept;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +21,8 @@ import lombok.NoArgsConstructor;
  **/
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class CreateBuddyEventRequestV1 {
 
 	@NotNull(message = "일정 시작 시간은 필수입니다.")

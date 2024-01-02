@@ -15,7 +15,7 @@ spring:
     # Datasource
     datasource:
       driver-class-name: org.h2.Driver
-      url: jdbc:h2:mem:~/buddy
+      url: jdbc:h2:mem:~/buddy;Mode=Oracle
       username: sa
       password:
     jpa:

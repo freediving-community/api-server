@@ -1,5 +1,9 @@
 package com.freediving.buddyservice.application.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.freediving.buddyservice.adapter.out.persistence.BuddyEventsJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.CreatedBuddyEventMapper;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
@@ -7,6 +11,7 @@ import com.freediving.buddyservice.application.port.in.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
 import com.freediving.buddyservice.application.port.out.service.MemberStatus;
 import com.freediving.buddyservice.application.port.out.service.RequestMemberPort;
+import com.freediving.buddyservice.common.enumeration.EventStatus;
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;
 import com.freediving.common.config.annotation.UseCase;
 
@@ -32,14 +37,15 @@ public class CreateBuddyEventService implements CreateBuddyEventUseCase {
 		}
 
 		// 2. 생성한 버디 일정 중에 시간이 겹치는 일정이 있는지 확인.
-		if (isValidBuddyEventOverlap() == false) {
+		if (isValidBuddyEventOverlap(command.getUserId(), command.getEventStartDate(), command.getEventEndDate())
+			== false) {
 			throw new RuntimeException("버디 일정이 겹칩니다."); // TODO 예외 처리
 		}
 
 		// 3. 버디 일정 이벤트 생성하기.
 		BuddyEventsJpaEntity createdBuddyEventInfo = createBuddyEventPort.createBuddyEvent(
 			CreatedBuddyEvent.builder()
-				.userId(command.getUserId())
+				.userId(status.getUserid())
 				.eventStartDate(command.getEventStartDate())
 				.eventEndDate(command.getEventEndDate())
 				.participantCount(command.getParticipantCount())
@@ -53,8 +59,17 @@ public class CreateBuddyEventService implements CreateBuddyEventUseCase {
 
 	}
 
-	private Boolean isValidBuddyEventOverlap() {
-		// true
-		return createBuddyEventPort.isValidBuddyEventOverlap();
+	private Boolean isValidBuddyEventOverlap(Long userId, LocalDateTime eventStartTime,
+		LocalDateTime eventEndDate) {
+
+		// EventStatus.RECRUITING, EventStatus.RECRUITMENT_CLOSED 이벤트 상태들에 대해서
+		// 시간이 겹치는 지 확인한다.
+
+		List<String> statusNames = List.of(EventStatus.RECRUITING, EventStatus.RECRUITMENT_CLOSED).stream()
+			.map(Enum::name)
+			.collect(Collectors.toList());
+
+		return createBuddyEventPort.isValidBuddyEventOverlap(userId, eventStartTime, eventEndDate
+			, statusNames);
 	}
 }

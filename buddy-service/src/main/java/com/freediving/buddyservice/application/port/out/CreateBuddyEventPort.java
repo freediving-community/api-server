@@ -1,5 +1,8 @@
 package com.freediving.buddyservice.application.port.out;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import com.freediving.buddyservice.adapter.out.persistence.BuddyEventsJpaEntity;
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;
 
@@ -21,6 +24,7 @@ public interface CreateBuddyEventPort {
 	 *
 	 * @return true - 겹치는 이벤트가 없어 유효하다. false - 겹치는 이벤트가 존재하여 유요하지 않는다.
 	 */
-	Boolean isValidBuddyEventOverlap();
+	Boolean isValidBuddyEventOverlap(Long userId, LocalDateTime eventStartDate,
+		LocalDateTime eventEndTime, List<String> statuses);
 
 }

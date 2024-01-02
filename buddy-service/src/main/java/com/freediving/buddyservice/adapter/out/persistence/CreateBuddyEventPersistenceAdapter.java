@@ -1,5 +1,8 @@
 package com.freediving.buddyservice.adapter.out.persistence;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;
 import com.freediving.common.config.annotation.PersistenceAdapter;
@@ -39,7 +42,14 @@ public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort 
 	}
 
 	@Override
-	public Boolean isValidBuddyEventOverlap() {
+	public Boolean isValidBuddyEventOverlap(Long userId, LocalDateTime eventStartDate, LocalDateTime eventEndTime,
+		List<String> statuses) {
+		if (buddyEventsRepository.existsBuddyEventByEventTime(userId, eventStartDate
+			, eventEndTime, statuses) == true)
+			return false;
+
 		return true;
+
 	}
+
 }

@@ -10,26 +10,26 @@
 
 > base-url: buddy-service/{version}
 
-## Buddy Event API ( ver 1.0 )
+## Buddy Event API ( ver 1 )
 
 ### Query
 
-- 버디 일정 이벤트 조회 하기 ( 'searchBuddyEvents' )
-  > GET /buddyEvents
-- 내가 모집 중인 버디 일정 조회 하기 ( 'listMyRecruitingEvents' )
-  > GET /buddyEvents/myEvents/recruiting
-- 버디 일정 참가 신청자 조회 하기 ( 'viewEventApplicants' )
-  > GET /buddyEvents/{eventId}/applicants
-- 사용자 맞춤형 버디 일정 추천 ( 'recommendCustomBuddyEvents' )
-  > GET /buddyEvents/recommendations
+- 버디 이벤트 조회 하기
+  > GET /event
+- 내가 모집 중인 버디 이벤트 조회 하기
+  > GET /event/my
+- 버디 이벤트 참가 신청자 조회 하기
+  > GET /event/{eventId}/applicants
+- 사용자 맞춤형 버디 이벤트 추천
+  > GET /event/recommendations
 
 ### Command
 
-- 버디 일정 이벤트 생성 하기 ( 'createBuddyEvent' )
-  > POST /buddyEvents
-- 버디 일정 참가 신청 요청 하기 ( 'requestEventParticipation' )
-  > POST /buddyEvents/{eventId}/participations
-- 버디 일정 이벤트 삭제 하기 ( 'deleteBuddyEvent' )
-  > DELETE /buddyEvents/{eventId}
-- 버디 일정 이벤트 수정 하기 ( 'updateBuddyEvent' )
-  > PUT /buddyEvents/{eventId}
+- 버디 일정 이벤트 생성 하기
+  > POST /event
+- 버디 일정 참가 신청 요청 하기
+  > POST /event/{eventId}/participations
+- 버디 일정 이벤트 삭제 하기
+  > DELETE /event/{eventId}
+- 버디 일정 이벤트 수정 하기
+  > PUT /event/{eventId}
