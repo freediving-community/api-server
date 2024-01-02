@@ -16,7 +16,15 @@ spring:
   cloud:
     gateway:
       routes: # 라우팅 설정
-        # TODO : 기능 / 서비스 별 라우팅 등록
+        # Auth Service
+        - id: auth-service
+          predicates:
+            - Path=/auth-service/**
+          uri: lb://MEMBER-SERVICE # AuthService 는 MemberService 모듈 안에서 관리
+          filters:
+            - RewritePath=/auth-service/?(?<segment>.*), /$\{segment}
+
+        # Member Service
         - id: member-service # 구분하기 위한 id 값으로 임의로 작성해도 무관
           predicates: # 조건
             - Path=/member-service/** # 패턴으로 요청이 들어오면
@@ -38,5 +46,19 @@ spring:
           uri: lb://BUDDY-SERVICE
           filters:
             - RewritePath=/buddy-service/?(?<segment>.*), /$\{segment}
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: 'http://localhost:3000'
+            allow-credentials: true
+            allowedHeaders: '*'
+            allowedMethods:
+              - PUT
+              - GET
+              - POST
+              - DELETE
+              - OPTIONS
 jwt:
   key: ${JWT_KEY}
