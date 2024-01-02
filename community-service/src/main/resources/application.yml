@@ -3,11 +3,14 @@ management.endpoints.web.exposure.include: "*"
 
 logging:
   level:
-    com.freediving.community-service: debug
+    com.freediving.communityservice: debug
     org.springframework.web.servlet: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 
 spring:
+  output:
+    ansi:
+      enabled: always # IntelliJ CE Console Color
   datasource:
     url: jdbc:postgresql://localhost:5432/commdb
     username: postgres
