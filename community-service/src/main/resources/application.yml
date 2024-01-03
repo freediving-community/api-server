@@ -1,0 +1,27 @@
+debug: false
+management.endpoints.web.exposure.include: "*"
+
+logging:
+  level:
+    com.freediving.communityservice: debug
+    org.springframework.web.servlet: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+
+spring:
+  output:
+    ansi:
+      enabled: always # IntelliJ CE Console Color
+  datasource:
+    url: jdbc:postgresql://localhost:5432/commdb
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    defer-datasource-initialization: true
+    hibernate.ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+      hibernate.default_batch_fetch_size: 100
+    database: postgresql
+  sql.init.mode: always
