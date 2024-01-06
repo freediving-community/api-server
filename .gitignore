@@ -229,3 +229,7 @@ gradle-app.setting
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij+all,macos,windows,gradle
+
+# Ignore Application YML
+application-dev.yml
+application-prd.yml
