@@ -2,8 +2,8 @@ name: CI & CD for discovery-service
 
 on:
   push:
-    #    paths:
-    #      - 'api-server/discovery-service/**'
+    paths:
+      - 'discovery-service/**'
     branches: [ "main" ]
 
 permissions:
