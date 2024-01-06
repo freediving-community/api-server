@@ -43,5 +43,7 @@ jobs:
           script: |
             sudo docker pull ${{ secrets.DOCKER_REPO }}/discovery-service
             sudo docker stop $(sudo docker ps -a | grep discovery-service | awk '{print $1}')
+            sudo docker rm $(sudo docker ps -a | grep discovery-service | awk '{print $1}')
             sudo docker image prune -a -f
-            sudo docker-compose -f /docker/docker-compose-discovery-${{ secrets.SERVER_PROFILE}}.yml up -d
+            sudo docker-compose -p discovery -f /docker/docker-compose-discovery-${{ secrets.SERVER_PROFILE }}.yml down --rmi all
+            sudo docker-compose -p discovery -f /docker/docker-compose-discovery-${{ secrets.SERVER_PROFILE }}.yml up -d
