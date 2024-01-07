@@ -4,6 +4,23 @@ server:
 spring:
   application:
     name: buddy-service
+  jackson:
+    date-format: "yyyy-MM-dd HH:mm:ss.SSS"
+  # Only for Local Test
+  # H2
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+    # Datasource
+    datasource:
+      driver-class-name: org.h2.Driver
+      url: jdbc:h2:mem:~/buddy;Mode=Oracle
+      username: sa
+      password:
+    jpa:
+      hibernate:
+        ddl-auto: create-drop
 eureka:
   instance:
     hostname: localhost
@@ -18,3 +35,6 @@ eureka:
     service-url:
       # endpoint 지정
       defaultZone: http://localhost:8761/eureka
+
+
+
