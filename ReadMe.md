@@ -26,6 +26,8 @@
 ## ⚒️ 인프라 구성도
 ![image](https://github.com/freediving-community/api-server/assets/81945553/959a87f1-a7a8-4375-bf57-c8a5d4bd7f48)
 
+- [인프라 구성도](https://github.com/freediving-community/api-server/wiki/%EC%9D%B8%ED%94%84%EB%9D%BC-%EA%B5%AC%EC%84%B1%EB%8F%84)
+- [CI & CD](https://github.com/freediving-community/api-server/wiki/CI-&-CD-%EA%B5%AC%EC%B6%95)
 
 ## ⚙️ 애플리케이션 구성도
 
