@@ -1,4 +1,4 @@
-package com.freediving.communityservice.adapter.out.persistence;
+package com.freediving.communityservice.adapter.out.persistence.comment;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

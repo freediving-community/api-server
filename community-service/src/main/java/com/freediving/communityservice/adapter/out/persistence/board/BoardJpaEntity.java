@@ -1,4 +1,4 @@
-package com.freediving.communityservice.adapter.out.persistence;
+package com.freediving.communityservice.adapter.out.persistence.board;
 
 import java.time.LocalDateTime;
 import java.util.Random;
@@ -52,6 +52,9 @@ public class BoardJpaEntity {
 	@Column(nullable = false, length = 10, unique = true)
 	private int sortOrder;
 
+	@Column(nullable = false, columnDefinition = "boolean default true")
+	private boolean enabled;
+
 	// Auditing
 	@Column(nullable = false)
 	@CreatedDate
@@ -76,13 +79,13 @@ public class BoardJpaEntity {
 		this.sortOrder = sortOrder;
 	}
 
-	public BoardJpaEntity(String boardType, String boardName, String description, int sortOrder,
-		LocalDateTime createdAt,
-		LocalDateTime modifiedAt, Long createdBy, Long modifiedBy) {
+	public BoardJpaEntity(String boardType, String boardName, String description, int sortOrder, boolean enabled,
+		LocalDateTime createdAt, LocalDateTime modifiedAt, Long createdBy, Long modifiedBy) {
 		this.boardType = boardType;
 		this.boardName = boardName;
 		this.description = description;
 		this.sortOrder = sortOrder;
+		this.enabled = enabled;
 		this.createdAt = createdAt;
 		this.modifiedAt = modifiedAt;
 		this.createdBy = createdBy;
@@ -90,7 +93,7 @@ public class BoardJpaEntity {
 	}
 
 	public static BoardJpaEntity of(String boardType, String boardName, String description, int sortOrder) {
-		return new BoardJpaEntity(boardType, boardName, description, sortOrder, LocalDateTime.now(),
+		return new BoardJpaEntity(boardType, boardName, description, sortOrder, true, LocalDateTime.now(),
 			LocalDateTime.now(), new Random().nextLong(), new Random().nextLong());
 	}
 

@@ -1,9 +1,7 @@
-package com.freediving.communityservice.adapter.out.persistence;
+package com.freediving.communityservice.adapter.out.persistence.article;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -15,6 +13,8 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.freediving.communityservice.adapter.out.persistence.comment.CommentJpaEntity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -35,8 +35,8 @@ import lombok.ToString;
 	@Index(name = "idx_article_title", columnList = "title"),
 	@Index(name = "idx_article_createdAt", columnList = "createdAt"),
 	@Index(name = "idx_article_viewCount", columnList = "viewCount"),
-	@Index(name = "idx_article_likeCount", columnList = "likeCount"),
-	@Index(name = "idx_article_hashtags", columnList = "hashtags")
+	@Index(name = "idx_article_likeCount", columnList = "likeCount")
+	// ,@Index(name = "idx_article_hashtags", columnList = "hashtags")
 })
 @DynamicInsert // null 인 값은 제외하고 Insert. DB DefaultValue 사용을 위함.
 @EntityListeners(AuditingEntityListener.class)
@@ -58,9 +58,9 @@ public class ArticleJpaEntity {
 	@Column(nullable = false, length = 20)
 	private String authorName;
 
-	@ToString.Exclude
-	@OneToMany
-	private List<HashtagJpaEntity> hashtags = new ArrayList<>();
+	// @ToString.Exclude
+	// @OneToMany
+	// private List<HashtagJpaEntity> hashtags = new ArrayList<>();
 
 	@Column(nullable = false, length = 20)
 	private int viewCount;

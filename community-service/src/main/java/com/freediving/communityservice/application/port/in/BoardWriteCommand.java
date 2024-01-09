@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 @Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class MakeBoardCommand {
+public class BoardWriteCommand {
 	private final Long id;
 
 	private final String boardType;
@@ -18,7 +18,7 @@ public class MakeBoardCommand {
 
 	private final int sortOrder;
 
-	public MakeBoardCommand(Long id, String boardType, String boardName, String description, int sortOrder) {
+	public BoardWriteCommand(Long id, String boardType, String boardName, String description, int sortOrder) {
 		this.id = id;
 		this.boardType = boardType;
 		this.boardName = boardName;
