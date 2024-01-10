@@ -11,4 +11,6 @@ public interface BoardUseCase {
 	Board createBoard(BoardWriteCommand command);
 
 	List<Board> readBoardList(BoardReadCommand command);
+
+	Board readBoard(Long boardId);
 }
