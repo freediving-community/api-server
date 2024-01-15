@@ -13,6 +13,7 @@ public class WebConfig implements WebFluxConfigurer {
 		registry.addMapping("/**")
 			.allowedOriginPatterns("*")
 			.allowedMethods("*")
-			.allowedHeaders("*");
+			.allowedHeaders("*")
+			.allowCredentials(true);
 	}
 }
