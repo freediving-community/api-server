@@ -33,7 +33,7 @@ public class CreateBuddyEventControllerV1 {
 
 	@PostMapping("/")
 	public ResponseEntity<CreatedBuddyEvent> createBuddyEvent(@Valid @RequestBody CreateBuddyEventRequestV1 request) {
-		// 1. JWT 유저 토큰에서 사용자 식별 ID 가져오기..
+		// 1. JWT 유저 토큰에서 사용자 식별 ID 가져오기
 		Random random = new Random();
 		Long userId = random.nextLong();
 
