@@ -65,5 +65,6 @@ jobs:
           --application-name service-codedeploy \
           --deployment-group-name buddy-service-codedeploy \
           --file-exists-behavior OVERWRITE \
+          --ignore-application-stop-failures \
           --s3-location bucket=buddyme-bucket,bundleType=zip,key=deploy/buddy-service.zip \
           --region ap-northeast-2
