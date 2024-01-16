@@ -1,0 +1,52 @@
+name: CI & CD for buddy-service
+
+on:
+  push:
+    paths:
+      - 'buddy-service/**'
+    branches: [ "feat/#50" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Create application-dev.yml
+        run: |
+          touch ./buddy-service/src/main/resources/application-dev.yml
+          echo "${{ secrets.BUDDY_APPLICATION_DEV_YML }}" > ./buddy-service/src/main/resources/application-dev.yml
+
+      - name: Build with Gradle
+        run: |
+          ./gradlew buddy-service:build
+
+      # 전송할 파일을 담을 디렉토리 생성
+      - name: Make Directory for deliver
+        run: mkdir deploy
+
+      # Jar 파일 Copy
+      - name: Copy Jar
+        run: cp ./build/libs/*.jar ./deploy/
+
+      # 압축파일 형태로 전달
+      - name: Make zip file
+        run: zip -r -qq -j ./buddy-service.zip ./deploy
+
+      # S3 Bucket으로 copy
+      - name: Deliver to AWS S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOY_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOY_SECRET_ACCESS_KEY }}
+        run: |
+          aws s3 cp \
+          --region ap-northeast-2 \
+          --acl private \
+    ./buddy-service.zip s3://buddy-service/
