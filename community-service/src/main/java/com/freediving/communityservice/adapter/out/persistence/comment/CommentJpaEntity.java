@@ -1,4 +1,4 @@
-package com.freediving.communityservice.adapter.out.persistence;
+package com.freediving.communityservice.adapter.out.persistence.comment;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -8,6 +8,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.freediving.communityservice.adapter.out.persistence.article.ArticleJpaEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

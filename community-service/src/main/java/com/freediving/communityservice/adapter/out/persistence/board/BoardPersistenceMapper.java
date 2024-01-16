@@ -1,4 +1,4 @@
-package com.freediving.communityservice.adapter.out.persistence;
+package com.freediving.communityservice.adapter.out.persistence.board;
 
 import org.springframework.stereotype.Component;
 
@@ -12,6 +12,7 @@ public class BoardPersistenceMapper {
 			boardJpaEntity.getBoardName(),
 			boardJpaEntity.getDescription(),
 			boardJpaEntity.getSortOrder(),
+			boardJpaEntity.isEnabled(),
 			boardJpaEntity.getCreatedAt(),
 			boardJpaEntity.getModifiedAt(),
 			boardJpaEntity.getCreatedBy(),

@@ -1,5 +1,5 @@
 server:
-  port: 0 # random port
+  port: 8080 # random port
 
 debug: false
 
@@ -12,15 +12,12 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 
 spring:
-  profiles.active: local
-  output:
-    ansi:
-      enabled: always # IntelliJ CE Console Color
   application:
     name: community-service
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/community
+    url: jdbc:h2:mem:community
+    #    url: jdbc:h2:tcp://localhost/~/community
     username: sa
     password:
   h2:
@@ -44,7 +41,9 @@ spring:
         default_batch_fetch_size: 100
     database: postgresql
   sql.init.mode: always
-
+  output:
+    ansi:
+      enabled: always # IntelliJ CE Console Color
 eureka:
   instance:
     hostname: localhost

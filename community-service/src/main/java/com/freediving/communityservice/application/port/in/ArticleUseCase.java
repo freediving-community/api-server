@@ -1,4 +1,4 @@
-package com.freediving.communityservice.application.port.in.query;
+package com.freediving.communityservice.application.port.in;
 
 public interface ArticleUseCase {
 	// Query

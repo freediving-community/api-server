@@ -1,4 +1,4 @@
-package com.freediving.communityservice.adapter.in.web;
+package com.freediving.communityservice.adapter.in.web.command;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
