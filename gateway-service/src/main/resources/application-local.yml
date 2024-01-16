@@ -45,7 +45,7 @@ spring:
           uri: lb://BUDDY-SERVICE
           filters:
             - AuthorizationFilter
-            - RewritePath=/buddy-service/api/(?<segment>.*), /api/$\{segment}
+            - RewritePath=/buddy-service/(?<segment>.*), /$\{segment}
         - id: openapi
           uri: http://localhost:${server.port}
           predicates:
@@ -80,10 +80,16 @@ springdoc:
       - name: member-service
         url: http://localhost:${server.port}/v3/api-docs/member-service
       - name: buddy-service
-        url: http://localhost:${server.port}/v3/api-docs/buddy-service
+        url: /v3/api-docs/buddy-service
       - name: community-service
         url: http://localhost:${server.port}/v3/api-docs/community-service
 
+swagger:
+  servers:
+    title: "Swagger 통합"
+    version: "V1"
+    url: http://localhost:8000
+    description: Local Gateway Server
 
 jwt:
   key: ${JWT_KEY}
