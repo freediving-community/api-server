@@ -141,7 +141,7 @@ class CreateBuddyEventServiceTest {
 
 		//  RequestMemberPort의 MemberStauts 상태 조회 결과를 성공으로 만든다.
 		Mockito.when(requestMemberPort.getMemberStatus(Mockito.any(Long.class)))
-			.thenReturn(MemberStatus.builder().userid(11111L).isValid(true).build());
+			.thenReturn(MemberStatus.builder().userid(userId).isValid(true).build());
 
 		// when
 		CreatedBuddyEvent createdBuddyEvent = createBuddyEventUseCase.createBuddyEventV1(command);
