@@ -1,2 +1,2 @@
 #!/bin/bash
-pkill -f 'buddy-service*.jar'
+pkill -f 'buddy-service.jar'
