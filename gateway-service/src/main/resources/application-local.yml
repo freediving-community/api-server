@@ -33,32 +33,63 @@ spring:
             - AuthorizationFilter
             - RewritePath=/member-service/?(?<segment>.*), /$\{segment} # /member-service/xxx 로 요청이 오면 /xxx 로 변경하여 요청한다.
         # Buddy Service Route Set
-        - id: buddy-service-with-auth
+        - id: buddy-service-swagger-ui # Swagger UI 라우팅 우선순위로 설정되어야 하므로 buddy-service-with-auth 보다 위에 위치함.
+          uri: lb://BUDDY-SERVICE
+          predicates:
+            - Path=/buddy-service/v3/api-docs
+          filters:
+            - RewritePath=/buddy-service/(?<segment>.*), /$\{segment}
+        - id: buddy-service-with-auth  # API 설정
           predicates:
             - Path=/buddy-service/**
           uri: lb://BUDDY-SERVICE
           filters:
             - AuthorizationFilter
-            - RewritePath=/buddy-service/?(?<segment>.*), /$\{segment}
-        - id: buddy-service-without-auth
+            - RewritePath=/buddy-service/(?<segment>.*), /$\{segment}
+        - id: openapi
+          uri: http://localhost:${server.port}
           predicates:
-            - Path=/buddy-service/v1/ping
-          uri: lb://BUDDY-SERVICE
+            - Path=/v3/api-docs/**
           filters:
-            - RewritePath=/buddy-service/?(?<segment>.*), /$\{segment}
+            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: 'http://localhost:3000'
-            allow-credentials: true
+            allowedOriginPatterns: '*'
+            allowCredentials: true
             allowedHeaders: '*'
             allowedMethods:
               - PUT
               - GET
               - POST
+              - PATCH
               - DELETE
               - OPTIONS
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - name: API Gateway Service
+        url: /v3/api-docs
+      - name: member-service
+        url: http://localhost:${server.port}/v3/api-docs/member-service
+      - name: buddy-service
+        url: /v3/api-docs/buddy-service
+      - name: community-service
+        url: http://localhost:${server.port}/v3/api-docs/community-service
+
+swagger:
+  servers:
+    title: "Swagger 통합"
+    version: "V1"
+    url: http://localhost:8000
+    description: Local Gateway Server
+
 jwt:
   key: ${JWT_KEY}

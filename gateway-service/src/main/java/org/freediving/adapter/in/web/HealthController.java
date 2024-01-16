@@ -13,6 +13,7 @@ public class HealthController {
 
 		String dummy = "{\n"
 			+ "  \"id\": 1257,\n"
+
 			+ "  \"name\": \"Test User\",\n"
 			+ "  \"isActive\": true,\n"
 			+ "  \"registeredOn\": \"2024-01-15T12:00:00\",\n"

@@ -68,3 +68,4 @@ jobs:
           --ignore-application-stop-failures \
           --s3-location bucket=buddyme-bucket,bundleType=zip,key=deploy/buddy-service.zip \
           --region ap-northeast-2
+
