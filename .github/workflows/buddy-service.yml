@@ -35,11 +35,15 @@ jobs:
 
       # Jar 파일 Copy
       - name: Copy Jar
-        run: cp ./buddy-service/build/libs/*.jar ./deploy/
+        run: |
+          cp ./buddy-service/build/libs/*.jar ./deploy/
+          cp ./buddy-service/appspec.yml ./deploy/
 
       # 압축파일 형태로 전달
       - name: Make zip file
-        run: zip -r -qq -j ./buddy-service.zip ./deploy
+        run: |
+          cd deploy
+          zip -r ../buddy-service.zip .
 
       # S3 Bucket으로 copy
       - name: Deliver to AWS S3
