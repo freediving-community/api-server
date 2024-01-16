@@ -6,7 +6,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class BuddyServiceApplication {//push test
+public class BuddyServiceApplication {//push test1
 
 	public static void main(String[] args) {
 		SpringApplication.run(BuddyServiceApplication.class, args);
