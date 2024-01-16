@@ -38,6 +38,7 @@ jobs:
         run: |
           cp ./buddy-service/build/libs/*.jar ./deploy/
           cp ./buddy-service/appspec.yml ./deploy/
+          cp -r ./buddy-service/scripts ./deploy/
 
       # 압축파일 형태로 전달
       - name: Make zip file
