@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'buddy-service/**'
-    branches: [ "feat/#50" ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
