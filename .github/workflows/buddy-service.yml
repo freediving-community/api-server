@@ -21,8 +21,9 @@ jobs:
           distribution: 'temurin'
       - name: Create application-dev.yml
         run: |
-          touch ./buddy-service/src/main/resources/application-dev.yml
-          echo "${{ secrets.BUDDY_APPLICATION_DEV_YML }}" > ./buddy-service/src/main/resources/application-dev.yml
+          echo "$BUDDY_APPLICATION_DEV_YML" > ./buddy-service/src/main/resources/application-dev.yml
+        env:
+          BUDDY_APPLICATION_DEV_YML: ${{ secrets.BUDDY_APPLICATION_DEV_YML }}
 
       - name: Build with Gradle
         run: |
