@@ -85,7 +85,7 @@ public class ArticleJpaEntity {
 
 	@CreatedBy
 	@Column(nullable = false, updatable = false)
-	private String createdBy;
+	private Long createdBy;
 
 	@Column(nullable = false)
 	@LastModifiedDate
@@ -94,7 +94,7 @@ public class ArticleJpaEntity {
 
 	@Column(nullable = false)
 	@LastModifiedBy
-	private String modifiedBy;
+	private Long modifiedBy;
 
 	protected ArticleJpaEntity() {
 	}

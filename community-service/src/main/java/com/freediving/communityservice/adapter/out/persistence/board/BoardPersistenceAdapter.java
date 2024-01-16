@@ -29,8 +29,12 @@ public class BoardPersistenceAdapter implements BoardWritePort, BoardReadPort {
 	}
 
 	@Override
-	public Optional<BoardJpaEntity> findBoard(Long boardId) {
+	public Optional<BoardJpaEntity> findById(Long boardId) {
 		return boardRepository.findById(boardId);
+	}
+
+	public Optional<BoardJpaEntity> findByBoardName(String boardName) {
+		return boardRepository.findByBoardName(boardName);
 	}
 
 	@Override

@@ -7,7 +7,9 @@ import com.freediving.communityservice.adapter.out.persistence.board.BoardJpaEnt
 import com.freediving.communityservice.application.port.in.BoardReadCommand;
 
 public interface BoardReadPort {
-	Optional<BoardJpaEntity> findBoard(Long boardId);
+	Optional<BoardJpaEntity> findById(Long boardId);
+
+	Optional<BoardJpaEntity> findByBoardName(String boardName);
 
 	List<BoardJpaEntity> findAllBoards(BoardReadCommand command);
 }

@@ -29,15 +29,17 @@ public class BoardService implements BoardUseCase {
 
 	@Override
 	public Board createBoard(BoardWriteCommand command) {
-		//TODO 유효성 검사 : 이미 존재
+		boardReadPort.findByBoardName(command.getBoardName())
+			.ifPresent(board -> {
+				throw new IllegalArgumentException("이미 동일한 이름의 게시판이 존재합니다.");
+			});
 		BoardJpaEntity savedBoardEntity = boardWritePort.makeBoard(command);
-		// board.doBusinessLogic();
 		return boardMapper.mapToDomain(savedBoardEntity);
 	}
 
 	@Override
 	public Board readBoard(Long boardId) {
-		Optional<BoardJpaEntity> boardJpaEntity = boardReadPort.findBoard(boardId);
+		Optional<BoardJpaEntity> boardJpaEntity = boardReadPort.findById(boardId);
 		return boardMapper.mapToDomain(boardJpaEntity
 			.orElseThrow(() -> new IllegalArgumentException("해당하는 게시판이 없습니다.")));
 	}
