@@ -9,5 +9,5 @@ import com.freediving.authservice.domain.OauthUser;
 public interface MemberServiceFeignClient {
 
 	@PostMapping(path = "/v1/users/register")
-	void postOauthUserInfo(OauthUser oauthUser);
+	OauthUser postOauthUserInfo(OauthUser oauthUser);
 }

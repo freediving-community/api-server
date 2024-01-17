@@ -28,6 +28,9 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'com.h2database:h2'
     runtimeOnly 'com.h2database:h2'
+    
+    // apache commons lang3 3.14
+    implementation 'org.apache.commons:commons-lang3:3.14.0'
 
     // jwt
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
@@ -40,8 +43,13 @@ dependencies {
     // FeignClient
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
 
+    // postgres
+    runtimeOnly 'org.postgresql:postgresql'
 }
 
+jar {
+    enabled = false
+}
 
 test {
     useJUnitPlatform()
