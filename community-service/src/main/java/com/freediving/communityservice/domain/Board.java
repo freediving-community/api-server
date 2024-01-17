@@ -19,6 +19,8 @@ public class Board {
 
 	private final int sortOrder;
 
+	private final boolean enabled;
+
 	private final LocalDateTime createdAt;
 
 	private final LocalDateTime modifiedAt;
@@ -28,9 +30,9 @@ public class Board {
 	private final Long modifiedBy;
 
 	public static Board of(Long id, String boardType, String boardName, String description, int sortOrder,
-		LocalDateTime createdAt, LocalDateTime modifiedAt, Long createdBy, Long modifiedBy) {
+		boolean enabled, LocalDateTime createdAt, LocalDateTime modifiedAt, Long createdBy, Long modifiedBy) {
 
-		return new Board(id, boardType, boardName, description, sortOrder, createdAt, modifiedAt, createdBy,
+		return new Board(id, boardType, boardName, description, sortOrder, enabled, createdAt, modifiedAt, createdBy,
 			modifiedBy);
 	}
 }

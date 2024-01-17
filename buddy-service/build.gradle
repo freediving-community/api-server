@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.freediving.buddy-service'
-version = '0.0.1'
+version = ''
 
 // 사용자 정의 속성
 ext {
@@ -29,7 +29,10 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
 }
 
+jar {
+    enabled = false
 
+}
 test {
     useJUnitPlatform()
 }

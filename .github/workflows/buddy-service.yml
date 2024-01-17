@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'buddy-service/**'
-    branches: [ "feat/#50" ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -21,8 +21,9 @@ jobs:
           distribution: 'temurin'
       - name: Create application-dev.yml
         run: |
-          touch ./buddy-service/src/main/resources/application-dev.yml
-          echo "${{ secrets.BUDDY_APPLICATION_DEV_YML }}" > ./buddy-service/src/main/resources/application-dev.yml
+          echo "$BUDDY_APPLICATION_DEV_YML" > ./buddy-service/src/main/resources/application-dev.yml
+        env:
+          BUDDY_APPLICATION_DEV_YML: ${{ secrets.BUDDY_APPLICATION_DEV_YML }}
 
       - name: Build with Gradle
         run: |
@@ -34,11 +35,16 @@ jobs:
 
       # Jar 파일 Copy
       - name: Copy Jar
-        run: cp ./build/libs/*.jar ./deploy/
+        run: |
+          cp ./buddy-service/build/libs/*.jar ./deploy/
+          cp ./buddy-service/appspec.yml ./deploy/
+          cp -r ./buddy-service/scripts ./deploy/
 
       # 압축파일 형태로 전달
       - name: Make zip file
-        run: zip -r -qq -j ./buddy-service.zip ./deploy
+        run: |
+          cd deploy
+          zip -r ../buddy-service.zip .
 
       # S3 Bucket으로 copy
       - name: Deliver to AWS S3
@@ -48,4 +54,18 @@ jobs:
         run: |
           aws s3 cp \
           --region ap-northeast-2 \
-          --acl private ./buddy-service.zip s3://buddy-service/
+          --acl private ./buddy-service.zip s3://buddyme-bucket/deploy/buddy-service.zip
+                # Deploy
+      - name: Deploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOY_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOY_SECRET_ACCESS_KEY }}
+        run: |
+          aws deploy create-deployment \
+          --application-name service-codedeploy \
+          --deployment-group-name buddy-service-codedeploy \
+          --file-exists-behavior OVERWRITE \
+          --ignore-application-stop-failures \
+          --s3-location bucket=buddyme-bucket,bundleType=zip,key=deploy/buddy-service.zip \
+          --region ap-northeast-2
+

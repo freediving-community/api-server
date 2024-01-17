@@ -36,5 +36,10 @@ eureka:
       # endpoint 지정
       defaultZone: http://localhost:8761/eureka
 
-
+swagger:
+  servers:
+    title: "Buddy Service Swagger"
+    version: "V1"
+    url: http://localhost:8000/${spring.application.name}
+    description: Local Gateway Server
 

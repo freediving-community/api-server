@@ -9,8 +9,8 @@
 // import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 // import org.springframework.context.annotation.Import;
 //
-// import com.freediving.communityservice.adapter.out.persistence.ArticleRepository;
-// import com.freediving.communityservice.adapter.out.persistence.CommentRepository;
+// import com.freediving.communityservice.adapter.out.persistence.article.ArticleRepository;
+// import com.freediving.communityservice.adapter.out.persistence.comment.CommentRepository;
 // import com.freediving.communityservice.adapter.out.persistence.Article;
 // import com.freediving.communityservice.config.JpaConfig;
 //

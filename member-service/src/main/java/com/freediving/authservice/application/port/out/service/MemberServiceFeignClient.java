@@ -1,5 +1,6 @@
 package com.freediving.authservice.application.port.out.service;
 
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
