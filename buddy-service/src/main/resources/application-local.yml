@@ -40,6 +40,6 @@ swagger:
   servers:
     title: "Buddy Service Swagger"
     version: "V1"
-    url: http://localhost:8000
+    url: http://localhost:8000/${spring.application.name}
     description: Local Gateway Server
 

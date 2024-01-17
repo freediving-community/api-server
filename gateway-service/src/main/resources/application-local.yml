@@ -75,7 +75,7 @@ springdoc:
     path: /swagger-ui.html
     config-url: /v3/api-docs/swagger-config
     urls:
-      - name: API Gateway Service
+      - name: API Gateway Service # 추후 API GateWay Swagger는 제거.
         url: /v3/api-docs
       - name: member-service
         url: http://localhost:${server.port}/v3/api-docs/member-service
@@ -86,7 +86,7 @@ springdoc:
 
 swagger:
   servers:
-    title: "Swagger 통합"
+    title: "BuddyMe Service Swagger"
     version: "V1"
     url: http://localhost:8000
     description: Local Gateway Server
