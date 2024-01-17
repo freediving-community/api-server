@@ -10,7 +10,7 @@ import lombok.Getter;
 /**
  * @Author         : sasca37
  * @Date           : 2024/01/17
- * @Description    : 유저 정보 조회를 위한 Command
+ * @Description    : 유저 정보 조회를 위한 Query
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * ===========================================================
@@ -20,7 +20,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @EqualsAndHashCode(callSuper = false)
-public class FindUserCommand extends SelfValidating<FindUserCommand> {
+public class FindUserQuery extends SelfValidating<FindUserQuery> {
 
 	@NotNull
 	private final Long userId;
