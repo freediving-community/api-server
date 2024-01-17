@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.freediving.buddyservice.common.enumeration.EventConcept;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,27 +20,34 @@ import lombok.NoArgsConstructor;
  * @version 1.0.0
  * 작성일 2023-12-28
  **/
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
+@Schema(title = "버디 이벤트 생성 요청 ( CreateBuddyEventRequestV1 )", name = "name", description = "POST /v1/event 버디 이벤트 생성에 요청 Schema")
 public class CreateBuddyEventRequestV1 {
 
+	@Schema(description = "일정 시작 시간", example = "2024-01-17 15:30:00", required = true)
 	@NotNull(message = "일정 시작 시간은 필수입니다.")
 	private LocalDateTime eventStartDate;
 
+	@Schema(description = "일정 종료 시간", example = "2024-01-17 17:30:00", required = true)
 	@NotNull(message = "일정 종료 시간은 필수입니다.")
 	private LocalDateTime eventEndDate;
 
+	@Schema(description = "참여자 수", example = "5", required = true)
 	@NotNull
 	private Integer participantCount;
 
-	//TODO 버디 일정 이벤트 컨셉 옵셔널 정책 확정 후 수정 필요.
+	@Schema(description = "버디 이벤트 컨셉", implementation = EventConcept.class)
 	private List<EventConcept> eventConcepts;
 
+	@Schema(description = "카셰어링 여부", example = "true", required = true)
 	@NotNull
 	private Boolean carShareYn;
 
+	@Schema(description = "추가 코멘트", example = "이번 모임은 캐주얼하게 진행합니다.")
 	private String comment;
 
 }
