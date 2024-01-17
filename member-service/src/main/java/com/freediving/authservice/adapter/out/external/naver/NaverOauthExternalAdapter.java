@@ -5,7 +5,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.freediving.authservice.adapter.out.external.OauthResponse;
-import com.freediving.authservice.application.port.out.MemberServiceFeignClient;
 import com.freediving.authservice.application.port.out.OauthFeignPort;
 import com.freediving.authservice.application.port.out.naver.NaverInfoFeignClient;
 import com.freediving.authservice.application.port.out.naver.NaverTokenFeignClient;
@@ -17,6 +16,16 @@ import com.freediving.common.config.annotation.ExternalSystemAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @Author         : sasca37
+ * @Date           : 2023/12/31
+ * @Description    : Naver 로그인 요청 및 응답값 처리를 작업을 하는 Adapter
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * ===========================================================
+ * 2023/12/31        sasca37       최초 생성
+ */
+
 @ExternalSystemAdapter
 @RequiredArgsConstructor
 @Slf4j
@@ -25,7 +34,6 @@ public class NaverOauthExternalAdapter implements OauthFeignPort {
 	private final NaverOauthConfig naverOauthConfig;
 	private final NaverTokenFeignClient naverTokenFeignClient;
 	private final NaverInfoFeignClient naverInfoFeignClient;
-	private final MemberServiceFeignClient memberServiceFeignClient;
 
 	@Override
 	public OauthType getOauthType() {
@@ -61,7 +69,6 @@ public class NaverOauthExternalAdapter implements OauthFeignPort {
 		OauthResponse oauthResponse = OauthResponse.of(getOauthType(), naverInfoResponse.response().email(),
 			naverInfoResponse.response().profileImage());
 		OauthUser oauthUser = OauthUser.from(oauthResponse);
-		memberServiceFeignClient.postOauthUserInfo(oauthUser);
 		return oauthUser;
 	}
 
