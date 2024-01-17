@@ -5,7 +5,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.freediving.authservice.adapter.out.external.OauthResponse;
-import com.freediving.authservice.application.port.out.MemberServiceFeignClient;
 import com.freediving.authservice.application.port.out.OauthFeignPort;
 import com.freediving.authservice.application.port.out.google.GoogleInfoFeignClient;
 import com.freediving.authservice.application.port.out.google.GoogleTokenFeignClient;
@@ -17,6 +16,16 @@ import com.freediving.common.config.annotation.ExternalSystemAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @Author         : sasca37
+ * @Date           : 2023/12/31
+ * @Description    : Google 로그인 요청 및 응답값 처리를 작업을 하는 Adapter
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * ===========================================================
+ * 2023/12/31        sasca37       최초 생성
+ */
+
 @ExternalSystemAdapter
 @RequiredArgsConstructor
 @Slf4j
@@ -25,8 +34,6 @@ public class GoogleOauthExternalAdapter implements OauthFeignPort {
 	private final GoogleOauthConfig googleOauthConfig;
 	private final GoogleTokenFeignClient googleTokenFeignClient;
 	private final GoogleInfoFeignClient googleInfoFeignClient;
-
-	private final MemberServiceFeignClient memberServiceFeignClient;
 
 	@Override
 	public OauthType getOauthType() {
@@ -59,7 +66,6 @@ public class GoogleOauthExternalAdapter implements OauthFeignPort {
 			googleInfoResponse.picture());
 
 		OauthUser oauthUser = OauthUser.from(oauthResponse);
-		memberServiceFeignClient.postOauthUserInfo(oauthUser);
 		return oauthUser;
 	}
 

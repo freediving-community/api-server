@@ -11,6 +11,15 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
+/**
+ * @Author         : sasca37
+ * @Date           : 2023/12/31
+ * @Description    : Jwt 토큰 생성 Util
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * ===========================================================
+ * 2023/12/31        sasca37       최초 생성
+ */
 public class JwtTokenUtils {
 
 	private static final long EXPIRED_ACCESS_TIME = 5 * 60 * 60 * 1000L;
