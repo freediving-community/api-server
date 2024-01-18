@@ -1,5 +1,5 @@
 server:
-  port: 0 # 랜덤 포트 할당
+  port: 40000 # 랜덤 포트 할당
 
 spring:
   application:
