@@ -28,7 +28,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'com.h2database:h2'
     runtimeOnly 'com.h2database:h2'
-    
+
     // apache commons lang3 3.14
     implementation 'org.apache.commons:commons-lang3:3.14.0'
 
@@ -45,6 +45,9 @@ dependencies {
 
     // postgres
     runtimeOnly 'org.postgresql:postgresql'
+
+    // Swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 }
 
 jar {

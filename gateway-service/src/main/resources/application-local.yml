@@ -7,6 +7,8 @@ eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
+    # Eureka 서버로부터 서비스 목록을 가져오는 간격
+    registryFetchIntervalSeconds: 5
     service-url:
       defaultZone: http://localhost:8761/eureka
 
@@ -16,22 +18,32 @@ spring:
   cloud:
     gateway:
       routes: # 라우팅 설정
-        # Auth Service
-        - id: auth-service
-          predicates:
-            - Path=/auth-service/**
-          uri: lb://MEMBER-SERVICE # AuthService 는 MemberService 모듈 안에서 관리
-          filters:
-            - RewritePath=/auth-service/?(?<segment>.*), /$\{segment}
+
 
         # Member Service
-        - id: member-service # 구분하기 위한 id 값으로 임의로 작성해도 무관
-          predicates: # 조건
-            - Path=/member-service/** # 패턴으로 요청이 들어오면
-          uri: lb://MEMBER-SERVICE # 유레카 서버에서 MEMBER-SERVICE 를 찾아서 그곳으로 요청을 보낸다.
+
+        - id: auth-service # AuthService 는 MemberService 모듈 안에서 관리
+          predicates:
+            - Path=/member-service/v*/oauth/**
+          uri: lb://MEMBER-SERVICE
+          filters:
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+
+        - id: member-service-swagger-ui
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/v3/api-docs
+          filters:
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+
+        - id: member-service-auth
+          predicates:
+            - Path=/member-service/**
+          uri: lb://MEMBER-SERVICE
           filters:
             - AuthorizationFilter
-            - RewritePath=/member-service/?(?<segment>.*), /$\{segment} # /member-service/xxx 로 요청이 오면 /xxx 로 변경하여 요청한다.
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment} # /member-service/xxx 로 요청이 오면 /xxx 로 변경하여 요청한다.
+
         # Buddy Service Route Set
         - id: buddy-service-swagger-ui # Swagger UI 라우팅 우선순위로 설정되어야 하므로 buddy-service-with-auth 보다 위에 위치함.
           uri: lb://BUDDY-SERVICE
@@ -78,7 +90,7 @@ springdoc:
       - name: API Gateway Service # 추후 API GateWay Swagger는 제거.
         url: /v3/api-docs
       - name: member-service
-        url: http://localhost:${server.port}/v3/api-docs/member-service
+        url: http://localhost:${server.port}/member-service/v3/api-docs
       - name: buddy-service
         url: /v3/api-docs/buddy-service
       - name: community-service
