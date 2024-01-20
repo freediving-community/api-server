@@ -3,13 +3,13 @@ package com.freediving.communityservice.application.port.out;
 import java.util.List;
 import java.util.Optional;
 
-import com.freediving.communityservice.adapter.out.persistence.board.BoardJpaEntity;
 import com.freediving.communityservice.application.port.in.BoardReadCommand;
+import com.freediving.communityservice.domain.Board;
 
 public interface BoardReadPort {
-	Optional<BoardJpaEntity> findById(Long boardId);
+	Board findById(Long boardId);
 
-	Optional<BoardJpaEntity> findByBoardName(String boardName);
+	Optional<Board> findByBoardName(String boardName);
 
-	List<BoardJpaEntity> findAllBoards(BoardReadCommand command);
+	List<Board> findAllBoards(BoardReadCommand command);
 }

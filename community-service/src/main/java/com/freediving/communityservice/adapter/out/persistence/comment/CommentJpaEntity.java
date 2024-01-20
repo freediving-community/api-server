@@ -9,23 +9,24 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.freediving.communityservice.adapter.out.persistence.article.ArticleJpaEntity;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Table
 @ToString
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 public class CommentJpaEntity {
@@ -34,9 +35,12 @@ public class CommentJpaEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long commentId;
 
-	@Setter
-	@ManyToOne(optional = false)
-	private ArticleJpaEntity articleJpaEntity;
+	@Column(nullable = false)
+	private Long articleId;
+
+	// @Setter
+	// @ManyToOne(optional = false)
+	// private ArticleJpaEntity articleJpaEntity;
 
 	@Setter
 	@Column(nullable = false, length = 500)
@@ -48,7 +52,7 @@ public class CommentJpaEntity {
 
 	@Column(nullable = false)
 	@CreatedBy
-	private String createdBy;
+	private Long createdBy;
 
 	@Column(nullable = false)
 	@LastModifiedDate
@@ -56,19 +60,7 @@ public class CommentJpaEntity {
 
 	@Column(nullable = false)
 	@LastModifiedBy
-	private String modifiedBy;
-
-	private CommentJpaEntity() {
-	}
-
-	private CommentJpaEntity(ArticleJpaEntity articleJpaEntity, String content) {
-		this.articleJpaEntity = articleJpaEntity;
-		this.content = content;
-	}
-
-	public static CommentJpaEntity of(ArticleJpaEntity articleJpaEntity, String content) {
-		return new CommentJpaEntity(articleJpaEntity, content);
-	}
+	private Long modifiedBy;
 
 	@Override
 	public boolean equals(Object o) {

@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -56,17 +57,19 @@ public class BoardJpaEntity {
 	private boolean enabled;
 
 	// Auditing
-	@Column(nullable = false)
 	@CreatedDate
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
+
+	@CreatedBy
+	@Column(nullable = false, updatable = false)
+	private Long createdBy;
 
 	@Column(nullable = false)
 	@LastModifiedDate
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime modifiedAt;
-
-	@Column(nullable = false)
-	@CreatedBy
-	private Long createdBy;
 
 	@Column(nullable = false)
 	@LastModifiedBy

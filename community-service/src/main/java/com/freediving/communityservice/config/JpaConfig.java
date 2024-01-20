@@ -17,8 +17,8 @@ import jakarta.persistence.PersistenceContext;
 public class JpaConfig {
 
 	@Bean
-	public AuditorAware<String> auditorAware() {
-		return () -> Optional.of("unknown");
+	public AuditorAware<Long> auditorAware() {
+		return () -> Optional.of(0L);
 	}
 
 	@PersistenceContext

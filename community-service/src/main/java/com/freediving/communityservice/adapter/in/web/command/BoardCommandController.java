@@ -36,7 +36,6 @@ public class BoardCommandController {
 		Board board = boardUseCase.createBoard(boardWriteCommand);
 		BoardResponse res = BoardResponse.of("success", board);
 		return ResponseEntity.ok(res);
-		//return new ResponseEntity<>(res, HttpStatus.OK);
 	}
 
 }

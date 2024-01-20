@@ -1,8 +1,8 @@
 package com.freediving.communityservice.application.port.out;
 
-import com.freediving.communityservice.adapter.out.persistence.board.BoardJpaEntity;
 import com.freediving.communityservice.application.port.in.BoardWriteCommand;
+import com.freediving.communityservice.domain.Board;
 
 public interface BoardWritePort {
-	BoardJpaEntity makeBoard(BoardWriteCommand boardWriteCommand);
+	Board makeBoard(BoardWriteCommand boardWriteCommand);
 }
