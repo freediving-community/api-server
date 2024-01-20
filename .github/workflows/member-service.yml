@@ -4,12 +4,6 @@ on:
   push:
     branches: [ "feat/#41" ]
 
-env:
-  SERVICE_NAME: member-service
-  S3_BUCKET_NAME: buddyme-bucket
-  CODE_DEPLOY_APPLICATION_NAME: service-codedeploy
-  CODE_DEPLOY_DEPLOYMENT_GROUP: member-service-codedeploy
-
 permissions:
   contents: read
 
@@ -57,7 +51,7 @@ jobs:
         run: |
           aws s3 cp \
           --region ap-northeast-2 \
-          --acl private ./member-service/member-service.zip s3://${{ env.S3_BUCKET_NAME }}/deploy/member-service.zip
+          --acl private ./member-service/member-service.zip s3://buddyme-bucket/deploy/member-service.zip
 
       # Deploy
       - name: Deploy
@@ -66,9 +60,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOY_SECRET_ACCESS_KEY }}
         run: |
           aws deploy create-deployment \
-          --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
-          --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP }} \
+          --application-name service-codedeploy \
+          --deployment-group-name member-service-codedeploy \
           --file-exists-behavior OVERWRITE \
           --ignore-application-stop-failures \
-          --s3-location bucket=${{ env.S3_BUCKET_NAME }},bundleType=zip,key=deploy/member-service.zip \
+          --s3-location bucket=buddyme-bucket,bundleType=zip,key=deploy/member-service.zip \
           --region ap-northeast-2
