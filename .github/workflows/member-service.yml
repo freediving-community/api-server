@@ -50,7 +50,7 @@ jobs:
       - name: Make zip file
         run: |
           cd ./${{ env.SERVICE_NAME }}/deploy
-          zip -r ./${{ env.SERVICE_NAME }}/${{ env.SERVICE_NAME }}.zip .
+          zip -r ./${{ env.SERVICE_NAME }}.zip .
 
       # S3 Bucket으로 copy
       - name: Deliver to AWS S3
