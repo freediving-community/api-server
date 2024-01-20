@@ -20,7 +20,7 @@ jobs:
       - name: Create application-dev.yml
         run: |
           touch ./member-service/src/main/resources/application-dev.yml
-          echo "${{ secrets.MEMBER_APPLICATION_DEV_YML }}" > ./member-service/src/main/resources/application-dev.yml
+          echo "$MEMBER_APPLICATION_DEV_YML" > ./member-service/src/main/resources/application-dev.yml
 
       - name: Build with Gradle
         run: |
