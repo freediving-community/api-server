@@ -1,14 +1,8 @@
 name: CI & CD for member-service
 
 on:
-  pull_request:
-    paths:
-      - 'member-service/**'
-    branches: [ "feat/#41" ]
   push:
-    paths:
-      - 'member-service/**'
-    branches: [ "main" ]
+    branches: [ "feat/#41" ]
 
 env:
   SERVICE_NAME: member-service
@@ -30,9 +24,11 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
       - name: Create application-dev.yml
+        env:
+          MEMBER_APPLICATION_DEV_YML: ${{ secrets.MEMBER_APPLICATION_DEV_YML }}
         run: |
-          touch ./${{ env.SERVICE_NAME }}/src/main/resources/application-dev.yml
-          echo "${{ secrets.MEMBER_APPLICATION_DEV_YML }}" > ./${{ env.SERVICE_NAME }}/src/main/resources/application-dev.yml
+          touch ./member-service/src/main/resources/application-dev.yml
+          echo "$MEMBER_APPLICATION_DEV_YML" > ./member-service/src/main/resources/application-dev.yml
 
       - name: Build with Gradle
         run: |
@@ -53,7 +49,8 @@ jobs:
       # 압축파일 형태로 전달
       - name: Make zip file
         run: |
-          zip -r ./${{ env.SERVICE_NAME }}/${{ env.SERVICE_NAME }}.zip ./${{ env.SERVICE_NAME }}/deploy
+          cd ./${{ env.SERVICE_NAME }}/deploy
+          zip -r ./${{ env.SERVICE_NAME }}.zip .
 
       # S3 Bucket으로 copy
       - name: Deliver to AWS S3
@@ -63,7 +60,7 @@ jobs:
         run: |
           aws s3 cp \
           --region ap-northeast-2 \
-          --acl private ./${{ env.SERVICE_NAME }}/${{ env.SERVICE_NAME }}.zip s3://${{ env.S3_BUCKET_NAME }}/deploy/${{ env.SERVICE_NAME }}.zip
+          --acl private ./${{ env.SERVICE_NAME }}/deploy/${{ env.SERVICE_NAME }}.zip s3://${{ env.S3_BUCKET_NAME }}/deploy/${{ env.SERVICE_NAME }}.zip
 
       # Deploy
       - name: Deploy

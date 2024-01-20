@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SERVICE_PATH="/home/ec2-user/app/deploy/member-service"
-BUILD_JAR=$(ls $SERVICE_PATH/build/libs/*.jar)
+BUILD_JAR=$(ls $SERVICE_PATH/*.jar)
 JAR_NAME=$(basename $BUILD_JAR)
 echo ">>> build 파일명: $JAR_NAME" >> $SERVICE_PATH/deploy.log
 
@@ -23,4 +23,4 @@ fi
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
 echo ">>> DEPLOY_JAR 배포"    >> $SERVICE_PATH/deploy.log
-nohup java -jar -Dspring.profiles.active=dev $DEPLOY_JAR >> /home/ec2-user/deploy.log 2>$SERVICE_PATH/deploy_err.log &
+nohup java -jar -Dspring.profiles.active=dev $DEPLOY_JAR >> /home/ec2-user/member-service.log 2> $SERVICE_PATH/member-service.log &
