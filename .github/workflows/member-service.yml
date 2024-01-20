@@ -4,6 +4,12 @@ on:
   push:
     branches: [ "feat/#41" ]
 
+env:
+  SERVICE_NAME: member-service
+  S3_BUCKET_NAME: buddyme-bucket
+  CODE_DEPLOY_APPLICATION_NAME: service-codedeploy
+  CODE_DEPLOY_DEPLOYMENT_GROUP: member-service-codedeploy
+
 permissions:
   contents: read
 
@@ -18,30 +24,33 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
       - name: Create application-dev.yml
+        env:
+          MEMBER_APPLICATION_DEV_YML: ${{ secrets.MEMBER_APPLICATION_DEV_YML }}
         run: |
           touch ./member-service/src/main/resources/application-dev.yml
           echo "$MEMBER_APPLICATION_DEV_YML" > ./member-service/src/main/resources/application-dev.yml
 
       - name: Build with Gradle
         run: |
-          ./gradlew member-service:build
+          ./gradlew ${{ env.SERVICE_NAME }}:build
 
-      # 전송할 파일을 담을 디렉토리 생성 (member-service/deploy)
+      # 전송할 파일을 담을 디렉토리 생성 (${{ env.SERVICE_NAME }}/deploy)
       - name: Make Directory for deliver
-        run: mkdir ./member-service/deploy
+        run: mkdir ./${{ env.SERVICE_NAME }}/deploy
 
       # Jar 파일 Copy
       - name: Copy Jar
         run: |
-          chmod +x ./member-service/build/libs/*.jar
-          cp ./member-service/build/libs/*.jar ./member-service/deploy/
-          cp ./member-service/appspec.yml ./member-service/deploy/
-          cp -r ./member-service/scripts ./member-service/deploy/
+          chmod +x ./${{ env.SERVICE_NAME }}/build/libs/*.jar
+          cp ./${{ env.SERVICE_NAME }}/build/libs/*.jar ./${{ env.SERVICE_NAME }}/deploy/
+          cp ./${{ env.SERVICE_NAME }}/appspec.yml ./${{ env.SERVICE_NAME }}/deploy/
+          cp -r ./${{ env.SERVICE_NAME }}/scripts ./${{ env.SERVICE_NAME }}/deploy/
 
       # 압축파일 형태로 전달
       - name: Make zip file
         run: |
-          zip -r ./member-service/member-service.zip ./member-service/deploy
+          cd ./${{ env.SERVICE_NAME }}/deploy
+          zip -r ./${{ env.SERVICE_NAME }}/${{ env.SERVICE_NAME }}.zip .
 
       # S3 Bucket으로 copy
       - name: Deliver to AWS S3
@@ -51,7 +60,7 @@ jobs:
         run: |
           aws s3 cp \
           --region ap-northeast-2 \
-          --acl private ./member-service/member-service.zip s3://buddyme-bucket/deploy/member-service.zip
+          --acl private ./${{ env.SERVICE_NAME }}/${{ env.SERVICE_NAME }}.zip s3://${{ env.S3_BUCKET_NAME }}/deploy/${{ env.SERVICE_NAME }}.zip
 
       # Deploy
       - name: Deploy
@@ -60,9 +69,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOY_SECRET_ACCESS_KEY }}
         run: |
           aws deploy create-deployment \
-          --application-name service-codedeploy \
-          --deployment-group-name member-service-codedeploy \
+          --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+          --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP }} \
           --file-exists-behavior OVERWRITE \
           --ignore-application-stop-failures \
-          --s3-location bucket=buddyme-bucket,bundleType=zip,key=deploy/member-service.zip \
+          --s3-location bucket=${{ env.S3_BUCKET_NAME }},bundleType=zip,key=deploy/${{ env.SERVICE_NAME }}.zip \
           --region ap-northeast-2
