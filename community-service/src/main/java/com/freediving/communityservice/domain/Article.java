@@ -1,14 +1,12 @@
 package com.freediving.communityservice.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class Article {
 	private final Long id;
 
@@ -26,13 +24,15 @@ public class Article {
 
 	private final boolean enableComment;
 
-	private final List<Comment> comments;
+	private final boolean visible;
+
+	// private final List<Comment> comments;
 
 	private final LocalDateTime createdAt;
 
-	private final LocalDateTime modifiedAt;
-
 	private final Long createdBy;
+
+	private final LocalDateTime modifiedAt;
 
 	private final Long modifiedBy;
 

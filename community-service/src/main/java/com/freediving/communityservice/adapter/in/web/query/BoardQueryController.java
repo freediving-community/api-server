@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1.0")
 @RestController
 public class BoardQueryController {
-	//TODO SelfValidating https://velog.io/@byeongju/Bean-Validation-%EB%B6%88%ED%8E%B8%ED%95%A8-%ED%95%B4%EA%B2%B0%ED%95%98%EA%B8%B0
 
 	private final BoardUseCase boardUseCase;
 
@@ -32,7 +31,7 @@ public class BoardQueryController {
 	@GetMapping("/boards")
 	public ResponseEntity<BoardResponse> getBoards() {
 		boolean isAdmin = false;
-		// boolean isAdmin = checkAdmin(principal); // 관리자인지 확인하는 로직
+		// boolean isAdmin = checkAdmin(principal); //TODO 관리자인지 확인하는 로직
 		BoardReadCommand boardReadCommand = BoardReadCommand.builder()
 			.isEnabledOnly(isAdmin)
 			.build();

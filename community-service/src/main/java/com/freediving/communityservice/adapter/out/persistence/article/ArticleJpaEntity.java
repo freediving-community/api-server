@@ -1,11 +1,8 @@
 package com.freediving.communityservice.adapter.out.persistence.article;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
 import java.util.Objects;
-import java.util.Set;
 
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,9 +11,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.freediving.communityservice.adapter.out.persistence.comment.CommentJpaEntity;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -24,19 +18,22 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "article", indexes = {
 	@Index(name = "idx_article_title", columnList = "title"),
-	@Index(name = "idx_article_createdAt", columnList = "createdAt"),
+	/* @Index(name = "idx_article_createdAt", columnList = "createdAt"), == PK desc */
 	@Index(name = "idx_article_viewCount", columnList = "viewCount"),
 	@Index(name = "idx_article_likeCount", columnList = "likeCount")
-	// ,@Index(name = "idx_article_hashtags", columnList = "hashtags")
+	/* ,@Index(name = "idx_article_hashtags", columnList = "hashtags") */
 })
 @DynamicInsert // null 인 값은 제외하고 Insert. DB DefaultValue 사용을 위함.
 @EntityListeners(AuditingEntityListener.class)
@@ -46,13 +43,13 @@ public class ArticleJpaEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long articleId;
 
-	@Column(nullable = false, length = 255)
+	@Column(nullable = false, length = 50)
 	private String title;
 
 	@Column(nullable = false, columnDefinition = "TEXT")
 	private String content;
 
-	@Column(nullable = false, length = 20)
+	@Column(nullable = false)
 	private Long boardId;
 
 	@Column(nullable = false, length = 20)
@@ -62,20 +59,22 @@ public class ArticleJpaEntity {
 	// @OneToMany
 	// private List<HashtagJpaEntity> hashtags = new ArrayList<>();
 
-	@Column(nullable = false, length = 20)
+	@Column(nullable = false)
 	private int viewCount;
 
-	@Column(nullable = false, length = 20)
+	@Column(nullable = false)
 	private int likeCount;
 
-	@ColumnDefault("'true'")
-	@Column(nullable = false, length = 10)
-	private String enableComment;
+	@Column(nullable = false, columnDefinition = "boolean default true")
+	private boolean enableComment;
+
+	@Column(nullable = false, columnDefinition = "boolean default true")
+	private boolean visible;
 
 	// @OrderBy("id")
-	@OneToMany(mappedBy = "commentId", cascade = CascadeType.ALL)
-	@ToString.Exclude
-	private final Set<CommentJpaEntity> commentJpaEntities = new LinkedHashSet<>();
+	// @OneToMany(mappedBy = "commentId", cascade = CascadeType.ALL)
+	// @ToString.Exclude
+	// private List<CommentJpaEntity> comments = new ArrayList<>();
 
 	// Auditing
 	@CreatedDate
@@ -87,26 +86,19 @@ public class ArticleJpaEntity {
 	@Column(nullable = false, updatable = false)
 	private Long createdBy;
 
-	@Column(nullable = false)
+	@Column
 	@LastModifiedDate
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime modifiedAt;
 
-	@Column(nullable = false)
+	@Column
 	@LastModifiedBy
 	private Long modifiedBy;
 
-	protected ArticleJpaEntity() {
-	}
-
-	private ArticleJpaEntity(Long boardId, String title, String content) {
-		this.boardId = boardId;
-		this.title = title;
-		this.content = content;
-	}
-
-	public static ArticleJpaEntity of(Long boardId, String title, String content) {
-		return new ArticleJpaEntity(boardId, title, content);
+	public static ArticleJpaEntity of(String title, String content, Long boardId, String authorName,
+		boolean enableComment, Long createdBy) {
+		return new ArticleJpaEntity(null, title, content, boardId, authorName, 0, 0, enableComment, true, null,
+			createdBy, null, 0L);
 	}
 
 	@Override
