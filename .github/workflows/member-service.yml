@@ -60,7 +60,7 @@ jobs:
         run: |
           aws s3 cp \
           --region ap-northeast-2 \
-          --acl private ./${{ env.SERVICE_NAME }}.zip s3://${{ env.S3_BUCKET_NAME }}/deploy/${{ env.SERVICE_NAME }}.zip
+          --acl private ./${{ env.SERVICE_NAME }}/deploy/${{ env.SERVICE_NAME }}.zip s3://${{ env.S3_BUCKET_NAME }}/deploy/${{ env.SERVICE_NAME }}.zip
 
       # Deploy
       - name: Deploy
