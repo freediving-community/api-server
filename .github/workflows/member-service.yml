@@ -2,7 +2,9 @@ name: CI & CD for member-service
 
 on:
   push:
-    branches: [ "feat/#41" ]
+    paths:
+      - 'member-service/**'
+    branches: [ "main" ]
 
 env:
   SERVICE_NAME: member-service
