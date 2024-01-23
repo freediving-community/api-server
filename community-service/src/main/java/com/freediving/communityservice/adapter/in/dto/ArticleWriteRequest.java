@@ -1,5 +1,7 @@
 package com.freediving.communityservice.adapter.in.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +17,8 @@ public class ArticleWriteRequest {
 	private String content;
 
 	private String authorName;
+
+	private List<Long> hashtagIds;
 
 	private boolean enableComment;
 
