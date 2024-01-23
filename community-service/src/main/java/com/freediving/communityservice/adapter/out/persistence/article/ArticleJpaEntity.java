@@ -28,15 +28,13 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "article", indexes = {
-	@Index(name = "idx_article_title", columnList = "title"),
+@DynamicInsert // null 인 값은 제외하고 Insert. DB DefaultValue 사용을 위함.
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "article", indexes = {@Index(name = "idx_article_title", columnList = "title"),
 	/* @Index(name = "idx_article_createdAt", columnList = "createdAt"), == PK desc */
 	@Index(name = "idx_article_viewCount", columnList = "viewCount"),
 	@Index(name = "idx_article_likeCount", columnList = "likeCount")
-	/* ,@Index(name = "idx_article_hashtags", columnList = "hashtags") */
-})
-@DynamicInsert // null 인 값은 제외하고 Insert. DB DefaultValue 사용을 위함.
-@EntityListeners(AuditingEntityListener.class)
+	/* ,@Index(name = "idx_article_hashtags", columnList = "hashtags") */})
 @Entity
 public class ArticleJpaEntity {
 	@Id
@@ -56,8 +54,8 @@ public class ArticleJpaEntity {
 	private String authorName;
 
 	// @ToString.Exclude
-	// @OneToMany
-	// private List<HashtagJpaEntity> hashtags = new ArrayList<>();
+	// @ManyToOne
+	// private List<HashtagJpaEntity> hashtags;
 
 	@Column(nullable = false)
 	private int viewCount;
@@ -97,8 +95,8 @@ public class ArticleJpaEntity {
 
 	public static ArticleJpaEntity of(String title, String content, Long boardId, String authorName,
 		boolean enableComment, Long createdBy) {
-		return new ArticleJpaEntity(null, title, content, boardId, authorName, 0, 0, enableComment, true, null,
-			createdBy, null, 0L);
+		return new ArticleJpaEntity(null, title, content, boardId, authorName, 0, 0, enableComment, true,
+			null, createdBy, null, 0L);
 	}
 
 	@Override

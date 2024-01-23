@@ -10,7 +10,7 @@ import com.freediving.communityservice.domain.Board;
 public class BoardPersistenceMapper {
 	public Board mapToDomain(BoardJpaEntity boardJpaEntity) {
 		return Board.of(
-			boardJpaEntity.getId(),
+			boardJpaEntity.getBoardId(),
 			boardJpaEntity.getBoardType(),
 			boardJpaEntity.getBoardName(),
 			boardJpaEntity.getDescription(),
@@ -30,7 +30,7 @@ public class BoardPersistenceMapper {
 		BoardJpaEntity boardJpaEntity = optionalBoard.get();
 		return Optional.of(
 			Board.of(
-				boardJpaEntity.getId(),
+				boardJpaEntity.getBoardId(),
 				boardJpaEntity.getBoardType(),
 				boardJpaEntity.getBoardName(),
 				boardJpaEntity.getDescription(),
