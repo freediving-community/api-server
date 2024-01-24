@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.freediving.memberservice.application.port.in.ExtractUserQuery;
+import com.freediving.memberservice.application.port.in.FindUserQuery;
 import com.freediving.memberservice.application.service.FindUserService;
 import com.freediving.memberservice.domain.User;
 
@@ -36,8 +36,8 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
 	private final FindUserService findUserService;
 
-	private static final String EMAIL = "email";
-	private static final String OAUTH_TYPE = "oauthType";
+	private static final String USER_ID = "User-Id";
+	private static final String ROLE_LEVEL = "Role-Level";
 
 	private static List<String> ignorePathList = List.of("/oauth", "/service/users/register", "/v3/api-docs");
 
@@ -62,16 +62,16 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		final String email = request.getHeader(EMAIL);
-		final String oauthType = request.getHeader(OAUTH_TYPE);
+		final Long userId = Long.valueOf(request.getHeader(USER_ID));
+		final String roleLevel = request.getHeader(ROLE_LEVEL);
 
-		if (StringUtils.isEmpty(email) || StringUtils.isEmpty(oauthType)) {
+		if (userId == null || StringUtils.isEmpty(roleLevel)) {
 			log.error("Request header is invalid {}", requestUrl);
 			filterChain.doFilter(request, response);
 			return;
 		}
-		ExtractUserQuery extractedToken = ExtractUserQuery.createQuery(email, oauthType);
-		User user = findUserService.findByExtractedUser(extractedToken);
+		FindUserQuery findUserQuery = FindUserQuery.builder().userId(userId).build();
+		User user = findUserService.findUserById(findUserQuery);
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 			user, null, null
 		);

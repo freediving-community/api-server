@@ -1,15 +1,16 @@
 package com.freediving.authservice.application.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.freediving.authservice.application.port.in.JwtTokenUseCase;
 import com.freediving.authservice.application.port.in.OauthUseCase;
+import com.freediving.authservice.application.port.out.CreateTokenPort;
 import com.freediving.authservice.application.port.out.OauthTemplate;
 import com.freediving.authservice.application.port.out.service.MemberFeignPort;
 import com.freediving.authservice.application.port.out.service.MemberUseCase;
 import com.freediving.authservice.domain.OauthType;
 import com.freediving.authservice.domain.OauthUser;
+import com.freediving.authservice.domain.Token;
 import com.freediving.common.config.annotation.UseCase;
 
 import lombok.RequiredArgsConstructor;
@@ -29,13 +30,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-public class OauthService implements OauthUseCase, JwtTokenUseCase, MemberUseCase {
-
-	@Value("${jwt.key}")
-	private String key;
+public class OauthService implements OauthUseCase, MemberUseCase {
 
 	private final OauthTemplate oauthTemplate;
 	private final MemberFeignPort memberFeignPort;
+
+	private final CreateTokenPort createTokenPort;
 
 	@Override
 	public String provideOauthType(OauthType oauthType) {
@@ -47,17 +47,21 @@ public class OauthService implements OauthUseCase, JwtTokenUseCase, MemberUseCas
 		// 소셜 로그인
 		OauthUser oauthUser = oauthTemplate.doPostTokenAndGetInfo(oauthType, code);
 
-		// JWT 토큰 생성
-		provideJwtToken(oauthUser, key);
-
 		// MemberService 에 소셜 정보를 가진 OauthUser를 전달 및 User 정보 반환
-		OauthUser user = createOrFindUserRequest(oauthUser);
-		user.updateAccessToken(oauthUser.getAccessToken());
+		OauthUser user = createOrGetUser(oauthUser);
+
+		if (StringUtils.isEmpty(user.getUserId()) || StringUtils.isEmpty(user.getRoleLevel())) {
+			// TODO : THROW
+		}
+		Token token = createTokenPort.createTokens(user.getUserId(), user.getRoleLevel());
+
+		user.updateTokens(token.accessToken(), token.refreshToken());
 		return user;
 	}
 
 	@Override
-	public OauthUser createOrFindUserRequest(OauthUser oauthUser) {
-		return memberFeignPort.createOrUpdateUserRequest(oauthUser);
+	public OauthUser createOrGetUser(OauthUser oauthUser) {
+		return memberFeignPort.createOrGetUserRequest(oauthUser);
 	}
+
 }

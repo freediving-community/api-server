@@ -15,22 +15,23 @@ import lombok.NoArgsConstructor;
 /**
  * @Author         : sasca37
  * @Date           : 2024/01/15
- * @Description    : 가입한 유저의 토큰 정보를 저장하는 Entity ( 자주 업데이트 되기 때문에 별도의 Entity로 관리 )
+ * @Description    : 가입한 유저의 토큰 정보를 저장하는 Entity
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * ===========================================================
  * 2024/01/15        sasca37       최초 생성
+ * 2024/01/25 		 sasca37       Token 관리 주체를 MemberService에서 AuthService로 변경
  */
 
 @Entity
-@Table(name = "user_token")
+@Table(name = "token")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class UserTokenJpaEntity extends AuditableEntity {
+public class TokenJpaEntity extends AuditableEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "user_token_id")
+	@Column(name = "token_id")
 	private Long id;
 
 	@Column(name = "refresh_token", nullable = false)
@@ -39,11 +40,11 @@ public class UserTokenJpaEntity extends AuditableEntity {
 	@Column(name = "fcm_token")
 	private String fcmToken;
 
-	public static UserTokenJpaEntity createToken(String refreshToken) {
-		return new UserTokenJpaEntity(refreshToken);
+	public static TokenJpaEntity createToken(String refreshToken) {
+		return new TokenJpaEntity(refreshToken);
 	}
 
-	private UserTokenJpaEntity(String refreshToken) {
+	private TokenJpaEntity(String refreshToken) {
 		this.refreshToken = refreshToken;
 	}
 

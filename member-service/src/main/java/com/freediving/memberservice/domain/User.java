@@ -12,12 +12,11 @@ import com.freediving.memberservice.adapter.out.persistence.UserJpaEntity;
  * 2024/01/17        sasca37       최초 생성
  */
 
-public record User(Long userId, OauthType oauthType, String email, String profileImgUrl,
-				   String refreshToken) {
+public record User(Long userId, OauthType oauthType, String email, String profileImgUrl, RoleLevel roleLevel) {
 
 	public static User fromJpaEntity(UserJpaEntity userJpaEntity) {
 		return new User(userJpaEntity.getId(), userJpaEntity.getOauthType(), userJpaEntity.getEmail(),
-			userJpaEntity.getProfileImgUrl(), userJpaEntity.getUserTokenJpaEntity().getRefreshToken());
+			userJpaEntity.getProfileImgUrl(), userJpaEntity.getRoleLevel());
 	}
 
 }

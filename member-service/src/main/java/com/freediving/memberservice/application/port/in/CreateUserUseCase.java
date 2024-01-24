@@ -15,5 +15,5 @@ import com.freediving.memberservice.domain.User;
 
 @UseCase
 public interface CreateUserUseCase {
-	User createOrUpdateUser(CreateUserCommand command);
+	User createOrGetUser(CreateUserCommand command);
 }

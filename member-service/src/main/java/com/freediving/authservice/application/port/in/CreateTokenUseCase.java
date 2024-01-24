@@ -1,6 +1,7 @@
 package com.freediving.authservice.application.port.in;
 
 import com.freediving.authservice.domain.OauthUser;
+import com.freediving.authservice.domain.Token;
 import com.freediving.common.config.annotation.UseCase;
 
 /**
@@ -14,7 +15,7 @@ import com.freediving.common.config.annotation.UseCase;
  */
 
 @UseCase
-public interface JwtTokenUseCase {
+public interface CreateTokenUseCase {
 
 	/**
 	 * @Author           : sasca37
@@ -30,4 +31,6 @@ public interface JwtTokenUseCase {
 		String refreshToken = JwtTokenUtils.generateRefreshToken(userId, roleLevel, key);
 		oauthUser.updateTokens(accessToken, refreshToken);
 	}
+
+	Token createTokens(String userId, String roleLevel);
 }

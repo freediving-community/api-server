@@ -35,30 +35,6 @@ public class SecurityConfig {
 
 	private final FindUserService findUserService;
 
-	// /**
-	//  * @Author           : sasca37
-	//  * @Date             : 2024/01/22
-	//  * @Param            : HttpSecurity
-	//  * @Return           : SecurityFilterChain 필터 체이닝
-	//  * @Description      : WebSecurityCustomizer (web.ignoring() 이 지원 중단.
-	//  * 					   authorizeHttpRequests 내 requestMatchers 에서 permit 설정
-	//  *                     필터 우선순위를 filterChain 보다 높게 두어 permit 선처리 작업
-	//  */
-	// @Bean
-	// @Order(0)
-	// public SecurityFilterChain resources(HttpSecurity http) throws Exception {
-	// 	return http.csrf((csrf) -> csrf.disable())
-	// 		.authorizeHttpRequests((request) ->
-	// 			request.requestMatchers("/v*/oauth/**", "/v*/service/users/register", "/v3/api-docs").permitAll()
-	// 				.anyRequest().permitAll()
-	// 		)
-	// 		.requestCache(RequestCacheConfigurer::disable)
-	// 		.securityContext(AbstractHttpConfigurer::disable)
-	// 		.sessionManagement(AbstractHttpConfigurer::disable)
-	// 		.build();
-	//
-	// }
-
 	/**
 	 * @Author           : sasca37
 	 * @Date             : 2024/01/21

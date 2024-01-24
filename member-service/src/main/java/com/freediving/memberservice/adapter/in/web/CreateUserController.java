@@ -39,7 +39,7 @@ public class CreateUserController {
 	 * @Author           : sasca37
 	 * @Date             : 2024/01/15
 	 * @Param            : Oauth에서 생성된 UserRequest 정보
-	 * @Return           : User 기본 정보 및 JWT 토큰 정보를 담은 DTO 반환
+	 * @Return           : User 기본 정보를 담은 DTO 반환
 	 * @Description      : Oauth 정보를 바탕으로 가입여부 확인 및 JWT 토큰 업데이트
 	 */
 
@@ -49,9 +49,8 @@ public class CreateUserController {
 			.oauthType(request.getOauthType())
 			.email(request.getEmail())
 			.profileImgUrl(request.getProfileImgUrl())
-			.refreshToken(request.getRefreshToken())
 			.build();
-		User user = createUserUseCase.createOrUpdateUser(command);
+		User user = createUserUseCase.createOrGetUser(command);
 		return CreateUserResponse.from(user);
 	}
 

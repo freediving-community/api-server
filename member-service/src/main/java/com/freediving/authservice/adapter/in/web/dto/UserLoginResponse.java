@@ -1,5 +1,6 @@
 package com.freediving.authservice.adapter.in.web.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freediving.authservice.domain.OauthType;
 import com.freediving.authservice.domain.OauthUser;
 
@@ -23,6 +24,9 @@ import lombok.Getter;
 @Schema(description = "유저 로그인 응답 정보")
 public class UserLoginResponse {
 
+	@Schema(description = "유저 식별 키", example = "1")
+	private String userId;
+
 	@Schema(description = "소셜 로그인 타입", example = "KAKAO")
 	private OauthType oauthType;
 
@@ -32,17 +36,20 @@ public class UserLoginResponse {
 	@Schema(description = "이메일", example = "https://aws-s3.com")
 	private String profileImgUrl;
 
-	@Schema(description = "액세스 토큰", example = "aaaaaaa.bbbbbbb.ccccccc")
+	@JsonIgnore
+	// @Schema(description = "액세스 토큰", example = "aaaaaaa.bbbbbbb.ccccccc")
 	private String accessToken;
 
-	@Schema(description = "리프레시 토큰", example = "aaaaaaa.bbbbbbb.ccccccc")
+	@JsonIgnore
+	// @Schema(description = "리프레시 토큰", example = "aaaaaaa.bbbbbbb.ccccccc")
 	private String refreshToken;
 
-	@Schema(description = "최초 가입 여부", example = "true")
-	private Boolean isNewUser;
+	@Schema(description = "유저 권한", example = "0")
+	private String roleLevel;
 
 	public static UserLoginResponse from(OauthUser oauthUser) {
-		return new UserLoginResponse(oauthUser.getOauthType(), oauthUser.getEmail(), oauthUser.getProfileImgUrl(),
-			oauthUser.getAccessToken(), oauthUser.getRefreshToken(), oauthUser.getIsNewUser());
+		return new UserLoginResponse(oauthUser.getUserId(), oauthUser.getOauthType(), oauthUser.getEmail(),
+			oauthUser.getProfileImgUrl(), oauthUser.getAccessToken(), oauthUser.getRefreshToken(),
+			oauthUser.getRoleLevel());
 	}
 }

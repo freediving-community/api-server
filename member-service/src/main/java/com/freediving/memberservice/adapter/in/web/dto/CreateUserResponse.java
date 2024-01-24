@@ -28,7 +28,7 @@ public class CreateUserResponse {
 
 	private String profileImgUrl;
 
-	private String refreshToken;
+	private String roleLevel;
 
 	/**
 	 * @Author           : sasca37
@@ -38,7 +38,7 @@ public class CreateUserResponse {
 	 * @Description      : User 도메인 정보를 UserDto로 변환
 	 */
 	public static CreateUserResponse from(User user) {
-		return new CreateUserResponse(user.userId(), user.email(), user.oauthType().name(), user.profileImgUrl(),
-			user.refreshToken());
+		return new CreateUserResponse(user.userId(), user.email(), user.oauthType().name(),
+			user.profileImgUrl(), String.valueOf(user.roleLevel().getCode()));
 	}
 }

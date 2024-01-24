@@ -18,19 +18,21 @@ import lombok.NoArgsConstructor;
  */
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OauthUser {
+
+	private String userId;
 
 	private OauthType oauthType;
 	private String email;
 	private String profileImgUrl;
 
+	private String roleLevel;
+
 	private String accessToken;
 
 	private String refreshToken;
-
-	private Boolean isNewUser;
 
 	public static OauthUser from(OauthResponse oauthResponse) {
 		return new OauthUser(oauthResponse.oauthType(), oauthResponse.email(), oauthResponse.profileImgUrl());

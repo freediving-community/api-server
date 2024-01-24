@@ -4,8 +4,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
-import com.freediving.authservice.domain.OauthType;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -25,12 +23,12 @@ public class JwtTokenUtils {
 	private static final long EXPIRED_ACCESS_TIME = 5 * 60 * 60 * 1000L;
 	private static final long EXPIRED_REFRESH_TIME = 30 * 24 * 60 * 60 * 1000L;
 
-	public static String generateAccessToken(OauthType oauthType, String email, String key) {
-		return generateToken(oauthType, email, key, EXPIRED_ACCESS_TIME);
+	public static String generateAccessToken(String userId, String roleLevel, String key) {
+		return generateToken(userId, roleLevel, key, EXPIRED_ACCESS_TIME);
 	}
 
-	public static String generateRefreshToken(OauthType oauthType, String email, String key) {
-		return generateToken(oauthType, email, key, EXPIRED_REFRESH_TIME);
+	public static String generateRefreshToken(String userId, String roleLevel, String key) {
+		return generateToken(userId, roleLevel, key, EXPIRED_REFRESH_TIME);
 	}
 
 	private static Key getKey(String key) {
@@ -38,10 +36,10 @@ public class JwtTokenUtils {
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
-	private static String generateToken(OauthType oauthType, String email, String key, long expiredTime) {
+	private static String generateToken(String userId, String roleLevel, String key, long expiredTime) {
 		Claims claims = Jwts.claims();
-		claims.put("oauthType", oauthType.name());
-		claims.put("email", email);
+		claims.put("userId", userId);
+		claims.put("roleLevel", roleLevel);
 		return Jwts.builder()
 			.setClaims(claims)
 			.setIssuedAt(new Date(System.currentTimeMillis()))
