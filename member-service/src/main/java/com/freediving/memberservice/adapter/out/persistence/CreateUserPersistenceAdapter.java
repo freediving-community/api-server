@@ -38,18 +38,17 @@ public class CreateUserPersistenceAdapter implements CreateUserPort {
 		final OauthType oauthType = createUserCommand.getOauthType();
 		final String email = createUserCommand.getEmail();
 
-		UserJpaEntity userJpaEntity = userJpaRepository.findByOauthTypeAndEmail(oauthType, email);
+		UserJpaEntity userJpaEntity = userJpaRepository.findByOauthTypeAndEmail(oauthType, email).orElse(null);
 
 		if (ObjectUtils.isEmpty(userJpaEntity)) {
 			UserTokenJpaEntity userTokenJpaEntity = createUserTokenEntity(createUserCommand.getRefreshToken());
 			userJpaEntity = createUserEntity(oauthType, email, createUserCommand.getProfileImgUrl(),
 				userTokenJpaEntity);
 			userJpaRepository.save(userJpaEntity);
-			return createUser(userJpaEntity, true);
 		} else {
 			updateRefreshToken(userJpaEntity, createUserCommand.getRefreshToken());
-			return createUser(userJpaEntity, false);
 		}
+		return User.fromJpaEntity(userJpaEntity);
 	}
 
 	private UserTokenJpaEntity createUserTokenEntity(String refreshToken) {
@@ -67,10 +66,5 @@ public class CreateUserPersistenceAdapter implements CreateUserPort {
 		UserTokenJpaEntity userTokenJpaEntity = userTokenJpaRepository.findById(
 			userJpaEntity.getUserTokenJpaEntity().getId()).orElseThrow();
 		userTokenJpaEntity.updateRefreshToken(refreshToken);
-	}
-
-	private User createUser(UserJpaEntity userJpaEntity, Boolean isNewUser) {
-		return User.createSimpleUser(userJpaEntity.getId(), userJpaEntity.getOauthType(), userJpaEntity.getEmail(),
-			userJpaEntity.getProfileImgUrl(), userJpaEntity.getUserTokenJpaEntity().getRefreshToken(), isNewUser);
 	}
 }

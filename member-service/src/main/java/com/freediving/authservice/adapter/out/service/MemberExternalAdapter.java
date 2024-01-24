@@ -27,6 +27,7 @@ public class MemberExternalAdapter implements MemberFeignPort {
 
 	@Override
 	public OauthUser createOrUpdateUserRequest(OauthUser oauthUser) {
-		return memberServiceFeignClient.postOauthUserInfo(oauthUser);
+		String token = "Bearer " + oauthUser.getAccessToken();
+		return memberServiceFeignClient.postOauthUserInfo(token, oauthUser);
 	}
 }

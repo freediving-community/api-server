@@ -30,8 +30,6 @@ public class CreateUserResponse {
 
 	private String refreshToken;
 
-	private Boolean isNewUser;
-
 	/**
 	 * @Author           : sasca37
 	 * @Date             : 2024/01/17
@@ -41,6 +39,6 @@ public class CreateUserResponse {
 	 */
 	public static CreateUserResponse from(User user) {
 		return new CreateUserResponse(user.userId(), user.email(), user.oauthType().name(), user.profileImgUrl(),
-			user.refreshToken(), user.isNewUser());
+			user.refreshToken());
 	}
 }

@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -32,15 +33,20 @@ public class UserLicenceJpaEntity extends AuditableEntity {
 	@Column(name = "licence_id")
 	private Long id;
 
-	@Column(name = "licence_level", nullable = false)
+	@Column(name = "licence_level")
 	private Integer licenceLevel;
 
-	@Column(name = "licence_img_url", nullable = false, length = 255)
+	@Column(name = "licence_img_url")
 	private String licenceImgUrl;
 
 	@Column(name = "confirm_tf", nullable = false, length = 10)
 	private Boolean confirmTF;
 
-	@Column(name = "confirm_admin_id", nullable = true)
+	@Column(name = "confirm_admin_id")
 	private Long confirmAdminId;
+
+	@PrePersist
+	void prePersist() {
+		this.confirmTF = false;
+	}
 }
