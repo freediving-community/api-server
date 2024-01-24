@@ -1,8 +1,8 @@
 package com.freediving.authservice.application.port.out.service;
 
-
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.freediving.authservice.domain.OauthUser;
 
@@ -19,6 +19,6 @@ import com.freediving.authservice.domain.OauthUser;
 @FeignClient(name = "MEMBER-SERVICE")
 public interface MemberServiceFeignClient {
 
-	@PostMapping(path = "/v1/users/register")
-	OauthUser postOauthUserInfo(OauthUser oauthUser);
+	@PostMapping(path = "/v1/service/users/register")
+	OauthUser postOauthUserInfo(@RequestHeader("Authorization") String token, OauthUser oauthUser);
 }

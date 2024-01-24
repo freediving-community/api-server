@@ -1,11 +1,6 @@
 package com.freediving.memberservice.application.port.in;
 
-import com.freediving.common.SelfValidating;
-
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 
 /**
  * @Author         : sasca37
@@ -17,11 +12,6 @@ import lombok.Getter;
  * 2024/01/17        sasca37       최초 생성
  */
 
-@Getter
 @Builder
-@EqualsAndHashCode(callSuper = false)
-public class FindUserQuery extends SelfValidating<FindUserQuery> {
-
-	@NotNull
-	private final Long userId;
+public record FindUserQuery(Long userId) {
 }

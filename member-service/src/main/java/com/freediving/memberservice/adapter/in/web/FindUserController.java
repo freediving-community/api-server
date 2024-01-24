@@ -1,8 +1,8 @@
 package com.freediving.memberservice.adapter.in.web;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,7 +11,9 @@ import com.freediving.memberservice.application.port.in.FindUserQuery;
 import com.freediving.memberservice.application.port.in.FindUserUseCase;
 import com.freediving.memberservice.domain.User;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author         : sasca37
@@ -26,14 +28,16 @@ import lombok.RequiredArgsConstructor;
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/users")
+@RequestMapping("/v1")
+@Slf4j
+@Tag(name = "User", description = "유저 관련 API")
 public class FindUserController {
 
 	private final FindUserUseCase findUserUseCase;
 
-	@GetMapping("/{userId}")
-	ResponseEntity<User> findUserByUserId(@PathVariable Long userId) {
-		FindUserQuery findUserQuery = FindUserQuery.builder().userId(userId).build();
-		return ResponseEntity.ok(findUserUseCase.findUser(findUserQuery));
+	@GetMapping("/users/me")
+	ResponseEntity<User> findUserByUserId(@AuthenticationPrincipal User user) {
+		FindUserQuery findUserQuery = FindUserQuery.builder().userId(user.userId()).build();
+		return ResponseEntity.ok(findUserUseCase.findUserById(findUserQuery));
 	}
 }
