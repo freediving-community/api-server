@@ -9,9 +9,9 @@ package org.freediving.gatewayservice.domain;
  * ===========================================================
  * 2024/01/23        sasca37       최초 생성
  */
-public record Token(String email, String oauthType) {
+public record Token(String userId, String roleCode) {
 
-	public static Token createToken(String email, String oauthType) {
-		return new Token(email, oauthType);
+	public static Token createToken(String userId, String roleCode) {
+		return new Token(userId, roleCode);
 	}
 }

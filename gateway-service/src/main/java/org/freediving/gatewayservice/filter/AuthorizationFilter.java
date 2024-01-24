@@ -64,13 +64,14 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
 			}
 
 			Token extractToken = JwtProvider.extractToken(token, key);
-			String email = extractToken.email();
-			String oauthType = extractToken.oauthType();
+			String userId = extractToken.userId();
+			String roleCode = extractToken.roleCode();
 
-			// 이메일과 oauthType을 헤더에 추가
 			ServerHttpRequest modifiedRequest = request.mutate()
-				.header("email", email)
-				.header("oauthType", oauthType)
+				.header("User-Id", userId)
+				.header("Role-Level", roleCode)
+				// .header("email", email)
+				// .header("oauthType", oauthType)
 				.build();
 
 			return chain.filter(exchange.mutate().request(modifiedRequest).build()).then(Mono.fromRunnable(

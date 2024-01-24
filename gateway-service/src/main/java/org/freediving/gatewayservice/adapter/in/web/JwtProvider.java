@@ -37,9 +37,9 @@ public class JwtProvider {
 
 	public static Token extractToken(String token, String key) {
 		Claims claims = extractClaims(token, key);
-		String email = claims.get("email", String.class);
-		String oauthType = claims.get("oauthType", String.class);
-		return Token.createToken(email, oauthType);
+		String userId = claims.get("userId", String.class);
+		String roleLevel = claims.get("roleLevel", String.class);
+		return Token.createToken(userId, roleLevel);
 	}
 
 	private static Claims extractClaims(String token, String key) {
