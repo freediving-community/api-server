@@ -12,6 +12,7 @@ import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.in.CreateUserUseCase;
 import com.freediving.memberservice.domain.User;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +29,8 @@ import lombok.RequiredArgsConstructor;
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/users")
+@RequestMapping("/v1")
+@Hidden
 public class CreateUserController {
 
 	private final CreateUserUseCase createUserUseCase;
@@ -40,7 +42,8 @@ public class CreateUserController {
 	 * @Return           : User 기본 정보 및 JWT 토큰 정보를 담은 DTO 반환
 	 * @Description      : Oauth 정보를 바탕으로 가입여부 확인 및 JWT 토큰 업데이트
 	 */
-	@PostMapping("/register")
+
+	@PostMapping("/service/users/register")
 	public CreateUserResponse createUser(@Valid @RequestBody CreateUserRequest request) {
 		CreateUserCommand command = CreateUserCommand.builder()
 			.oauthType(request.getOauthType())
