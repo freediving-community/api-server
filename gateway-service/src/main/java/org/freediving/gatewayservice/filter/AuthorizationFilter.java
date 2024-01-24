@@ -1,7 +1,9 @@
-package org.freediving.adapter.in.web;
+package org.freediving.gatewayservice.filter;
 
 import java.util.Map;
 
+import org.freediving.gatewayservice.adapter.in.web.JwtProvider;
+import org.freediving.gatewayservice.domain.Token;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -27,7 +29,7 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
 	private static final String RESULT_CODE = "result_code";
 	private static final String RESULT = "result";
 	private static final String ERROR = "ERROR";
-	private static final String NO_JWT_INFO = "JWT 정보가 없습니다.";
+	private static final String NOT_FOUND_JWT_TOKEN = "JWT 정보가 없습니다.";
 	public static final String INVALID_JWT_TOKEN = "JWT 정보가 유효하지 않습니다.";
 	public static final String EXPIRED_JWT_TOKEN = "만료된 JWT 입니다.";
 	private final ObjectMapper objectMapper;
@@ -49,17 +51,29 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
 			log.info("request id: {}, request uri: {}", request.getId(), request.getURI());
 
 			if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-				return handleUnAuthorized(exchange, NO_JWT_INFO, HttpStatus.UNAUTHORIZED);
+				return handleUnAuthorized(exchange, NOT_FOUND_JWT_TOKEN, HttpStatus.UNAUTHORIZED);
 			}
 
 			String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
 			String token = authorizationHeader.replace("Bearer", "");
 
 			String errorMessage = JwtProvider.getExpiredOrMalformedMessage(token, key);
+
 			if (errorMessage != null) {
 				return handleUnAuthorized(exchange, errorMessage, HttpStatus.UNAUTHORIZED);
 			}
-			return chain.filter(exchange).then(Mono.fromRunnable(
+
+			Token extractToken = JwtProvider.extractToken(token, key);
+			String email = extractToken.email();
+			String oauthType = extractToken.oauthType();
+
+			// 이메일과 oauthType을 헤더에 추가
+			ServerHttpRequest modifiedRequest = request.mutate()
+				.header("email", email)
+				.header("oauthType", oauthType)
+				.build();
+
+			return chain.filter(exchange.mutate().request(modifiedRequest).build()).then(Mono.fromRunnable(
 				() -> log.info("response status code: {}", response.getStatusCode()))
 			);
 		});

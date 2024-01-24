@@ -1,8 +1,12 @@
-package org.freediving.adapter.in.web;
+package org.freediving.gatewayservice.adapter.in.web;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 
+import org.freediving.gatewayservice.domain.Token;
+import org.freediving.gatewayservice.filter.AuthorizationFilter;
+
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -29,6 +33,18 @@ public class JwtProvider {
 	private static Key getKey(String key) {
 		byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
 		return Keys.hmacShaKeyFor(keyBytes);
+	}
+
+	public static Token extractToken(String token, String key) {
+		Claims claims = extractClaims(token, key);
+		String email = claims.get("email", String.class);
+		String oauthType = claims.get("oauthType", String.class);
+		return Token.createToken(email, oauthType);
+	}
+
+	private static Claims extractClaims(String token, String key) {
+		return Jwts.parserBuilder().setSigningKey(getKey(key))
+			.build().parseClaimsJws(token).getBody();
 	}
 }
 

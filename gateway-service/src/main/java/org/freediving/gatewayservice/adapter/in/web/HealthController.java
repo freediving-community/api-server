@@ -1,4 +1,4 @@
-package org.freediving.adapter.in.web;
+package org.freediving.gatewayservice.adapter.in.web;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
