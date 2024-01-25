@@ -1,4 +1,4 @@
-package org.freediving;
+package org.freediving.gatewayservice.config;
 
 import java.util.List;
 

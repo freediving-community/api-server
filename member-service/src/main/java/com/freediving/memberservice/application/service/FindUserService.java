@@ -3,8 +3,11 @@ package com.freediving.memberservice.application.service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.freediving.common.config.annotation.UseCase;
+import com.freediving.memberservice.application.port.in.ExtractUserQuery;
 import com.freediving.memberservice.application.port.in.FindUserQuery;
 import com.freediving.memberservice.application.port.in.FindUserUseCase;
+import com.freediving.memberservice.application.port.out.FindUserPort;
+import com.freediving.memberservice.domain.OauthType;
 import com.freediving.memberservice.domain.User;
 
 import lombok.RequiredArgsConstructor;
@@ -24,12 +27,16 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class FindUserService implements FindUserUseCase {
 
-	// private final FindUserPort findUserPort;
+	private final FindUserPort findUserPort;
 
 	@Override
-	public User findUser(FindUserQuery findUserQuery) {
-		// User user = findUserPort.findUser(findUserCommand.getUserId());
-		// if (user == null)
-		return null;
+	public User findUserById(FindUserQuery findUserQuery) {
+		return findUserPort.findUserById(findUserQuery.userId());
+	}
+
+	@Override
+	public User findByExtractedUser(ExtractUserQuery extractUserQuery) {
+		return findUserPort.findUserByEmailAndOauthType(extractUserQuery.email(),
+			OauthType.from(extractUserQuery.oauthType()));
 	}
 }

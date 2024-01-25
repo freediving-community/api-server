@@ -2,6 +2,7 @@ package com.freediving.authservice.adapter.in.web;
 
 import java.io.IOException;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -89,8 +90,13 @@ public class OauthController {
 	@GetMapping("/login/{socialType}")
 	public ResponseEntity<UserLoginResponse> login(@PathVariable String socialType, @RequestParam("code") String code) {
 		OauthUser oauthUser = oauthUseCase.login(OauthType.from(socialType), code);
+
 		UserLoginResponse userLoginResponse = UserLoginResponse.from(oauthUser);
-		return ResponseEntity.ok().body(userLoginResponse);
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Access-Token", userLoginResponse.getAccessToken());
+		headers.add("Refresh-Token", userLoginResponse.getRefreshToken());
+
+		return ResponseEntity.ok().headers(headers).body(userLoginResponse);
 	}
 
 }

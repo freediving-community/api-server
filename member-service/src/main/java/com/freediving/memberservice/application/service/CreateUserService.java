@@ -28,7 +28,8 @@ public class CreateUserService implements CreateUserUseCase {
 	private final CreateUserPort createUserPort;
 
 	@Override
-	public User createOrUpdateUser(CreateUserCommand command) {
-		return createUserPort.createOrUpdateUser(command);
+	public User createOrGetUser(CreateUserCommand command) {
+		User user = createUserPort.createOrGetUser(command);
+		return user;
 	}
 }

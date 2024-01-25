@@ -20,5 +20,5 @@ public interface MemberFeignPort {
 	 * @Return           : OauthUser (MemberService)
 	 * @Description      : AuthService 내 유저 정보를 바탕으로 MemberService에 신규 가입 / JWT 저장 작업
 	 */
-	OauthUser createOrUpdateUserRequest(OauthUser oauthUser);
+	OauthUser createOrGetUserRequest(OauthUser oauthUser);
 }

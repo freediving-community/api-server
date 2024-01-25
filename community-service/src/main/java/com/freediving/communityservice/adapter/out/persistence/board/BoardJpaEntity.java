@@ -35,7 +35,7 @@ import lombok.ToString;
 public class BoardJpaEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long boardId;
+	private Long id;
 
 	//TODO Application Loading 시점에 distinct 값 세팅
 	// @Enumerated(EnumType.STRING)

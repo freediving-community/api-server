@@ -15,5 +15,5 @@ import com.freediving.memberservice.domain.User;
 
 public interface CreateUserPort {
 
-	User createOrUpdateUser(CreateUserCommand createUserCommand);
+	User createOrGetUser(CreateUserCommand createUserCommand);
 }

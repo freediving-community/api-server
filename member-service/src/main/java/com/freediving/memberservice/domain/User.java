@@ -1,5 +1,7 @@
 package com.freediving.memberservice.domain;
 
+import com.freediving.memberservice.adapter.out.persistence.UserJpaEntity;
+
 /**
  * @Author         : sasca37
  * @Date           : 2024/01/17
@@ -10,11 +12,11 @@ package com.freediving.memberservice.domain;
  * 2024/01/17        sasca37       최초 생성
  */
 
-public record User(Long userId, OauthType oauthType, String email, String profileImgUrl,
-				   String refreshToken, Boolean isNewUser) {
+public record User(Long userId, OauthType oauthType, String email, String profileImgUrl, RoleLevel roleLevel) {
 
-	public static User createSimpleUser(Long userId, OauthType oauthType, String email, String profileImgUrl,
-		String refreshToken, Boolean isNewUser) {
-		return new User(userId, oauthType, email, profileImgUrl, refreshToken, isNewUser);
+	public static User fromJpaEntity(UserJpaEntity userJpaEntity) {
+		return new User(userJpaEntity.getId(), userJpaEntity.getOauthType(), userJpaEntity.getEmail(),
+			userJpaEntity.getProfileImgUrl(), userJpaEntity.getRoleLevel());
 	}
+
 }

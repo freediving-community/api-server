@@ -13,5 +13,7 @@ import com.freediving.memberservice.domain.User;
  */
 
 public interface FindUserUseCase {
-	User findUser(FindUserQuery findUserQuery);
+	User findUserById(FindUserQuery findUserQuery);
+
+	User findByExtractedUser(ExtractUserQuery extractUserQuery);
 }

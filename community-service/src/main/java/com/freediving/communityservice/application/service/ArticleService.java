@@ -43,8 +43,6 @@ public class ArticleService implements ArticleUseCase {
 		// articleReadPort.getXXXByAuthorId()
 
 		Article savedArticle = articleWritePort.writeArticle(articleWriteCommand);
-		//TODO articleWriteCommand Hashtag 저장
-
 		return savedArticle.getId();
 	}
 }

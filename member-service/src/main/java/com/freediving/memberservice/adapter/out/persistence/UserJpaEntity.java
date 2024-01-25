@@ -2,6 +2,7 @@ package com.freediving.memberservice.adapter.out.persistence;
 
 import com.freediving.common.persistence.AuditableEntity;
 import com.freediving.memberservice.domain.OauthType;
+import com.freediving.memberservice.domain.RoleLevel;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -52,6 +53,10 @@ public class UserJpaEntity extends AuditableEntity {
 	@Column(name = "oauth_type", nullable = false, length = 20)
 	private OauthType oauthType;
 
+	@Enumerated(value = EnumType.STRING)
+	@Column(name = "role_code", length = 20)
+	private RoleLevel roleLevel;
+
 	@Embedded
 	private UserPersonalVO userPersonalVO;
 
@@ -60,24 +65,19 @@ public class UserJpaEntity extends AuditableEntity {
 	private OauthTypeSetVO oauthTypeSetVO;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	@JoinColumn(name = "user_token_id")
-	private UserTokenJpaEntity userTokenJpaEntity;
-
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumn(name = "licence_id")
 	private UserLicenceJpaEntity userLicenceJpaEntity;
 
-	public static UserJpaEntity createSimpleUser(OauthType oauthType, String email, String profileImgUrl) {
-		return new UserJpaEntity(oauthType, email, profileImgUrl);
+	public static UserJpaEntity createSimpleUser(OauthType oauthType, String email, String profileImgUrl,
+		RoleLevel roleLevel) {
+		return new UserJpaEntity(oauthType, email, profileImgUrl, roleLevel);
 	}
 
-	private UserJpaEntity(OauthType oauthType, String email, String profileImgUrl) {
+	private UserJpaEntity(OauthType oauthType, String email, String profileImgUrl, RoleLevel roleLevel) {
 		this.email = email;
 		this.profileImgUrl = profileImgUrl;
 		this.oauthType = oauthType;
+		this.roleLevel = roleLevel;
 	}
 
-	public void updateToken(UserTokenJpaEntity userTokenJpaEntity) {
-		this.userTokenJpaEntity = userTokenJpaEntity;
-	}
 }

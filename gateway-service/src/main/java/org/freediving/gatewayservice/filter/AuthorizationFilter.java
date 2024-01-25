@@ -1,7 +1,9 @@
-package org.freediving.adapter.in.web;
+package org.freediving.gatewayservice.filter;
 
 import java.util.Map;
 
+import org.freediving.gatewayservice.adapter.in.web.JwtProvider;
+import org.freediving.gatewayservice.domain.Token;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -29,7 +31,7 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
 	private static final String RESULT_CODE = "result_code";
 	private static final String RESULT = "result";
 	private static final String ERROR = "ERROR";
-	private static final String NO_JWT_INFO = "JWT 정보가 없습니다.";
+	private static final String NOT_FOUND_JWT_TOKEN = "JWT 정보가 없습니다.";
 	private final ObjectMapper objectMapper;
 
 	@Value("${jwt.key}")
@@ -49,17 +51,30 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
 			log.info("request id: {}, request uri: {}", request.getId(), request.getURI());
 
 			if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-				return handleUnAuthorized(exchange, NO_JWT_INFO, HttpStatus.UNAUTHORIZED);
+				return handleUnAuthorized(exchange, NOT_FOUND_JWT_TOKEN, HttpStatus.UNAUTHORIZED);
 			}
 
 			String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
 			String token = authorizationHeader.replace("Bearer", "");
 			log.info("JWT TOKEN : {}", token);
 			String errorMessage = JwtProvider.getExpiredOrMalformedMessage(token, key);
+
 			if (errorMessage != null) {
 				return handleUnAuthorized(exchange, errorMessage, HttpStatus.UNAUTHORIZED);
 			}
-			return chain.filter(exchange).then(Mono.fromRunnable(
+
+			Token extractToken = JwtProvider.extractToken(token, key);
+			String userId = extractToken.userId();
+			String roleCode = extractToken.roleCode();
+
+			ServerHttpRequest modifiedRequest = request.mutate()
+				.header("User-Id", userId)
+				.header("Role-Level", roleCode)
+				// .header("email", email)
+				// .header("oauthType", oauthType)
+				.build();
+
+			return chain.filter(exchange.mutate().request(modifiedRequest).build()).then(Mono.fromRunnable(
 				() -> log.info("response status code: {}", response.getStatusCode()))
 			);
 		});

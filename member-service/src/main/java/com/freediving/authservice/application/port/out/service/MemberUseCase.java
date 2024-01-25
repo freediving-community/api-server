@@ -14,5 +14,5 @@ import com.freediving.common.config.annotation.UseCase;
  */
 @UseCase
 public interface MemberUseCase {
-	OauthUser createOrFindUserRequest(OauthUser oauthUser);
+	OauthUser createOrGetUser(OauthUser oauthUser);
 }

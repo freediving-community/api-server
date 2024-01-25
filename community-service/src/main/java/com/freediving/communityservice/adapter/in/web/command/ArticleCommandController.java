@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.freediving.communityservice.adapter.in.dto.ArticleWriteRequest;
-import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.application.port.in.ArticleUseCase;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
 
@@ -26,7 +25,6 @@ public class ArticleCommandController {
 
 	@PostMapping("/boards/{boardId}/articles")
 	public ResponseEntity<Long> writeArticleContent(
-		UserProvider userProvider,
 		@PathVariable("boardId") Long boardId,
 		@RequestBody ArticleWriteRequest articleWriteRequest) {
 		Long articleId = articleUseCase.writeArticle(
@@ -35,9 +33,8 @@ public class ArticleCommandController {
 				.title(articleWriteRequest.getTitle())
 				.content(articleWriteRequest.getContent())
 				.authorName(articleWriteRequest.getAuthorName())
-				.hashtagIds(articleWriteRequest.getHashtagIds())
 				.enableComment(articleWriteRequest.isEnableComment())
-				.createdBy(userProvider.getUserId())
+				.createdBy(articleWriteRequest.getCreatedBy())
 				.build());
 
 		// return ResponseEntity.ok(articleId);

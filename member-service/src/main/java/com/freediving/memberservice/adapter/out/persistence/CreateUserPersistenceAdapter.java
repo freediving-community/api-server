@@ -6,6 +6,7 @@ import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.out.CreateUserPort;
 import com.freediving.memberservice.domain.OauthType;
+import com.freediving.memberservice.domain.RoleLevel;
 import com.freediving.memberservice.domain.User;
 
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * @Author         : sasca37
  * @Date           : 2024/01/17
- * @Description    : 가입 여부를 확인하고 유저 생성 및 JWT 정보 업데이트
+ * @Description    : 가입 여부를 확인하고 유저 생성
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * ===========================================================
@@ -24,53 +25,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CreateUserPersistenceAdapter implements CreateUserPort {
 	private final UserJpaRepository userJpaRepository;
-	private final UserTokenJpaRepository userTokenJpaRepository;
 
 	/**
 	 * @Author           : sasca37
 	 * @Date             : 2024/01/17
 	 * @Param            : CreateUserCommand
 	 * @Return           : User 도메인
-	 * @Description      : 최초 로그인인 경우 회원가입 / JWT 저장, 기존 가입자인 경우 JWT 업데이트
+	 * @Description      : 최초 로그인인 경우 회원가입 / 기존 가입자인 경우 사용자 정보 반환
 	 */
 	@Override
-	public User createOrUpdateUser(CreateUserCommand createUserCommand) {
+	public User createOrGetUser(CreateUserCommand createUserCommand) {
 		final OauthType oauthType = createUserCommand.getOauthType();
 		final String email = createUserCommand.getEmail();
+		final String profileImgUrl = createUserCommand.getProfileImgUrl();
 
-		UserJpaEntity userJpaEntity = userJpaRepository.findByOauthTypeAndEmail(oauthType, email);
+		UserJpaEntity userJpaEntity = userJpaRepository.findByOauthTypeAndEmail(oauthType, email).orElse(null);
 
+		// 최초 로그인인 경우
 		if (ObjectUtils.isEmpty(userJpaEntity)) {
-			UserTokenJpaEntity userTokenJpaEntity = createUserTokenEntity(createUserCommand.getRefreshToken());
-			userJpaEntity = createUserEntity(oauthType, email, createUserCommand.getProfileImgUrl(),
-				userTokenJpaEntity);
-			userJpaRepository.save(userJpaEntity);
-			return createUser(userJpaEntity, true);
-		} else {
-			updateRefreshToken(userJpaEntity, createUserCommand.getRefreshToken());
-			return createUser(userJpaEntity, false);
+			UserJpaEntity saveUserJpaEntity = UserJpaEntity
+				.createSimpleUser(oauthType, email, profileImgUrl, RoleLevel.UNREGISTER);
+			userJpaRepository.save(saveUserJpaEntity);
+			return User.fromJpaEntity(saveUserJpaEntity);
 		}
+		return User.fromJpaEntity(userJpaEntity);
 	}
 
-	private UserTokenJpaEntity createUserTokenEntity(String refreshToken) {
-		return UserTokenJpaEntity.createToken(refreshToken);
-	}
-
-	private UserJpaEntity createUserEntity(OauthType oauthType, String email, String profileImgUrl,
-		UserTokenJpaEntity userTokenJpaEntity) {
-		UserJpaEntity userEntity = UserJpaEntity.createSimpleUser(oauthType, email, profileImgUrl);
-		userEntity.updateToken(userTokenJpaEntity);
-		return userEntity;
-	}
-
-	private void updateRefreshToken(UserJpaEntity userJpaEntity, String refreshToken) {
-		UserTokenJpaEntity userTokenJpaEntity = userTokenJpaRepository.findById(
-			userJpaEntity.getUserTokenJpaEntity().getId()).orElseThrow();
-		userTokenJpaEntity.updateRefreshToken(refreshToken);
-	}
-
-	private User createUser(UserJpaEntity userJpaEntity, Boolean isNewUser) {
-		return User.createSimpleUser(userJpaEntity.getId(), userJpaEntity.getOauthType(), userJpaEntity.getEmail(),
-			userJpaEntity.getProfileImgUrl(), userJpaEntity.getUserTokenJpaEntity().getRefreshToken(), isNewUser);
-	}
 }

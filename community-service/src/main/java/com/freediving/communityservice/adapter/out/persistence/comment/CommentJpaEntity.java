@@ -15,7 +15,6 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,12 +22,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter
+@Table
 @ToString
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "comment", indexes = {@Index(name = "idx_comment_articleId", columnList = "articleId")})
 @Entity
 public class CommentJpaEntity {
 	//TODO articleId가 필수임. 게시물처럼 커서 방식을 적용. hasChild와 parentId를 기반으로 답글 기능 포함.
@@ -77,4 +76,3 @@ public class CommentJpaEntity {
 		return Objects.hash(commentId);
 	}
 }
-

@@ -1,15 +1,5 @@
 package com.freediving.memberservice.config;
 
-/**
- * @Author         : sasca37
- * @Date           : 2024/01/18
- * @Description    :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * ===========================================================
- * 2024/01/18        sasca37       최초 생성
- */
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
