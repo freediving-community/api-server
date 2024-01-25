@@ -26,12 +26,12 @@ import reactor.core.publisher.Mono;
 @Component
 public class AuthorizationFilter extends AbstractGatewayFilterFactory<AuthorizationFilter.Config> {
 
+	public static final String INVALID_JWT_TOKEN = "JWT 정보가 유효하지 않습니다.";
+	public static final String EXPIRED_JWT_TOKEN = "만료된 JWT 입니다.";
 	private static final String RESULT_CODE = "result_code";
 	private static final String RESULT = "result";
 	private static final String ERROR = "ERROR";
 	private static final String NOT_FOUND_JWT_TOKEN = "JWT 정보가 없습니다.";
-	public static final String INVALID_JWT_TOKEN = "JWT 정보가 유효하지 않습니다.";
-	public static final String EXPIRED_JWT_TOKEN = "만료된 JWT 입니다.";
 	private final ObjectMapper objectMapper;
 
 	@Value("${jwt.key}")
@@ -56,7 +56,7 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
 
 			String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
 			String token = authorizationHeader.replace("Bearer", "");
-
+			log.info("JWT TOKEN : {}", token);
 			String errorMessage = JwtProvider.getExpiredOrMalformedMessage(token, key);
 
 			if (errorMessage != null) {
