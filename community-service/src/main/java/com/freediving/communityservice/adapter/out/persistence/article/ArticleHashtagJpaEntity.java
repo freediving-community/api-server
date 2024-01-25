@@ -1,6 +1,6 @@
-package com.freediving.communityservice.adapter.out.persistence.likearticle;
+package com.freediving.communityservice.adapter.out.persistence.article;
 
-import com.freediving.communityservice.adapter.out.persistence.article.ArticleJpaEntity;
+import com.freediving.communityservice.adapter.out.persistence.hashtag.HashtagJpaEntity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,9 +18,9 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "article_like")
+@Table(name = "article_hashtag")
 @Entity
-public class LikeArticleJpaEntity {
+public class ArticleHashtagJpaEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Long id;
@@ -29,5 +29,8 @@ public class LikeArticleJpaEntity {
 	@ManyToOne
 	private ArticleJpaEntity articleId;
 
-	private Long userId;
+	@JoinColumn(name = "hashtag_id")
+	@ManyToOne
+	private HashtagJpaEntity hashtagId;
+
 }
