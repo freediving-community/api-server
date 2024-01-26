@@ -12,6 +12,8 @@ import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;
 import com.freediving.common.config.annotation.WebAdapter;
+import com.freediving.common.response.ResponseJsonObject;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -61,7 +63,7 @@ public class CreateBuddyEventControllerV1 {
 		}
 	)
 	@PostMapping("")
-	public ResponseEntity<CreatedBuddyEvent> createBuddyEvent(@Valid @RequestBody CreateBuddyEventRequestV1 request) {
+	public ResponseEntity<ResponseJsonObject> createBuddyEvent(@Valid @RequestBody CreateBuddyEventRequestV1 request) {
 		// 1. JWT 유저 토큰에서 사용자 식별 ID 가져오기
 		Random random = new Random();
 		Long userId = random.nextLong();
@@ -79,6 +81,11 @@ public class CreateBuddyEventControllerV1 {
 				.build());
 
 		// 3. Command 요청 및 응답 리턴.
-		return ResponseEntity.ok(createdBuddyEvent);
+		ResponseJsonObject response = ResponseJsonObject.builder()
+			.code(ServiceStatusCode.OK)
+			.data(createdBuddyEvent)
+			.build();
+
+		return ResponseEntity.ok(response);
 	}
 }

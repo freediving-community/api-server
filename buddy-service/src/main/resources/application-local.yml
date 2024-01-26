@@ -4,8 +4,6 @@ server:
 spring:
   application:
     name: buddy-service
-  jackson:
-    date-format: "yyyy-MM-dd HH:mm:ss.SSS"
   # Only for Local Test
   # H2
   h2:
@@ -42,4 +40,3 @@ swagger:
     version: "V1"
     url: http://localhost:8000/${spring.application.name}
     description: Local Gateway Server
-
