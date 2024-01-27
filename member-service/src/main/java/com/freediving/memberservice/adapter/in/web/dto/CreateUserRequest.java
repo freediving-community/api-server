@@ -6,6 +6,7 @@ import com.freediving.memberservice.valid.EnumValid;
 import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
+@Builder
 public class CreateUserRequest {
 
 	@EnumValid(enumClass = OauthType.class, message = "소셜 타입 정보가 올바르지 않습니다.")
