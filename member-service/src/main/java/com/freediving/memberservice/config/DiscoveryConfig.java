@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @Author         : sasca37
  * @Date           : 2024/01/27
- * @Description    :
+ * @Description    : 테스트 환경에서 Configuration 정보를 분리하기 위해 별도 생성
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * ===========================================================
@@ -15,6 +15,5 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableDiscoveryClient
-
 public class DiscoveryConfig {
 }
