@@ -14,6 +14,7 @@ import com.freediving.memberservice.domain.RoleLevel;
  */
 public class UserFixture {
 
+	public static final Long DEFAULT_ID = 1L;
 	public static final String VALID_EMAIL = "sasca37@naver.com";
 	public static final String INVALID_EMAIL = "sasca37/naver.com";
 	public static final OauthType VALID_OAUTH_TYPE = OauthType.KAKAO;
