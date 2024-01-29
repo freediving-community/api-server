@@ -19,7 +19,7 @@ import lombok.Getter;
 @Getter
 public enum ServiceStatusCode {
 
-	OK(200, null, false)
+	OK(200, null, false), BAD_REQUEST(400, "BAD_REQUEST", false)
 
 	// member-service
 	, MEMBER_SERVICE(0, "멤버 서비스 응답 메시지.", false)

@@ -21,13 +21,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.application.port.out.service.RequestMemberPort;
+import com.freediving.buddyservice.common.ControllerDefendenciesConfig;
 import com.freediving.buddyservice.common.enumeration.EventConcept;
 import com.freediving.buddyservice.common.enumeration.EventStatus;
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;
 
 @WebMvcTest(controllers = CreateBuddyEventControllerV1.class)
 @ActiveProfiles("local")
-class CreateBuddyEventControllerV1Test {
+class CreateBuddyEventControllerV1Test extends ControllerDefendenciesConfig {
 
 	@MockBean
 	private CreateBuddyEventUseCase createBuddyEventUseCase;
@@ -93,6 +94,50 @@ class CreateBuddyEventControllerV1Test {
 			.andExpect(MockMvcResultMatchers.jsonPath("$.data.createdDate").value("2024-01-01T09:00:00"))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.data.updatedDate").value("2024-01-01T09:00:00"))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.msg").isEmpty());
+	}
+
+	@DisplayName("일정 시작 시간 필수 값 체크")
+	@Test
+	void eventStartTimeIsRequired() throws Exception {
+		//given
+		final CreateBuddyEventRequestV1 request = CreateBuddyEventRequestV1.builder()
+			.eventEndDate(LocalDateTime.now().plusHours(8))
+			.participantCount(11)
+			.eventConcepts(List.of(EventConcept.LEVEL_UP))
+			.carShareYn(false)
+			.comment("ㅋㅋㅋㅋ")
+			.build();
+
+		//when then
+		mockMvc.perform(MockMvcRequestBuilders.post("/v1/event")
+				.content(objectMapper.writeValueAsString(request))
+				.contentType(MediaType.APPLICATION_JSON))
+			.andDo(MockMvcResultHandlers.print())
+			.andExpect(MockMvcResultMatchers.status().isBadRequest())
+			.andExpect(MockMvcResultMatchers.jsonPath("$.code").value(400))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("BAD_REQUEST(일정 시작 시간은 필수입니다.)"));
+	}
+
+	@DisplayName("일정 종료 시간 필수 값 체크")
+	@Test
+	void eventEndTimeIsRequired() throws Exception {
+		//given
+		final CreateBuddyEventRequestV1 request = CreateBuddyEventRequestV1.builder()
+			.eventStartDate(LocalDateTime.now().plusHours(8))
+			.participantCount(11)
+			.eventConcepts(List.of(EventConcept.LEVEL_UP))
+			.carShareYn(false)
+			.comment("ㅋㅋㅋㅋ")
+			.build();
+
+		//when then
+		mockMvc.perform(MockMvcRequestBuilders.post("/v1/event")
+				.content(objectMapper.writeValueAsString(request))
+				.contentType(MediaType.APPLICATION_JSON))
+			.andDo(MockMvcResultHandlers.print())
+			.andExpect(MockMvcResultMatchers.status().isBadRequest())
+			.andExpect(MockMvcResultMatchers.jsonPath("$.code").value(400))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("BAD_REQUEST(일정 종료 시간은 필수입니다.)"));
 	}
 
 }

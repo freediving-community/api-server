@@ -32,7 +32,7 @@ public class ResponseJsonObject {
 	public String getMsg() {
 		// 추가 메시지가 있는 경우
 		if (expandMsg != null)
-			return String.format("{0}({1)", this.code.getMessage(), expandMsg);
+			return String.format("%s(%s)", this.code.getMessage(), expandMsg);
 
 		return this.code.getMessage();
 	}
