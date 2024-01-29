@@ -16,13 +16,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class ResponseJsonObject {
+public class ResponseJsonObject<T> {
 
 	@Builder.Default
 	private ServiceStatusCode code = ServiceStatusCode.OK;
 	@Builder.Default
 	private String expandMsg = null;
-	private Object data;
+	private T data;
+
+	public ResponseJsonObject(ServiceStatusCode serviceStatusCode, T data) {
+		this.code = serviceStatusCode;
+		this.data = data;
+	}
+
+	public ResponseJsonObject(ServiceStatusCode serviceStatusCode, T data, String expandMsg) {
+		this.code = serviceStatusCode;
+		this.data = data;
+		this.expandMsg = expandMsg;
+	}
 
 	// --------------- JSON 필드 --------------------
 	public int getCode() {
@@ -31,19 +42,19 @@ public class ResponseJsonObject {
 
 	public String getMsg() {
 		// 추가 메시지가 있는 경우
-		if (expandMsg != null)
-			return String.format("%s(%s)", this.code.getMessage(), expandMsg);
+		if (this.expandMsg != null)
+			return String.format("%s(%s)", this.code.getMessage(), this.expandMsg);
 
 		return this.code.getMessage();
 	}
 
 	// data
-	public Object getData() {
-		return data;
+	public T getData() {
+		return this.data;
 	}
 	// ---------------------------------------------
 
 	public Boolean errorType() {
-		return code.getIsErrorType();
+		return this.code.getIsErrorType();
 	}
 }

@@ -6,9 +6,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.freediving.common.response.ResponseJsonObject;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
+
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.media.MediaType;
+import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
@@ -38,8 +44,24 @@ public class SwaggerConfig {
 			.addList("bearerAuth");
 
 		return new OpenAPI().addServersItem(new Server().url(url).description(description))
-			.components(new Components().addSecuritySchemes("Access Token", securityScheme))
+			.components(
+				new Components().addSecuritySchemes("Access Token", securityScheme)
+					.addResponses("400", new ApiResponse().description("Bad Request").content(new Content()
+						.addMediaType("application/json", new MediaType()
+								.example(
+									ResponseJsonObject.builder()
+										.code(ServiceStatusCode.BAD_REQUEST)
+										.expandMsg("expandMsg")
+										.build())
+							// 예시 값
+						)))
+					.addResponses("401", new ApiResponse().description("Unauthorized"))
+					.addResponses("403", new ApiResponse().description("Forbidden"))
+					.addResponses("500", new ApiResponse().description("Internal Server Error"))
+			)
 			.security(List.of(securityRequirement))
 			.info(new Info().title(title).version(version));
+
 	}
+
 }

@@ -15,6 +15,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.log4j.Log4j2;
 
@@ -35,6 +37,13 @@ public class ServiceExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @param ex Exception
 	 * @return desc
 	 */
+	@ApiResponse(
+		responseCode = "500",
+		description = "시스템 에러",
+		content = @Content(
+			mediaType = "application/json"
+		)
+	)
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<ResponseJsonObject> handleException(RuntimeException ex) {
 		log.error("RuntimeExceptionHandler : {} \n StackTrace : ", ex.getMessage(), ex.getStackTrace());

@@ -16,8 +16,6 @@ import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -47,23 +45,17 @@ public class CreateBuddyEventControllerV1 {
 			@ApiResponse(
 				responseCode = "200",
 				description = "버디 이벤트 생성 성공",
-				content = @Content(mediaType = "application/json",
-					schema = @Schema(implementation = CreatedBuddyEvent.class))
+				useReturnTypeSchema = true
 			),
-			@ApiResponse(
-				responseCode = "400",
-				description = "잘못된 요청",
-				content = @Content(mediaType = "application/json")
-			),
-			@ApiResponse(
-				responseCode = "401",
-				description = "인증되지 않은 사용자",
-				content = @Content(mediaType = "application/json")
-			)
+			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "401", ref = "#/components/responses/401"),
+			@ApiResponse(responseCode = "403", ref = "#/components/responses/403"),
+			@ApiResponse(responseCode = "500", ref = "#/components/responses/500")
 		}
 	)
 	@PostMapping("")
-	public ResponseEntity<ResponseJsonObject> createBuddyEvent(@Valid @RequestBody CreateBuddyEventRequestV1 request) {
+	public ResponseEntity<ResponseJsonObject<CreatedBuddyEvent>> createBuddyEvent(
+		@Valid @RequestBody CreateBuddyEventRequestV1 request) {
 		// 1. JWT 유저 토큰에서 사용자 식별 ID 가져오기
 		Random random = new Random();
 		Long userId = random.nextLong();
@@ -81,10 +73,8 @@ public class CreateBuddyEventControllerV1 {
 				.build());
 
 		// 3. Command 요청 및 응답 리턴.
-		ResponseJsonObject response = ResponseJsonObject.builder()
-			.code(ServiceStatusCode.OK)
-			.data(createdBuddyEvent)
-			.build();
+		ResponseJsonObject<CreatedBuddyEvent> response = new ResponseJsonObject<>(ServiceStatusCode.OK,
+			createdBuddyEvent);
 
 		return ResponseEntity.ok(response);
 	}
