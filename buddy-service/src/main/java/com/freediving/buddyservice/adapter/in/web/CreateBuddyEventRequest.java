@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.adapter.in.web.v1;
+package com.freediving.buddyservice.adapter.in.web;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,8 +25,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-@Schema(title = "버디 이벤트 생성 요청 ( CreateBuddyEventRequestV1 )", name = "name", description = "POST /v1/event 버디 이벤트 생성에 요청 Schema")
-public class CreateBuddyEventRequestV1 {
+@Schema(title = "버디 이벤트 생성 요청 ( CreateBuddyEventRequest )", name = "name", description = "POST /v1/event 버디 이벤트 생성에 요청 Schema")
+public class CreateBuddyEventRequest {
 
 	@Schema(description = "일정 시작 시간", example = "2024-01-17 15:30:00", required = true)
 	@NotNull(message = "일정 시작 시간은 필수입니다.")

@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.adapter.in.web.v1;
+package com.freediving.buddyservice.adapter.in.web;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,9 +26,9 @@ import com.freediving.buddyservice.common.enumeration.EventConcept;
 import com.freediving.buddyservice.common.enumeration.EventStatus;
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;
 
-@WebMvcTest(controllers = CreateBuddyEventControllerV1.class)
+@WebMvcTest(controllers = CreateBuddyEventController.class)
 @ActiveProfiles("local")
-class CreateBuddyEventControllerV1Test extends ControllerDefendenciesConfig {
+class CreateBuddyEventControllerTest extends ControllerDefendenciesConfig {
 
 	@MockBean
 	private CreateBuddyEventUseCase createBuddyEventUseCase;
@@ -45,7 +45,7 @@ class CreateBuddyEventControllerV1Test extends ControllerDefendenciesConfig {
 	@BeforeEach
 	void tearDown() {
 
-		Mockito.when(createBuddyEventUseCase.createBuddyEventV1(Mockito.any(CreateBuddyEventCommand.class)))
+		Mockito.when(createBuddyEventUseCase.createBuddyEvent(Mockito.any(CreateBuddyEventCommand.class)))
 			.thenReturn(CreatedBuddyEvent.builder()
 				.eventId(1L)
 				.userId(1L)
@@ -66,7 +66,7 @@ class CreateBuddyEventControllerV1Test extends ControllerDefendenciesConfig {
 	@Test
 	void shouldCreateNewBuddyEventSuccessfully() throws Exception {
 		//given
-		final CreateBuddyEventRequestV1 request = CreateBuddyEventRequestV1.builder()
+		final CreateBuddyEventRequest request = CreateBuddyEventRequest.builder()
 			.eventStartDate(LocalDateTime.now().plusHours(2))
 			.eventEndDate(LocalDateTime.now().plusHours(8))
 			.participantCount(11)
@@ -100,7 +100,7 @@ class CreateBuddyEventControllerV1Test extends ControllerDefendenciesConfig {
 	@Test
 	void eventStartTimeIsRequired() throws Exception {
 		//given
-		final CreateBuddyEventRequestV1 request = CreateBuddyEventRequestV1.builder()
+		final CreateBuddyEventRequest request = CreateBuddyEventRequest.builder()
 			.eventEndDate(LocalDateTime.now().plusHours(8))
 			.participantCount(11)
 			.eventConcepts(List.of(EventConcept.LEVEL_UP))
@@ -122,7 +122,7 @@ class CreateBuddyEventControllerV1Test extends ControllerDefendenciesConfig {
 	@Test
 	void eventEndTimeIsRequired() throws Exception {
 		//given
-		final CreateBuddyEventRequestV1 request = CreateBuddyEventRequestV1.builder()
+		final CreateBuddyEventRequest request = CreateBuddyEventRequest.builder()
 			.eventStartDate(LocalDateTime.now().plusHours(8))
 			.participantCount(11)
 			.eventConcepts(List.of(EventConcept.LEVEL_UP))

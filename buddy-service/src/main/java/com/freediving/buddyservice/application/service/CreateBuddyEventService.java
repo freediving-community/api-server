@@ -28,7 +28,7 @@ public class CreateBuddyEventService implements CreateBuddyEventUseCase {
 	private final RequestMemberPort requestMemberPort;
 
 	@Override
-	public CreatedBuddyEvent createBuddyEventV1(CreateBuddyEventCommand command) {
+	public CreatedBuddyEvent createBuddyEvent(CreateBuddyEventCommand command) {
 
 		// 1. Member Serivce로 정상적인 사용자 인지 확인 ( 버디 일정 생성 가능한 사용자? 제재 리스트 사용자? 등. 정상적인 사용자 체크)
 		MemberStatus status = requestMemberPort.getMemberStatus(command.getUserId());

@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.adapter.in.web.v1;
+package com.freediving.buddyservice.adapter.in.web;
 
 import java.util.Random;
 
@@ -34,7 +34,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/v1/event")
 @Tag(name = "Buddy Event", description = "버디 이벤트 관련 API")
-public class CreateBuddyEventControllerV1 {
+public class CreateBuddyEventController {
 
 	private final CreateBuddyEventUseCase createBuddyEventUseCase;
 
@@ -55,13 +55,13 @@ public class CreateBuddyEventControllerV1 {
 	)
 	@PostMapping("")
 	public ResponseEntity<ResponseJsonObject<CreatedBuddyEvent>> createBuddyEvent(
-		@Valid @RequestBody CreateBuddyEventRequestV1 request) {
+		@Valid @RequestBody CreateBuddyEventRequest request) {
 		// 1. JWT 유저 토큰에서 사용자 식별 ID 가져오기
 		Random random = new Random();
 		Long userId = random.nextLong();
 
 		// 2. Use Case Command 전달.
-		CreatedBuddyEvent createdBuddyEvent = createBuddyEventUseCase.createBuddyEventV1(
+		CreatedBuddyEvent createdBuddyEvent = createBuddyEventUseCase.createBuddyEvent(
 			CreateBuddyEventCommand.builder()
 				.userId(userId)
 				.eventStartDate(request.getEventStartDate())
