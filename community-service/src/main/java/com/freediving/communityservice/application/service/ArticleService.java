@@ -27,8 +27,7 @@ public class ArticleService implements ArticleUseCase {
 	//Query
 	@Override
 	public ArticleContent getArticle(ArticleReadCommand articleReadCommand) {
-		//return articleReadPort.readArticle(articleReadCommand);
-		return null;
+		return articleReadPort.readArticle(articleReadCommand);
 	}
 
 	@Override

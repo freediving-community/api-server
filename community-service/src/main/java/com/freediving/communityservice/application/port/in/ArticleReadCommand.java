@@ -11,12 +11,16 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class ArticleReadCommand extends SelfValidating<ArticleReadCommand> {
 
+	private final Long boardId;
+	private final Long articleId;
 	private final boolean isEnabledOnly;
-	private final boolean withComment;
+	private final boolean withoutComment;
 
-	public ArticleReadCommand(boolean isEnabledOnly, boolean withComment) {
+	public ArticleReadCommand(Long boardId, Long articleId, boolean isEnabledOnly, boolean withoutComment) {
+		this.boardId = boardId;
+		this.articleId = articleId;
 		this.isEnabledOnly = isEnabledOnly;
-		this.withComment = withComment;
+		this.withoutComment = withoutComment;
 		this.validateSelf();
 	}
 }
