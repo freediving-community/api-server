@@ -40,7 +40,10 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
     database: postgresql
-  sql.init.mode: always
+  sql:
+    init:
+      encoding: utf-8
+      mode: always
   output:
     ansi:
       enabled: always # IntelliJ CE Console Color

@@ -5,11 +5,14 @@ import static com.freediving.communityservice.adapter.out.persistence.comment.QC
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
+import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
+import com.freediving.communityservice.adapter.out.dto.article.QArticleContentWithComment;
 import com.freediving.communityservice.application.port.in.ArticleReadCommand;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
 import com.freediving.communityservice.application.port.out.ArticleReadPort;
 import com.freediving.communityservice.application.port.out.ArticleWritePort;
 import com.freediving.communityservice.domain.Article;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -40,10 +43,32 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 	}
 
 	@Override
-	public ArticleContent readArticle(ArticleReadCommand articleReadCommand) {
+	public ArticleContentWithComment readArticle(ArticleReadCommand articleReadCommand) {
 
-		ArticleJpaEntity foundArticle = jpaQueryFactory
-			.select(articleJpaEntity)
+		ArticleContentWithComment foundArticle = jpaQueryFactory
+			.select(
+				new QArticleContentWithComment(
+				articleJpaEntity.articleId,
+				articleJpaEntity.title,
+				articleJpaEntity.content,
+				articleJpaEntity.authorName,
+				articleJpaEntity.viewCount,
+				articleJpaEntity.likeCount,
+				articleJpaEntity.enableComment,
+				articleJpaEntity.createdAt,
+				articleJpaEntity.createdBy,
+				articleJpaEntity.modifiedAt,
+				articleJpaEntity.modifiedBy,
+				commentJpaEntity.commentId,
+				commentJpaEntity.parentId,
+				commentJpaEntity.content,
+				commentJpaEntity.visible,
+				commentJpaEntity.createdAt,
+				commentJpaEntity.createdBy,
+				commentJpaEntity.modifiedAt,
+				commentJpaEntity.modifiedBy
+				)
+			)
 			.from(articleJpaEntity)
 			.leftJoin(commentJpaEntity).on(articleJpaEntity.articleId.eq(commentJpaEntity.articleId))
 			.where(
@@ -52,9 +77,9 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 				articleJpaEntity.enableComment.isTrue(),
 				articleJpaEntity.visible.isTrue()
 			)
-			.fetchFirst();
-
-		return null;
+			.fetchOne();
+		// articlePersistenceMapper.mapToDomain(foundArticle);
+		return foundArticle;
 	}
 
 	private BooleanExpression boardIdEq(Long boardId) {

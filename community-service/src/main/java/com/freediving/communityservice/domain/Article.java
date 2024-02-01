@@ -36,4 +36,5 @@ public class Article {
 
 	private final Long modifiedBy;
 
+	private final Comment comment;
 }

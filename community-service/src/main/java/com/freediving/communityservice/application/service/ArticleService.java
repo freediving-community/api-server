@@ -2,7 +2,6 @@ package com.freediving.communityservice.application.service;
 
 import org.springframework.stereotype.Service;
 
-import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
 import com.freediving.communityservice.adapter.out.persistence.article.ArticlePersistenceMapper;
 import com.freediving.communityservice.application.port.in.ArticleReadCommand;
@@ -26,7 +25,7 @@ public class ArticleService implements ArticleUseCase {
 
 	//Query
 	@Override
-	public ArticleContent getArticle(ArticleReadCommand articleReadCommand) {
+	public ArticleContentWithComment getArticle(ArticleReadCommand articleReadCommand) {
 		return articleReadPort.readArticle(articleReadCommand);
 	}
 

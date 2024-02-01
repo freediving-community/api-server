@@ -22,3 +22,6 @@ values ( 'buddy_introduce', '모집장 한마디', '버디모집 소개글', 4 ,
 
 insert into HASHTAG values (current_timestamp(), 1, 0, 'test001');
 insert into HASHTAG values (current_timestamp(), 2, 0, 'test002');
+
+insert into comment ( article_id, parent_id, content, visible, created_at, created_by, modified_at, modified_by )
+values (1, null, '한마디123', true, current_timestamp(), 22091008, current_timestamp(), 22091008);

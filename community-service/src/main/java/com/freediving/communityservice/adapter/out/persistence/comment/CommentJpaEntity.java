@@ -39,13 +39,17 @@ public class CommentJpaEntity {
 	@Column(nullable = false)
 	private Long articleId;
 
-	// @Setter
+	@Column
+	private Long parentId;
+
 	// @ManyToOne(optional = false)
 	// private ArticleJpaEntity articleJpaEntity;
 
-	@Setter
 	@Column(nullable = false, length = 500)
 	private String content;
+
+	@Column(nullable = false, columnDefinition = "boolean default true")
+	private boolean visible;
 
 	@Column(nullable = false)
 	@CreatedDate
