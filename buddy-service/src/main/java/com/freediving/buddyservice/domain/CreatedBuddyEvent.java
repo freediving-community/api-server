@@ -16,7 +16,7 @@ import lombok.Getter;
 @Builder
 @Getter
 
-@Schema(title = "버디 이벤트 생성 결과 ( CreatedBuddyEvent )", description = "POST /v1/event 버디 이벤트 생성 결과")
+@Schema(title = "버디 이벤트 생성 결과 ( CreatedBuddyEvent )", description = "POST /v1/event 버디 이벤트 생성 결과", hidden = true)
 public class CreatedBuddyEvent {
 
 	@Schema(description = "이벤트 ID", example = "12345")
