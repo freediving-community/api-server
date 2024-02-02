@@ -26,8 +26,6 @@ public class Article {
 
 	private final boolean visible;
 
-	// private final List<Comment> comments;
-
 	private final LocalDateTime createdAt;
 
 	private final Long createdBy;
@@ -36,5 +34,4 @@ public class Article {
 
 	private final Long modifiedBy;
 
-	private final Comment comment;
 }

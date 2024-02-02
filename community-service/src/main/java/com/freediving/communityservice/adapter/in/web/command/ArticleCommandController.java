@@ -37,7 +37,7 @@ public class ArticleCommandController {
 				.authorName(articleWriteRequest.getAuthorName())
 				.hashtagIds(articleWriteRequest.getHashtagIds())
 				.enableComment(articleWriteRequest.isEnableComment())
-				.createdBy(userProvider.getUserId())
+				.createdBy(userProvider.getRequestUserId())
 				.build());
 
 		// return ResponseEntity.ok(articleId);

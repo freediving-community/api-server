@@ -7,11 +7,11 @@ import lombok.Setter;
 @Setter
 public class UserProvider {
 
-	private Long userId;
+	private Long requestUserId;
 	private RoleLevel roleLevel;
 
-	public UserProvider(Long userId, RoleLevel roleLevel) {
-		this.userId = userId;
+	public UserProvider(Long requestUserId, RoleLevel roleLevel) {
+		this.requestUserId = requestUserId;
 		this.roleLevel = roleLevel != null ? roleLevel : RoleLevel.ANONYMOUS;
 	}
 

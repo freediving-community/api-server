@@ -1,15 +1,29 @@
 package com.freediving.communityservice.domain;
 
-import lombok.AccessLevel;
+import java.time.LocalDateTime;
+
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class Comment {
-	private final Long id;
+	//TODO hasChild 추가 필요.
+	private final Long commentId;
+
+	private final Long articleId;
+
+	private final Long parentId;
 
 	private final String content;
 
-	private final boolean secret;
+	private final boolean visible;
+
+	private final LocalDateTime createdAt;
+
+	private final Long createdBy;
+
+	private final LocalDateTime modifiedAt;
+
+	private final Long modifiedBy;
 }

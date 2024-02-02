@@ -3,16 +3,18 @@ package com.freediving.communityservice.adapter.out.persistence.article;
 import static com.freediving.communityservice.adapter.out.persistence.article.QArticleJpaEntity.*;
 import static com.freediving.communityservice.adapter.out.persistence.comment.QCommentJpaEntity.*;
 
+import java.util.List;
+
 import com.freediving.common.config.annotation.PersistenceAdapter;
-import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
-import com.freediving.communityservice.adapter.out.dto.article.QArticleContentWithComment;
+import com.freediving.communityservice.adapter.out.persistence.comment.CommentJpaEntity;
+import com.freediving.communityservice.adapter.out.persistence.comment.CommentPersistenceMapper;
 import com.freediving.communityservice.application.port.in.ArticleReadCommand;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
 import com.freediving.communityservice.application.port.out.ArticleReadPort;
 import com.freediving.communityservice.application.port.out.ArticleWritePort;
 import com.freediving.communityservice.domain.Article;
-import com.querydsl.core.Tuple;
+import com.freediving.communityservice.domain.Comment;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -24,7 +26,8 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 
 	private final ArticleRepository articleRepository;
 	private final JPAQueryFactory jpaQueryFactory;
-	private final ArticlePersistenceMapper articlePersistenceMapper;
+	private final ArticlePersistenceMapper articleMapper;
+	private final CommentPersistenceMapper commentMapper;
 
 	@Override
 	public Article writeArticle(ArticleWriteCommand articleWriteCommand) {
@@ -39,13 +42,39 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 			)
 		);
 
-		return articlePersistenceMapper.mapToDomain(savedArticle);
+		return articleMapper.mapToDomain(savedArticle);
 	}
 
 	@Override
 	public ArticleContentWithComment readArticle(ArticleReadCommand articleReadCommand) {
 
-		ArticleContentWithComment foundArticle = jpaQueryFactory
+		ArticleJpaEntity foundArticle = jpaQueryFactory
+			.selectFrom(articleJpaEntity)
+			.where(
+				boardIdEq(articleReadCommand.getBoardId()),
+				articleIdEq(articleReadCommand.getArticleId()),
+				articleJpaEntity.enableComment.isTrue(),
+				articleJpaEntity.visible.isTrue()
+			).fetchOne();
+
+		if(foundArticle == null) {
+			throw new IllegalArgumentException("");
+		}
+
+		List<CommentJpaEntity> articleComments = jpaQueryFactory
+			.selectFrom(commentJpaEntity)
+			.where(
+				commentJpaEntity.articleId.eq(foundArticle.getArticleId()),
+				commentJpaEntity.visible.isTrue()
+			).fetch();
+
+		Article article = articleMapper.mapToDomain(foundArticle);
+		List<Comment> comments = articleComments.stream()
+			.map(commentMapper::mapToDomain)
+			.toList();
+		return new ArticleContentWithComment(article, comments);
+
+		/*ArticleContentWithComment foundArticle = jpaQueryFactory
 			.select(
 				new QArticleContentWithComment(
 				articleJpaEntity.articleId,
@@ -79,7 +108,7 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 			)
 			.fetchOne();
 		// articlePersistenceMapper.mapToDomain(foundArticle);
-		return foundArticle;
+		return foundArticle;*/
 	}
 
 	private BooleanExpression boardIdEq(Long boardId) {
