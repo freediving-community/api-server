@@ -41,7 +41,7 @@ public class SwaggerConfig {
 			.name("Authorization");
 
 		SecurityRequirement securityRequirement = new SecurityRequirement()
-			.addList("bearerAuth");
+			.addList("Access Token");
 
 		return new OpenAPI().addServersItem(new Server().url(url).description(description))
 			.components(
