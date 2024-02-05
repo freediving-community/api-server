@@ -31,13 +31,13 @@ public class ArticleCommandController {
 		@RequestBody ArticleWriteRequest articleWriteRequest) {
 		Long articleId = articleUseCase.writeArticle(
 			ArticleWriteCommand.builder()
+				.userProvider(userProvider)
 				.boardId(boardId)
 				.title(articleWriteRequest.getTitle())
 				.content(articleWriteRequest.getContent())
 				.authorName(articleWriteRequest.getAuthorName())
 				.hashtagIds(articleWriteRequest.getHashtagIds())
 				.enableComment(articleWriteRequest.isEnableComment())
-				.createdBy(userProvider.getRequestUserId())
 				.build());
 
 		// return ResponseEntity.ok(articleId);

@@ -64,6 +64,9 @@ public class ArticleJpaEntity {
 	@Column(nullable = false)
 	private int likeCount;
 
+	@Column(nullable = false)
+	private int commentCount;
+
 	@Column(nullable = false, columnDefinition = "boolean default true")
 	private boolean enableComment;
 
@@ -96,7 +99,7 @@ public class ArticleJpaEntity {
 
 	public static ArticleJpaEntity of(String title, String content, Long boardId, String authorName,
 		boolean enableComment, Long createdBy) {
-		return new ArticleJpaEntity(null, title, content, boardId, authorName, 0, 0, enableComment,
+		return new ArticleJpaEntity(null, title, content, boardId, authorName, 0, 0, 0, enableComment,
 			true,
 			null, createdBy, null, 0L);
 	}
