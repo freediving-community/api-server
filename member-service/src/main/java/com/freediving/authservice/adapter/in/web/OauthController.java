@@ -34,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
  * DATE              AUTHOR             NOTE
  * ===========================================================
  * 2024/01/17        sasca37       최초 생성
+ * 2024/02/06		 sasca37	   @PathVariable name 속성 지정 (SpringBoot 3.2 파라미터 인식 문제)
  */
 
 @WebAdapter
@@ -64,8 +65,8 @@ public class OauthController {
 			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
 		})
 	@GetMapping("/{socialType}")
-	public ResponseEntity<ResponseJsonObject<Void>> redirectAuthLogin(@PathVariable String socialType,
-		HttpServletResponse response) {
+	public ResponseEntity<ResponseJsonObject<Void>> redirectAuthLogin(
+		@PathVariable(name = "socialType") String socialType, HttpServletResponse response) {
 		String redirectUrl = oauthUseCase.provideOauthType(OauthType.from(socialType));
 		try {
 			response.sendRedirect(redirectUrl);
@@ -91,7 +92,8 @@ public class OauthController {
 			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
 		})
 	@GetMapping("/login/{socialType}")
-	public ResponseEntity<ResponseJsonObject<UserLoginResponse>> login(@PathVariable String socialType,
+	public ResponseEntity<ResponseJsonObject<UserLoginResponse>> login(
+		@PathVariable(name = "socialType") String socialType,
 		@RequestParam("code") String code) {
 		OauthUser oauthUser = oauthUseCase.login(OauthType.from(socialType), code);
 

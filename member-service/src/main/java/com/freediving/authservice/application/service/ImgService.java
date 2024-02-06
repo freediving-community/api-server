@@ -31,10 +31,10 @@ public class ImgService implements ImgUseCase {
 
 	@Override
 	public String createPreSignedUrl(CreateImgCommand createImgCommand) {
-		// TODO : 유저 식별 아이디 + UUID 조합으로 파일명 생성
-		Long userId = 1L;
+		Long userId = createImgCommand.getUserId();
 		String uniqueFileName = ImgUtils.createUniqueFileName(userId);
-		String imgPath = ImgUtils.createPath(createImgCommand.getDirectory(), uniqueFileName);
+		String ext = createImgCommand.getExt();
+		String imgPath = ImgUtils.createPath(createImgCommand.getDirectory(), uniqueFileName, ext);
 		return imgPort.generatePreSignedUrl(imgPath);
 	}
 }

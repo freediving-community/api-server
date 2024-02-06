@@ -17,6 +17,10 @@ import jakarta.validation.constraints.NotNull;
 public record CreateImgRequest(
 	@Schema(description = "이미지 저장 디렉토리명", example = "licence")
 	@NotNull(message = "디렉토리명은 필수 입니다.")
-	String directory
+	String directory,
+
+	@Schema(description = "파일 확장자명", example = "jpg")
+	@NotNull(message = "파일 확장자명은 필수 입니다.")
+	String ext
 ) {
 }

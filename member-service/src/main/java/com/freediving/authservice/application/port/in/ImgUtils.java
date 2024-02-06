@@ -16,8 +16,8 @@ public class ImgUtils {
 
 	private static final long EXPIRED_ACCESS_TIME = 2 * 60 * 1000L;
 
-	public static String createPath(String directory, String uniqueImgName) {
-		return String.format("%s/%s", directory, uniqueImgName);
+	public static String createPath(String directory, String uniqueImgName, String ext) {
+		return String.format("images/%s/%s.%s", directory, uniqueImgName, ext);
 	}
 
 	public static Date getImgExpiration() {
