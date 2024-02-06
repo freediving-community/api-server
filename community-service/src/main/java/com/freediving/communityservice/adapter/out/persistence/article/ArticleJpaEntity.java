@@ -73,11 +73,6 @@ public class ArticleJpaEntity {
 	@Column(nullable = false, columnDefinition = "boolean default true")
 	private boolean visible;
 
-	// @OrderBy("id")
-	// @OneToMany(mappedBy = "commentId", cascade = CascadeType.ALL)
-	// @ToString.Exclude
-	// private List<CommentJpaEntity> comments = new ArrayList<>();
-
 	// Auditing
 	@CreatedDate
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -98,10 +93,10 @@ public class ArticleJpaEntity {
 	private Long modifiedBy;
 
 	public static ArticleJpaEntity of(String title, String content, Long boardId, String authorName,
-		boolean enableComment, Long createdBy) {
+		boolean enableComment) {
 		return new ArticleJpaEntity(null, title, content, boardId, authorName, 0, 0, 0, enableComment,
 			true,
-			null, createdBy, null, 0L);
+			null, null, null, null);
 	}
 
 	@Override

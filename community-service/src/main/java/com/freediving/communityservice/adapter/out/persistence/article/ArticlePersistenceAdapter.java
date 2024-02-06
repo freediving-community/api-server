@@ -37,8 +37,7 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 				articleWriteCommand.getContent(),
 				articleWriteCommand.getBoardId(),
 				articleWriteCommand.getAuthorName(),
-				articleWriteCommand.isEnableComment(),
-				articleWriteCommand.getUserProvider().getRequestUserId()
+				articleWriteCommand.isEnableComment()
 			)
 		);
 
@@ -74,11 +73,10 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 				commentJpaEntity.visible.isTrue()
 			).fetch();
 
-		Article article = readArticle(articleReadCommand);
 		List<Comment> comments = articleComments.stream()
 			.map(commentMapper::mapToDomain)
 			.toList();
-		return new ArticleContentWithComment(article, comments);
+		return new ArticleContentWithComment(foundArticle, comments);
 
 		/*ArticleContentWithComment foundArticle = jpaQueryFactory
 			.select(
@@ -118,7 +116,7 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 	}
 
 	private BooleanExpression boardIdEq(Long boardId) {
-		return articleJpaEntity.articleId.eq(boardId);
+		return articleJpaEntity.boardId.eq(boardId);
 	}
 
 	private BooleanExpression articleIdEq(Long articleId) {

@@ -49,4 +49,10 @@ public class Comment {
 				}
 			}).collect(Collectors.toList());
 	}
+
+	public void canCreateReplyComment() {
+		if( ! this.isVisible() )
+			throw new IllegalArgumentException("숨긴 댓글에는 답글을 작성할 수 없습니다.");
+	}
+
 }

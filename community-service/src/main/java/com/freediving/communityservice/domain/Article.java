@@ -34,4 +34,8 @@ public class Article {
 
 	private final Long modifiedBy;
 
+	public void canCreateComment() {
+		if( ! this.enableComment )
+			throw new IllegalArgumentException("댓글을 작성할 수 없는 게시물입니다.");
+	}
 }

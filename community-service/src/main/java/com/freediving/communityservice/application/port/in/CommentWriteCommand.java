@@ -40,4 +40,9 @@ public class CommentWriteCommand extends SelfValidating<CommentWriteCommand> {
 		this.visible = visible;
 		this.validateSelf();
 	}
+
+	public boolean hasParentComment() {
+		return this.parentId != null;
+	}
+
 }

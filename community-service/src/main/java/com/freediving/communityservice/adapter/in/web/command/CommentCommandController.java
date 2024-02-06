@@ -12,6 +12,7 @@ import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.dto.comment.CommentResponse;
 import com.freediving.communityservice.application.port.in.CommentUseCase;
 import com.freediving.communityservice.application.port.in.CommentWriteCommand;
+import com.freediving.communityservice.domain.Comment;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,13 +24,13 @@ public class CommentCommandController {
 	private final CommentUseCase commentUseCase;
 
 	@PostMapping("/boards/{boardId}/articles/{articleId}/comments")
-	public ResponseEntity<CommentResponse> writeComment(
+	public ResponseEntity<Comment> writeComment(
 		UserProvider userProvider,
 		@PathVariable("boardId") Long boardId,
 		@PathVariable("articleId") Long articleId,
 		@RequestBody CommentWriteRequest commentWriteRequest
 	) {
-		CommentResponse comment = commentUseCase.writeComment(
+		Comment comment = commentUseCase.writeComment(
 			CommentWriteCommand.builder()
 				.requestUser(userProvider)
 				.boardId(boardId)
@@ -39,6 +40,7 @@ public class CommentCommandController {
 				.visible(commentWriteRequest.isVisible())
 				.build()
 		);
+
 		return ResponseEntity.ok(comment);
 	}
 

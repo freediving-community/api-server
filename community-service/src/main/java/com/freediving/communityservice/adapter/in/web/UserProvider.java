@@ -1,14 +1,24 @@
 package com.freediving.communityservice.adapter.in.web;
 
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Component
+@RequestScope
 public class UserProvider {
 
 	private Long requestUserId;
 	private RoleLevel roleLevel;
+
+	public UserProvider() {
+		this.requestUserId = -1L;
+		this.roleLevel = RoleLevel.ANONYMOUS;
+	}
 
 	public UserProvider(Long requestUserId, RoleLevel roleLevel) {
 		this.requestUserId = requestUserId;
