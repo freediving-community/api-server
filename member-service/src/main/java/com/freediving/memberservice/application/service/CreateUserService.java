@@ -4,7 +4,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.freediving.common.config.annotation.UseCase;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
+import com.freediving.memberservice.application.port.in.CreateUserLicenceImgUrlCommand;
+import com.freediving.memberservice.application.port.in.CreateUserLicenceLevelCommand;
+import com.freediving.memberservice.application.port.in.CreateUserLicenceUseCase;
 import com.freediving.memberservice.application.port.in.CreateUserUseCase;
+import com.freediving.memberservice.application.port.out.CreateUserLicencePort;
 import com.freediving.memberservice.application.port.out.CreateUserPort;
 import com.freediving.memberservice.domain.User;
 
@@ -23,13 +27,26 @@ import lombok.RequiredArgsConstructor;
 @UseCase
 @RequiredArgsConstructor
 @Transactional
-public class CreateUserService implements CreateUserUseCase {
+public class CreateUserService implements CreateUserUseCase, CreateUserLicenceUseCase {
 
 	private final CreateUserPort createUserPort;
+	private final CreateUserLicencePort createUserLicencePort;
 
 	@Override
 	public User createOrGetUser(CreateUserCommand command) {
 		User user = createUserPort.createOrGetUser(command);
 		return user;
+	}
+
+	@Override
+	public void createUserLicenceLevel(Long userId, CreateUserLicenceLevelCommand command) {
+		Integer licenceLevel = command.getLicenceLevel();
+		createUserLicencePort.createUserLicenceLevel(userId, licenceLevel);
+	}
+
+	@Override
+	public void createUserLicenceImgUrl(Long userId, CreateUserLicenceImgUrlCommand command) {
+		String licenceImgUrl = command.getLicenceImgUrl();
+		createUserLicencePort.createUserLicenceImgUrl(userId, licenceImgUrl);
 	}
 }

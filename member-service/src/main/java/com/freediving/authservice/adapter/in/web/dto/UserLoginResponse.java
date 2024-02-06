@@ -1,6 +1,5 @@
 package com.freediving.authservice.adapter.in.web.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freediving.authservice.domain.OauthType;
 import com.freediving.authservice.domain.OauthUser;
 
@@ -33,23 +32,14 @@ public class UserLoginResponse {
 	@Schema(description = "이메일", example = "sasca37@naver.com")
 	private String email;
 
-	@Schema(description = "이메일", example = "https://aws-s3.com")
+	@Schema(description = "프로필 이미지 URL", example = "https://aws-s3.com")
 	private String profileImgUrl;
 
-	@JsonIgnore
-	// @Schema(description = "액세스 토큰", example = "aaaaaaa.bbbbbbb.ccccccc")
-	private String accessToken;
-
-	@JsonIgnore
-	// @Schema(description = "리프레시 토큰", example = "aaaaaaa.bbbbbbb.ccccccc")
-	private String refreshToken;
-
 	@Schema(description = "유저 권한", example = "0")
-	private String roleLevel;
+	private Integer roleLevel;
 
 	public static UserLoginResponse from(OauthUser oauthUser) {
 		return new UserLoginResponse(oauthUser.getUserId(), oauthUser.getOauthType(), oauthUser.getEmail(),
-			oauthUser.getProfileImgUrl(), oauthUser.getAccessToken(), oauthUser.getRefreshToken(),
-			oauthUser.getRoleLevel());
+			oauthUser.getProfileImgUrl(), oauthUser.getRoleLevel());
 	}
 }

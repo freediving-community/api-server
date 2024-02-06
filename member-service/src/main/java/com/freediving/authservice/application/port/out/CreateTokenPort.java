@@ -13,6 +13,6 @@ import com.freediving.authservice.domain.Token;
  */
 public interface CreateTokenPort {
 
-	Token createTokens(String userId, String roleLevel);
+	Token createTokens(String userId, Integer roleLevel);
 
 }

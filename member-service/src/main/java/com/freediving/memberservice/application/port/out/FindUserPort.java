@@ -1,6 +1,5 @@
 package com.freediving.memberservice.application.port.out;
 
-import com.freediving.memberservice.domain.OauthType;
 import com.freediving.memberservice.domain.User;
 
 /**
@@ -15,7 +14,5 @@ import com.freediving.memberservice.domain.User;
 
 public interface FindUserPort {
 
-	User findUserById(Long userId);
-
-	User findUserByEmailAndOauthType(String email, OauthType oauthType);
+	User findUserDetailById(Long userId);
 }

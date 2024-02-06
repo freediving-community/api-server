@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.out.CreateUserPort;
 import com.freediving.memberservice.domain.User;
+import com.freediving.memberservice.fixture.UserFixture;
 
 import jakarta.validation.ConstraintViolationException;
 
@@ -43,8 +44,7 @@ class CreateUserServiceUnitTest {
 	void createOrGetUserSuccess() {
 		CreateUserCommand command = createCommand(VALID_OAUTH_TYPE, VALID_EMAIL, OPTIONAL_PROFILE_IMG_URL);
 
-		User expectedUser = new User(1L, VALID_OAUTH_TYPE, VALID_EMAIL, OPTIONAL_PROFILE_IMG_URL,
-			DEFAULT_ROLE_LEVEL);
+		User expectedUser = UserFixture.createUserFromCommand(command);
 
 		when(createUserPort.createOrGetUser(command)).thenReturn(expectedUser);
 

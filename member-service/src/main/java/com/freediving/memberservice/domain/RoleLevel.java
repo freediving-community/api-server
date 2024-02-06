@@ -15,9 +15,9 @@ import lombok.Getter;
 @Getter
 public enum RoleLevel {
 
-	ANONYMOUS(-1),    // 비로그인 사용자
+	ANONYMOUS(-1),            // 비로그인 사용자
 
-	UNREGISTER(5),    // 라이센스 미등록 사용자
+	UNREGISTER(5),            // 라이센스 미등록 사용자
 
 	LEVEL0(10),
 	LEVEL1(15),
@@ -28,9 +28,9 @@ public enum RoleLevel {
 
 	ADMIN(99);
 
-	private final int code;
+	private final int level;
 
-	RoleLevel(int code) {
-		this.code = code;
+	RoleLevel(int level) {
+		this.level = level;
 	}
 }

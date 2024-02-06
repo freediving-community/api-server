@@ -28,7 +28,7 @@ public class CreateTokenPersistenceAdapter implements CreateTokenPort {
 	private String key;
 
 	@Override
-	public Token createTokens(String userId, String roleLevel) {
+	public Token createTokens(String userId, Integer roleLevel) {
 		String accessToken = JwtTokenUtils.generateAccessToken(userId, roleLevel, key);
 		String refreshToken = JwtTokenUtils.generateRefreshToken(userId, roleLevel, key);
 

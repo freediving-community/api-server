@@ -53,6 +53,6 @@ class UserJpaRepositoryTest {
 		assertThat(findUser).isPresent();
 		assertThat(findUser.get().getEmail()).isEqualTo(VALID_EMAIL);
 		assertThat(findUser.get().getOauthType()).isEqualTo(VALID_OAUTH_TYPE);
-		assertThat(findUser.get().getRoleLevel()).isEqualTo(DEFAULT_ROLE_LEVEL);
+		assertThat(findUser.get().getRole()).isEqualTo(DEFAULT_ROLE_LEVEL);
 	}
 }

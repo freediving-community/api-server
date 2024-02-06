@@ -44,12 +44,12 @@ class FindUserControllerUnitTest {
 	@WithMockCustomUser(roleLevel = RoleLevel.UNREGISTER)
 	void findCommonUserByIdSuccess() throws Exception {
 		User user = getUserDetails();
-		when(findUserUseCase.findUserById(any())).thenReturn(user);
+		when(findUserUseCase.findUserDetailByQuery(any())).thenReturn(user);
 		mockMvc.perform(get("/v1/users/me"))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.email").value(VALID_EMAIL))
-			.andExpect(jsonPath("$.oauthType").value(VALID_OAUTH_TYPE.name()))
-			.andExpect(jsonPath("$.roleLevel").value(RoleLevel.UNREGISTER.name()))
+			.andExpect(jsonPath("$.data.email").value(VALID_EMAIL))
+			.andExpect(jsonPath("$.data.oauthType").value(VALID_OAUTH_TYPE.name()))
+			.andExpect(jsonPath("$.data.roleLevel").value(RoleLevel.UNREGISTER.getLevel()))
 			.andDo(print());
 	}
 
@@ -58,12 +58,12 @@ class FindUserControllerUnitTest {
 	@WithMockCustomUser(roleLevel = RoleLevel.ADMIN)
 	void findAdminUserByIdSuccess() throws Exception {
 		User user = getUserDetails();
-		when(findUserUseCase.findUserById(any())).thenReturn(user);
+		when(findUserUseCase.findUserDetailByQuery(any())).thenReturn(user);
 		mockMvc.perform(get("/v1/users/me"))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.email").value(VALID_EMAIL))
-			.andExpect(jsonPath("$.oauthType").value(VALID_OAUTH_TYPE.name()))
-			.andExpect(jsonPath("$.roleLevel").value(RoleLevel.ADMIN.name()))
+			.andExpect(jsonPath("$.data.email").value(VALID_EMAIL))
+			.andExpect(jsonPath("$.data.oauthType").value(VALID_OAUTH_TYPE.name()))
+			.andExpect(jsonPath("$.data.roleLevel").value(RoleLevel.ADMIN.getLevel()))
 			.andDo(print());
 	}
 

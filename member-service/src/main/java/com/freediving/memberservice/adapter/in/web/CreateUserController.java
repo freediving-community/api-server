@@ -1,18 +1,27 @@
 package com.freediving.memberservice.adapter.in.web;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.common.config.annotation.WebAdapter;
+import com.freediving.memberservice.adapter.in.web.dto.CreateUserLicenceImgUrlRequest;
+import com.freediving.memberservice.adapter.in.web.dto.CreateUserLicenceLevelRequest;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserRequest;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
+import com.freediving.memberservice.application.port.in.CreateUserLicenceImgUrlCommand;
+import com.freediving.memberservice.application.port.in.CreateUserLicenceLevelCommand;
+import com.freediving.memberservice.application.port.in.CreateUserLicenceUseCase;
 import com.freediving.memberservice.application.port.in.CreateUserUseCase;
 import com.freediving.memberservice.domain.User;
 
 import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -30,10 +39,11 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1")
-@Hidden
+@Tag(name = "User")
 public class CreateUserController {
 
 	private final CreateUserUseCase createUserUseCase;
+	private final CreateUserLicenceUseCase createUserLicenceUseCase;
 
 	/**
 	 * @Author           : sasca37
@@ -44,6 +54,7 @@ public class CreateUserController {
 	 */
 
 	@PostMapping("/service/users/register")
+	@Hidden
 	public CreateUserResponse createUser(@Valid @RequestBody CreateUserRequest request) {
 		CreateUserCommand command = CreateUserCommand.builder()
 			.oauthType(request.getOauthType())
@@ -54,4 +65,45 @@ public class CreateUserController {
 		return CreateUserResponse.from(user);
 	}
 
+	@Operation(summary = "자격증 레벨 등록 API"
+		, description = "자격증 레벨 정보를 request로 요청하여 자격증 레벨을 등록한다. <br/>"
+		+ "자격증 레벨 : null (미입력), 0 : 자격증 없음, 1 : 1레벨, 2 : 2레벨, 3 : 3레벨, 4 : 4레벨, 5 : 강사",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
+			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
+		})
+	@PostMapping("/users/licence/level")
+	public void createLicenceLevel(@Valid @RequestBody CreateUserLicenceLevelRequest request,
+		@AuthenticationPrincipal User user) {
+
+		Long userId = user.userId();
+		CreateUserLicenceLevelCommand command = CreateUserLicenceLevelCommand.builder()
+			.licenceLevel(request.getLicenceLevel())
+			.build();
+
+		createUserLicenceUseCase.createUserLicenceLevel(userId, command);
+	}
+
+	@Operation(summary = "자격증 프로필 이미지 URL 등록 API"
+		, description = "유저가 업로드한 이미지 URL 정보를 받아 서버에 등록한다. <br/>"
+		+ "자격증 레벨 API가 등록되어있지 않으면 (null) 400 오류가 발생한다.",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
+			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
+		})
+	@PostMapping("/users/licence/img")
+	public void createLicenceImgUrl(@Valid @RequestBody CreateUserLicenceImgUrlRequest request,
+		@AuthenticationPrincipal User user) {
+
+		Long userId = user.userId();
+		CreateUserLicenceImgUrlCommand command = CreateUserLicenceImgUrlCommand.builder()
+			.licenceImgUrl(request.getLicenceImgUrl())
+			.build();
+
+		createUserLicenceUseCase.createUserLicenceImgUrl(userId, command);
+	}
 }

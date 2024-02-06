@@ -49,4 +49,16 @@ public class UserLicenceJpaEntity extends AuditableEntity {
 	void prePersist() {
 		this.confirmTF = false;
 	}
+
+	public void updateLicenceImgUrl(String licenceImgUrl) {
+		this.licenceImgUrl = licenceImgUrl;
+	}
+
+	public static UserLicenceJpaEntity createUserLicenceJpaEntity(Integer licenceLevel) {
+		return new UserLicenceJpaEntity(licenceLevel);
+	}
+
+	private UserLicenceJpaEntity(Integer licenceLevel) {
+		this.licenceLevel = licenceLevel;
+	}
 }

@@ -71,7 +71,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		}
 		FindUserQuery findUserQuery = FindUserQuery.builder().userId(userId).build();
-		User user = findUserService.findUserById(findUserQuery);
+		User user = findUserService.findUserDetailByQuery(findUserQuery);
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 			user, null, null
 		);
