@@ -38,7 +38,7 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 				articleWriteCommand.getBoardId(),
 				articleWriteCommand.getAuthorName(),
 				articleWriteCommand.isEnableComment(),
-				articleWriteCommand.getCreatedBy()
+				articleWriteCommand.getUserProvider().getRequestUserId()
 			)
 		);
 
@@ -46,8 +46,7 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 	}
 
 	@Override
-	public ArticleContentWithComment readArticle(ArticleReadCommand articleReadCommand) {
-
+	public Article readArticle(ArticleReadCommand articleReadCommand) {
 		ArticleJpaEntity foundArticle = jpaQueryFactory
 			.selectFrom(articleJpaEntity)
 			.where(
@@ -57,18 +56,25 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 				articleJpaEntity.visible.isTrue()
 			).fetchOne();
 
-		if(foundArticle == null) {
-			throw new IllegalArgumentException("");
+		if (foundArticle == null) {
+			throw new IllegalArgumentException("해당하는 게시글이 없습니다.");
 		}
+		return articleMapper.mapToDomain(foundArticle);
+	}
+
+	@Override
+	public ArticleContentWithComment readArticleWithComment(ArticleReadCommand articleReadCommand) {
+
+		Article foundArticle = readArticle(articleReadCommand);
 
 		List<CommentJpaEntity> articleComments = jpaQueryFactory
 			.selectFrom(commentJpaEntity)
 			.where(
-				commentJpaEntity.articleId.eq(foundArticle.getArticleId()),
+				commentJpaEntity.articleId.eq(foundArticle.getId()),
 				commentJpaEntity.visible.isTrue()
 			).fetch();
 
-		Article article = articleMapper.mapToDomain(foundArticle);
+		Article article = readArticle(articleReadCommand);
 		List<Comment> comments = articleComments.stream()
 			.map(commentMapper::mapToDomain)
 			.toList();

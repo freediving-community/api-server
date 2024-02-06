@@ -3,6 +3,7 @@ package com.freediving.communityservice.application.port.in;
 import java.util.List;
 
 import com.freediving.common.SelfValidating;
+import com.freediving.communityservice.adapter.in.web.UserProvider;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,7 +15,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class ArticleWriteCommand extends SelfValidating<ArticleWriteCommand> {
-	// private final Long id;
+
+	private final UserProvider userProvider;
 
 	@NotNull
 	private final Long boardId;
@@ -32,19 +34,16 @@ public class ArticleWriteCommand extends SelfValidating<ArticleWriteCommand> {
 
 	private final boolean enableComment;
 
-	@NotNull
-	private final Long createdBy;
-
-	public ArticleWriteCommand(Long boardId, String title, String content, String authorName, List<Long> hashtagIds,
-		boolean enableComment,
-		Long createdBy) {
+	public ArticleWriteCommand(UserProvider userProvider, Long boardId, String title, String content, String authorName,
+		List<Long> hashtagIds,
+		boolean enableComment) {
+		this.userProvider = userProvider;
 		this.boardId = boardId;
 		this.title = title;
 		this.content = content;
 		this.authorName = authorName;
 		this.hashtagIds = hashtagIds;
 		this.enableComment = enableComment;
-		this.createdBy = createdBy;
 		this.validateSelf();
 	}
 }
