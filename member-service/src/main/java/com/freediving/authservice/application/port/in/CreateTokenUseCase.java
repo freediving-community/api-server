@@ -26,7 +26,7 @@ public interface CreateTokenUseCase {
 	 */
 	default void provideJwtToken(OauthUser oauthUser, String key) {
 		String userId = oauthUser.getUserId();
-		String roleLevel = oauthUser.getRoleLevel();
+		Integer roleLevel = oauthUser.getRoleLevel();
 		String accessToken = JwtTokenUtils.generateAccessToken(userId, roleLevel, key);
 		String refreshToken = JwtTokenUtils.generateRefreshToken(userId, roleLevel, key);
 		oauthUser.updateTokens(accessToken, refreshToken);

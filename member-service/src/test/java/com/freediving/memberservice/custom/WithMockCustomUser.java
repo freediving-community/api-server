@@ -11,14 +11,23 @@ import com.freediving.memberservice.domain.RoleLevel;
 @Retention(RetentionPolicy.RUNTIME)
 @WithSecurityContext(factory = WithMockCustomUserSecurityContextFactory.class)
 public @interface WithMockCustomUser {
-    long id() default 1L;
+	long id() default 1L;
 
-    String email() default "sasca37@naver.com";
+	String email() default "sasca37@naver.com";
 
-    String profileImgUrl() default "";
+	String profileImgUrl() default "";
 
-    RoleLevel roleLevel() default RoleLevel.UNREGISTER;
+	String nickname() default "sasca37";
 
-    OauthType oauthType() default OauthType.KAKAO;
+	OauthType oauthType() default OauthType.KAKAO;
 
+	RoleLevel roleLevel() default RoleLevel.UNREGISTER;
+
+	int licenceLevel() default 0;
+
+	String licenceImgUrl() default "";
+
+	boolean licenceValidTF() default false;
+
+	long confirmAdminId() default 1L;
 }

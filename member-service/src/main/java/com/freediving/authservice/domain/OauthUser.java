@@ -28,7 +28,7 @@ public class OauthUser {
 	private String email;
 	private String profileImgUrl;
 
-	private String roleLevel;
+	private Integer roleLevel;
 
 	private String accessToken;
 

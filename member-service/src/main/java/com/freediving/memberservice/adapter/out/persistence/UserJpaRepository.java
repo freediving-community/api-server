@@ -29,4 +29,12 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
 	)
 	Optional<UserJpaEntity> findByOauthTypeAndEmail(@Param("oauthType") OauthType oauthType,
 		@Param("email") String email);
+
+	@Query(
+		"SELECT u " +
+			"FROM UserJpaEntity u " +
+			"LEFT JOIN FETCH u.userLicenceJpaEntity " +
+			"WHERE u.userId = :userId"
+	)
+	Optional<UserJpaEntity> findUserDetailById(@Param("userId") Long userId);
 }

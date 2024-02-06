@@ -15,6 +15,9 @@ import com.freediving.authservice.application.port.in.OauthUseCase;
 import com.freediving.authservice.domain.OauthType;
 import com.freediving.authservice.domain.OauthUser;
 import com.freediving.common.config.annotation.WebAdapter;
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.ResponseJsonObject;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -57,17 +60,18 @@ public class OauthController {
 		+ "Client Redirect URL : (/auth/kakao, /auth/google, /auth/naver)",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
-			// @ApiResponse(responseCode = "400", description = "실패"),
-			// @ApiResponse(responseCode = "500", description = "실패")
+			@ApiResponse(responseCode = "400", description = "실패 - socialType 정보 오류"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
 		})
 	@GetMapping("/{socialType}")
-	public ResponseEntity<Void> redirectAuthLogin(@PathVariable String socialType, HttpServletResponse response) {
+	public ResponseEntity<ResponseJsonObject<Void>> redirectAuthLogin(@PathVariable String socialType,
+		HttpServletResponse response) {
 		String redirectUrl = oauthUseCase.provideOauthType(OauthType.from(socialType));
-		// TODO : 예외 처리 및 응답 포맷 결정 후 보완
 		try {
 			response.sendRedirect(redirectUrl);
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			log.error("REDIRECT ERROR : {} ", e);
+			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, "redirect 작업 중 서버 오류가 발생했습니다.");
 		}
 		return ResponseEntity.ok().build();
 	}
@@ -83,20 +87,22 @@ public class OauthController {
 		, description = "사용자 로그인 후 발급되는 Code 정보를 요청하여, 사용자 정보 및 JWT 발급 정보를 응답받는다.",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
-			// @ApiResponse(responseCode = "400", description = "실패"),
-			// @ApiResponse(responseCode = "401", description = "실패"),
-			// @ApiResponse(responseCode = "500", description = "실패")
+			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
 		})
 	@GetMapping("/login/{socialType}")
-	public ResponseEntity<UserLoginResponse> login(@PathVariable String socialType, @RequestParam("code") String code) {
+	public ResponseEntity<ResponseJsonObject<UserLoginResponse>> login(@PathVariable String socialType,
+		@RequestParam("code") String code) {
 		OauthUser oauthUser = oauthUseCase.login(OauthType.from(socialType), code);
 
 		UserLoginResponse userLoginResponse = UserLoginResponse.from(oauthUser);
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("Access-Token", userLoginResponse.getAccessToken());
-		headers.add("Refresh-Token", userLoginResponse.getRefreshToken());
+		headers.add("Access-Token", oauthUser.getAccessToken());
+		headers.add("Refresh-Token", oauthUser.getRefreshToken());
 
-		return ResponseEntity.ok().headers(headers).body(userLoginResponse);
+		ResponseJsonObject<UserLoginResponse> response = new ResponseJsonObject(ServiceStatusCode.OK,
+			userLoginResponse);
+		return ResponseEntity.ok().headers(headers).body(response);
 	}
 
 }

@@ -1,6 +1,9 @@
 package com.freediving.memberservice.domain;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import com.freediving.memberservice.adapter.out.persistence.UserJpaEntity;
+import com.freediving.memberservice.adapter.out.persistence.UserLicenceJpaEntity;
 
 /**
  * @Author         : sasca37
@@ -12,11 +15,28 @@ import com.freediving.memberservice.adapter.out.persistence.UserJpaEntity;
  * 2024/01/17        sasca37       최초 생성
  */
 
-public record User(Long userId, OauthType oauthType, String email, String profileImgUrl, RoleLevel roleLevel) {
+public record User(Long userId, String email, String profileImgUrl,
+				   String nickname, OauthType oauthType, RoleLevel roleLevel,
+				   UserLicence userLicence
+) {
 
-	public static User fromJpaEntity(UserJpaEntity userJpaEntity) {
-		return new User(userJpaEntity.getId(), userJpaEntity.getOauthType(), userJpaEntity.getEmail(),
-			userJpaEntity.getProfileImgUrl(), userJpaEntity.getRoleLevel());
+	public static User fromJpaEntitySimple(UserJpaEntity userJpaEntity) {
+		return new User(userJpaEntity.getUserId(), userJpaEntity.getEmail(), userJpaEntity.getProfileImgUrl(),
+			userJpaEntity.getNickname(), userJpaEntity.getOauthType(), userJpaEntity.getRole(),
+			null
+		);
+	}
+
+	public static User fromJpaEntityDetail(UserJpaEntity userJpaEntity) {
+		UserLicenceJpaEntity licenceJpaEntity = userJpaEntity.getUserLicenceJpaEntity();
+		UserLicence userLicence = null;
+		if (!ObjectUtils.isEmpty(licenceJpaEntity)) {
+			userLicence = UserLicence.fromJpaEntity(licenceJpaEntity);
+		}
+
+		return new User(userJpaEntity.getUserId(), userJpaEntity.getEmail(), userJpaEntity.getProfileImgUrl(),
+			userJpaEntity.getNickname(), userJpaEntity.getOauthType(), userJpaEntity.getRole(), userLicence
+		);
 	}
 
 }

@@ -41,7 +41,7 @@ public class UserJpaEntity extends AuditableEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
-	private Long id;
+	private Long userId;
 
 	@Column(name = "email", nullable = false, length = 50)
 	private String email;
@@ -49,13 +49,16 @@ public class UserJpaEntity extends AuditableEntity {
 	@Column(name = "profile_img_url")
 	private String profileImgUrl;
 
+	@Column(name = "nickname", length = 16)
+	private String nickname;
+
 	@Enumerated(value = EnumType.STRING)
 	@Column(name = "oauth_type", nullable = false, length = 20)
 	private OauthType oauthType;
 
 	@Enumerated(value = EnumType.STRING)
-	@Column(name = "role_code", length = 20)
-	private RoleLevel roleLevel;
+	@Column(name = "role", length = 20)
+	private RoleLevel role;
 
 	@Embedded
 	private UserPersonalVO userPersonalVO;
@@ -68,16 +71,20 @@ public class UserJpaEntity extends AuditableEntity {
 	@JoinColumn(name = "licence_id")
 	private UserLicenceJpaEntity userLicenceJpaEntity;
 
+	public void updateUserLicenceJpaEntity(UserLicenceJpaEntity userLicenceJpaEntity) {
+		this.userLicenceJpaEntity = userLicenceJpaEntity;
+	}
+
 	public static UserJpaEntity createSimpleUser(OauthType oauthType, String email, String profileImgUrl,
 		RoleLevel roleLevel) {
 		return new UserJpaEntity(oauthType, email, profileImgUrl, roleLevel);
 	}
 
-	private UserJpaEntity(OauthType oauthType, String email, String profileImgUrl, RoleLevel roleLevel) {
+	private UserJpaEntity(OauthType oauthType, String email, String profileImgUrl, RoleLevel role) {
 		this.email = email;
 		this.profileImgUrl = profileImgUrl;
 		this.oauthType = oauthType;
-		this.roleLevel = roleLevel;
+		this.role = role;
 	}
 
 }

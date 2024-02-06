@@ -5,14 +5,13 @@ import org.springframework.stereotype.Repository;
 
 /**
  * @Author         : sasca37
- * @Date           : 2024/01/15
- * @Description    : UserToken 정보를 저장하는 인터페이스
+ * @Date           : 2024/01/28
+ * @Description    : UserLicenceJpaEntity를 저장하기 위한 인터페이스
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * ===========================================================
- * 2024/01/15        sasca37       최초 생성
+ * 2024/01/28        sasca37       최초 생성
  */
 @Repository
-public interface UserTokenJpaRepository extends JpaRepository<UserTokenJpaEntity, Long> {
-
+public interface UserLicenceJpaRepository extends JpaRepository<UserLicenceJpaEntity, Long> {
 }
