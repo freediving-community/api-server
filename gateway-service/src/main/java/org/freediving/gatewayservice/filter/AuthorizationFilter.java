@@ -65,11 +65,10 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
 
 			Token extractToken = JwtProvider.extractToken(token, key);
 			String userId = extractToken.userId();
-			String roleCode = extractToken.roleCode();
 
 			ServerHttpRequest modifiedRequest = request.mutate()
 				.header("User-Id", userId)
-				.header("Role-Level", roleCode)
+				// .header("Role-Level", roleCode)
 				// .header("email", email)
 				// .header("oauthType", oauthType)
 				.build();

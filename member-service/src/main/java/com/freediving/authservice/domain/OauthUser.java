@@ -44,10 +44,6 @@ public class OauthUser {
 		this.profileImgUrl = profileImgUrl;
 	}
 
-	public void updateAccessToken(String accessToken) {
-		this.accessToken = accessToken;
-	}
-
 	public void updateTokens(String accessToken, String refreshToken) {
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;

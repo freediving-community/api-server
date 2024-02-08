@@ -23,12 +23,12 @@ public class JwtTokenUtils {
 	private static final long EXPIRED_ACCESS_TIME = 5 * 60 * 60 * 1000L;
 	private static final long EXPIRED_REFRESH_TIME = 30 * 24 * 60 * 60 * 1000L;
 
-	public static String generateAccessToken(String userId, Integer roleLevel, String key) {
-		return generateToken(userId, roleLevel, key, EXPIRED_ACCESS_TIME);
+	public static String generateAccessToken(String userId, String oauthType, String key) {
+		return generateToken(userId, oauthType, key, EXPIRED_ACCESS_TIME);
 	}
 
-	public static String generateRefreshToken(String userId, Integer roleLevel, String key) {
-		return generateToken(userId, roleLevel, key, EXPIRED_REFRESH_TIME);
+	public static String generateRefreshToken(String userId, String oauthType, String key) {
+		return generateToken(userId, oauthType, key, EXPIRED_REFRESH_TIME);
 	}
 
 	private static Key getKey(String key) {
@@ -36,10 +36,10 @@ public class JwtTokenUtils {
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
-	private static String generateToken(String userId, Integer roleLevel, String key, long expiredTime) {
+	private static String generateToken(String userId, String oauthType, String key, long expiredTime) {
 		Claims claims = Jwts.claims();
 		claims.put("userId", userId);
-		claims.put("roleLevel", String.valueOf(roleLevel));
+		claims.put("oauthType", oauthType);
 		return Jwts.builder()
 			.setClaims(claims)
 			.setIssuedAt(new Date(System.currentTimeMillis()))
