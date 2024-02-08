@@ -1,7 +1,6 @@
 package org.freediving.gatewayservice.filter;
 
-import java.util.Map;
-
+import org.freediving.exception.GatewayException;
 import org.freediving.gatewayservice.adapter.in.web.JwtProvider;
 import org.freediving.gatewayservice.domain.Token;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,9 +27,6 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
 
 	public static final String INVALID_JWT_TOKEN = "JWT 정보가 유효하지 않습니다.";
 	public static final String EXPIRED_JWT_TOKEN = "만료된 JWT 입니다.";
-	private static final String RESULT_CODE = "result_code";
-	private static final String RESULT = "result";
-	private static final String ERROR = "ERROR";
 	private static final String NOT_FOUND_JWT_TOKEN = "JWT 정보가 없습니다.";
 	private final ObjectMapper objectMapper;
 
@@ -68,9 +64,6 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
 
 			ServerHttpRequest modifiedRequest = request.mutate()
 				.header("User-Id", userId)
-				// .header("Role-Level", roleCode)
-				// .header("email", email)
-				// .header("oauthType", oauthType)
 				.build();
 
 			return chain.filter(exchange.mutate().request(modifiedRequest).build()).then(Mono.fromRunnable(
@@ -83,11 +76,9 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
 		ServerHttpResponse response = exchange.getResponse();
 		response.setStatusCode(httpStatus);
 		response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-
-		Map<String, String> errorDetails = Map.of(RESULT_CODE, ERROR, RESULT, message);
-
+		GatewayException errorResponse = new GatewayException(httpStatus.value(), "{}", message);
 		try {
-			byte[] data = objectMapper.writeValueAsBytes(errorDetails);
+			byte[] data = objectMapper.writeValueAsBytes(errorResponse);
 			DataBuffer buffer = response.bufferFactory().wrap(data);
 			log.error("handling error: {}", message);
 			return response.writeWith(Mono.just(buffer));
