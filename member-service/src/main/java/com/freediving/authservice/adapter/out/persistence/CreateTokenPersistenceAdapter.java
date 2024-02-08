@@ -28,9 +28,9 @@ public class CreateTokenPersistenceAdapter implements CreateTokenPort {
 	private String key;
 
 	@Override
-	public Token createTokens(String userId, Integer roleLevel) {
-		String accessToken = JwtTokenUtils.generateAccessToken(userId, roleLevel, key);
-		String refreshToken = JwtTokenUtils.generateRefreshToken(userId, roleLevel, key);
+	public Token createTokens(String userId, String oauthType) {
+		String accessToken = JwtTokenUtils.generateAccessToken(userId, oauthType, key);
+		String refreshToken = JwtTokenUtils.generateRefreshToken(userId, oauthType, key);
 
 		Token token = Token.createToken(accessToken, refreshToken);
 		TokenJpaEntity tokenJpaEntity = TokenJpaEntity.createToken(token.refreshToken());

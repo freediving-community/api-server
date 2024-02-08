@@ -3,7 +3,6 @@ package com.freediving.memberservice.filter;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -37,7 +36,6 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 	private final FindUserService findUserService;
 
 	private static final String USER_ID = "User-Id";
-	private static final String ROLE_LEVEL = "Role-Level";
 
 	private static List<String> ignorePathList = List.of("/oauth", "/service/users/register", "/v3/api-docs");
 
@@ -63,9 +61,8 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 		}
 
 		final Long userId = Long.valueOf(request.getHeader(USER_ID));
-		final String roleLevel = request.getHeader(ROLE_LEVEL);
 
-		if (userId == null || StringUtils.isEmpty(roleLevel)) {
+		if (userId == null) {
 			log.error("Request header is invalid {}", requestUrl);
 			filterChain.doFilter(request, response);
 			return;

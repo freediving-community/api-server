@@ -53,7 +53,7 @@ public class OauthService implements OauthUseCase, MemberUseCase {
 		if (StringUtils.isEmpty(user.getUserId()) || user.getRoleLevel() == null) {
 			// TODO : THROW
 		}
-		Token token = createTokenPort.createTokens(user.getUserId(), user.getRoleLevel());
+		Token token = createTokenPort.createTokens(user.getUserId(), user.getOauthType().name());
 
 		user.updateTokens(token.accessToken(), token.refreshToken());
 		return user;
