@@ -2,7 +2,10 @@ package com.freediving.communityservice.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import com.freediving.communityservice.adapter.in.web.UserProvider;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -50,9 +53,19 @@ public class Comment {
 			}).collect(Collectors.toList());
 	}
 
-	public void canCreateReplyComment() {
-		if( ! this.isVisible() )
-			throw new IllegalArgumentException("숨긴 댓글에는 답글을 작성할 수 없습니다.");
+	public void checkCommentVisible(UserProvider requestUser, Long parentCommentCreatedBy, Long articleCreatedBy) {
+		if (!this.isVisible()) {
+			if (Objects.equals(requestUser.getRequestUserId(), parentCommentCreatedBy))
+				return;
+			if (Objects.equals(requestUser.getRequestUserId(), articleCreatedBy))
+				return;
+
+			throw new IllegalArgumentException("숨긴 댓글에 권한이 없습니다.");
+		}
 	}
 
+	public void isParentComment() {
+		if (this.parentId != null)
+			throw new IllegalArgumentException("답글에는 다시 답글을 달 수 없습니다.");
+	}
 }

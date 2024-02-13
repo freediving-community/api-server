@@ -41,6 +41,17 @@ public class CommentWriteCommand extends SelfValidating<CommentWriteCommand> {
 		this.validateSelf();
 	}
 
+	public CommentWriteCommand applyParentVisible(CommentWriteCommand requestCommand, boolean parentVisible) {
+		return CommentWriteCommand.builder()
+			.requestUser(requestCommand.getRequestUser())
+			.boardId(requestCommand.getBoardId())
+			.articleId(requestCommand.getArticleId())
+			.parentId(requestCommand.getParentId())
+			.content(requestCommand.getContent())
+			.visible(parentVisible)
+			.build();
+	}
+
 	public boolean hasParentComment() {
 		return this.parentId != null;
 	}

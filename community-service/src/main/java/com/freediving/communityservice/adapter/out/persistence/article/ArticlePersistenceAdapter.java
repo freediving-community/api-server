@@ -10,7 +10,9 @@ import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWit
 import com.freediving.communityservice.adapter.out.persistence.comment.CommentJpaEntity;
 import com.freediving.communityservice.adapter.out.persistence.comment.CommentPersistenceMapper;
 import com.freediving.communityservice.application.port.in.ArticleReadCommand;
+import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
+import com.freediving.communityservice.application.port.out.ArticleDeletePort;
 import com.freediving.communityservice.application.port.out.ArticleReadPort;
 import com.freediving.communityservice.application.port.out.ArticleWritePort;
 import com.freediving.communityservice.domain.Article;
@@ -22,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadPort {
+public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadPort, ArticleDeletePort {
 
 	private final ArticleRepository articleRepository;
 	private final JPAQueryFactory jpaQueryFactory;
@@ -45,14 +47,14 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 	}
 
 	@Override
-	public Article readArticle(ArticleReadCommand articleReadCommand) {
+	public Article readArticle(Long boardId, Long articleId, boolean isShowAll) {
 		ArticleJpaEntity foundArticle = jpaQueryFactory
 			.selectFrom(articleJpaEntity)
 			.where(
-				boardIdEq(articleReadCommand.getBoardId()),
-				articleIdEq(articleReadCommand.getArticleId()),
-				articleJpaEntity.enableComment.isTrue(),
-				articleJpaEntity.visible.isTrue()
+				boardIdEq(boardId),
+				articleIdEq(articleId),
+				isShowAll ?
+					null : articleJpaEntity.visible.isTrue()
 			).fetchOne();
 
 		if (foundArticle == null) {
@@ -62,15 +64,16 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 	}
 
 	@Override
-	public ArticleContentWithComment readArticleWithComment(ArticleReadCommand articleReadCommand) {
+	public ArticleContentWithComment readArticleWithComment(ArticleReadCommand command) {
 
-		Article foundArticle = readArticle(articleReadCommand);
+		Article foundArticle = readArticle(command.getBoardId(), command.getArticleId(), command.isShowAll());
 
 		List<CommentJpaEntity> articleComments = jpaQueryFactory
 			.selectFrom(commentJpaEntity)
 			.where(
 				commentJpaEntity.articleId.eq(foundArticle.getId()),
-				commentJpaEntity.visible.isTrue()
+				command.isShowAll() ?
+					null : commentJpaEntity.visible.isTrue()
 			).fetch();
 
 		List<Comment> comments = articleComments.stream()
@@ -123,4 +126,11 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 		return articleJpaEntity.articleId.eq(articleId);
 	}
 
+	@Override
+	public Long removeArticle(ArticleRemoveCommand articleRemoveCommand) {
+
+		articleRepository.deleteById(articleRemoveCommand.getArticleId());
+
+		return articleRemoveCommand.getArticleId();
+	}
 }

@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
-import com.freediving.communityservice.application.port.in.CommentWriteCommand;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -51,12 +50,12 @@ public class Board {
 		}
 	}
 
-	public void checkPermission(CommentWriteCommand command) {
+	public void checkPermission(Long boardId, UserProvider userProvider) {
 		/* TODO
 		 * 	 - 조회 권한
 		 * 	 - 조작 권한
 		 * */
-		if (hasPermissionLevel(command.getRequestUser())) {
+		if (hasPermissionLevel(userProvider)) {
 			System.out.println("BOARDTYPE====>" + this.boardType.equals(BoardType.GENERAL));
 		}
 	}

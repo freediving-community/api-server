@@ -5,7 +5,7 @@ import com.freediving.communityservice.application.port.in.ArticleReadCommand;
 import com.freediving.communityservice.domain.Article;
 
 public interface ArticleReadPort {
-	Article readArticle(ArticleReadCommand articleReadCommand);
+	Article readArticle(Long boardId, Long articleId, boolean isShowAll);
 
 	ArticleContentWithComment readArticleWithComment(ArticleReadCommand articleReadCommand);
 

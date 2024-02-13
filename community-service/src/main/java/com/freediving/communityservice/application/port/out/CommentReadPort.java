@@ -6,5 +6,5 @@ import com.freediving.communityservice.domain.Comment;
 public interface CommentReadPort {
 	Comment findById(CommentReadCommand command);
 
-	Comment readComment(CommentReadCommand command);
+	Comment readComments(CommentReadCommand command);
 }

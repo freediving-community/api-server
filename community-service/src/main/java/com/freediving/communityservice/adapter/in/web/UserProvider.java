@@ -48,4 +48,8 @@ public class UserProvider {
 
 	}
 
+	public void checkAdmin() {
+		if (!this.roleLevel.equals(RoleLevel.ADMIN))
+			throw new IllegalArgumentException("허용되지 않은 요청입니다.");
+	}
 }

@@ -2,8 +2,7 @@ package com.freediving.communityservice.application.service;
 
 import org.springframework.stereotype.Service;
 
-import com.freediving.communityservice.adapter.out.dto.comment.CommentResponse;
-import com.freediving.communityservice.application.port.in.ArticleReadCommand;
+import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.application.port.in.CommentReadCommand;
 import com.freediving.communityservice.application.port.in.CommentUseCase;
 import com.freediving.communityservice.application.port.in.CommentWriteCommand;
@@ -30,24 +29,46 @@ public class CommentService implements CommentUseCase {
 
 	@Override
 	public Comment writeComment(CommentWriteCommand command) {
-		Board board = boardReadPort.findById(command.getBoardId());
-		board.checkPermission(command);
+		Board board = getPermissionedBoard(command.getBoardId(), command.getRequestUser());
 
-		Article article = articleReadPort.readArticle(ArticleReadCommand.builder()
-			.boardId(board.getId())
-			.articleId(command.getArticleId())
-			.isEnabledOnly(true)
-			.withoutComment(true)
-			.build());
-		article.canCreateComment();
+		Article article = articleReadPort.readArticle(board.getId(), command.getArticleId(), true);
 
-		if( command.hasParentComment()) {
-			Comment parentComment = commentReadPort.findById(CommentReadCommand.builder()
+		if (command.hasParentComment()) {
+			/*
+			 * 답글을 달려고 할 때, 비밀글이면 *[게시글 작성자, 최초 댓글 작성자]만 달 수 있다.
+			 * 최초 댓글이 비밀글이면, 이후 자동으로 답글은 모두 비밀글
+			 * 최초 댓글이 비밀글인데, *미권한자가 API 작성 요청 불가 checkCommentVisible
+			 * */
+			Comment firstParentComment = commentReadPort.findById(CommentReadCommand.builder()
 				.commentId(command.getParentId())
 				.build());
-			parentComment.canCreateReplyComment();
+			firstParentComment.isParentComment();
+			firstParentComment.checkCommentVisible(command.getRequestUser(), firstParentComment.getCreatedBy(),
+				article.getCreatedBy());
+
+			CommentWriteCommand forcedVisibleComment = command.applyParentVisible(command,
+				firstParentComment.isVisible());
+
+			return commentWritePort.writeComment(forcedVisibleComment);
 		}
 
 		return commentWritePort.writeComment(command);
 	}
+
+	@Override
+	public Comment readComments(CommentReadCommand command) {
+		Board board = getPermissionedBoard(command.getBoardId(), command.getRequestUser());
+		Article article = articleReadPort.readArticle(board.getId(), command.getArticleId(), true);
+		article.canCreateComment();
+
+		commentReadPort.readComments(command);
+		return null;
+	}
+
+	private Board getPermissionedBoard(Long boardId, UserProvider userProvider) {
+		Board board = boardReadPort.findById(boardId);
+		board.checkPermission(boardId, userProvider);
+		return board;
+	}
+
 }

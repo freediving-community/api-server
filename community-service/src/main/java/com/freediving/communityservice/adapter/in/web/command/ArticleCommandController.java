@@ -3,6 +3,7 @@ package com.freediving.communityservice.adapter.in.web.command;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.freediving.communityservice.adapter.in.dto.ArticleWriteRequest;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
+import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleUseCase;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
 
@@ -47,5 +49,22 @@ public class ArticleCommandController {
 			.buildAndExpand(articleId)
 			.toUri();
 		return ResponseEntity.created(location).build();
+	}
+
+	@DeleteMapping("/boards/{boardId}/articles/{articleId}")
+	public ResponseEntity<Long> removeArticle(
+		UserProvider userProvider,
+		@PathVariable("boardId") Long boardId,
+		@PathVariable("articleId") Long articleId
+	) {
+
+		Long deletedArticleId = articleUseCase.deleteArticle(
+			ArticleRemoveCommand.builder()
+				.userProvider(userProvider)
+				.boardId(boardId)
+				.articleId(articleId)
+				.build()
+		);
+		return ResponseEntity.ok(1L);
 	}
 }

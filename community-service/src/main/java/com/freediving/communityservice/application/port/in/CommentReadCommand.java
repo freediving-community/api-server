@@ -1,6 +1,7 @@
 package com.freediving.communityservice.application.port.in;
 
 import com.freediving.common.SelfValidating;
+import com.freediving.communityservice.adapter.in.web.UserProvider;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import lombok.EqualsAndHashCode;
 public class CommentReadCommand extends SelfValidating<CommentReadCommand> {
 
 	@NotNull
-	private Long requestUserId;
+	private UserProvider requestUser;
 
 	@NotNull
 	private Long commentId;

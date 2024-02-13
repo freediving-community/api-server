@@ -1,17 +1,21 @@
 package com.freediving.communityservice.application.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
 import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
 import com.freediving.communityservice.application.port.in.ArticleReadCommand;
+import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleUseCase;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
+import com.freediving.communityservice.application.port.out.ArticleDeletePort;
 import com.freediving.communityservice.application.port.out.ArticleReadPort;
 import com.freediving.communityservice.application.port.out.ArticleWritePort;
 import com.freediving.communityservice.application.port.out.BoardReadPort;
+import com.freediving.communityservice.application.port.out.CommentDeletePort;
 import com.freediving.communityservice.domain.Article;
 import com.freediving.communityservice.domain.Board;
 import com.freediving.communityservice.domain.Comment;
@@ -27,19 +31,28 @@ public class ArticleService implements ArticleUseCase {
 	private final BoardReadPort boardReadPort;
 	private final ArticleWritePort articleWritePort;
 	private final ArticleReadPort articleReadPort;
-
-	@Override
-	public Article getArticle(ArticleReadCommand articleReadCommand) {
-		return articleReadPort.readArticle(articleReadCommand);
-	}
+	private final ArticleDeletePort articleDeletePort;
+	private final CommentDeletePort commentDeletePort;
 
 	//Query
 	@Override
-	public ArticleContentWithComment getArticleWithComment(ArticleReadCommand articleReadCommand) {
-		ArticleContentWithComment foundContent = articleReadPort.readArticleWithComment(articleReadCommand);
+	public Article getArticle(ArticleReadCommand command) {
+		return articleReadPort.readArticle(command.getBoardId(), command.getArticleId(), command.isShowAll());
+	}
+
+	@Override
+	public ArticleContentWithComment getArticleWithComment(ArticleReadCommand command) {
+
+		if (command.isWithoutComment()) {
+			Article onlyArticle = articleReadPort.readArticle(command.getBoardId(), command.getArticleId(),
+				command.isShowAll());
+			return new ArticleContentWithComment(onlyArticle, null);
+		}
+
+		ArticleContentWithComment foundContent = articleReadPort.readArticleWithComment(command);
 		//TODO 글 작성자에게만 보여지는 값 추가시 사용 Long articleOwner = articleContentWithComment.getArticle().getCreatedBy();
 
-		UserProvider requestUser = articleReadCommand.getUserProvider();
+		UserProvider requestUser = command.getUserProvider();
 
 		//TODO 관리자는 allComments 가 필요
 		List<Comment> allComments = foundContent.getComments();
@@ -59,5 +72,19 @@ public class ArticleService implements ArticleUseCase {
 		//TODO articleWriteCommand Hashtag 저장
 
 		return savedArticle.getId();
+	}
+
+	@Override
+	public Long deleteArticle(ArticleRemoveCommand command) {
+		// TODO Admin 등 처리?
+		boolean isShowAll = false;
+
+		Article article = articleReadPort.readArticle(command.getBoardId(), command.getArticleId(), isShowAll);
+		if (Objects.isNull(article)) {
+			throw new IllegalArgumentException("해당하는 게시글이 없습니다.");
+		}
+		commentDeletePort.deleteComments(article.getId());
+
+		return articleDeletePort.removeArticle(command);
 	}
 }

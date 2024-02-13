@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.communityservice.application.port.in.CommentReadCommand;
 import com.freediving.communityservice.application.port.in.CommentWriteCommand;
+import com.freediving.communityservice.application.port.out.CommentDeletePort;
 import com.freediving.communityservice.application.port.out.CommentReadPort;
 import com.freediving.communityservice.application.port.out.CommentWritePort;
 import com.freediving.communityservice.domain.Comment;
@@ -14,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class CommentPersistenceAdapter implements CommentWritePort, CommentReadPort {
+public class CommentPersistenceAdapter implements CommentWritePort, CommentReadPort, CommentDeletePort {
 
 	private final CommentRepository commentRepository;
 	private final JPAQueryFactory jpaQueryFactory;
@@ -22,13 +23,14 @@ public class CommentPersistenceAdapter implements CommentWritePort, CommentReadP
 
 	public Comment findById(CommentReadCommand command) {
 		Optional<CommentJpaEntity> foundComment = commentRepository.findById(command.getCommentId());
-		CommentJpaEntity commentJpaEntity = foundComment.orElseThrow(() -> new IllegalArgumentException("해당하는 댓글이 없습니다."));
+		CommentJpaEntity commentJpaEntity = foundComment.orElseThrow(
+			() -> new IllegalArgumentException("해당하는 댓글이 없습니다."));
 
 		return commentMapper.mapToDomain(commentJpaEntity);
 	}
 
 	@Override
-	public Comment readComment(CommentReadCommand command) {
+	public Comment readComments(CommentReadCommand command) {
 		return null;
 	}
 
@@ -43,5 +45,10 @@ public class CommentPersistenceAdapter implements CommentWritePort, CommentReadP
 				.build()
 		);
 		return commentMapper.mapToDomain(commentJpaEntity);
+	}
+
+	@Override
+	public void deleteComments(Long articleId) {
+		commentRepository.deleteByArticleId(articleId);
 	}
 }
