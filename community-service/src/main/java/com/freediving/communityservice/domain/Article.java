@@ -38,4 +38,10 @@ public class Article {
 		if( ! this.enableComment )
 			throw new IllegalArgumentException("댓글을 작성할 수 없는 게시물입니다.");
 	}
+
+	public void checkHasOwnership(Long requestUserId) {
+		if( ! this.createdBy.equals(requestUserId))
+			throw new IllegalArgumentException("권한이 없습니다.");
+	}
+
 }

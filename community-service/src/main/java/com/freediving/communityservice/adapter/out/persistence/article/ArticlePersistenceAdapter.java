@@ -13,6 +13,7 @@ import com.freediving.communityservice.application.port.in.ArticleReadCommand;
 import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
 import com.freediving.communityservice.application.port.out.ArticleDeletePort;
+import com.freediving.communityservice.application.port.out.ArticleEditPort;
 import com.freediving.communityservice.application.port.out.ArticleReadPort;
 import com.freediving.communityservice.application.port.out.ArticleWritePort;
 import com.freediving.communityservice.domain.Article;
@@ -24,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadPort, ArticleDeletePort {
+public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadPort, ArticleEditPort, ArticleDeletePort {
 
 	private final ArticleRepository articleRepository;
 	private final JPAQueryFactory jpaQueryFactory;
@@ -118,12 +119,23 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 		return foundArticle;*/
 	}
 
-	private BooleanExpression boardIdEq(Long boardId) {
-		return articleJpaEntity.boardId.eq(boardId);
-	}
+	@Override
+	public Long updateArticle(Long boardId, Long articleId, String title, String content, List<Long> hashtagIds,
+		boolean enableComment) {
+			ArticleJpaEntity foundArticle = jpaQueryFactory
+				.selectFrom(articleJpaEntity)
+				.where(
+					boardIdEq(boardId),
+					articleIdEq(articleId)
+				).fetchOne();
 
-	private BooleanExpression articleIdEq(Long articleId) {
-		return articleJpaEntity.articleId.eq(articleId);
+			if (foundArticle == null) {
+				throw new IllegalArgumentException("해당하는 게시글이 없습니다.");
+			}
+
+			foundArticle.changeArticleContents(title, content, hashtagIds, enableComment);
+
+		return foundArticle.getArticleId();
 	}
 
 	@Override
@@ -132,5 +144,13 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 		articleRepository.deleteById(articleRemoveCommand.getArticleId());
 
 		return articleRemoveCommand.getArticleId();
+	}
+
+	private BooleanExpression boardIdEq(Long boardId) {
+		return articleJpaEntity.boardId.eq(boardId);
+	}
+
+	private BooleanExpression articleIdEq(Long articleId) {
+		return articleJpaEntity.articleId.eq(articleId);
 	}
 }

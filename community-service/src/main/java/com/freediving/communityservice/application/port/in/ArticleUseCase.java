@@ -14,4 +14,6 @@ public interface ArticleUseCase {
 	Long writeArticle(ArticleWriteCommand articleWriteCommand);
 
 	Long deleteArticle(ArticleRemoveCommand articleRemoveCommand);
+
+	Long editArticle(ArticleEditCommand build);
 }

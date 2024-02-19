@@ -7,11 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
+import com.freediving.communityservice.application.port.in.ArticleEditCommand;
 import com.freediving.communityservice.application.port.in.ArticleReadCommand;
 import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleUseCase;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
 import com.freediving.communityservice.application.port.out.ArticleDeletePort;
+import com.freediving.communityservice.application.port.out.ArticleEditPort;
 import com.freediving.communityservice.application.port.out.ArticleReadPort;
 import com.freediving.communityservice.application.port.out.ArticleWritePort;
 import com.freediving.communityservice.application.port.out.BoardReadPort;
@@ -31,6 +33,7 @@ public class ArticleService implements ArticleUseCase {
 	private final BoardReadPort boardReadPort;
 	private final ArticleWritePort articleWritePort;
 	private final ArticleReadPort articleReadPort;
+	private final ArticleEditPort articleEditPort;
 	private final ArticleDeletePort articleDeletePort;
 	private final CommentDeletePort commentDeletePort;
 
@@ -75,6 +78,16 @@ public class ArticleService implements ArticleUseCase {
 	}
 
 	@Override
+	public Long editArticle(ArticleEditCommand command) {
+		Article originalArticle = articleReadPort.readArticle(command.getBoardId(), command.getArticleId(), false);
+		originalArticle.checkHasOwnership(command.getUserProvider().getRequestUserId());
+
+		Long updatedArticleId = articleEditPort.updateArticle(command.getBoardId(), command.getArticleId(), command.getTitle(), command.getContent(), command.getHashtagIds(), command.isEnableComment());
+
+		return null;
+	}
+
+	@Override
 	public Long deleteArticle(ArticleRemoveCommand command) {
 		// TODO Admin 등 처리?
 		boolean isShowAll = false;
@@ -87,4 +100,5 @@ public class ArticleService implements ArticleUseCase {
 
 		return articleDeletePort.removeArticle(command);
 	}
+
 }

@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.freediving.communityservice.adapter.in.dto.ArticleEditRequest;
 import com.freediving.communityservice.adapter.in.dto.ArticleWriteRequest;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
+import com.freediving.communityservice.application.port.in.ArticleEditCommand;
 import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleUseCase;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
@@ -49,6 +51,28 @@ public class ArticleCommandController {
 			.buildAndExpand(articleId)
 			.toUri();
 		return ResponseEntity.created(location).build();
+	}
+
+	@PostMapping("/boards/{boardId}/articles/{articleId}")
+	public ResponseEntity<Long> editArticleContent(
+		UserProvider userProvider,
+		@PathVariable("boardId") Long boardId,
+		@PathVariable("articleId") Long articleId,
+		@RequestBody ArticleEditRequest articleEditRequest
+	) {
+		Long editedArticleId = articleUseCase.editArticle(
+			ArticleEditCommand.builder()
+				.userProvider(userProvider)
+				.boardId(boardId)
+				.articleId(articleId)
+				.title(articleEditRequest.getTitle())
+				.content(articleEditRequest.getContent())
+				.hashtagIds(articleEditRequest.getHashtagIds())
+				.enableComment(articleEditRequest.isEnableComment())
+				.build()
+		);
+
+		return ResponseEntity.ok( editedArticleId);
 	}
 
 	@DeleteMapping("/boards/{boardId}/articles/{articleId}")
