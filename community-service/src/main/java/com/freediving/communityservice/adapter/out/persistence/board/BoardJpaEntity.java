@@ -51,7 +51,7 @@ public class BoardJpaEntity {
 	@Column(nullable = false)
 	private String description;
 
-	@Column(nullable = false, length = 10, unique = true)
+	@Column(nullable = false, unique = true)
 	private int sortOrder;
 
 	@Column(nullable = false, columnDefinition = "boolean default true")
