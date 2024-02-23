@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.communityservice.adapter.in.dto.ImageUploadRequest;
+import com.freediving.communityservice.application.port.in.ImageUploadCommand;
+import com.freediving.communityservice.application.port.in.ImageUseCase;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,13 +16,27 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class ImageCommandController {
 
+	private final ImageUseCase imageUseCase;
+
 	// return presigned url for image upload
 	@PostMapping("/upload")
-	public ResponseEntity<Long> getImagePresignedUrl(
+	public ResponseEntity<String> getImagePresignedUrl(
 		UserProvider userProvider,
 		String accessToken,
 		ImageUploadRequest imageUploadRequest
 	) {
+
+		String signedUrl = imageUseCase.getPresignedUrl( ImageUploadCommand.builder()
+			.userProvider(userProvider)
+			.width(imageUploadRequest.getWidth())
+			.height(imageUploadRequest.getHeight())
+			.style(imageUploadRequest.getStyle())
+			.description(imageUploadRequest.getDescription())
+			.originName(imageUploadRequest.getOriginName())
+			.extension(imageUploadRequest.getExtension())
+			.size(imageUploadRequest.getSize())
+			.build());
+
 		return null;
 /*
 			'id' : 'UUID_16', // nanoId

@@ -30,10 +30,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
-@Table(name = "image", indexes = {
-
-})
-
+@Table(name = "image")
 @Entity
 public class ImageJpaEntity {
 	@Id
@@ -43,7 +40,7 @@ public class ImageJpaEntity {
 	@Column(nullable = false, unique = true)
 	private String imageServerId;
 
-	@Column(nullable = false, length = 500)
+	@Column(nullable = false, length = 1000)
 	private String url;
 
 	private Integer width;

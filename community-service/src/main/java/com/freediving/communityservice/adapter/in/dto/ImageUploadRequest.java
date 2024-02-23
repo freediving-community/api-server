@@ -27,6 +27,6 @@ public class ImageUploadRequest {
 	private String extension;
 	private Integer size;
 	// private boolean secret;
-	private Long createdBy;
-	private LocalDateTime createdAt;
+	// private Long createdBy;
+	// private LocalDateTime createdAt;
 }
