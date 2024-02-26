@@ -9,8 +9,12 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,12 +41,9 @@ public class BoardJpaEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	//TODO Application Loading 시점에 distinct 값 세팅
-	// @Enumerated(EnumType.STRING)
-	// private BoardType boardType;
-	// TODO 게시판 표현 형식, 포함 구성 등에 대해 정의 필요
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private String boardType;
+	private BoardType boardType;
 
 	@Column(nullable = false, length = 50, unique = true)
 	private String boardName;
@@ -50,7 +51,7 @@ public class BoardJpaEntity {
 	@Column(nullable = false)
 	private String description;
 
-	@Column(nullable = false, length = 10, unique = true)
+	@Column(nullable = false, unique = true)
 	private int sortOrder;
 
 	@Column(nullable = false, columnDefinition = "boolean default true")
@@ -75,14 +76,14 @@ public class BoardJpaEntity {
 	@LastModifiedBy
 	private Long modifiedBy;
 
-	public BoardJpaEntity(String boardType, String boardName, String description, int sortOrder) {
+	public BoardJpaEntity(BoardType boardType, String boardName, String description, int sortOrder) {
 		this.boardType = boardType;
 		this.boardName = boardName;
 		this.description = description;
 		this.sortOrder = sortOrder;
 	}
 
-	public BoardJpaEntity(String boardType, String boardName, String description, int sortOrder, boolean enabled,
+	public BoardJpaEntity(BoardType boardType, String boardName, String description, int sortOrder, boolean enabled,
 		LocalDateTime createdAt, LocalDateTime modifiedAt, Long createdBy, Long modifiedBy) {
 		this.boardType = boardType;
 		this.boardName = boardName;
@@ -95,7 +96,7 @@ public class BoardJpaEntity {
 		this.modifiedBy = modifiedBy;
 	}
 
-	public static BoardJpaEntity of(String boardType, String boardName, String description, int sortOrder) {
+	public static BoardJpaEntity of(BoardType boardType, String boardName, String description, int sortOrder) {
 		return new BoardJpaEntity(boardType, boardName, description, sortOrder, true, LocalDateTime.now(),
 			LocalDateTime.now(), new Random().nextLong(), new Random().nextLong());
 	}
