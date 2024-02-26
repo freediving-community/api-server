@@ -1,5 +1,7 @@
 package com.freediving.communityservice.adapter.in.dto;
 
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,7 @@ import lombok.ToString;
 @ToString
 public class BoardWriteRequest {
 
-	private String boardType;
+	private BoardType boardType;
 
 	private String boardName;
 

@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 @Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class ArticleReadCommand extends SelfValidating<ArticleReadCommand> {
+public class ArticleRemoveCommand extends SelfValidating<ArticleRemoveCommand> {
 
 	private final UserProvider userProvider;
 
@@ -21,19 +21,10 @@ public class ArticleReadCommand extends SelfValidating<ArticleReadCommand> {
 	@NotNull
 	private final Long articleId;
 
-	@NotNull
-	private final boolean isShowAll;
-
-	@NotNull
-	private final boolean withoutComment;
-
-	public ArticleReadCommand(UserProvider userProvider, Long boardId, Long articleId, boolean isShowAll,
-		boolean withoutComment) {
+	public ArticleRemoveCommand(UserProvider userProvider, Long boardId, Long articleId) {
 		this.userProvider = userProvider;
 		this.boardId = boardId;
 		this.articleId = articleId;
-		this.isShowAll = isShowAll;
-		this.withoutComment = withoutComment;
 		this.validateSelf();
 	}
 }
