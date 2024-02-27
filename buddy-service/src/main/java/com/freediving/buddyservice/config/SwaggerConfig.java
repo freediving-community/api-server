@@ -55,6 +55,7 @@ public class SwaggerConfig {
 										.build())
 							// 예시 값
 						)))
+					.addResponses("204", new ApiResponse().description("No Content"))
 					.addResponses("401", new ApiResponse().description("Unauthorized"))
 					.addResponses("403", new ApiResponse().description("Forbidden"))
 					.addResponses("500", new ApiResponse().description("Internal Server Error"))
