@@ -24,7 +24,7 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 	@NotNull
 	private final Long userId;
 
-	@NotNull(message = "일정 시작 시간은 필수입니다.") //TODO MessageSource 도입 할 건지.
+	@NotNull(message = "일정 시작 시간은 필수입니다.")
 	@FutureOrPresent(message = "일정 시작 시간은 현재 시간 이후여야 합니다.")
 	private final LocalDateTime eventStartDate;
 
@@ -33,7 +33,7 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 	private final LocalDateTime eventEndDate;
 
 	@Positive(message = "모집 인원은 0 또는 양수여야 합니다.")
-	@Max(value = 999L, message = "최대 모집 인원은 999명까지 가능합니다.") //TODO 모집 인원 최대 수 수정.
+	@Max(value = 5L, message = "최대 모집 인원은 999명까지 가능합니다.")
 	@NotNull(message = "모집 인원은 필수입니다.")
 	private final Integer participantCount;
 
@@ -44,7 +44,7 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 
 	private final EventStatus status = EventStatus.RECRUITING;
 
-	@Size(min = 0, max = 1000, message = "코멘트는 최대 1000자까지 입력 가능합니다.")
+	@Size(min = 0, max = 500, message = "코멘트는 최대 500자까지 입력 가능합니다.")
 	private final String comment;
 
 	@Builder

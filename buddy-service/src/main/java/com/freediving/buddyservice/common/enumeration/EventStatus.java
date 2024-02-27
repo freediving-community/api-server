@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum EventStatus {
 	//TODO enum 재 설정 필요
-	RECRUITMENT_CREATED("모집 생성"),
 	RECRUITING("모집 중"),
 	RECRUITMENT_CLOSED("모집 마감"),
 	RECRUITMENT_DELETED("모집 삭제");
