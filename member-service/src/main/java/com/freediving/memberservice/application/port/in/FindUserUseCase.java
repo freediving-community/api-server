@@ -1,5 +1,8 @@
 package com.freediving.memberservice.application.port.in;
 
+import java.util.List;
+
+import com.freediving.memberservice.adapter.in.web.dto.FindUserServiceResponse;
 import com.freediving.memberservice.domain.User;
 
 /**
@@ -15,4 +18,6 @@ import com.freediving.memberservice.domain.User;
 public interface FindUserUseCase {
 
 	User findUserDetailByQuery(FindUserQuery findUserQuery);
+
+	List<FindUserServiceResponse> findUserListByQuery(FindUserListQuery findUserListQuery);
 }

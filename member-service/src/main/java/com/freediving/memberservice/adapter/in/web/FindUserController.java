@@ -1,19 +1,25 @@
 package com.freediving.memberservice.adapter.in.web;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.common.config.annotation.WebAdapter;
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.memberservice.adapter.in.web.dto.FindUserResponse;
+import com.freediving.memberservice.adapter.in.web.dto.FindUserServiceResponse;
+import com.freediving.memberservice.application.port.in.FindUserListQuery;
 import com.freediving.memberservice.application.port.in.FindUserQuery;
 import com.freediving.memberservice.application.port.in.FindUserUseCase;
 import com.freediving.memberservice.domain.User;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -62,7 +68,32 @@ public class FindUserController {
 		FindUserQuery findUserQuery = FindUserQuery.builder().userId(user.userId()).build();
 		User findUser = findUserUseCase.findUserDetailByQuery(findUserQuery);
 		FindUserResponse findUserResponse = FindUserResponse.from(findUser);
-		ResponseJsonObject response = new ResponseJsonObject(ServiceStatusCode.OK, findUserResponse);
-		return ResponseEntity.ok(response);
+
+		return ResponseEntity.ok(new ResponseJsonObject(ServiceStatusCode.OK, findUserResponse));
+	}
+
+	/**
+	 * @Author           : sasca37
+	 * @Date             : 2024/02/27
+	 * @Param            : userId 리스트 정보, profileImg 사용 여부
+	 * @Return           : 중복 제거 및 요청 순서에 맞는 유저 정보
+	 * @Description      : 탈퇴 등으로 조회되지 않은 유저에 대해서도 기본 값을 생성하여 반환
+	 */
+	@GetMapping("/service/users")
+	@Hidden
+	public ResponseEntity<ResponseJsonObject<List<FindUserServiceResponse>>> findUserListByUserIds(
+		@RequestParam(value = "userIds") List<Long> userIdList,
+		@RequestParam(value = "profileImg", required = false, defaultValue = "false") Boolean profileImgTF) {
+
+		List<Long> uniqueUserIdList = userIdList.stream().distinct().toList();
+
+		FindUserListQuery findUserListQuery = FindUserListQuery.builder()
+			.userIds(uniqueUserIdList)
+			.profileImgTF(profileImgTF)
+			.build();
+
+		List<FindUserServiceResponse> findUserList = findUserUseCase.findUserListByQuery(findUserListQuery);
+
+		return ResponseEntity.ok(new ResponseJsonObject(ServiceStatusCode.OK, findUserList));
 	}
 }

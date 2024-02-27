@@ -1,9 +1,8 @@
 package com.freediving.memberservice.domain;
 
-import org.apache.commons.lang3.ObjectUtils;
+import java.util.Optional;
 
 import com.freediving.memberservice.adapter.out.persistence.UserJpaEntity;
-import com.freediving.memberservice.adapter.out.persistence.UserLicenceJpaEntity;
 
 /**
  * @Author         : sasca37
@@ -28,15 +27,11 @@ public record User(Long userId, String email, String profileImgUrl,
 	}
 
 	public static User fromJpaEntityDetail(UserJpaEntity userJpaEntity) {
-		UserLicenceJpaEntity licenceJpaEntity = userJpaEntity.getUserLicenceJpaEntity();
-		UserLicence userLicence = null;
-		if (!ObjectUtils.isEmpty(licenceJpaEntity)) {
-			userLicence = UserLicence.fromJpaEntity(licenceJpaEntity);
-		}
+		UserLicence userLicence = Optional.ofNullable(userJpaEntity.getUserLicenceJpaEntity())
+			.map(UserLicence::fromJpaEntity).orElse(null);
 
 		return new User(userJpaEntity.getUserId(), userJpaEntity.getEmail(), userJpaEntity.getProfileImgUrl(),
 			userJpaEntity.getNickname(), userJpaEntity.getOauthType(), userJpaEntity.getRole(), userLicence
 		);
 	}
-
 }

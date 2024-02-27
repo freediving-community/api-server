@@ -67,7 +67,7 @@ public class CreateUserController {
 
 	@Operation(summary = "자격증 레벨 등록 API"
 		, description = "자격증 레벨 정보를 request로 요청하여 자격증 레벨을 등록한다. <br/>"
-		+ "자격증 레벨 : null (미입력), 0 : 자격증 없음, 1 : 1레벨, 2 : 2레벨, 3 : 3레벨, 4 : 4레벨, 5 : 강사",
+		+ "자격증 레벨 - 0 : 자격증 없음, 1 : 1레벨, 2 : 2레벨, 3 : 3레벨, 4 : 4레벨, 5 : 강사",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
 			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
