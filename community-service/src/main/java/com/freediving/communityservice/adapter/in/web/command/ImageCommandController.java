@@ -1,4 +1,4 @@
-package com.freediving.communityservice.adapter.in.web;
+package com.freediving.communityservice.adapter.in.web.command;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.communityservice.adapter.in.dto.ImageUploadRequest;
+import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.application.port.in.ImageUploadCommand;
 import com.freediving.communityservice.application.port.in.ImageUseCase;
 
@@ -26,7 +27,7 @@ public class ImageCommandController {
 		ImageUploadRequest imageUploadRequest
 	) {
 
-		String signedUrl = imageUseCase.getPresignedUrl( ImageUploadCommand.builder()
+		String signedUrl = imageUseCase.getPresignedUrl(ImageUploadCommand.builder()
 			.userProvider(userProvider)
 			.width(imageUploadRequest.getWidth())
 			.height(imageUploadRequest.getHeight())
