@@ -23,6 +23,16 @@ class CreateBuddyEventCommandTest {
 
 	}
 
+	@DisplayName("버디 이벤트 생성 Command 최대 선택 가능한 인원수가 5명보다 높으면 실패한다..")
+	@Test
+	void test2() {
+		assertThatThrownBy(() -> gernerateCreateBuddyEventCommand(1L, LocalDateTime.now().plusHours(1),
+			LocalDateTime.now().plusHours(2), 6, ""
+		)).isInstanceOf(ConstraintViolationException.class)
+			.hasMessage("participantCount: 최대 모집 인원은 5명까지 가능합니다.");
+
+	}
+
 	private CreateBuddyEventCommand gernerateCreateBuddyEventCommand(
 		Long userId,
 		LocalDateTime eventStartDate,

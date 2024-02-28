@@ -34,7 +34,7 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 	private final LocalDateTime eventEndDate;
 
 	@Positive(message = "모집 인원은 0 또는 양수여야 합니다.")
-	@Max(value = 5L, message = "최대 모집 인원은 999명까지 가능합니다.")
+	@Max(value = 5L, message = "최대 모집 인원은 5명까지 가능합니다.")
 	@NotNull(message = "모집 인원은 필수입니다.")
 	private final Integer participantCount;
 
