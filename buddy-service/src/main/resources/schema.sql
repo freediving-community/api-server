@@ -15,6 +15,44 @@ ALTER TABLE diving_pool
 
 
 
+drop table if exists events_diving_pool_mapping;
+CREATE TABLE events_diving_pool_mapping
+(
+    diving_pool_id varchar(20) NOT NULL,
+    event_id       bigint      NOT NULL
+);
+ALTER TABLE events_diving_pool_mapping
+    ADD CONSTRAINT PK_EVENTS_DIVING_POOL_MAPPING PRIMARY KEY (diving_pool_id, event_id);
+
+
+
+drop table if exists buddy_event_conditions;
+CREATE TABLE buddy_event_conditions
+(
+    event_id         bigint      NOT NULL,
+    freediving_level varchar(20) NULL,
+    genders          varchar(20) NULL,
+    age_groups       varchar(20) NULL
+);
+ALTER TABLE buddy_event_conditions
+    ADD CONSTRAINT PK_BUDDY_EVENT_CONDITIONS PRIMARY KEY (event_id);
+
+
+
+drop table if exists buddy_event_join_requests;
+CREATE TABLE buddy_event_join_requests
+(
+    user_id      bigint      NOT NULL,
+    event_id     bigint      NOT NULL,
+    status       varchar(20) NOT NULL,
+    created_date timestamp   NOT NULL,
+    updated_date timestamp   NOT NULL
+);
+ALTER TABLE buddy_event_join_requests
+    ADD CONSTRAINT PK_BUDDY_EVENT_JOIN_REQUESTS PRIMARY KEY (user_id, event_id);
+
+
+
 drop table if exists buddy_events;
 CREATE TABLE buddy_events
 (
@@ -42,48 +80,14 @@ COMMENT ON COLUMN buddy_events.participant_count IS '버디 일정 모집하는 
 COMMENT ON COLUMN buddy_events.updated_date IS 'JPA Auditing 관리';
 COMMENT ON COLUMN buddy_events.created_date IS 'JPA Auditing 관리';
 
-
-
-drop table if exists events_diving_pool_mapping;
-CREATE TABLE events_diving_pool_mapping
-(
-    diving_pool_id varchar(20) NOT NULL,
-    event_id       bigint      NOT NULL
-);
-ALTER TABLE events_diving_pool_mapping
-    ADD CONSTRAINT PK_EVENTS_DIVING_POOL_MAPPING PRIMARY KEY (diving_pool_id, event_id);
 ALTER TABLE events_diving_pool_mapping
     ADD CONSTRAINT FK_buddy_events_TO_events_diving_pool_mapping_1 FOREIGN KEY (event_id)
         REFERENCES buddy_events (event_id);
 
-
-
-drop table if exists buddy_event_conditions;
-CREATE TABLE buddy_event_conditions
-(
-    event_id         bigint      NOT NULL,
-    freediving_level varchar(20) NULL,
-    genders          varchar(20) NULL,
-    age_groups       varchar(20) NULL
-);
-ALTER TABLE buddy_event_conditions
-    ADD CONSTRAINT PK_BUDDY_EVENT_CONDITIONS PRIMARY KEY (event_id);
 ALTER TABLE buddy_event_conditions
     ADD CONSTRAINT FK_buddy_events_TO_buddy_event_conditions_1 FOREIGN KEY (event_id)
         REFERENCES buddy_events (event_id);
 
-
-drop table if exists buddy_event_join_requests;
-CREATE TABLE buddy_event_join_requests
-(
-    user_id      bigint      NOT NULL,
-    event_id     bigint      NOT NULL,
-    status       varchar(20) NOT NULL,
-    created_date timestamp   NOT NULL,
-    updated_date timestamp   NOT NULL
-);
-ALTER TABLE buddy_event_join_requests
-    ADD CONSTRAINT PK_BUDDY_EVENT_JOIN_REQUESTS PRIMARY KEY (user_id, event_id);
 ALTER TABLE buddy_event_join_requests
     ADD CONSTRAINT FK_buddy_events_TO_buddy_event_join_requests_1 FOREIGN KEY (event_id)
         REFERENCES buddy_events (event_id);
