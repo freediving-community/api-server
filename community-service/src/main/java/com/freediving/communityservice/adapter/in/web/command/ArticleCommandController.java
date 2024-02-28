@@ -40,7 +40,7 @@ public class ArticleCommandController {
 				.title(articleWriteRequest.getTitle())
 				.content(articleWriteRequest.getContent())
 				.authorName(articleWriteRequest.getAuthorName())
-				// .hashtagIds(articleWriteRequest.getHashtagIds())
+				.hashtagIds(articleWriteRequest.getHashtagIds())
 				.enableComment(articleWriteRequest.isEnableComment())
 				.build());
 

@@ -72,6 +72,8 @@ public class ArticleService implements ArticleUseCase {
 		Board board = boardReadPort.findById(articleWriteCommand.getBoardId());
 		board.checkPermission(articleWriteCommand);
 		Article savedArticle = articleWritePort.writeArticle(articleWriteCommand);
+		//TODO articleWriteCommand Hashtag 저장
+
 		return savedArticle.getId();
 	}
 

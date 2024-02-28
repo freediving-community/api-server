@@ -39,7 +39,7 @@ import lombok.ToString;
 public class BoardJpaEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long boardId;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
