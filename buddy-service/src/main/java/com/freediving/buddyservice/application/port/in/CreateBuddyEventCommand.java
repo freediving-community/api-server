@@ -6,8 +6,9 @@ import java.util.List;
 import com.freediving.buddyservice.common.enumeration.EventConcept;
 import com.freediving.buddyservice.common.enumeration.EventStatus;
 import com.freediving.common.SelfValidating;
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 
-import jakarta.validation.ConstraintDeclarationException;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
@@ -54,7 +55,7 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 		this.eventStartDate = eventStartDate;
 
 		if (eventEndDate.isAfter(eventStartDate) == false)
-			throw new ConstraintDeclarationException("일정 종료 시간은 시작 시간 이후여야 합니다.");
+			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "일정 종료 시간은 시작 시간 이후여야 합니다.");
 		this.eventEndDate = eventEndDate;
 
 		this.participantCount = participantCount;

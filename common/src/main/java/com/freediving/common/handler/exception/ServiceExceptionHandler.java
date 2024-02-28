@@ -99,7 +99,7 @@ public class ServiceExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 
-	@ExceptionHandler({BuddyMeException.class})
+	@ExceptionHandler(BuddyMeException.class)
 	public ResponseEntity<ResponseJsonObject> handleDikeServiceException(BuddyMeException ex) {
 		log.debug("DikeServiceExceptionHandler : {}", ex.getResponseJsonObject().toString());
 		HttpStatus exceptionStatus = HttpStatus.OK;

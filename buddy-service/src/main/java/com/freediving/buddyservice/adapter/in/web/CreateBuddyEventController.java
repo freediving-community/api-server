@@ -56,26 +56,30 @@ public class CreateBuddyEventController {
 	@PostMapping("")
 	public ResponseEntity<ResponseJsonObject<CreatedBuddyEvent>> createBuddyEvent(
 		@Valid @RequestBody CreateBuddyEventRequest request) {
-		// 1. JWT 유저 토큰에서 사용자 식별 ID 가져오기
-		Random random = new Random();
-		Long userId = random.nextLong();
+		try {
+			// 1. JWT 유저 토큰에서 사용자 식별 ID 가져오기
+			Random random = new Random();
+			Long userId = random.nextLong();
 
-		// 2. Use Case Command 전달.
-		CreatedBuddyEvent createdBuddyEvent = createBuddyEventUseCase.createBuddyEvent(
-			CreateBuddyEventCommand.builder()
-				.userId(userId)
-				.eventStartDate(request.getEventStartDate())
-				.eventEndDate(request.getEventEndDate())
-				.participantCount(request.getParticipantCount())
-				.eventConcepts(request.getEventConcepts())
-				.carShareYn(request.getCarShareYn())
-				.comment(request.getComment())
-				.build());
+			// 2. Use Case Command 전달.
+			CreatedBuddyEvent createdBuddyEvent = createBuddyEventUseCase.createBuddyEvent(
+				CreateBuddyEventCommand.builder()
+					.userId(userId)
+					.eventStartDate(request.getEventStartDate())
+					.eventEndDate(request.getEventEndDate())
+					.participantCount(request.getParticipantCount())
+					.eventConcepts(request.getEventConcepts())
+					.carShareYn(request.getCarShareYn())
+					.comment(request.getComment())
+					.build());
 
-		// 3. Command 요청 및 응답 리턴.
-		ResponseJsonObject<CreatedBuddyEvent> response = new ResponseJsonObject<>(ServiceStatusCode.OK,
-			createdBuddyEvent);
+			// 3. Command 요청 및 응답 리턴.
+			ResponseJsonObject<CreatedBuddyEvent> response = new ResponseJsonObject<>(ServiceStatusCode.OK,
+				createdBuddyEvent);
 
-		return ResponseEntity.ok(response);
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 }

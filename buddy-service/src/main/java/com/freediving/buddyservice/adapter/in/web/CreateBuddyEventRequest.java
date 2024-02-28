@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.freediving.buddyservice.common.enumeration.EventConcept;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -40,7 +41,8 @@ public class CreateBuddyEventRequest {
 	@NotNull
 	private Integer participantCount;
 
-	@Schema(description = "버디 이벤트 컨셉", implementation = EventConcept.class)
+	@ArraySchema(arraySchema = @Schema(description = "버디 이벤트 컨셉"),
+		schema = @Schema(implementation = EventConcept.class))
 	private List<EventConcept> eventConcepts;
 
 	@Schema(description = "카셰어링 여부", example = "true", required = true)
