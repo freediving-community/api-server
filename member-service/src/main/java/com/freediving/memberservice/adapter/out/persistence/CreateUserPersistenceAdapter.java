@@ -53,7 +53,7 @@ public class CreateUserPersistenceAdapter implements CreateUserPort, CreateUserL
 			UserJpaEntity savedUserJpaEntity = userJpaRepository.save(createUserJpaEntity);
 			String randomNickname = NicknameGenerator.generateNickname(savedUserJpaEntity.getUserId());
 			savedUserJpaEntity.updateUserNickname(randomNickname);
-			return User.fromJpaEntitySimple(createUserJpaEntity);
+			return User.fromJpaEntitySimple(savedUserJpaEntity);
 		}
 		return User.fromJpaEntityDetail(userJpaEntity);
 	}

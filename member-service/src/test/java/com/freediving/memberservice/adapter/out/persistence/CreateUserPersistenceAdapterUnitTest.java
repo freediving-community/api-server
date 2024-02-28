@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.domain.OauthType;
 import com.freediving.memberservice.domain.User;
+import com.freediving.memberservice.fixture.UserEntityFixture;
 
 /**
  * @Author         : sasca37
@@ -45,9 +46,15 @@ class CreateUserPersistenceAdapterUnitTest {
 		when(userJpaRepository.findByOauthTypeAndEmail(any(OauthType.class), anyString())).thenReturn(
 			Optional.empty());
 
+		UserJpaEntity mockedUserJpaEntity = UserEntityFixture.createMockUser(1L, command.getEmail(),
+			command.getProfileImgUrl(), command.getOauthType());
+
+		when(userJpaRepository.save(any(UserJpaEntity.class))).thenReturn(mockedUserJpaEntity);
+
 		User user = createUserPersistenceAdapter.createOrGetUser(command);
 
 		assertThat(user).isNotNull();
+		assertThat(user.nickname()).isNotNull();
 		assertThat(user.email()).isEqualTo(VALID_EMAIL);
 		assertThat(user.oauthType()).isEqualTo(VALID_OAUTH_TYPE);
 		assertThat(user.roleLevel()).isEqualTo(DEFAULT_ROLE_LEVEL);
