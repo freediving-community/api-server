@@ -6,6 +6,7 @@ import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
+import com.freediving.memberservice.application.port.in.NicknameGenerator;
 import com.freediving.memberservice.application.port.out.CreateUserLicencePort;
 import com.freediving.memberservice.application.port.out.CreateUserPort;
 import com.freediving.memberservice.domain.OauthType;
@@ -47,10 +48,12 @@ public class CreateUserPersistenceAdapter implements CreateUserPort, CreateUserL
 
 		// 최초 로그인인 경우
 		if (ObjectUtils.isEmpty(userJpaEntity)) {
-			UserJpaEntity saveUserJpaEntity = UserJpaEntity
+			UserJpaEntity createUserJpaEntity = UserJpaEntity
 				.createSimpleUser(oauthType, email, profileImgUrl, RoleLevel.UNREGISTER);
-			userJpaRepository.save(saveUserJpaEntity);
-			return User.fromJpaEntitySimple(saveUserJpaEntity);
+			UserJpaEntity savedUserJpaEntity = userJpaRepository.save(createUserJpaEntity);
+			String randomNickname = NicknameGenerator.generateNickname(savedUserJpaEntity.getUserId());
+			savedUserJpaEntity.updateUserNickname(randomNickname);
+			return User.fromJpaEntitySimple(createUserJpaEntity);
 		}
 		return User.fromJpaEntityDetail(userJpaEntity);
 	}

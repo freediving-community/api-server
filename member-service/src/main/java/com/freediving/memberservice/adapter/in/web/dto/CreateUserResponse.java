@@ -31,7 +31,7 @@ public class CreateUserResponse {
 	@Schema(description = "프로필 이미지 URL", example = "https://aws-s3.com")
 	private String profileImgUrl;
 
-	@Schema(description = "닉네임", example = "버디킹")
+	@Schema(description = "닉네임", example = "초보다이버_00001")
 	private String nickname;
 
 	@Schema(description = "소셜 로그인 타입", example = "KAKAO")

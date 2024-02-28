@@ -75,6 +75,10 @@ public class UserJpaEntity extends AuditableEntity {
 		this.userLicenceJpaEntity = userLicenceJpaEntity;
 	}
 
+	public void updateUserNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
 	public static UserJpaEntity createSimpleUser(OauthType oauthType, String email, String profileImgUrl,
 		RoleLevel roleLevel) {
 		return new UserJpaEntity(oauthType, email, profileImgUrl, roleLevel);
