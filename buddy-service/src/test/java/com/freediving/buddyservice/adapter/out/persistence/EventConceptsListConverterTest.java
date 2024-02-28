@@ -86,7 +86,7 @@ class EventConceptsListConverterTest {
 		assertThatThrownBy(() -> converter.convertToEntityAttribute("LEVEL_UP,PRAPHY,TRAINING"))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessage(
-				"No enum constant com.freediving.buddyservice.DivinPoolTestCommon.enumeration.EventConcept.PRAPHY");
+				"No enum constant com.freediving.buddyservice.common.enumeration.EventConcept.PRAPHY");
 	}
 
 }

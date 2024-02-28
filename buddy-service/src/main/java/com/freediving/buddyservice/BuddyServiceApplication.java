@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.freediving.buddyservice", "com.freediving.common"})
+@ComponentScan(basePackages = "com.freediving")
 @EnableDiscoveryClient
 @EnableJpaAuditing
 @EnableCaching

@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventUseCase;
-import com.freediving.buddyservice.application.port.out.service.RequestMemberPort;
 import com.freediving.buddyservice.common.ControllerDefendenciesConfig;
 import com.freediving.buddyservice.common.enumeration.EventConcept;
 import com.freediving.buddyservice.common.enumeration.EventStatus;
@@ -33,9 +32,6 @@ class CreateBuddyEventControllerTest extends ControllerDefendenciesConfig {
 	@MockBean
 	private CreateBuddyEventUseCase createBuddyEventUseCase;
 
-	@MockBean
-	private RequestMemberPort requestMemberPort;
-
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -44,7 +40,6 @@ class CreateBuddyEventControllerTest extends ControllerDefendenciesConfig {
 
 	@BeforeEach
 	void tearDown() {
-
 		Mockito.when(createBuddyEventUseCase.createBuddyEvent(Mockito.any(CreateBuddyEventCommand.class)))
 			.thenReturn(CreatedBuddyEvent.builder()
 				.eventId(1L)
@@ -59,12 +54,12 @@ class CreateBuddyEventControllerTest extends ControllerDefendenciesConfig {
 				.createdDate(LocalDateTime.of(2024, 01, 01, 9, 00, 00))
 				.updatedDate(LocalDateTime.of(2024, 01, 01, 9, 00, 00))
 				.build());
-
 	}
 
 	@DisplayName("새로운 버디 이벤트를 생성한다.")
 	@Test
 	void shouldCreateNewBuddyEventSuccessfully() throws Exception {
+
 		//given
 		final CreateBuddyEventRequest request = CreateBuddyEventRequest.builder()
 			.eventStartDate(LocalDateTime.now().plusHours(2))
