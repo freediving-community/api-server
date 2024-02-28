@@ -19,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -75,6 +76,10 @@ public class UserJpaEntity extends AuditableEntity {
 		this.userLicenceJpaEntity = userLicenceJpaEntity;
 	}
 
+	public void updateUserNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
 	public static UserJpaEntity createSimpleUser(OauthType oauthType, String email, String profileImgUrl,
 		RoleLevel roleLevel) {
 		return new UserJpaEntity(oauthType, email, profileImgUrl, roleLevel);
@@ -87,4 +92,12 @@ public class UserJpaEntity extends AuditableEntity {
 		this.role = role;
 	}
 
+	@Builder(builderMethodName = "createMockUser")
+	public UserJpaEntity(Long userId, String email, String profileImgUrl, OauthType oauthType, RoleLevel role) {
+		this.userId = userId;
+		this.email = email;
+		this.profileImgUrl = profileImgUrl;
+		this.oauthType = oauthType;
+		this.role = role;
+	}
 }

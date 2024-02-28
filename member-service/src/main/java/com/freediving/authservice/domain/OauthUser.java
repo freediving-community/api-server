@@ -24,6 +24,8 @@ public class OauthUser {
 
 	private String userId;
 
+	private String nickname;
+
 	private OauthType oauthType;
 	private String email;
 	private String profileImgUrl;

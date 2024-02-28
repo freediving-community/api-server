@@ -1,6 +1,5 @@
 package com.freediving.authservice.adapter.in.web.dto;
 
-import com.freediving.authservice.domain.OauthType;
 import com.freediving.authservice.domain.OauthUser;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,10 +23,7 @@ import lombok.Getter;
 public class UserLoginResponse {
 
 	@Schema(description = "유저 식별 키", example = "1")
-	private String userId;
-
-	@Schema(description = "소셜 로그인 타입", example = "KAKAO")
-	private OauthType oauthType;
+	private Long userId;
 
 	@Schema(description = "이메일", example = "sasca37@naver.com")
 	private String email;
@@ -35,11 +31,18 @@ public class UserLoginResponse {
 	@Schema(description = "프로필 이미지 URL", example = "https://aws-s3.com")
 	private String profileImgUrl;
 
+	@Schema(description = "닉네임", example = "초보다이버_00001")
+	private String nickname;
+
+	@Schema(description = "소셜 로그인 타입", example = "KAKAO")
+	private String oauthType;
+
 	@Schema(description = "유저 권한", example = "0")
 	private Integer roleLevel;
 
 	public static UserLoginResponse from(OauthUser oauthUser) {
-		return new UserLoginResponse(oauthUser.getUserId(), oauthUser.getOauthType(), oauthUser.getEmail(),
-			oauthUser.getProfileImgUrl(), oauthUser.getRoleLevel());
+		return new UserLoginResponse(Long.valueOf(oauthUser.getUserId()), oauthUser.getEmail(),
+			oauthUser.getProfileImgUrl(), oauthUser.getNickname(), oauthUser.getOauthType().name(),
+			oauthUser.getRoleLevel());
 	}
 }

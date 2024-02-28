@@ -1,5 +1,7 @@
 package com.freediving.memberservice.application.port.out;
 
+import java.util.List;
+
 import com.freediving.memberservice.domain.User;
 
 /**
@@ -15,4 +17,6 @@ import com.freediving.memberservice.domain.User;
 public interface FindUserPort {
 
 	User findUserDetailById(Long userId);
+
+	List<User> findUserListByIds(List<Long> userIds);
 }

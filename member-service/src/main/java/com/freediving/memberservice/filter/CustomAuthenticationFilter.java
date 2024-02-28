@@ -37,7 +37,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
 	private static final String USER_ID = "User-Id";
 
-	private static List<String> ignorePathList = List.of("/oauth", "/service/users/register", "/v3/api-docs");
+	private static List<String> ignorePathList = List.of("/oauth", "/service", "/v3/api-docs");
 
 	/**
 	 * @Author           : sasca37
