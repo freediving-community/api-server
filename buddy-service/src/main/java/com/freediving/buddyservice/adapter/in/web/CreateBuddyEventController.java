@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.freediving.buddyservice.adapter.in.web.dto.CreateBuddyEventRequest;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;
@@ -70,6 +71,7 @@ public class CreateBuddyEventController {
 					.participantCount(request.getParticipantCount())
 					.eventConcepts(request.getEventConcepts())
 					.carShareYn(request.getCarShareYn())
+					.kakaoRoomCode(request.getKakaoRoomCode())
 					.comment(request.getComment())
 					.build());
 

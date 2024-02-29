@@ -1,16 +1,16 @@
-package com.freediving.buddyservice.divingpool.service;
+package com.freediving.divingpool.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.freediving.buddyservice.divingpool.data.dao.DivingPoolJpaEntity;
-import com.freediving.buddyservice.divingpool.data.dto.DivingPoolListResponse;
-import com.freediving.buddyservice.divingpool.data.dto.DivingPoolResponse;
-import com.freediving.buddyservice.divingpool.repository.DivingPoolRepository;
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
+import com.freediving.divingpool.data.dao.DivingPoolJpaEntity;
+import com.freediving.divingpool.data.dto.DivingPoolListResponse;
+import com.freediving.divingpool.data.dto.DivingPoolResponse;
+import com.freediving.divingpool.repository.DivingPoolRepository;
 
 import lombok.RequiredArgsConstructor;
 

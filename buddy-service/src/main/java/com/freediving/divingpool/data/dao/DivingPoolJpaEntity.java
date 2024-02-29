@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.divingpool.data.dao;
+package com.freediving.divingpool.data.dao;
 
 import com.freediving.common.persistence.AuditableEntity;
 

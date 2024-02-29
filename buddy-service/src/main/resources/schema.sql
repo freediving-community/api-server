@@ -64,6 +64,7 @@ CREATE TABLE buddy_events
     event_concepts    VARCHAR(255)  NULL,
     car_share_yn      boolean       NOT NULL,
     status            varchar(20)   NOT NULL,
+    kakao_room_code   varchar(10)   NULL,
     comment           varchar(1000) NULL,
     updated_date      timestamp     NOT NULL,
     created_date      timestamp     NOT NULL

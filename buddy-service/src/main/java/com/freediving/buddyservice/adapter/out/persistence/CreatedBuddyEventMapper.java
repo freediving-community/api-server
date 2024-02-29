@@ -24,6 +24,7 @@ public class CreatedBuddyEventMapper {
 			.carShareYn(buddyEventsJpaEntity.getCarShareYn())
 			.eventConcepts(buddyEventsJpaEntity.getEventConcepts())
 			.comment(buddyEventsJpaEntity.getComment())
+			.kakaoRoomCode(buddyEventsJpaEntity.getKakaoRoomCode())
 			.updatedDate(buddyEventsJpaEntity.getUpdatedDate())
 			.createdDate(buddyEventsJpaEntity.getCreatedDate())
 			.build();

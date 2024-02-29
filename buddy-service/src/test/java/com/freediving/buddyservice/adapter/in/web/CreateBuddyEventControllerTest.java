@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.freediving.buddyservice.adapter.in.web.dto.CreateBuddyEventRequest;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.common.ControllerDefendenciesConfig;

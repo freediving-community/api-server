@@ -60,6 +60,9 @@ public class BuddyEventsJpaEntity extends AuditableEntity {
 	@Enumerated(EnumType.STRING)
 	private EventStatus status;
 
+	@Column(length = 10)
+	private String kakaoRoomCode;
+
 	@Column(length = 1000)
 	private String comment;
 
@@ -67,7 +70,8 @@ public class BuddyEventsJpaEntity extends AuditableEntity {
 	public String toString() {
 		return "BuddyEventsJpaEntity{" + "eventId=" + eventId + ", userId=" + userId + ", eventStartDate="
 			+ eventStartDate + ", eventEndDate=" + eventEndDate + ", participantCount=" + participantCount
-			+ ", eventConcepts=" + eventConcepts + ", carShareYn=" + carShareYn + ", status=" + status + ", comment='"
+			+ ", eventConcepts=" + eventConcepts + ", carShareYn=" + carShareYn + ", kakaoRoomCode=" + kakaoRoomCode
+			+ ", status=" + status + ", comment='"
 			+ comment + '\'' + '}';
 	}
 }

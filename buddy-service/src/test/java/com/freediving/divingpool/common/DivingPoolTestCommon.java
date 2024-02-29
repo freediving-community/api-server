@@ -1,6 +1,6 @@
-package com.freediving.buddyservice.divingpool;
+package com.freediving.divingpool.common;
 
-import com.freediving.buddyservice.divingpool.data.dao.DivingPoolJpaEntity;
+import com.freediving.divingpool.data.dao.DivingPoolJpaEntity;
 
 public class DivingPoolTestCommon {
 

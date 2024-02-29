@@ -1,4 +1,4 @@
-package com.freediving.buddyservice;
+package com.freediving;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

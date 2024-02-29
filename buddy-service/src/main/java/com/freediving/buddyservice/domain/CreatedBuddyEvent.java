@@ -43,6 +43,9 @@ public class CreatedBuddyEvent {
 	@Schema(description = "이벤트 상태", implementation = EventStatus.class)
 	private final EventStatus status;
 
+	@Schema(description = "카카오 채팅방 코드", example = "gQWkq2Uf", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+	private final String kakaoRoomCode;
+
 	@Schema(description = "추가 코멘트", example = "이번 모임은 캐주얼하게 진행합니다.")
 	private final String comment;
 

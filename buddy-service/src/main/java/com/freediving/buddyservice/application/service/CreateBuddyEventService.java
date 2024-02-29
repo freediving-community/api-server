@@ -52,6 +52,7 @@ public class CreateBuddyEventService implements CreateBuddyEventUseCase {
 				.eventConcepts(command.getEventConcepts())
 				.carShareYn(command.getCarShareYn())
 				.status(command.getStatus())
+				.kakaoRoomCode(command.getKakaoRoomCode())
 				.comment(command.getComment())
 				.build());
 

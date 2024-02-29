@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.divingpool.data.dto;
+package com.freediving.divingpool.data.dto;
 
 import java.util.List;
 

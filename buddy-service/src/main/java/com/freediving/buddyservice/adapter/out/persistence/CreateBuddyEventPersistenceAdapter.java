@@ -35,6 +35,7 @@ public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort 
 				.eventConcepts(createdBuddyEvent.getEventConcepts())
 				.carShareYn(createdBuddyEvent.getCarShareYn())
 				.status(createdBuddyEvent.getStatus())
+				.kakaoRoomCode(createdBuddyEvent.getKakaoRoomCode())
 				.comment(createdBuddyEvent.getComment())
 				.build()
 		);

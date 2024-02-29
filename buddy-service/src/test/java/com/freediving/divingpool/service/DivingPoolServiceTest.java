@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.divingpool.service;
+package com.freediving.divingpool.service;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.freediving.buddyservice.divingpool.DivingPoolTestCommon;
-import com.freediving.buddyservice.divingpool.data.dto.DivingPoolListResponse;
-import com.freediving.buddyservice.divingpool.repository.DivingPoolRepository;
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
+import com.freediving.divingpool.common.DivingPoolTestCommon;
+import com.freediving.divingpool.data.dto.DivingPoolListResponse;
+import com.freediving.divingpool.repository.DivingPoolRepository;
 
 @SpringBootTest
 @ActiveProfiles("local")

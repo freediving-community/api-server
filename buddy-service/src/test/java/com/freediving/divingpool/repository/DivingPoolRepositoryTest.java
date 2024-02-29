@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.divingpool.repository;
+package com.freediving.divingpool.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.freediving.buddyservice.divingpool.DivingPoolTestCommon;
-import com.freediving.buddyservice.divingpool.data.dao.DivingPoolJpaEntity;
+import com.freediving.divingpool.common.DivingPoolTestCommon;
+import com.freediving.divingpool.data.dao.DivingPoolJpaEntity;
 
 @ActiveProfiles("local")
 @DataJpaTest // JPA 관련된 Bean만 주입받아 테스트 가능.
