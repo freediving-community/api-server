@@ -1,9 +1,12 @@
 package com.freediving.memberservice.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -69,5 +72,19 @@ public class SecurityConfig {
 				UsernamePasswordAuthenticationFilter.class)
 
 			.build();
+	}
+
+	/**
+	 * @Author           : sasca37
+	 * @Date             : 2024/02/29
+	 * @Param            :
+	 * @Return           :
+	 * @Description      : h2-console enable 상태 일 경우 시큐리티 필터 제외
+	 */
+	@Bean
+	@ConditionalOnProperty(name = "spring.h2.console.enabled", havingValue = "true")
+	public WebSecurityCustomizer configureH2ConsoleEnable() {
+		return web -> web.ignoring()
+			.requestMatchers(PathRequest.toH2Console());
 	}
 }
