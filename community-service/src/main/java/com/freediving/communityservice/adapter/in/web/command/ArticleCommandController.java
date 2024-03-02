@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.freediving.communityservice.adapter.in.dto.ArticleEditRequest;
 import com.freediving.communityservice.adapter.in.dto.ArticleWriteRequest;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.ArticleEditCommand;
 import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleUseCase;
@@ -28,15 +29,15 @@ public class ArticleCommandController {
 
 	private final ArticleUseCase articleUseCase;
 
-	@PostMapping("/boards/{boardId}/articles")
+	@PostMapping("/boards/{boardType}/articles")
 	public ResponseEntity<Long> writeArticleContent(
 		UserProvider userProvider,
-		@PathVariable("boardId") Long boardId,
+		@PathVariable("boardType") BoardType boardType,
 		@RequestBody ArticleWriteRequest articleWriteRequest) {
 		Long articleId = articleUseCase.writeArticle(
 			ArticleWriteCommand.builder()
 				.userProvider(userProvider)
-				.boardId(boardId)
+				.boardType(boardType)
 				.title(articleWriteRequest.getTitle())
 				.content(articleWriteRequest.getContent())
 				.authorName(articleWriteRequest.getAuthorName())
@@ -53,17 +54,17 @@ public class ArticleCommandController {
 		return ResponseEntity.created(location).build();
 	}
 
-	@PostMapping("/boards/{boardId}/articles/{articleId}")
+	@PostMapping("/boards/{boardType}/articles/{articleId}")
 	public ResponseEntity<Long> editArticleContent(
 		UserProvider userProvider,
-		@PathVariable("boardId") Long boardId,
+		@PathVariable("boardType") BoardType boardType,
 		@PathVariable("articleId") Long articleId,
 		@RequestBody ArticleEditRequest articleEditRequest
 	) {
 		Long editedArticleId = articleUseCase.editArticle(
 			ArticleEditCommand.builder()
 				.userProvider(userProvider)
-				.boardId(boardId)
+				.boardType(boardType)
 				.articleId(articleId)
 				.title(articleEditRequest.getTitle())
 				.content(articleEditRequest.getContent())
@@ -75,17 +76,17 @@ public class ArticleCommandController {
 		return ResponseEntity.ok(editedArticleId);
 	}
 
-	@DeleteMapping("/boards/{boardId}/articles/{articleId}")
+	@DeleteMapping("/boards/{boardType}/articles/{articleId}")
 	public ResponseEntity<Long> removeArticle(
 		UserProvider userProvider,
-		@PathVariable("boardId") Long boardId,
+		@PathVariable("boardType") BoardType boardType,
 		@PathVariable("articleId") Long articleId
 	) {
 
 		Long deletedArticleId = articleUseCase.deleteArticle(
 			ArticleRemoveCommand.builder()
 				.userProvider(userProvider)
-				.boardId(boardId)
+				.boardType(boardType)
 				.articleId(articleId)
 				.build()
 		);

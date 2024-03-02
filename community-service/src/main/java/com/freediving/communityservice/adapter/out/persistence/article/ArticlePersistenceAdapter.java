@@ -9,6 +9,7 @@ import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
 import com.freediving.communityservice.adapter.out.persistence.comment.CommentJpaEntity;
 import com.freediving.communityservice.adapter.out.persistence.comment.CommentPersistenceMapper;
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.ArticleReadCommand;
 import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
@@ -25,7 +26,8 @@ import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadPort, ArticleEditPort, ArticleDeletePort {
+public class ArticlePersistenceAdapter
+	implements ArticleWritePort, ArticleReadPort, ArticleEditPort, ArticleDeletePort {
 
 	private final ArticleRepository articleRepository;
 	private final JPAQueryFactory jpaQueryFactory;
@@ -38,7 +40,7 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 			ArticleJpaEntity.of(
 				articleWriteCommand.getTitle(),
 				articleWriteCommand.getContent(),
-				articleWriteCommand.getBoardId(),
+				articleWriteCommand.getBoardType(),
 				articleWriteCommand.getAuthorName(),
 				articleWriteCommand.isEnableComment()
 			)
@@ -48,11 +50,11 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 	}
 
 	@Override
-	public Article readArticle(Long boardId, Long articleId, boolean isShowAll) {
+	public Article readArticle(BoardType boardType, Long articleId, boolean isShowAll) {
 		ArticleJpaEntity foundArticle = jpaQueryFactory
 			.selectFrom(articleJpaEntity)
 			.where(
-				boardIdEq(boardId),
+				boardTypeEq(boardType),
 				articleIdEq(articleId),
 				isShowAll ?
 					null : articleJpaEntity.visible.isTrue()
@@ -67,7 +69,7 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 	@Override
 	public ArticleContentWithComment readArticleWithComment(ArticleReadCommand command) {
 
-		Article foundArticle = readArticle(command.getBoardId(), command.getArticleId(), command.isShowAll());
+		Article foundArticle = readArticle(command.getBoardType(), command.getArticleId(), command.isShowAll());
 
 		List<CommentJpaEntity> articleComments = jpaQueryFactory
 			.selectFrom(commentJpaEntity)
@@ -120,20 +122,20 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 	}
 
 	@Override
-	public Long updateArticle(Long boardId, Long articleId, String title, String content, List<Long> hashtagIds,
+	public Long updateArticle(BoardType boardType, Long articleId, String title, String content, List<Long> hashtagIds,
 		boolean enableComment) {
-			ArticleJpaEntity foundArticle = jpaQueryFactory
-				.selectFrom(articleJpaEntity)
-				.where(
-					boardIdEq(boardId),
-					articleIdEq(articleId)
-				).fetchOne();
+		ArticleJpaEntity foundArticle = jpaQueryFactory
+			.selectFrom(articleJpaEntity)
+			.where(
+				boardTypeEq(boardType),
+				articleIdEq(articleId)
+			).fetchOne();
 
-			if (foundArticle == null) {
-				throw new IllegalArgumentException("해당하는 게시글이 없습니다.");
-			}
+		if (foundArticle == null) {
+			throw new IllegalArgumentException("해당하는 게시글이 없습니다.");
+		}
 
-			foundArticle.changeArticleContents(title, content, hashtagIds, enableComment);
+		foundArticle.changeArticleContents(title, content, hashtagIds, enableComment);
 
 		return foundArticle.getArticleId();
 	}
@@ -146,8 +148,8 @@ public class ArticlePersistenceAdapter implements ArticleWritePort, ArticleReadP
 		return articleRemoveCommand.getArticleId();
 	}
 
-	private BooleanExpression boardIdEq(Long boardId) {
-		return articleJpaEntity.boardId.eq(boardId);
+	private BooleanExpression boardTypeEq(BoardType boardType) {
+		return articleJpaEntity.boardType.eq(boardType);
 	}
 
 	private BooleanExpression articleIdEq(Long articleId) {

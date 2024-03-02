@@ -1,9 +1,11 @@
 package com.freediving.communityservice.application.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.BoardReadCommand;
 import com.freediving.communityservice.application.port.in.BoardUseCase;
 import com.freediving.communityservice.application.port.in.BoardWriteCommand;
@@ -24,16 +26,16 @@ public class BoardService implements BoardUseCase {
 
 	@Override
 	public Board createBoard(BoardWriteCommand command) {
-		boardReadPort.findByBoardName(command.getBoardName())
+		boardReadPort.findByBoardType(command.getBoardType())
 			.ifPresent(board -> {
-				throw new IllegalArgumentException("이미 동일한 이름의 게시판이 존재합니다.");
+				throw new IllegalArgumentException("이미 동일한 이름(유형)의 게시판이 존재합니다.");
 			});
 		return boardWritePort.makeBoard(command);
 	}
 
 	@Override
-	public Board readBoard(Long boardId) {
-		return boardReadPort.findById(boardId);
+	public Optional<Board> readBoard(BoardType boardType) {
+		return boardReadPort.findByBoardType(boardType);
 	}
 
 	@Override

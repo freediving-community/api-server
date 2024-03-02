@@ -50,7 +50,7 @@ public class Board {
 		}
 	}
 
-	public void checkPermission(Long boardId, UserProvider userProvider) {
+	public void checkPermission(BoardType boardType, UserProvider userProvider) {
 		/* TODO
 		 * 	 - 조회 권한
 		 * 	 - 조작 권한

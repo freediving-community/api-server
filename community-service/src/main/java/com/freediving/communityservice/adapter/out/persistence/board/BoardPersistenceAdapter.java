@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.BoardReadCommand;
 import com.freediving.communityservice.application.port.in.BoardWriteCommand;
 import com.freediving.communityservice.application.port.out.BoardReadPort;
@@ -43,8 +44,8 @@ public class BoardPersistenceAdapter implements BoardWritePort, BoardReadPort {
 		);
 	}
 
-	public Optional<Board> findByBoardName(String boardName) {
-		Optional<BoardJpaEntity> boardJpaEntity = boardRepository.findByBoardName(boardName);
+	public Optional<Board> findByBoardType(BoardType boardType) {
+		Optional<BoardJpaEntity> boardJpaEntity = boardRepository.findByBoardType(boardType);
 		return boardMapper.mapToDomain(boardJpaEntity);
 	}
 

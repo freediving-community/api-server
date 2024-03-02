@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.freediving.common.SelfValidating;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +20,7 @@ public class ArticleEditCommand extends SelfValidating<ArticleEditCommand> {
 	private final UserProvider userProvider;
 
 	@NotNull
-	private final Long boardId;
+	private final BoardType boardType;
 
 	@NotNull
 	private final Long articleId;
@@ -34,9 +35,10 @@ public class ArticleEditCommand extends SelfValidating<ArticleEditCommand> {
 
 	private final boolean enableComment;
 
-	public ArticleEditCommand(UserProvider userProvider, Long boardId, Long articleId, String title, String content, List<Long> hashtagIds,	boolean enableComment) {
+	public ArticleEditCommand(UserProvider userProvider, BoardType boardType, Long articleId, String title,
+		String content, List<Long> hashtagIds, boolean enableComment) {
 		this.userProvider = userProvider;
-		this.boardId = boardId;
+		this.boardType = boardType;
 		this.articleId = articleId;
 		this.title = title;
 		this.content = content;

@@ -2,6 +2,7 @@ package com.freediving.communityservice.application.port.in;
 
 import com.freediving.common.SelfValidating;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -16,14 +17,14 @@ public class ArticleRemoveCommand extends SelfValidating<ArticleRemoveCommand> {
 	private final UserProvider userProvider;
 
 	@NotNull
-	private final Long boardId;
+	private final BoardType boardType;
 
 	@NotNull
 	private final Long articleId;
 
-	public ArticleRemoveCommand(UserProvider userProvider, Long boardId, Long articleId) {
+	public ArticleRemoveCommand(UserProvider userProvider, BoardType boardType, Long articleId) {
 		this.userProvider = userProvider;
-		this.boardId = boardId;
+		this.boardType = boardType;
 		this.articleId = articleId;
 		this.validateSelf();
 	}

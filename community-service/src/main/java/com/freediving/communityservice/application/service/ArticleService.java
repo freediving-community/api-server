@@ -2,6 +2,7 @@ package com.freediving.communityservice.application.service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -40,14 +41,14 @@ public class ArticleService implements ArticleUseCase {
 	//Query
 	@Override
 	public Article getArticle(ArticleReadCommand command) {
-		return articleReadPort.readArticle(command.getBoardId(), command.getArticleId(), command.isShowAll());
+		return articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), command.isShowAll());
 	}
 
 	@Override
 	public ArticleContentWithComment getArticleWithComment(ArticleReadCommand command) {
 
 		if (command.isWithoutComment()) {
-			Article onlyArticle = articleReadPort.readArticle(command.getBoardId(), command.getArticleId(),
+			Article onlyArticle = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(),
 				command.isShowAll());
 			return new ArticleContentWithComment(onlyArticle, null);
 		}
@@ -69,7 +70,8 @@ public class ArticleService implements ArticleUseCase {
 	public Long writeArticle(ArticleWriteCommand articleWriteCommand) {
 		//TODO 한 사용자는 같은 게시판에 00초 내로 글 추가가 제한됨. 프론트에서 먼저 체크 등.
 		// articleReadPort.getXXXByAuthorId()
-		Board board = boardReadPort.findById(articleWriteCommand.getBoardId());
+		Optional<Board> foundBoard = boardReadPort.findByBoardType(articleWriteCommand.getBoardType());
+		Board board = foundBoard.orElseThrow(() -> new IllegalArgumentException("해당하는 게시판이 없습니다."));
 		board.checkPermission(articleWriteCommand);
 		Article savedArticle = articleWritePort.writeArticle(articleWriteCommand);
 		//TODO articleWriteCommand Hashtag 저장
@@ -79,10 +81,11 @@ public class ArticleService implements ArticleUseCase {
 
 	@Override
 	public Long editArticle(ArticleEditCommand command) {
-		Article originalArticle = articleReadPort.readArticle(command.getBoardId(), command.getArticleId(), false);
+		Article originalArticle = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), false);
 		originalArticle.checkHasOwnership(command.getUserProvider().getRequestUserId());
 
-		Long updatedArticleId = articleEditPort.updateArticle(command.getBoardId(), command.getArticleId(), command.getTitle(), command.getContent(), command.getHashtagIds(), command.isEnableComment());
+		Long updatedArticleId = articleEditPort.updateArticle(command.getBoardType(), command.getArticleId(),
+			command.getTitle(), command.getContent(), command.getHashtagIds(), command.isEnableComment());
 
 		return null;
 	}
@@ -92,10 +95,12 @@ public class ArticleService implements ArticleUseCase {
 		// TODO Admin 등 처리?
 		boolean isShowAll = false;
 
-		Article article = articleReadPort.readArticle(command.getBoardId(), command.getArticleId(), isShowAll);
+		Article article = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), isShowAll);
 		if (Objects.isNull(article)) {
 			throw new IllegalArgumentException("해당하는 게시글이 없습니다.");
 		}
+		article.checkHasOwnership(command.getUserProvider().getRequestUserId());
+		
 		commentDeletePort.deleteComments(article.getId());
 
 		return articleDeletePort.removeArticle(command);

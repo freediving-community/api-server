@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.freediving.common.SelfValidating;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +20,7 @@ public class ArticleWriteCommand extends SelfValidating<ArticleWriteCommand> {
 	private final UserProvider userProvider;
 
 	@NotNull
-	private final Long boardId;
+	private final BoardType boardType;
 
 	@NotBlank(message = "제목을 입력해주세요.")
 	private final String title;
@@ -34,11 +35,12 @@ public class ArticleWriteCommand extends SelfValidating<ArticleWriteCommand> {
 
 	private final boolean enableComment;
 
-	public ArticleWriteCommand(UserProvider userProvider, Long boardId, String title, String content, String authorName,
+	public ArticleWriteCommand(UserProvider userProvider, BoardType boardType, String title, String content,
+		String authorName,
 		List<Long> hashtagIds,
 		boolean enableComment) {
 		this.userProvider = userProvider;
-		this.boardId = boardId;
+		this.boardType = boardType;
 		this.title = title;
 		this.content = content;
 		this.authorName = authorName;
