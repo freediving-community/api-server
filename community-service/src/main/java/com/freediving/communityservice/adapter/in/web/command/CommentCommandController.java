@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.communityservice.adapter.in.dto.CommentWriteRequest;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
-import com.freediving.communityservice.adapter.out.dto.comment.CommentResponse;
 import com.freediving.communityservice.application.port.in.CommentUseCase;
 import com.freediving.communityservice.application.port.in.CommentWriteCommand;
 import com.freediving.communityservice.domain.Comment;
@@ -17,7 +16,7 @@ import com.freediving.communityservice.domain.Comment;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/v1.0")
+@RequestMapping("/api/v1")
 @RestController
 public class CommentCommandController {
 
