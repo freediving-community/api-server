@@ -10,7 +10,8 @@ public enum BoardType {
 	BUDDY_QNA(UserProvider.RoleLevel.USER.getValue()),
 	BUDDY_CHAT(5),
 	QNA(5),
-	TIP(5);
+	TIP(5),
+	FIND_BUDDY(5);
 
 	private final int roleLevel;
 
