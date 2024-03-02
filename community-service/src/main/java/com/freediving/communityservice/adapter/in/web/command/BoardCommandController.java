@@ -15,7 +15,7 @@ import com.freediving.communityservice.domain.Board;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/v1.0")
+@RequestMapping("/api/v1")
 @RestController
 public class BoardCommandController {
 	// 관리자만 접근 가능

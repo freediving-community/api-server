@@ -13,7 +13,7 @@ import com.freediving.communityservice.application.port.in.ImageUseCase;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/v1.0/image")
+@RequestMapping("/api/v1/image")
 @RestController
 public class ImageCommandController {
 

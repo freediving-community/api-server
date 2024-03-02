@@ -14,7 +14,7 @@ import com.freediving.communityservice.domain.Comment;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/v1.0")
+@RequestMapping("/api/v1")
 @RestController
 public class CommentQueryController {
 

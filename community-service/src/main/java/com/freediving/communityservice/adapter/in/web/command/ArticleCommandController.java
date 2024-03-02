@@ -22,7 +22,7 @@ import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/v1.0")
+@RequestMapping("/api/v1")
 @RestController
 public class ArticleCommandController {
 
@@ -72,7 +72,7 @@ public class ArticleCommandController {
 				.build()
 		);
 
-		return ResponseEntity.ok( editedArticleId);
+		return ResponseEntity.ok(editedArticleId);
 	}
 
 	@DeleteMapping("/boards/{boardId}/articles/{articleId}")
