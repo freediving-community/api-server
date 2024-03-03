@@ -1,10 +1,10 @@
-package com.freediving.authservice.adapter.out.persistence;
+package com.freediving.authservice.adapter.out.persistence.token;
 
 import org.springframework.beans.factory.annotation.Value;
 
-import com.freediving.authservice.application.port.in.JwtTokenUtils;
 import com.freediving.authservice.application.port.out.CreateTokenPort;
 import com.freediving.authservice.domain.Token;
+import com.freediving.authservice.util.JwtTokenUtils;
 import com.freediving.common.config.annotation.PersistenceAdapter;
 
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.freediving.authservice.adapter.out.persistence;
+package com.freediving.authservice.adapter.out.persistence.token;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

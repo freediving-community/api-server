@@ -1,4 +1,4 @@
-package com.freediving.authservice.application.port.in;
+package com.freediving.authservice.util;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;

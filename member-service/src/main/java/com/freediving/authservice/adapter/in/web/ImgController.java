@@ -68,8 +68,7 @@ public class ImgController {
 			.directory(createImgRequest.directory())
 			.ext(createImgRequest.ext())
 			.build();
-		String preSignedUrl = imgUseCase.createPreSignedUrl(createImgCommand);
-		CreateImgResponse response = new CreateImgResponse(preSignedUrl);
+		CreateImgResponse response = imgUseCase.createPreSignedUrl(createImgCommand);
 		ResponseJsonObject responseJsonObject = new ResponseJsonObject(ServiceStatusCode.OK, response);
 		return ResponseEntity.ok(responseJsonObject);
 	}

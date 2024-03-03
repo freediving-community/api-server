@@ -2,10 +2,13 @@ package com.freediving.authservice.application.service;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.freediving.authservice.adapter.in.web.dto.CreateImgResponse;
 import com.freediving.authservice.application.port.in.CreateImgCommand;
+import com.freediving.authservice.application.port.in.CreateImgUseCase;
 import com.freediving.authservice.application.port.in.ImgUseCase;
-import com.freediving.authservice.application.port.in.ImgUtils;
+import com.freediving.authservice.application.port.out.CreateImgPort;
 import com.freediving.authservice.application.port.out.ImgPort;
+import com.freediving.authservice.util.ImgUtils;
 import com.freediving.common.config.annotation.UseCase;
 
 import lombok.RequiredArgsConstructor;
@@ -25,16 +28,25 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-public class ImgService implements ImgUseCase {
+public class ImgService implements ImgUseCase, CreateImgUseCase {
 
 	private final ImgPort imgPort;
 
+	private final CreateImgPort createImgPort;
+
 	@Override
-	public String createPreSignedUrl(CreateImgCommand createImgCommand) {
+	public CreateImgResponse createPreSignedUrl(CreateImgCommand createImgCommand) {
 		Long userId = createImgCommand.getUserId();
 		String uniqueFileName = ImgUtils.createUniqueFileName(userId);
 		String ext = createImgCommand.getExt();
 		String imgPath = ImgUtils.createPath(createImgCommand.getDirectory(), uniqueFileName, ext);
-		return imgPort.generatePreSignedUrl(imgPath);
+		CreateImgResponse response = imgPort.generatePreSignedUrl(imgPath);
+		saveImg(ImgUtils.parsingPreSignedUrl(response.preSignedUrl()), response.cloudFrontUrl());
+		return response;
+	}
+
+	@Override
+	public void saveImg(String parsedPreSignedUrl, String cdnUrl) {
+		createImgPort.saveImg(parsedPreSignedUrl, cdnUrl);
 	}
 }

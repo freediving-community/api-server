@@ -1,5 +1,7 @@
 package com.freediving.authservice.application.port.out;
 
+import com.freediving.authservice.adapter.in.web.dto.CreateImgResponse;
+
 /**
  * @Author         : sasca37
  * @Date           : 2024/01/21
@@ -11,5 +13,5 @@ package com.freediving.authservice.application.port.out;
  */
 public interface ImgPort {
 
-	String generatePreSignedUrl(String imgPath);
+	CreateImgResponse generatePreSignedUrl(String imgPath);
 }

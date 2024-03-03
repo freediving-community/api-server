@@ -1,7 +1,10 @@
-package com.freediving.authservice.application.port.in;
+package com.freediving.authservice.util;
 
 import java.util.Date;
 import java.util.UUID;
+
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 
 /**
  * @Author         : sasca37
@@ -33,5 +36,24 @@ public class ImgUtils {
 	 */
 	public static String createUniqueFileName(Long userId) {
 		return String.format("%s-%s", userId, UUID.randomUUID().toString().replace("-", ""));
+	}
+
+	public static String convertToCdnUrl(String cdnImgPath, String preSignedUrl) {
+
+		int startIdx = preSignedUrl.indexOf(".com");
+		int endIdx = preSignedUrl.indexOf("?");
+
+		if (startIdx == -1 || endIdx == -1) {
+			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, "PreSigned URL 작업 중 서버 오류가 발생했습니다.");
+		}
+		return cdnImgPath + preSignedUrl.substring(startIdx + 4, endIdx);
+	}
+
+	public static String parsingPreSignedUrl(String preSignedUrl) {
+		int endIdx = preSignedUrl.indexOf("?");
+		if (endIdx == -1) {
+			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, "PreSigned URL 작업 중 서버 오류가 발생했습니다.");
+		}
+		return preSignedUrl.substring(0, endIdx);
 	}
 }

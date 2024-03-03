@@ -1,13 +1,16 @@
 package com.freediving.authservice.adapter.out.external.aws;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.freediving.authservice.application.port.in.ImgUtils;
+import com.freediving.authservice.adapter.in.web.dto.CreateImgResponse;
 import com.freediving.authservice.application.port.out.ImgPort;
 import com.freediving.authservice.config.AwsConfigProperties;
+import com.freediving.authservice.util.ImgUtils;
 import com.freediving.common.config.annotation.ExternalSystemAdapter;
 
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,9 @@ public class AwsImgExternalAdapter implements ImgPort {
 	private final AwsConfigProperties awsConfigProperties;
 	private final AmazonS3 amazonS3;
 
+	@Value("${cloud.aws.s3.cloud-front}")
+	private String cdnImgPath;
+
 	/**
 	 * @Author           : sasca37
 	 * @Date             : 2024/01/21
@@ -38,11 +44,13 @@ public class AwsImgExternalAdapter implements ImgPort {
 	 * @Description      : AWS Configuration 에 등록한 시크릿 정보를 바탕으로 PreSigned URL 생성 및 URL 정보 반환
 	 */
 	@Override
-	public String generatePreSignedUrl(String imgPath) {
+	public CreateImgResponse generatePreSignedUrl(String imgPath) {
 		String bucket = awsConfigProperties.s3().bucket();
 
 		GeneratePresignedUrlRequest generatePresignedUrlRequest = getPreSignedUrl(bucket, imgPath);
-		return amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString();
+		String preSignedUrl = amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString();
+		String cdnUrl = ImgUtils.convertToCdnUrl(cdnImgPath, preSignedUrl);
+		return new CreateImgResponse(preSignedUrl, cdnUrl);
 	}
 
 	/**

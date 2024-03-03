@@ -15,6 +15,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "이미지 PreSigned URL 응답 정보")
 public record CreateImgResponse(
 	@Schema(description = "이미지 저장 요청할 PreSignedUrl 정보", example = "https://aws-s3.com")
-	String preSignedUrl
+	String preSignedUrl,
+
+	@Schema(description = "이미지 저장이 완료된 후 사용할 CDN URL 정보", example = "https://d1pjflw6c3jt4r.cloudfront.net")
+	String cloudFrontUrl
 ) {
 }
