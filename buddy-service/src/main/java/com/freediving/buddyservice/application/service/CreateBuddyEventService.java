@@ -54,6 +54,8 @@ public class CreateBuddyEventService implements CreateBuddyEventUseCase {
 				.status(command.getStatus())
 				.kakaoRoomCode(command.getKakaoRoomCode())
 				.comment(command.getComment())
+				.freedivingLevel(command.getFreedivingLevel())
+				.divingPools(command.getDivingPools())
 				.build());
 
 		return createdBuddyEventMapper.mapToDomainEntity(createdBuddyEventInfo);

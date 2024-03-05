@@ -1,11 +1,15 @@
 package com.freediving.buddyservice.adapter.out.persistence;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
+import com.freediving.buddyservice.common.enumeration.ParticipationStatus;
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;
 import com.freediving.common.config.annotation.PersistenceAdapter;
+import com.freediving.common.enumerate.DivingPool;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +30,29 @@ public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort 
 	@Override
 	public BuddyEventsJpaEntity createBuddyEvent(CreatedBuddyEvent createdBuddyEvent) {
 
+		Set<EventsDivingPoolMapping> eventsDivingPoolMapping = new HashSet<>();
+		Set<BuddyEventConditions> buddyEventConditions = null;
+		Set<BuddyEventJoinRequests> buddyEventJoinRequests = new HashSet<>();
+
+		// 다이빙풀
+		for (DivingPool pool : createdBuddyEvent.getDivingPools())
+			eventsDivingPoolMapping.add(
+				EventsDivingPoolMapping.builder().divingPoolId(pool)
+					.build());
+
+		// 참여 매핑
+		buddyEventJoinRequests.add(BuddyEventJoinRequests.builder().userId(
+			createdBuddyEvent.getUserId()).status(ParticipationStatus.OWNER).build());
+
+		// 조건 매팽
+		// 레벨 조건 존재하면
+		if (createdBuddyEvent.getFreedivingLevel() != null) {
+			buddyEventConditions = new HashSet<>();
+			buddyEventConditions.add(
+				BuddyEventConditions.builder().freedivingLevel(createdBuddyEvent.getFreedivingLevel()).build());
+
+		}
+
 		return buddyEventsRepository.save(
 			BuddyEventsJpaEntity.builder()
 				.userId(createdBuddyEvent.getUserId())
@@ -37,6 +64,9 @@ public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort 
 				.status(createdBuddyEvent.getStatus())
 				.kakaoRoomCode(createdBuddyEvent.getKakaoRoomCode())
 				.comment(createdBuddyEvent.getComment())
+				.buddyEventConditions(buddyEventConditions)
+				.buddyEventJoinRequests(buddyEventJoinRequests)
+				.eventsDivingPoolMapping(eventsDivingPoolMapping)
 				.build()
 		);
 

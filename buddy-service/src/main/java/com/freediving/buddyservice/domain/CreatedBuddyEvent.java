@@ -2,9 +2,12 @@ package com.freediving.buddyservice.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import com.freediving.buddyservice.common.enumeration.EventConcept;
 import com.freediving.buddyservice.common.enumeration.EventStatus;
+import com.freediving.buddyservice.common.enumeration.FreedivingLevel;
+import com.freediving.common.enumerate.DivingPool;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -48,6 +51,10 @@ public class CreatedBuddyEvent {
 
 	@Schema(description = "추가 코멘트", example = "이번 모임은 캐주얼하게 진행합니다.")
 	private final String comment;
+
+	private FreedivingLevel freedivingLevel;
+
+	private Set<DivingPool> divingPools;
 
 	@Schema(description = "생성 일자", example = "2024-01-17 12:00:00")
 	private final LocalDateTime createdDate;

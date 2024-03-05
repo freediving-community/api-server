@@ -2,10 +2,13 @@ package com.freediving.buddyservice.application.port.in;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import com.freediving.buddyservice.common.enumeration.EventConcept;
 import com.freediving.buddyservice.common.enumeration.EventStatus;
+import com.freediving.buddyservice.common.enumeration.FreedivingLevel;
 import com.freediving.common.SelfValidating;
+import com.freediving.common.enumerate.DivingPool;
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 
@@ -45,7 +48,7 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 	@Min(value = 1, message = "참여자 수는 최소 1명부터 입니다.") //TODO 참여자 수 최솟값 테스트 케이스 생성.
 	@Max(value = 5L, message = "최대 모집 인원은 5명까지 가능합니다.")
 	private final Integer participantCount;
-	
+
 	private final List<EventConcept> eventConcepts;
 
 	private final Boolean carShareYn;
@@ -57,10 +60,14 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 	@Size(min = 0, max = 500, message = "코멘트는 최대 500자까지 입력 가능합니다.")
 	private final String comment;
 
+	private FreedivingLevel freedivingLevel;
+
+	private Set<DivingPool> divingPools;
+
 	@Builder
 	private CreateBuddyEventCommand(Long userId, LocalDateTime eventStartDate, LocalDateTime eventEndDate,
 		Integer participantCount, List<EventConcept> eventConcepts, Boolean carShareYn, String kakaoRoomCode,
-		String comment) {
+		String comment, FreedivingLevel freedivingLevel, Set<DivingPool> divingPools) {
 		this.userId = userId;
 		this.eventStartDate = eventStartDate;
 
@@ -73,6 +80,8 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 		this.carShareYn = (carShareYn == null) ? false : carShareYn; // Default False
 		this.comment = comment;
 		this.kakaoRoomCode = kakaoRoomCode;
+		this.freedivingLevel = freedivingLevel;
+		this.divingPools = divingPools;
 		this.validateSelf();
 	}
 }

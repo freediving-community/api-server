@@ -2,9 +2,12 @@ package com.freediving.buddyservice.adapter.in.web.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.freediving.buddyservice.common.enumeration.EventConcept;
+import com.freediving.buddyservice.common.enumeration.FreedivingLevel;
+import com.freediving.common.enumerate.DivingPool;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -62,5 +65,12 @@ public class CreateBuddyEventRequest {
 
 	@Schema(description = "추가 코멘트", example = "이번 모임은 캐주얼하게 진행합니다.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 	private String comment;
+
+	@Schema(implementation = FreedivingLevel.class, description = "프리다이빙 레벨제한", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+	private FreedivingLevel freedivingLevel;
+
+	@ArraySchema(arraySchema = @Schema(description = "다이빙 풀"),
+		schema = @Schema(implementation = DivingPool.class, requiredMode = Schema.RequiredMode.REQUIRED))
+	private Set<DivingPool> divingPools;
 
 }

@@ -73,6 +73,8 @@ public class CreateBuddyEventController {
 					.carShareYn(request.getCarShareYn())
 					.kakaoRoomCode(request.getKakaoRoomCode())
 					.comment(request.getComment())
+					.freedivingLevel(request.getFreedivingLevel())
+					.divingPools(request.getDivingPools())
 					.build());
 
 			// 3. Command 요청 및 응답 리턴.
