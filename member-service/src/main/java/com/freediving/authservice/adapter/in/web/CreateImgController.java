@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.freediving.authservice.adapter.in.web.dto.CreateImgRequest;
 import com.freediving.authservice.adapter.in.web.dto.CreateImgResponse;
 import com.freediving.authservice.application.port.in.CreateImgCommand;
-import com.freediving.authservice.application.port.in.ImgUseCase;
+import com.freediving.authservice.application.port.in.CreateImgUseCase;
 import com.freediving.common.config.annotation.WebAdapter;
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
@@ -40,9 +40,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/v1/img")
 @Slf4j
 @Tag(name = "Image", description = "이미지 Presigned URL 정보를 생성")
-public class ImgController {
+public class CreateImgController {
 
-	private final ImgUseCase imgUseCase;
+	private final CreateImgUseCase imgUseCase;
 
 	/**
 	 * @Author           : sasca37
@@ -68,8 +68,7 @@ public class ImgController {
 			.directory(createImgRequest.directory())
 			.ext(createImgRequest.ext())
 			.build();
-		String preSignedUrl = imgUseCase.createPreSignedUrl(createImgCommand);
-		CreateImgResponse response = new CreateImgResponse(preSignedUrl);
+		CreateImgResponse response = imgUseCase.createPreSignedUrl(createImgCommand);
 		ResponseJsonObject responseJsonObject = new ResponseJsonObject(ServiceStatusCode.OK, response);
 		return ResponseEntity.ok(responseJsonObject);
 	}

@@ -19,7 +19,6 @@ import com.freediving.memberservice.application.port.in.FindUserQuery;
 import com.freediving.memberservice.application.port.in.FindUserUseCase;
 import com.freediving.memberservice.domain.User;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -59,8 +58,8 @@ public class FindUserController {
 		+ "응답 정보에는 사용자 ID, 이메일, 프로필 이미지, 닉네임, 소셜 정보, 라이센스 정보 등이 들어있다.",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
-			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
 			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류"),
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
 			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
 		})
 	@GetMapping("/users/me")
@@ -79,8 +78,17 @@ public class FindUserController {
 	 * @Return           : 중복 제거 및 요청 순서에 맞는 유저 정보
 	 * @Description      : 탈퇴 등으로 조회되지 않은 유저에 대해서도 기본 값을 생성하여 반환
 	 */
+
+	@Operation(summary = "사용자 정보 조회 API (Service 간 통신)"
+		, description = "userId 정보를 기반으로 사용자 정보를 조회하여 반환한다. <br/>"
+		+ "탈퇴 등으로 조회되지 않은 유저에 대해서도 기본 값을 생성하여 반환",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류"),
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
+		})
 	@GetMapping("/service/users")
-	@Hidden
 	public ResponseEntity<ResponseJsonObject<List<FindUserServiceResponse>>> findUserListByUserIds(
 		@RequestParam(value = "userIds") List<Long> userIdList,
 		@RequestParam(value = "profileImg", required = false, defaultValue = "false") Boolean profileImgTF) {

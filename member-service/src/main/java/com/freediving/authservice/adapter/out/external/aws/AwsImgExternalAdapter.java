@@ -1,13 +1,17 @@
 package com.freediving.authservice.adapter.out.external.aws;
 
+import java.util.List;
+
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import com.freediving.authservice.application.port.in.ImgUtils;
+import com.freediving.authservice.adapter.in.web.dto.CreateImgResponse;
+import com.freediving.authservice.application.port.out.DeleteImgPort;
 import com.freediving.authservice.application.port.out.ImgPort;
 import com.freediving.authservice.config.AwsConfigProperties;
+import com.freediving.authservice.util.ImgUtils;
 import com.freediving.common.config.annotation.ExternalSystemAdapter;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @ExternalSystemAdapter
 @RequiredArgsConstructor
 @Slf4j
-public class AwsImgExternalAdapter implements ImgPort {
+public class AwsImgExternalAdapter implements ImgPort, DeleteImgPort {
 	private final AwsConfigProperties awsConfigProperties;
 	private final AmazonS3 amazonS3;
 
@@ -38,11 +42,13 @@ public class AwsImgExternalAdapter implements ImgPort {
 	 * @Description      : AWS Configuration 에 등록한 시크릿 정보를 바탕으로 PreSigned URL 생성 및 URL 정보 반환
 	 */
 	@Override
-	public String generatePreSignedUrl(String imgPath) {
-		String bucket = awsConfigProperties.s3().bucket();
+	public CreateImgResponse generatePreSignedUrl(String imgPath) {
+		String bucket = getBucketName();
 
 		GeneratePresignedUrlRequest generatePresignedUrlRequest = getPreSignedUrl(bucket, imgPath);
-		return amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString();
+		String preSignedUrl = amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString();
+		String cdnUrl = ImgUtils.convertToCdnUrl(awsConfigProperties.s3().cloudFront(), preSignedUrl);
+		return new CreateImgResponse(preSignedUrl, cdnUrl);
 	}
 
 	/**
@@ -63,6 +69,23 @@ public class AwsImgExternalAdapter implements ImgPort {
 			CannedAccessControlList.PublicRead.toString()
 		);
 		return generatePresignedUrlRequest;
+	}
+
+	/**
+	 * @Author           : sasca37
+	 * @Date             : 2024/03/06
+	 * @Param            : 이미지 URL 리스트
+	 * @Return           :
+	 * @Description      : 서비스 간 요청 온 이미지 URL 리스트 정보를 삭제한다.
+	 */
+	@Override
+	public void deleteImgList(List<String> imgUrlList) {
+		String bucket = getBucketName();
+		imgUrlList.forEach(url -> amazonS3.deleteObject(bucket, ImgUtils.parsingKeyImgUrl(url)));
+	}
+
+	private String getBucketName() {
+		return awsConfigProperties.s3().bucket();
 	}
 }
 

@@ -13,6 +13,7 @@ import com.freediving.common.config.annotation.UseCase;
  */
 
 @UseCase
-public interface ImgUseCase {
-	String createPreSignedUrl(CreateImgCommand createImgCommand);
+public interface DeleteImgUseCase {
+
+	void deleteImgs(DeleteImgCommand command);
 }
