@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.freediving.authservice.adapter.in.web.dto.CreateImgResponse;
 import com.freediving.authservice.application.port.in.CreateImgCommand;
 import com.freediving.authservice.application.port.in.CreateImgUseCase;
-import com.freediving.authservice.application.port.in.ImgUseCase;
 import com.freediving.authservice.application.port.out.CreateImgPort;
 import com.freediving.authservice.application.port.out.ImgPort;
 import com.freediving.authservice.util.ImgUtils;
@@ -28,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-public class ImgService implements ImgUseCase, CreateImgUseCase {
+public class CreateImgService implements CreateImgUseCase {
 
 	private final ImgPort imgPort;
 

@@ -52,8 +52,16 @@ public class ImgUtils {
 	public static String parsingPreSignedUrl(String preSignedUrl) {
 		int endIdx = preSignedUrl.indexOf("?");
 		if (endIdx == -1) {
-			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, "PreSigned URL 작업 중 서버 오류가 발생했습니다.");
+			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, "PreSigned URL 파싱 중 서버 오류가 발생했습니다.");
 		}
 		return preSignedUrl.substring(0, endIdx);
+	}
+
+	public static String parsingKeyImgUrl(String imgUrl) {
+		int startIdx = imgUrl.indexOf("/images");
+		if (startIdx == -1) {
+			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, "이미지 키 파싱 중 서버 오류가 발생했습니다.");
+		}
+		return imgUrl.substring(startIdx + 1);
 	}
 }

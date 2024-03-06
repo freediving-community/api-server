@@ -1,6 +1,5 @@
 package com.freediving.authservice.application.port.in;
 
-import com.freediving.authservice.adapter.in.web.dto.CreateImgResponse;
 import com.freediving.common.config.annotation.UseCase;
 
 /**
@@ -14,6 +13,7 @@ import com.freediving.common.config.annotation.UseCase;
  */
 
 @UseCase
-public interface ImgUseCase {
-	CreateImgResponse createPreSignedUrl(CreateImgCommand createImgCommand);
+public interface DeleteImgUseCase {
+
+	void deleteImgs(DeleteImgCommand command);
 }
