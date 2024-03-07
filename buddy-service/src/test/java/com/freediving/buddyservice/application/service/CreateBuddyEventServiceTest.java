@@ -67,7 +67,7 @@ class CreateBuddyEventServiceTest {
 			.thenReturn(MemberStatus.builder().userid(11111L).isValid(false).build());
 
 		// when, then
-		assertThatThrownBy(() -> createBuddyEventUseCase.createBuddyEventV1(command))
+		assertThatThrownBy(() -> createBuddyEventUseCase.createBuddyEvent(command))
 			.isInstanceOf(RuntimeException.class)
 			.hasMessage("비정상적인 사용자.");
 	}
@@ -105,7 +105,7 @@ class CreateBuddyEventServiceTest {
 			.thenReturn(MemberStatus.builder().userid(11111L).isValid(true).build());
 
 		//when, then
-		assertThatThrownBy(() -> createBuddyEventUseCase.createBuddyEventV1(command))
+		assertThatThrownBy(() -> createBuddyEventUseCase.createBuddyEvent(command))
 			.isInstanceOf(RuntimeException.class)
 			.hasMessage("버디 일정이 겹칩니다.");
 
@@ -144,7 +144,7 @@ class CreateBuddyEventServiceTest {
 			.thenReturn(MemberStatus.builder().userid(userId).isValid(true).build());
 
 		// when
-		CreatedBuddyEvent createdBuddyEvent = createBuddyEventUseCase.createBuddyEventV1(command);
+		CreatedBuddyEvent createdBuddyEvent = createBuddyEventUseCase.createBuddyEvent(command);
 
 		// then
 		assertThat(createdBuddyEvent).extracting("eventId", "userId", "eventStartDate", "eventEndDate",

@@ -48,9 +48,9 @@ class CreateBuddyEventPersistenceAdapterTest {
 		BuddyEventsJpaEntity createdbuddyEvent = createBuddyEventPort.createBuddyEvent(buddyEvent);
 
 		assertThat(createdbuddyEvent)
-			.extracting("eventId", "userId", "eventStartDate", "eventEndDate", "participantCount", "eventConcepts",
+			.extracting("userId", "eventStartDate", "eventEndDate", "participantCount", "eventConcepts",
 				"status", "carShareYn", "comment")
-			.contains(1L, userId, StartDate.truncatedTo(ChronoUnit.MILLIS), EndDate.truncatedTo(ChronoUnit.MILLIS), 3,
+			.contains(userId, StartDate.truncatedTo(ChronoUnit.MILLIS), EndDate.truncatedTo(ChronoUnit.MILLIS), 3,
 				List.of(EventConcept.LEVEL_UP, EventConcept.PRACTICE),
 				EventStatus.RECRUITING, false, null);
 

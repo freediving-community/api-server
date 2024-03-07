@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -44,8 +45,8 @@ public class ServiceExceptionHandler extends ResponseEntityExceptionHandler {
 			mediaType = "application/json"
 		)
 	)
-	@ExceptionHandler(RuntimeException.class)
-	public ResponseEntity<ResponseJsonObject> handleException(RuntimeException ex) {
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ResponseJsonObject> handleException(Exception ex) {
 		log.error("RuntimeExceptionHandler : {} \n StackTrace : ", ex.getMessage(), ex.getStackTrace());
 
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -99,7 +100,19 @@ public class ServiceExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 
-	@ExceptionHandler({BuddyMeException.class})
+	@Override
+	public ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
+		HttpStatusCode status, WebRequest request) {
+		log.error("파라미터 타입 변환 실패. : {} \n StackTrace : ", ex.getMessage(), ex.getStackTrace());
+		ResponseJsonObject response;
+
+		response = ResponseJsonObject.builder().code(ServiceStatusCode.BAD_REQUEST)
+			.expandMsg("요청된 Json 파싱 오류. 잘못된 타입의 데이터로 요청되었습니다.").build();
+
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(BuddyMeException.class)
 	public ResponseEntity<ResponseJsonObject> handleDikeServiceException(BuddyMeException ex) {
 		log.debug("DikeServiceExceptionHandler : {}", ex.getResponseJsonObject().toString());
 		HttpStatus exceptionStatus = HttpStatus.OK;

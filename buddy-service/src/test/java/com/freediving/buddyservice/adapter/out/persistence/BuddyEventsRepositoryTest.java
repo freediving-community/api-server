@@ -12,13 +12,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.freediving.buddyservice.common.enumeration.EventConcept;
 import com.freediving.buddyservice.common.enumeration.EventStatus;
+import com.freediving.buddyservice.config.CommonModuleScan;
 
 @ActiveProfiles("local")
 @DataJpaTest // JPA관련된 Bean만 주입받아 테스트 가능.
+@Import(CommonModuleScan.class)
 class BuddyEventsRepositoryTest {
 
 	@Autowired

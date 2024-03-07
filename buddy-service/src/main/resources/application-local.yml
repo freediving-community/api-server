@@ -4,21 +4,27 @@ server:
 spring:
   application:
     name: buddy-service
-  # Only for Local Test
-  # H2
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:buddy;Mode=PostgreSQL
+    username: sa
+    password:
   h2:
     console:
       enabled: true
       path: /h2-console
-    # Datasource
-    datasource:
-      driver-class-name: org.h2.Driver
-      url: jdbc:h2:mem:~/buddy;Mode=Oracle
-      username: sa
-      password:
-    jpa:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
       hibernate:
-        ddl-auto: create-drop
+        show_sql: true
+        format_sql: true
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:data.sql
+      schema-locations: classpath:schema.sql
 eureka:
   instance:
     hostname: localhost
@@ -34,9 +40,18 @@ eureka:
       # endpoint 지정
       defaultZone: http://localhost:8761/eureka
 
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+
 swagger:
   servers:
     title: "Buddy Service Swagger"
     version: "V1"
     url: http://localhost:8000/${spring.application.name}
+    #url: http://localhost:40000
     description: Local Gateway Server

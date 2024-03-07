@@ -1,11 +1,17 @@
 package com.freediving.buddyservice.adapter.out.persistence;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import org.springframework.transaction.annotation.Transactional;
 
 import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
+import com.freediving.buddyservice.common.enumeration.ParticipationStatus;
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;
 import com.freediving.common.config.annotation.PersistenceAdapter;
+import com.freediving.common.enumerate.DivingPool;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,9 +30,11 @@ public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort 
 	private final BuddyEventsRepository buddyEventsRepository;
 
 	@Override
+	@Transactional
 	public BuddyEventsJpaEntity createBuddyEvent(CreatedBuddyEvent createdBuddyEvent) {
 
-		return buddyEventsRepository.save(
+		// 1. 버디 이벤트 생성
+		BuddyEventsJpaEntity createdEventJpaEntity = buddyEventsRepository.save(
 			BuddyEventsJpaEntity.builder()
 				.userId(createdBuddyEvent.getUserId())
 				.eventStartDate(createdBuddyEvent.getEventStartDate())
@@ -35,10 +43,36 @@ public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort 
 				.eventConcepts(createdBuddyEvent.getEventConcepts())
 				.carShareYn(createdBuddyEvent.getCarShareYn())
 				.status(createdBuddyEvent.getStatus())
+				.kakaoRoomCode(createdBuddyEvent.getKakaoRoomCode())
 				.comment(createdBuddyEvent.getComment())
 				.build()
 		);
 
+		Set<EventsDivingPoolMapping> eventsDivingPoolMapping = new HashSet<>();
+		BuddyEventConditions buddyEventCondition = null;
+		Set<BuddyEventJoinRequests> buddyEventJoinRequests = new HashSet<>();
+
+		// 2. 다이빙 풀 연관 관계 설정
+		for (DivingPool pool : createdBuddyEvent.getDivingPools())
+			eventsDivingPoolMapping.add(
+				EventsDivingPoolMapping.builder().divingPoolId(pool).buddyEvent(createdEventJpaEntity)
+					.build());
+
+		// 참여 매핑
+		buddyEventJoinRequests.add(BuddyEventJoinRequests.builder().userId(
+				createdBuddyEvent.getUserId()).status(ParticipationStatus.OWNER)
+			.buddyEvent(createdEventJpaEntity).build());
+
+		// 레벨 조건 존재안하면 null , //TODO 레벨 조건 존재안하면 null 테스트 케이스
+		buddyEventCondition = BuddyEventConditions.builder().buddyEvent(createdEventJpaEntity)
+			.freedivingLevel(createdBuddyEvent.getFreedivingLevel())
+			.build();
+
+		createdEventJpaEntity.changeEventsDivingPoolMapping(eventsDivingPoolMapping);
+		createdEventJpaEntity.changeBuddyEventConditions(buddyEventCondition);
+		createdEventJpaEntity.changeBuddyEventJoinRequests(buddyEventJoinRequests);
+
+		return createdEventJpaEntity;
 	}
 
 	@Override
