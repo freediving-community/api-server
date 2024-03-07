@@ -11,8 +11,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.freediving.communityservice.adapter.in.web.UserProvider.RoleLevel;
 
-import lombok.RequiredArgsConstructor;
-
 @Component
 public class UserProviderArgumentResolver implements HandlerMethodArgumentResolver {
 
@@ -33,7 +31,7 @@ public class UserProviderArgumentResolver implements HandlerMethodArgumentResolv
 		NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 		String userId = webRequest.getHeader("UserId");
 		String roleLevel = webRequest.getHeader("RoleLevel");
-		UserProvider currentUserProvider = userProvider.getIfAvailable();
+		UserProvider currentUserProvider = userProvider.getObject();
 
 		if (userId == null || roleLevel == null) {
 			currentUserProvider.setRequestUserId(-1L);
@@ -44,7 +42,7 @@ public class UserProviderArgumentResolver implements HandlerMethodArgumentResolv
 			currentUserProvider.setRequestUserId(Long.valueOf(userId));
 			currentUserProvider.setRoleLevel(rl);
 		}
-        return currentUserProvider;
+		return currentUserProvider;
 		// RoleLevel rl = RoleLevel.valueOf(Integer.parseInt(roleLevel));
 		// return new UserProvider(Long.valueOf(userId), rl);
 	}

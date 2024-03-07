@@ -31,8 +31,8 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @Table(name = "board", indexes = {
-	@Index(name = "idx_board_boardName", columnList = "boardName"),
-	@Index(name = "idx_board_sortOrder", columnList = "sortOrder")
+	@Index(name = "idx_board_boardType", columnList = "boardType")
+	//,@Index(name = "idx_board_sortOrder", columnList = "sortOrder")
 })
 // @EntityListeners(AuditingEntityListener.class)
 @Entity
@@ -42,7 +42,7 @@ public class BoardJpaEntity {
 	private Long boardId;
 
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private BoardType boardType;
 
 	@Column(nullable = false, length = 50, unique = true)

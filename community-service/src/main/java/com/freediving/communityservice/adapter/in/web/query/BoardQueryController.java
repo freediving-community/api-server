@@ -1,6 +1,7 @@
 package com.freediving.communityservice.adapter.in.web.query;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.communityservice.adapter.out.dto.board.BoardResponse;
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.BoardReadCommand;
 import com.freediving.communityservice.application.port.in.BoardUseCase;
 import com.freediving.communityservice.domain.Board;
@@ -22,12 +24,6 @@ public class BoardQueryController {
 
 	private final BoardUseCase boardUseCase;
 
-	@GetMapping("/boards/{boardId}")
-	public ResponseEntity<BoardResponse> getBoardDetail(@PathVariable("boardId") Long boardId) {
-		Board board = boardUseCase.readBoard(boardId);
-		return ResponseEntity.ok(BoardResponse.of("success", board));
-	}
-
 	@GetMapping("/boards")
 	public ResponseEntity<BoardResponse> getBoards() {
 		boolean isAdmin = false;
@@ -37,5 +33,11 @@ public class BoardQueryController {
 			.build();
 		List<Board> boards = boardUseCase.readBoardList(boardReadCommand);
 		return ResponseEntity.ok(BoardResponse.of("success", boards));
+	}
+
+	@GetMapping("/boards/{boardType}")
+	public ResponseEntity<BoardResponse> getBoardDetail(@PathVariable("boardType") BoardType boardType) {
+		Optional<Board> board = boardUseCase.readBoard(boardType);
+		return ResponseEntity.ok(BoardResponse.of("success", board.orElseThrow(IllegalArgumentException::new)));
 	}
 }

@@ -9,7 +9,7 @@ public class ArticlePersistenceMapper {
 	public Article mapToDomain(ArticleJpaEntity articleJpaEntity) {
 		return Article.builder()
 			.id(articleJpaEntity.getArticleId())
-			.boardId(articleJpaEntity.getBoardId())
+			.boardType(articleJpaEntity.getBoardType())
 			.title(articleJpaEntity.getTitle())
 			.content(articleJpaEntity.getContent())
 			.authorName(articleJpaEntity.getAuthorName())

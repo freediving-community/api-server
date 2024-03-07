@@ -2,6 +2,7 @@ package com.freediving.communityservice.application.port.in;
 
 import com.freediving.common.SelfValidating;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +19,7 @@ public class CommentWriteCommand extends SelfValidating<CommentWriteCommand> {
 	private UserProvider requestUser;
 
 	@NotNull
-	private final Long boardId;
+	private final BoardType boardType;
 
 	@NotNull
 	private final Long articleId;
@@ -30,10 +31,11 @@ public class CommentWriteCommand extends SelfValidating<CommentWriteCommand> {
 
 	private final boolean visible;
 
-	public CommentWriteCommand(UserProvider userProvider, Long boardId, Long articleId, Long parentId, String content,
+	public CommentWriteCommand(UserProvider userProvider, BoardType boardType, Long articleId, Long parentId,
+		String content,
 		boolean visible) {
 		this.requestUser = userProvider;
-		this.boardId = boardId;
+		this.boardType = boardType;
 		this.articleId = articleId;
 		this.parentId = parentId;
 		this.content = content;
@@ -44,7 +46,7 @@ public class CommentWriteCommand extends SelfValidating<CommentWriteCommand> {
 	public CommentWriteCommand applyParentVisible(CommentWriteCommand requestCommand, boolean parentVisible) {
 		return CommentWriteCommand.builder()
 			.requestUser(requestCommand.getRequestUser())
-			.boardId(requestCommand.getBoardId())
+			.boardType(requestCommand.getBoardType())
 			.articleId(requestCommand.getArticleId())
 			.parentId(requestCommand.getParentId())
 			.content(requestCommand.getContent())

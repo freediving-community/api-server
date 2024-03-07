@@ -2,6 +2,7 @@ package com.freediving.communityservice.application.port.in;
 
 import com.freediving.common.SelfValidating;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -16,7 +17,7 @@ public class ArticleReadCommand extends SelfValidating<ArticleReadCommand> {
 	private final UserProvider userProvider;
 
 	@NotNull
-	private final Long boardId;
+	private final BoardType boardType;
 
 	@NotNull
 	private final Long articleId;
@@ -27,10 +28,10 @@ public class ArticleReadCommand extends SelfValidating<ArticleReadCommand> {
 	@NotNull
 	private final boolean withoutComment;
 
-	public ArticleReadCommand(UserProvider userProvider, Long boardId, Long articleId, boolean isShowAll,
+	public ArticleReadCommand(UserProvider userProvider, BoardType boardType, Long articleId, boolean isShowAll,
 		boolean withoutComment) {
 		this.userProvider = userProvider;
-		this.boardId = boardId;
+		this.boardType = boardType;
 		this.articleId = articleId;
 		this.isShowAll = isShowAll;
 		this.withoutComment = withoutComment;
