@@ -1,5 +1,6 @@
 package com.freediving.communityservice.adapter.in.web.query;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,11 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
+import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
+import com.freediving.communityservice.application.port.in.ArticleIndexListCommand;
 import com.freediving.communityservice.application.port.in.ArticleReadCommand;
 import com.freediving.communityservice.application.port.in.ArticleUseCase;
-import com.freediving.communityservice.domain.Article;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,16 +28,29 @@ public class ArticleQueryController {
 	private final ArticleUseCase articleUseCase;
 
 	@GetMapping("/boards/{boardType}/articles")
-	public ResponseEntity<ResponseJsonObject<ArticleContentWithComment>> getArticleContent(
+	public ResponseEntity<ResponseJsonObject<Page<ArticleBriefDto>>> getArticleList(
 		UserProvider userProvider,
-		@PathVariable("boardType") BoardType boardType
-		// @RequestParam(value = "showAll", required = false, defaultValue = "false") boolean showAll,
-		// @RequestParam(value = "articleOnly", required = false, defaultValue = "false") boolean withoutComment
+		@PathVariable("boardType") BoardType boardType,
+		@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+		@RequestParam(value = "offset", required = false, defaultValue = "10") int offset,
+		@RequestParam(value = "orderBy", required = false, defaultValue = "createdAt") String orderBy,
+		@RequestParam(value = "c", required = false, defaultValue = "") Long cursor
 	) {
-		ArticleContentWithComment articles = new ArticleContentWithComment(
-			Article.builder().id(123L).content("내용").build(), null);
-		ResponseJsonObject<ArticleContentWithComment> response = new ResponseJsonObject<>(ServiceStatusCode.OK,
-			articles);
+		Page<ArticleBriefDto> articleIndexList = articleUseCase.getArticleIndexList(
+			ArticleIndexListCommand.builder()
+				.userProvider(userProvider)
+				.boardType(boardType)
+				.page(page)
+				.offset(offset)
+				.orderBy(orderBy)
+				.cursor(cursor)
+				.build()
+		);
+
+		// new ArticleContentWithComment(Article.builder().id(123L).content("내용").build(), null);
+
+		ResponseJsonObject<Page<ArticleBriefDto>> response = new ResponseJsonObject<>(ServiceStatusCode.OK,
+			articleIndexList);
 
 		return ResponseEntity.ok(response);
 	}

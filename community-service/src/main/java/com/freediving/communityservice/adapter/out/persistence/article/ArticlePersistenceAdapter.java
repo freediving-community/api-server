@@ -5,12 +5,17 @@ import static com.freediving.communityservice.adapter.out.persistence.comment.QC
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.support.PageableExecutionUtils;
+
 import com.freediving.common.config.annotation.PersistenceAdapter;
+import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
 import com.freediving.communityservice.adapter.out.persistence.comment.CommentJpaEntity;
 import com.freediving.communityservice.adapter.out.persistence.comment.CommentPersistenceMapper;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
-import com.freediving.communityservice.application.port.in.ArticleReadCommand;
 import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
 import com.freediving.communityservice.application.port.out.ArticleDeletePort;
@@ -19,7 +24,11 @@ import com.freediving.communityservice.application.port.out.ArticleReadPort;
 import com.freediving.communityservice.application.port.out.ArticleWritePort;
 import com.freediving.communityservice.domain.Article;
 import com.freediving.communityservice.domain.Comment;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -67,15 +76,15 @@ public class ArticlePersistenceAdapter
 	}
 
 	@Override
-	public ArticleContentWithComment readArticleWithComment(ArticleReadCommand command) {
+	public ArticleContentWithComment readArticleWithComment(BoardType boardType, Long articleId, boolean isShowAll) {
 
-		Article foundArticle = readArticle(command.getBoardType(), command.getArticleId(), command.isShowAll());
+		Article foundArticle = readArticle(boardType, articleId, isShowAll);
 
 		List<CommentJpaEntity> articleComments = jpaQueryFactory
 			.selectFrom(commentJpaEntity)
 			.where(
 				commentJpaEntity.articleId.eq(foundArticle.getId()),
-				command.isShowAll() ?
+				isShowAll ?
 					null : commentJpaEntity.visible.isTrue()
 			).fetch();
 
@@ -119,6 +128,65 @@ public class ArticlePersistenceAdapter
 			.fetchOne();
 		// articlePersistenceMapper.mapToDomain(foundArticle);
 		return foundArticle;*/
+	}
+
+	@Override
+	public Page<ArticleBriefDto> retrieveArticleIndexList(BoardType boardType, Long cursor, Pageable pageable) {
+		List<ArticleBriefDto> articleJpaEntityList = jpaQueryFactory
+			.select(
+				Projections.bean(ArticleBriefDto.class,
+					articleJpaEntity.articleId,
+					articleJpaEntity.title,
+					articleJpaEntity.authorName,
+					articleJpaEntity.createdBy,
+					articleJpaEntity.viewCount,
+					articleJpaEntity.likeCount,
+					articleJpaEntity.commentCount
+				)
+			)
+			.from(articleJpaEntity)
+			.where(
+				boardTypeEq(boardType),
+				articleJpaEntity.visible.isTrue()
+			)
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.orderBy(articleSort(pageable))
+			.fetch();
+
+		JPAQuery<Long> countQuery = jpaQueryFactory
+			.select(articleJpaEntity.count())
+			.from(articleJpaEntity)
+			.where(
+				boardTypeEq(boardType),
+				articleJpaEntity.visible.isTrue()
+			);
+
+		return PageableExecutionUtils.getPage(articleJpaEntityList, pageable, countQuery::fetchOne);
+
+	}
+
+	private OrderSpecifier<?> articleSort(Pageable pageable) {
+
+		if (pageable.getSort().isEmpty()) {
+			return null;
+		}
+
+		for (Sort.Order order : pageable.getSort()) {
+			return switch (order.getProperty()) {
+				case "createdAt" -> new OrderSpecifier(order.getDirection().isDescending() ? Order.DESC : Order.ASC,
+					articleJpaEntity.createdAt);
+				case "liked" -> new OrderSpecifier(order.getDirection().isDescending() ? Order.DESC : Order.ASC,
+					articleJpaEntity.likeCount);
+				case "comment" -> new OrderSpecifier(order.getDirection().isDescending() ? Order.DESC : Order.ASC,
+					articleJpaEntity.commentCount);
+				case "hits" -> new OrderSpecifier(order.getDirection().isDescending() ? Order.DESC : Order.ASC,
+					articleJpaEntity.viewCount);
+				default -> null;
+			};
+		}
+
+		return null;
 	}
 
 	@Override
