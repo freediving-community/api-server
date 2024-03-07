@@ -37,12 +37,12 @@ import lombok.NoArgsConstructor;
 @Schema(title = "버디 이벤트 생성 요청 ( CreateBuddyEventRequest )", name = "name", description = "POST /v1/event 버디 이벤트 생성에 요청 Schema")
 public class CreateBuddyEventRequest {
 
-	@Schema(description = "일정 시작 시간", example = "2024-01-17 15:30:00", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(description = "일정 시작 시간", type = "string", example = "2024-01-17 15:30:00", requiredMode = Schema.RequiredMode.REQUIRED)
 	@NotNull(message = "일정 시작 시간은 필수입니다.")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime eventStartDate;
 
-	@Schema(description = "일정 종료 시간", example = "2024-01-17 17:30:00", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(description = "일정 종료 시간", type = "string", example = "2024-01-17 17:30:00", requiredMode = Schema.RequiredMode.REQUIRED)
 	@NotNull(message = "일정 종료 시간은 필수입니다.")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime eventEndDate;
