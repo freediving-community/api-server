@@ -16,9 +16,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-      show_sql: true
-      format_sql: true
-      use_sql_comments: true
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
   sql:
     init:
       mode: always
@@ -38,6 +39,14 @@ eureka:
     service-url:
       # endpoint 지정
       defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
 
 swagger:
   servers:

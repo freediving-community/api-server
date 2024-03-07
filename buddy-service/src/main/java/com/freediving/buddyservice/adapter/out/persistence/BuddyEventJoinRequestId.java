@@ -15,6 +15,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BuddyEventJoinRequestId implements Serializable {
 	private Long userId; // 복합 키의 일부
-	private Long eventId; // 복합 키이면서 외래 키
+	private Long buddyEvent; // 복합 키이면서 외래 키
 
 }

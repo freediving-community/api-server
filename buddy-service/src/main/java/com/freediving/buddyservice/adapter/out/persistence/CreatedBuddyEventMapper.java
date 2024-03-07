@@ -1,8 +1,12 @@
 package com.freediving.buddyservice.adapter.out.persistence;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.stereotype.Component;
 
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;
+import com.freediving.common.enumerate.DivingPool;
 
 @Component
 public class CreatedBuddyEventMapper {
@@ -14,6 +18,13 @@ public class CreatedBuddyEventMapper {
 	 * @return the created buddy event
 	 */
 	public CreatedBuddyEvent mapToDomainEntity(BuddyEventsJpaEntity buddyEventsJpaEntity) {
+
+		Set<DivingPool> divingPools = new HashSet<>();
+
+		if (buddyEventsJpaEntity.getEventsDivingPoolMapping().isEmpty() == false)
+			for (EventsDivingPoolMapping row : buddyEventsJpaEntity.getEventsDivingPoolMapping())
+				divingPools.add(row.getDivingPoolId());
+
 		return CreatedBuddyEvent.builder()
 			.eventId(buddyEventsJpaEntity.getEventId())
 			.userId(buddyEventsJpaEntity.getUserId())
@@ -25,6 +36,8 @@ public class CreatedBuddyEventMapper {
 			.eventConcepts(buddyEventsJpaEntity.getEventConcepts())
 			.comment(buddyEventsJpaEntity.getComment())
 			.kakaoRoomCode(buddyEventsJpaEntity.getKakaoRoomCode())
+			.divingPools(divingPools)
+			.freedivingLevel(buddyEventsJpaEntity.getBuddyEventConditions().getFreedivingLevel())
 			.updatedDate(buddyEventsJpaEntity.getUpdatedDate())
 			.createdDate(buddyEventsJpaEntity.getCreatedDate())
 			.build();

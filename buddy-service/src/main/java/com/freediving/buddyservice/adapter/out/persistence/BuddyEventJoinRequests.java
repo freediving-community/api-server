@@ -32,7 +32,7 @@ public class BuddyEventJoinRequests extends AuditableEntity {
 	@Id
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "event_id", referencedColumnName = "event_id", insertable = false, updatable = false)
-	private BuddyEventsJpaEntity buddyEvents;
+	private BuddyEventsJpaEntity buddyEvent;
 
 	@Column(name = "status")
 	@Enumerated(value = EnumType.STRING)

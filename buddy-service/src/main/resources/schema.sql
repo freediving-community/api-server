@@ -19,7 +19,9 @@ drop table if exists events_diving_pool_mapping;
 CREATE TABLE events_diving_pool_mapping
 (
     diving_pool_id varchar(20) NOT NULL,
-    event_id       bigint      NOT NULL
+    event_id       bigint      NOT NULL,
+    updated_date   timestamp   NOT NULL,
+    created_date   timestamp   NOT NULL
 );
 ALTER TABLE events_diving_pool_mapping
     ADD CONSTRAINT PK_EVENTS_DIVING_POOL_MAPPING PRIMARY KEY (diving_pool_id, event_id);
@@ -31,8 +33,8 @@ CREATE TABLE buddy_event_conditions
 (
     event_id         bigint      NOT NULL,
     freediving_level varchar(20) NULL,
-    genders          varchar(20) NULL,
-    age_groups       varchar(20) NULL
+    updated_date     timestamp   NOT NULL,
+    created_date     timestamp   NOT NULL
 );
 ALTER TABLE buddy_event_conditions
     ADD CONSTRAINT PK_BUDDY_EVENT_CONDITIONS PRIMARY KEY (event_id);

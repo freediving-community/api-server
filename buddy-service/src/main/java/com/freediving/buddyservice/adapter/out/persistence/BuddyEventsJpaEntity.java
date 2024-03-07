@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.freediving.buddyservice.adapter.out.persistence.util.EventConceptsListConverter;
 import com.freediving.buddyservice.common.enumeration.EventConcept;
 import com.freediving.buddyservice.common.enumeration.EventStatus;
@@ -20,6 +22,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -29,6 +32,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Builder
+@DynamicUpdate
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @Getter
@@ -73,14 +77,29 @@ public class BuddyEventsJpaEntity extends AuditableEntity {
 	private String comment;
 
 	// 연관 관계 매핑
-	@OneToMany(mappedBy = "buddyEvents", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "buddyEvent", cascade = CascadeType.PERSIST)
 	private Set<EventsDivingPoolMapping> eventsDivingPoolMapping;
 
-	@OneToMany(mappedBy = "buddyEvents", cascade = CascadeType.ALL)
-	private Set<BuddyEventConditions> buddyEventConditions;
+	@OneToOne(mappedBy = "buddyEvent", cascade = CascadeType.PERSIST)
+	private BuddyEventConditions buddyEventConditions;
 
-	@OneToMany(mappedBy = "buddyEvents", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "buddyEvent", cascade = CascadeType.PERSIST)
 	private Set<BuddyEventJoinRequests> buddyEventJoinRequests;
+
+	public BuddyEventsJpaEntity changeEventsDivingPoolMapping(Set<EventsDivingPoolMapping> target) {
+		this.eventsDivingPoolMapping = target;
+		return this;
+	}
+
+	public BuddyEventsJpaEntity changeBuddyEventConditions(BuddyEventConditions target) {
+		this.buddyEventConditions = target;
+		return this;
+	}
+
+	public BuddyEventsJpaEntity changeBuddyEventJoinRequests(Set<BuddyEventJoinRequests> target) {
+		this.buddyEventJoinRequests = target;
+		return this;
+	}
 
 	@Override
 	public String toString() {

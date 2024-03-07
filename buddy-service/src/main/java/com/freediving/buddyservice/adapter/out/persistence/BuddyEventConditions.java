@@ -10,7 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,9 +26,9 @@ import lombok.NoArgsConstructor;
 public class BuddyEventConditions extends AuditableEntity {
 
 	@Id
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "event_id", referencedColumnName = "event_id", insertable = false, updatable = false)
-	private BuddyEventsJpaEntity buddyEvents;
+	private BuddyEventsJpaEntity buddyEvent;
 
 	// 나머지 컬럼 정의 및 getters and setters
 	@Column(name = "freediving_level")
