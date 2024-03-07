@@ -1,5 +1,7 @@
 package com.freediving.memberservice.domain;
 
+import com.freediving.memberservice.adapter.out.persistence.UserLicenceJpaEntity;
+
 /**
  * @Author         : sasca37
  * @Date           : 2024/01/17
@@ -9,10 +11,10 @@ package com.freediving.memberservice.domain;
  * ===========================================================
  * 2024/01/17        sasca37       최초 생성
  */
-public record UserLicence(Long userId, String licenceImgUrl, Boolean confirmTF, Long confirmAdminId) {
+public record UserLicence(Integer licenceLevel, String licenceImgUrl, Boolean confirmTF, Long confirmAdminId) {
 
-	public static UserLicence createUserLicence(Long userId, String licenceImgUrl, Boolean confirmTF,
-		Long confirmAdminId) {
-		return new UserLicence(userId, licenceImgUrl, confirmTF, confirmAdminId);
+	public static UserLicence fromJpaEntity(UserLicenceJpaEntity userLicenceJpaEntity) {
+		return new UserLicence(userLicenceJpaEntity.getLicenceLevel(), userLicenceJpaEntity.getLicenceImgUrl(),
+			userLicenceJpaEntity.getConfirmTF(), userLicenceJpaEntity.getConfirmAdminId());
 	}
 }

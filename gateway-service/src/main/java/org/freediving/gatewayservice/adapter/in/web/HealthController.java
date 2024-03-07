@@ -49,4 +49,49 @@ public class HealthController {
 
 		return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(dummy);
 	}
+
+	@GetMapping("/v1/test")
+	public ResponseEntity<String> test() {
+
+		String dummy = "{\n"
+			+ "  \"id\": 1257,\n"
+
+			+ "  \"name\": \"Test User\",\n"
+			+ "  \"isActive\": true,\n"
+			+ "  \"registeredOn\": \"2024-01-15T12:00:00\",\n"
+			+ "  \"role\": \"Administrator\",\n"
+			+ "  \"contact\": {\n"
+			+ "    \"email\": \"testuser@example.com\",\n"
+			+ "    \"phone\": \"+1234567890\"\n"
+			+ "  },\n"
+			+ "  \"preferences\": {\n"
+			+ "    \"language\": \"English\",\n"
+			+ "    \"notifications\": [\"email\", \"SMS\"],\n"
+			+ "    \"theme\": \"dark\"\n"
+			+ "  },\n"
+			+ "  \"lastLogin\": {\n"
+			+ "    \"date\": \"2024-01-14T20:30:25\",\n"
+			+ "    \"ipAddress\": \"192.168.1.10\"\n"
+			+ "  },\n"
+			+ "  \"scores\": [85, 92, 78, 88],\n"
+			+ "  \"projects\": [\n"
+			+ "    {\n"
+			+ "      \"projectId\": 101,\n"
+			+ "      \"title\": \"Project Alpha\",\n"
+			+ "      \"status\": \"Completed\"\n"
+			+ "    },\n"
+			+ "    {\n"
+			+ "      \"projectId\": 102,\n"
+			+ "      \"title\": \"Project Beta\",\n"
+			+ "      \"status\": \"In Progress\"\n"
+			+ "    }\n"
+			+ "  ],\n"
+			+ "  \"additionalInfo\": null,\n"
+			+ "  \"kakaoOpenChat\": \"https://open.kakao.com/o/gQWkq2Uf\",\n"
+			+ "  \"kakaoOpenChatt\": \"https://open.kakao.com/o/gQWkq2Ue\"\n"
+			+ "}\n";
+
+		return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(dummy);
+	}
+
 }

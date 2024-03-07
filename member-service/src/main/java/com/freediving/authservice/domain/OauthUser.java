@@ -24,11 +24,13 @@ public class OauthUser {
 
 	private String userId;
 
+	private String nickname;
+
 	private OauthType oauthType;
 	private String email;
 	private String profileImgUrl;
 
-	private String roleLevel;
+	private Integer roleLevel;
 
 	private String accessToken;
 
@@ -42,10 +44,6 @@ public class OauthUser {
 		this.oauthType = oauthType;
 		this.email = email;
 		this.profileImgUrl = profileImgUrl;
-	}
-
-	public void updateAccessToken(String accessToken) {
-		this.accessToken = accessToken;
 	}
 
 	public void updateTokens(String accessToken, String refreshToken) {

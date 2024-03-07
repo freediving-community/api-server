@@ -50,9 +50,10 @@ public class BoardPersistenceAdapter implements BoardWritePort, BoardReadPort {
 
 	@Override
 	public List<Board> findAllBoards(BoardReadCommand command) {
-		QBoardJpaEntity boardJpaEntity = QBoardJpaEntity.boardJpaEntity;
-		BooleanExpression booleanExpression = boardJpaEntity.enabled.isTrue();
-		List<BoardJpaEntity> boardJpaEntityList = jpaQueryFactory.selectFrom(boardJpaEntity)
+		QBoardJpaEntity board = QBoardJpaEntity.boardJpaEntity;
+		BooleanExpression booleanExpression = board.enabled.isTrue();
+		List<BoardJpaEntity> boardJpaEntityList = jpaQueryFactory
+			.selectFrom(board)
 			.where(booleanExpression)
 			.fetch();
 		return boardJpaEntityList.stream()

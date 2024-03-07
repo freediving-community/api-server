@@ -1,6 +1,7 @@
 package com.freediving.communityservice.application.port.in;
 
 import com.freediving.common.SelfValidating;
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +14,7 @@ public class BoardWriteCommand extends SelfValidating<BoardWriteCommand> {
 	// TODO id 제거 및 자동 생성
 	private final Long id;
 
-	private final String boardType;
+	private final BoardType boardType;
 
 	private final String boardName;
 
@@ -21,7 +22,7 @@ public class BoardWriteCommand extends SelfValidating<BoardWriteCommand> {
 
 	private final int sortOrder;
 
-	public BoardWriteCommand(Long id, String boardType, String boardName, String description, int sortOrder) {
+	public BoardWriteCommand(Long id, BoardType boardType, String boardName, String description, int sortOrder) {
 		this.id = id;
 		this.boardType = boardType;
 		this.boardName = boardName;

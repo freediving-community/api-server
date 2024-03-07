@@ -1,6 +1,7 @@
 package com.freediving.communityservice.adapter.out.persistence.article;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 import org.hibernate.annotations.DynamicInsert;
@@ -28,15 +29,13 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "article", indexes = {
-	@Index(name = "idx_article_title", columnList = "title"),
+@DynamicInsert // null 인 값은 제외하고 Insert. DB DefaultValue 사용을 위함.
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "article", indexes = {@Index(name = "idx_article_title", columnList = "title"),
 	/* @Index(name = "idx_article_createdAt", columnList = "createdAt"), == PK desc */
 	@Index(name = "idx_article_viewCount", columnList = "viewCount"),
 	@Index(name = "idx_article_likeCount", columnList = "likeCount")
-	/* ,@Index(name = "idx_article_hashtags", columnList = "hashtags") */
-})
-@DynamicInsert // null 인 값은 제외하고 Insert. DB DefaultValue 사용을 위함.
-@EntityListeners(AuditingEntityListener.class)
+	/* ,@Index(name = "idx_article_hashtags", columnList = "hashtags") */})
 @Entity
 public class ArticleJpaEntity {
 	@Id
@@ -56,8 +55,9 @@ public class ArticleJpaEntity {
 	private String authorName;
 
 	// @ToString.Exclude
-	// @OneToMany
-	// private List<HashtagJpaEntity> hashtags = new ArrayList<>();
+	// @JoinColumn(name = "hashtagId")
+	// @ManyToOne
+	// private List<HashtagJpaEntity> hashtags;
 
 	@Column(nullable = false)
 	private int viewCount;
@@ -65,16 +65,14 @@ public class ArticleJpaEntity {
 	@Column(nullable = false)
 	private int likeCount;
 
+	@Column(nullable = false)
+	private int commentCount;
+
 	@Column(nullable = false, columnDefinition = "boolean default true")
 	private boolean enableComment;
 
 	@Column(nullable = false, columnDefinition = "boolean default true")
 	private boolean visible;
-
-	// @OrderBy("id")
-	// @OneToMany(mappedBy = "commentId", cascade = CascadeType.ALL)
-	// @ToString.Exclude
-	// private List<CommentJpaEntity> comments = new ArrayList<>();
 
 	// Auditing
 	@CreatedDate
@@ -96,9 +94,16 @@ public class ArticleJpaEntity {
 	private Long modifiedBy;
 
 	public static ArticleJpaEntity of(String title, String content, Long boardId, String authorName,
-		boolean enableComment, Long createdBy) {
-		return new ArticleJpaEntity(null, title, content, boardId, authorName, 0, 0, enableComment, true, null,
-			createdBy, null, 0L);
+		boolean enableComment) {
+		return new ArticleJpaEntity(null, title, content, boardId, authorName, 0, 0, 0, enableComment,
+			true,
+			null, null, null, null);
+	}
+
+	public void changeArticleContents(String title, String content, List<Long> hashtagIds, boolean enableComment){
+		this.title = title;
+		this.content = content;
+		this.enableComment = enableComment;
 	}
 
 	@Override

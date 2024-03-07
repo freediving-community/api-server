@@ -2,8 +2,8 @@ package com.freediving.memberservice.filter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -37,9 +37,8 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 	private final FindUserService findUserService;
 
 	private static final String USER_ID = "User-Id";
-	private static final String ROLE_LEVEL = "Role-Level";
 
-	private static List<String> ignorePathList = List.of("/oauth", "/service/users/register", "/v3/api-docs");
+	private static List<String> ignorePathList = List.of("/oauth", "/service", "/v3/api-docs");
 
 	/**
 	 * @Author           : sasca37
@@ -62,16 +61,26 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		final Long userId = Long.valueOf(request.getHeader(USER_ID));
-		final String roleLevel = request.getHeader(ROLE_LEVEL);
+		Optional<String> header = Optional.ofNullable(request.getHeader(USER_ID));
 
-		if (userId == null || StringUtils.isEmpty(roleLevel)) {
-			log.error("Request header is invalid {}", requestUrl);
+		if (!header.isPresent()) {
+			log.error("User-Id header is null,  url : {}", requestUrl);
 			filterChain.doFilter(request, response);
 			return;
 		}
+
+		Long userId;
+
+		try {
+			userId = Long.valueOf(header.get());
+		} catch (NumberFormatException e) {
+			log.error("User-Id header is not a number,  url : {} , header : {}", requestUrl, header.get());
+			filterChain.doFilter(request, response);
+			return;
+		}
+
 		FindUserQuery findUserQuery = FindUserQuery.builder().userId(userId).build();
-		User user = findUserService.findUserById(findUserQuery);
+		User user = findUserService.findUserDetailByQuery(findUserQuery);
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 			user, null, null
 		);

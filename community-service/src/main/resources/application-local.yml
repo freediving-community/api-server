@@ -12,6 +12,9 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 
 spring:
+  threads:
+    virtual:
+      enabled: true
   application:
     name: community-service
   datasource:
@@ -40,7 +43,10 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
     database: postgresql
-  sql.init.mode: always
+  sql:
+    init:
+      encoding: utf-8
+      mode: always
   output:
     ansi:
       enabled: always # IntelliJ CE Console Color
@@ -58,6 +64,14 @@ eureka:
     service-url:
       # endpoint 지정
       defaultZone: http://localhost:8761/eureka
+
+
+swagger:
+  servers:
+    title: "Community Service Swagger"
+    version: "v1"
+    url: http://localhost:8080/${spring.application.name}
+    description: Local Community
 
 feign:
   client:

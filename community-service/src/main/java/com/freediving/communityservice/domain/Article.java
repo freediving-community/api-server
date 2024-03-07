@@ -26,8 +26,6 @@ public class Article {
 
 	private final boolean visible;
 
-	// private final List<Comment> comments;
-
 	private final LocalDateTime createdAt;
 
 	private final Long createdBy;
@@ -35,5 +33,15 @@ public class Article {
 	private final LocalDateTime modifiedAt;
 
 	private final Long modifiedBy;
+
+	public void canCreateComment() {
+		if( ! this.enableComment )
+			throw new IllegalArgumentException("댓글을 작성할 수 없는 게시물입니다.");
+	}
+
+	public void checkHasOwnership(Long requestUserId) {
+		if( ! this.createdBy.equals(requestUserId))
+			throw new IllegalArgumentException("권한이 없습니다.");
+	}
 
 }

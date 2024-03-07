@@ -50,10 +50,10 @@ public class OauthService implements OauthUseCase, MemberUseCase {
 		// MemberService 에 소셜 정보를 가진 OauthUser를 전달 및 User 정보 반환
 		OauthUser user = createOrGetUser(oauthUser);
 
-		if (StringUtils.isEmpty(user.getUserId()) || StringUtils.isEmpty(user.getRoleLevel())) {
+		if (StringUtils.isEmpty(user.getUserId()) || user.getRoleLevel() == null) {
 			// TODO : THROW
 		}
-		Token token = createTokenPort.createTokens(user.getUserId(), user.getRoleLevel());
+		Token token = createTokenPort.createTokens(user.getUserId(), user.getOauthType().name());
 
 		user.updateTokens(token.accessToken(), token.refreshToken());
 		return user;

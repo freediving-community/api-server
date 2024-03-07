@@ -1,6 +1,7 @@
 package com.freediving.memberservice.application.port.out;
 
-import com.freediving.memberservice.domain.OauthType;
+import java.util.List;
+
 import com.freediving.memberservice.domain.User;
 
 /**
@@ -15,7 +16,7 @@ import com.freediving.memberservice.domain.User;
 
 public interface FindUserPort {
 
-	User findUserById(Long userId);
+	User findUserDetailById(Long userId);
 
-	User findUserByEmailAndOauthType(String email, OauthType oauthType);
+	List<User> findUserListByIds(List<Long> userIds);
 }

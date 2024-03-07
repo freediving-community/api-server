@@ -12,6 +12,9 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: trace
 
 spring:
+  threads:
+    virtual:
+      enabled: true
   profiles.active: local
   output:
     ansi:
@@ -43,7 +46,10 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
     database: postgresql
-  sql.init.mode: always
+  sql:
+    init:
+      encoding: utf-8
+      mode: always
 
 eureka:
   instance:

@@ -22,10 +22,18 @@ import lombok.Getter;
 public class CreateImgCommand extends SelfValidating<CreateImgCommand> {
 
 	@NotNull
+	private Long userId;
+
+	@NotNull
 	private String directory;
 
-	public CreateImgCommand(String directory) {
+	@NotNull
+	private String ext;
+
+	public CreateImgCommand(Long userId, String directory, String ext) {
+		this.userId = userId;
 		this.directory = directory;
+		this.ext = ext;
 		this.validateSelf();
 	}
 }

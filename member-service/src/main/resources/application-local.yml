@@ -1,15 +1,18 @@
 server:
-  port: 0
+  port: 50000
 
 spring:
   application:
     name: member-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/member
-    username: postgres
-    password: 0000
-    driver-class-name: org.postgresql.Driver
-
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:member
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
   jpa:
     hibernate:
       ddl-auto: create
@@ -78,6 +81,7 @@ cloud:
       secret-key: ${S3_SECRET_KEY}
     s3:
       bucket: ${S3_BUCKET}
+      cloud-front: https://d1pjflw6c3jt4r.cloudfront.net
     region:
       static: ap-northeast-2
       info: ap-northeast-2

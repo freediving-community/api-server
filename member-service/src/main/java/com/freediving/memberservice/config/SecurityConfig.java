@@ -1,9 +1,12 @@
 package com.freediving.memberservice.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -58,9 +61,9 @@ public class SecurityConfig {
 				session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			)
 
-			// 회원가입 / 로그인 / swagger 를 제외한 나머지 모든 request 헤더 검증
+			// 회원가입 / 로그인 / swagger / MSA 간 통신을 제외한 나머지 모든 request 헤더 검증
 			.authorizeHttpRequests((request) ->
-				request.requestMatchers("/v*/oauth/**", "/v*/service/users/register", "/v3/api-docs").permitAll()
+				request.requestMatchers("/v*/oauth/**", "/v*/service/**", "/v3/api-docs").permitAll()
 					.anyRequest().authenticated()
 			)
 
@@ -69,5 +72,19 @@ public class SecurityConfig {
 				UsernamePasswordAuthenticationFilter.class)
 
 			.build();
+	}
+
+	/**
+	 * @Author           : sasca37
+	 * @Date             : 2024/02/29
+	 * @Param            :
+	 * @Return           :
+	 * @Description      : h2-console enable 상태 일 경우 시큐리티 필터 제외
+	 */
+	@Bean
+	@ConditionalOnProperty(name = "spring.h2.console.enabled", havingValue = "true")
+	public WebSecurityCustomizer configureH2ConsoleEnable() {
+		return web -> web.ignoring()
+			.requestMatchers(PathRequest.toH2Console());
 	}
 }

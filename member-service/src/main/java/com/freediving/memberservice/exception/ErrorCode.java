@@ -19,6 +19,9 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 
+	// 400 - BAD REQUEST
+	INVALID_LICENCE_LEVEL(HttpStatus.BAD_REQUEST, "자격증 레벨 정보가 없습니다."),
+
 	// 401 - UNAUTHORIZED
 	INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
 	EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "기간이 만료된 토큰 입니다."),
