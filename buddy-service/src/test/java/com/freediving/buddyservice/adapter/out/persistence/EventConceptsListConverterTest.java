@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.freediving.buddyservice.adapter.out.persistence.util.EventConceptsListConverter;
 import com.freediving.buddyservice.common.enumeration.EventConcept;
 
 @ActiveProfiles("local")
@@ -85,7 +86,8 @@ class EventConceptsListConverterTest {
 
 		assertThatThrownBy(() -> converter.convertToEntityAttribute("LEVEL_UP,PRAPHY,TRAINING"))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage("No enum constant com.freediving.buddyservice.common.enumeration.EventConcept.PRAPHY");
+			.hasMessage(
+				"No enum constant com.freediving.buddyservice.common.enumeration.EventConcept.PRAPHY");
 	}
 
 }

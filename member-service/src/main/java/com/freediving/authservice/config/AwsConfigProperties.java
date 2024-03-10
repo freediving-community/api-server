@@ -17,7 +17,7 @@ public record AwsConfigProperties(
 	Region region,
 	Credentials credentials
 ) {
-	public record S3(String bucket) {
+	public record S3(String bucket, String cloudFront) {
 	}
 
 	public record Credentials(String accessKey, String secretKey) {

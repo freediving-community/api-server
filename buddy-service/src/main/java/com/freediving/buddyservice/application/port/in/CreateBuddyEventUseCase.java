@@ -13,10 +13,10 @@ import com.freediving.buddyservice.domain.CreatedBuddyEvent;
 public interface CreateBuddyEventUseCase {
 
 	/**
-	 * 버디 일정 이벤트 생성 Use Case V1
+	 * 버디 일정 이벤트 생성 Use Case
 	 *
 	 * @param  command  버디 일정 이벤트 생성의 Command 정보를 담은 객체
 	 * @return 생성 완료된 버디 일정 이벤트 도메인 객체
 	 */
-	CreatedBuddyEvent createBuddyEventV1(CreateBuddyEventCommand command);
+	CreatedBuddyEvent createBuddyEvent(CreateBuddyEventCommand command);
 }

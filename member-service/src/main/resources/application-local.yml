@@ -81,6 +81,7 @@ cloud:
       secret-key: ${S3_SECRET_KEY}
     s3:
       bucket: ${S3_BUCKET}
+      cloud-front: https://d1pjflw6c3jt4r.cloudfront.net
     region:
       static: ap-northeast-2
       info: ap-northeast-2

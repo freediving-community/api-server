@@ -41,7 +41,7 @@ public class SwaggerConfig {
 			.name("Authorization");
 
 		SecurityRequirement securityRequirement = new SecurityRequirement()
-			.addList("bearerAuth");
+			.addList("Access Token");
 
 		return new OpenAPI().addServersItem(new Server().url(url).description(description))
 			.components(
@@ -55,6 +55,7 @@ public class SwaggerConfig {
 										.build())
 							// 예시 값
 						)))
+					.addResponses("204", new ApiResponse().description("No Content"))
 					.addResponses("401", new ApiResponse().description("Unauthorized"))
 					.addResponses("403", new ApiResponse().description("Forbidden"))
 					.addResponses("500", new ApiResponse().description("Internal Server Error"))
