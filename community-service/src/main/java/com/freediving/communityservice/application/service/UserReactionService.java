@@ -2,8 +2,10 @@ package com.freediving.communityservice.application.service;
 
 import org.springframework.stereotype.Service;
 
+import com.freediving.communityservice.adapter.out.persistence.constant.UserReactionType;
 import com.freediving.communityservice.application.port.in.UserReactionCommand;
 import com.freediving.communityservice.application.port.in.UserReactionUseCase;
+import com.freediving.communityservice.application.port.out.ArticleEditPort;
 import com.freediving.communityservice.application.port.out.ArticleReadPort;
 import com.freediving.communityservice.application.port.out.UserReactionPort;
 import com.freediving.communityservice.domain.Article;
@@ -17,18 +19,26 @@ import lombok.RequiredArgsConstructor;
 public class UserReactionService implements UserReactionUseCase {
 
 	private final ArticleReadPort articleReadPort;
+	private final ArticleEditPort articleEditPort;
 	private final UserReactionPort userReactionPort;
 
 	@Override
-	public int recordUserReaction(UserReactionCommand command) {
+	public UserReactionType recordUserReaction(UserReactionCommand command) {
 
 		Article targetArticle = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), false);
-		return userReactionPort.addUserReaction(
+
+		UserReactionType savedReactionType = userReactionPort.addUserReaction(
 			command.getUserReactionType(),
 			targetArticle.getBoardType(),
 			targetArticle.getId(),
 			command.getUserProvider()
 		);
+
+		if (savedReactionType.equals(UserReactionType.LIKE)) {
+			articleEditPort.increaseLikeCount(command.getBoardType(), command.getArticleId());
+		}
+
+		return savedReactionType;
 	}
 
 	@Override

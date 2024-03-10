@@ -3,7 +3,7 @@ package com.freediving.communityservice.application.port.in;
 import org.springframework.data.domain.Page;
 
 import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
-import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
+import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
 import com.freediving.communityservice.domain.Article;
 
 public interface ArticleUseCase {
@@ -11,7 +11,7 @@ public interface ArticleUseCase {
 	// Query
 	Article getArticle(ArticleReadCommand articleReadCommand);
 
-	ArticleContentWithComment getArticleWithComment(ArticleReadCommand articleReadCommand);
+	ArticleContent getArticleWithComment(ArticleReadCommand articleReadCommand);
 
 	Page<ArticleBriefDto> getArticleIndexList(ArticleIndexListCommand indexListCommand);
 

@@ -13,6 +13,7 @@ import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.in.dto.UserReactionRequest;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
+import com.freediving.communityservice.adapter.out.persistence.constant.UserReactionType;
 import com.freediving.communityservice.application.port.in.UserReactionCommand;
 import com.freediving.communityservice.application.port.in.UserReactionUseCase;
 
@@ -32,7 +33,7 @@ public class UserReactionCommandController {
 		@PathVariable("articleId") Long articleId,
 		@RequestBody UserReactionRequest userReactionRequest
 	) {
-		int successCode = userReactionUseCase.recordUserReaction(
+		UserReactionType userReactionType = userReactionUseCase.recordUserReaction(
 			UserReactionCommand.builder()
 				.userProvider(userProvider)
 				.boardType(boardType)
@@ -42,14 +43,11 @@ public class UserReactionCommandController {
 		);
 
 		// TODO API 직접 요청, 중반복 등에 대한 처리 후 메세지 정리
-		String responseMessage = "처리 실패 메세지";
-		if (successCode > 0) {
-			responseMessage = userReactionRequest.getUserReactionType().name();
-		}
+
 		ResponseJsonObject<Object> response = ResponseJsonObject.builder()
-			.data(responseMessage)
+			.data(userReactionType)
 			.code(ServiceStatusCode.OK)
-			.expandMsg(responseMessage)
+			.expandMsg(userReactionType.name())
 			.build();
 		return ResponseEntity.ok(response);
 	}

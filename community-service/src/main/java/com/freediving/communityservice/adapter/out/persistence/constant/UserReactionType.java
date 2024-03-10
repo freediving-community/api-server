@@ -5,5 +5,7 @@ import lombok.Getter;
 @Getter
 public enum UserReactionType {
 	LIKE,
-	THANKS
+	THANKS,
+
+	REPORT
 }
