@@ -12,7 +12,7 @@ import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
-import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
+import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.ArticleIndexListCommand;
 import com.freediving.communityservice.application.port.in.ArticleReadCommand;
@@ -56,7 +56,7 @@ public class ArticleQueryController {
 	}
 
 	@GetMapping("/boards/{boardType}/articles/{articleId}")
-	public ResponseEntity<ArticleContentWithComment> getArticleContent(
+	public ResponseEntity<ArticleContent> getArticleContent(
 		UserProvider userProvider,
 		@PathVariable("boardType") BoardType boardType,
 		@PathVariable("articleId") Long articleId,
@@ -68,7 +68,7 @@ public class ArticleQueryController {
 			userProvider.checkAdmin();
 		}
 
-		ArticleContentWithComment articleContent = articleUseCase.getArticleWithComment(
+		ArticleContent articleContentDetail = articleUseCase.getArticleWithComment(
 			ArticleReadCommand.builder()
 				.userProvider(userProvider)
 				.boardType(boardType)
@@ -77,7 +77,7 @@ public class ArticleQueryController {
 				.withoutComment(withoutComment)
 				.build());
 		// return ResponseEntity.ok(articleContent);
-		return ResponseEntity.ok(articleContent);
+		return ResponseEntity.ok(articleContentDetail);
 	}
 
 }

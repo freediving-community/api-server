@@ -2,9 +2,8 @@ package com.freediving.communityservice.adapter.out.persistence.userreact;
 
 import java.time.LocalDateTime;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -12,13 +11,9 @@ import com.freediving.communityservice.adapter.out.persistence.constant.BoardTyp
 import com.freediving.communityservice.adapter.out.persistence.constant.UserReactionType;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,35 +24,38 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@DynamicInsert
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "user_reaction")
 @Entity
-public class UserReactionJpaEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	private Long id;
+public class UserReactionJpaEntity implements Persistable<UserReactionId> {
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false, updatable = false)
-	private UserReactionType userReactionType;
-
-	@Enumerated(EnumType.STRING)
-	private BoardType boardType;
-
-	private Long articleId;
+	@EmbeddedId
+	private UserReactionId userReactionId;
 
 	@CreatedDate
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
 
-	@CreatedBy
-	@Column(nullable = false, updatable = false)
-	private Long createdBy;
+	public static UserReactionJpaEntity of(UserReactionType userReactionType, BoardType boardType, Long articleId,
+		Long userId) {
+		UserReactionId id = UserReactionId.builder()
+			.boardType(boardType)
+			.articleId(articleId)
+			.userReactionType(userReactionType)
+			.createdBy(userId)
+			.build();
 
-	public static UserReactionJpaEntity of(UserReactionType userReactionType, BoardType boardType, Long articleId) {
-		return new UserReactionJpaEntity(null, userReactionType, boardType, articleId, null, null);
+		return new UserReactionJpaEntity(id, null);
 	}
 
+	@Override
+	public UserReactionId getId() {
+		return this.userReactionId;
+	}
+
+	@Override
+	public boolean isNew() {
+		return this.createdAt == null;
+	}
 }

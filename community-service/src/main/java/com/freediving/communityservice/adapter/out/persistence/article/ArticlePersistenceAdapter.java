@@ -91,43 +91,7 @@ public class ArticlePersistenceAdapter
 		List<Comment> comments = articleComments.stream()
 			.map(commentMapper::mapToDomain)
 			.toList();
-		return new ArticleContentWithComment(foundArticle, comments);
-
-		/*ArticleContentWithComment foundArticle = jpaQueryFactory
-			.select(
-				new QArticleContentWithComment(
-				articleJpaEntity.articleId,
-				articleJpaEntity.title,
-				articleJpaEntity.content,
-				articleJpaEntity.authorName,
-				articleJpaEntity.viewCount,
-				articleJpaEntity.likeCount,
-				articleJpaEntity.enableComment,
-				articleJpaEntity.createdAt,
-				articleJpaEntity.createdBy,
-				articleJpaEntity.modifiedAt,
-				articleJpaEntity.modifiedBy,
-				commentJpaEntity.commentId,
-				commentJpaEntity.parentId,
-				commentJpaEntity.content,
-				commentJpaEntity.visible,
-				commentJpaEntity.createdAt,
-				commentJpaEntity.createdBy,
-				commentJpaEntity.modifiedAt,
-				commentJpaEntity.modifiedBy
-				)
-			)
-			.from(articleJpaEntity)
-			.leftJoin(commentJpaEntity).on(articleJpaEntity.articleId.eq(commentJpaEntity.articleId))
-			.where(
-				boardIdEq(articleReadCommand.getBoardId()),
-				articleIdEq(articleReadCommand.getArticleId()),
-				articleJpaEntity.enableComment.isTrue(),
-				articleJpaEntity.visible.isTrue()
-			)
-			.fetchOne();
-		// articlePersistenceMapper.mapToDomain(foundArticle);
-		return foundArticle;*/
+		return new ArticleContentWithComment(foundArticle, comments, false);
 	}
 
 	@Override
@@ -206,6 +170,21 @@ public class ArticlePersistenceAdapter
 		foundArticle.changeArticleContents(title, content, hashtagIds, enableComment);
 
 		return foundArticle.getArticleId();
+	}
+
+	@Override
+	public int increaseLikeCount(BoardType boardType, Long articleId) {
+		return articleRepository.increaseLikeCount(boardType.name(), articleId);
+	}
+
+	@Override
+	public int decreaseLikeCount(BoardType boardType, Long articleId) {
+		return articleRepository.decreaseLikeCount(boardType.name(), articleId);
+	}
+
+	@Override
+	public int increaseViewCount(BoardType boardType, Long articleId) {
+		return articleRepository.increaseViewCount(boardType.name(), articleId);
 	}
 
 	@Override

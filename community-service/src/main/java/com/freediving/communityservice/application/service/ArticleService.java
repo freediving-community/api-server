@@ -9,10 +9,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
+import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
+import com.freediving.communityservice.adapter.out.persistence.constant.UserReactionType;
+import com.freediving.communityservice.adapter.out.persistence.userreact.UserReactionId;
 import com.freediving.communityservice.application.port.in.ArticleEditCommand;
 import com.freediving.communityservice.application.port.in.ArticleIndexListCommand;
 import com.freediving.communityservice.application.port.in.ArticleReadCommand;
@@ -25,6 +29,7 @@ import com.freediving.communityservice.application.port.out.ArticleReadPort;
 import com.freediving.communityservice.application.port.out.ArticleWritePort;
 import com.freediving.communityservice.application.port.out.BoardReadPort;
 import com.freediving.communityservice.application.port.out.CommentDeletePort;
+import com.freediving.communityservice.application.port.out.UserReactionPort;
 import com.freediving.communityservice.domain.Article;
 import com.freediving.communityservice.domain.Board;
 import com.freediving.communityservice.domain.Comment;
@@ -43,6 +48,7 @@ public class ArticleService implements ArticleUseCase {
 	private final ArticleEditPort articleEditPort;
 	private final ArticleDeletePort articleDeletePort;
 	private final CommentDeletePort commentDeletePort;
+	private final UserReactionPort userReactionPort;
 
 	//Query
 	@Override
@@ -51,25 +57,41 @@ public class ArticleService implements ArticleUseCase {
 	}
 
 	@Override
-	public ArticleContentWithComment getArticleWithComment(ArticleReadCommand command) {
+	public ArticleContent getArticleWithComment(ArticleReadCommand command) {
 
 		if (command.isWithoutComment()) {
 			Article onlyArticle = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(),
 				command.isShowAll());
-			return new ArticleContentWithComment(onlyArticle, null);
+			return new ArticleContent(onlyArticle);
 		}
 
 		ArticleContentWithComment foundContent = articleReadPort.readArticleWithComment(command.getBoardType(),
-			command.getArticleId(), false);
+			command.getArticleId(), command.isShowAll());
 		//TODO 글 작성자에게만 보여지는 값 추가시 사용 Long articleOwner = articleContentWithComment.getArticle().getCreatedBy();
 
 		UserProvider requestUser = command.getUserProvider();
 
 		//TODO 관리자는 allComments 가 필요
+
+		// 비밀로 설정된 댓글,답글에 대한 처리
 		List<Comment> allComments = foundContent.getComments();
 		List<Comment> filteredComments = Comment.getVisibleComments(requestUser.getRequestUserId(), allComments);
 
-		return new ArticleContentWithComment(foundContent.getArticle(), filteredComments);
+		boolean isLiked = false;
+
+		if (requestUser.getRequestUserId() != null) {
+			UserReactionType userReactionType = userReactionPort.getReactionTypeById(
+				UserReactionId.builder()
+					.boardType(command.getBoardType())
+					.articleId(command.getArticleId())
+					.userReactionType(UserReactionType.LIKE)
+					.createdBy(requestUser.getRequestUserId())
+					.build()
+			);
+			isLiked = ObjectUtils.nullSafeEquals(UserReactionType.LIKE, userReactionType);
+		}
+
+		return new ArticleContentWithComment(foundContent.getArticle(), filteredComments, isLiked);
 	}
 
 	@Override
