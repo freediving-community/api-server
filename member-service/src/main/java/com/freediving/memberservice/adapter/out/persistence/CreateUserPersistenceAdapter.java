@@ -6,13 +6,13 @@ import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
-import com.freediving.memberservice.application.port.in.NicknameGenerator;
 import com.freediving.memberservice.application.port.out.CreateUserLicencePort;
 import com.freediving.memberservice.application.port.out.CreateUserPort;
 import com.freediving.memberservice.domain.OauthType;
 import com.freediving.memberservice.domain.RoleLevel;
 import com.freediving.memberservice.domain.User;
 import com.freediving.memberservice.exception.ErrorCode;
+import com.freediving.memberservice.util.NicknameGenerator;
 
 import lombok.RequiredArgsConstructor;
 

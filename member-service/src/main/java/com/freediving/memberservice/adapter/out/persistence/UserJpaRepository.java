@@ -37,4 +37,6 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
 			"WHERE u.userId = :userId"
 	)
 	Optional<UserJpaEntity> findUserDetailById(@Param("userId") Long userId);
+
+	Optional<UserJpaEntity> findByNickname(String trimSafeNickname);
 }

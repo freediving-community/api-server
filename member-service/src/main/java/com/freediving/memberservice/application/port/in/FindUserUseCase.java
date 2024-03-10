@@ -20,4 +20,6 @@ public interface FindUserUseCase {
 	User findUserDetailByQuery(FindUserQuery findUserQuery);
 
 	List<FindUserServiceResponse> findUserListByQuery(FindUserListQuery findUserListQuery);
+
+	boolean findNickname(String trimSafeNickname);
 }
