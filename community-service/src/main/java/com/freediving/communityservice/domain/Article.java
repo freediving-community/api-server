@@ -2,6 +2,7 @@ package com.freediving.communityservice.domain;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 
 import lombok.Builder;
@@ -26,14 +27,17 @@ public class Article {
 
 	private final boolean enableComment;
 
-	private final boolean visible;
+	@JsonIgnore
+	private final LocalDateTime deletedAt;
 
 	private final LocalDateTime createdAt;
 
 	private final Long createdBy;
 
+	@JsonIgnore
 	private final LocalDateTime modifiedAt;
 
+	@JsonIgnore
 	private final Long modifiedBy;
 
 	public void canCreateComment() {

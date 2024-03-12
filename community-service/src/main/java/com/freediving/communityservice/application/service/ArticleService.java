@@ -153,9 +153,10 @@ public class ArticleService implements ArticleUseCase {
 		}
 		article.checkHasOwnership(command.getUserProvider().getRequestUserId());
 
+		articleDeletePort.markDeleted(command);
 		commentDeletePort.deleteComments(article.getId());
 
-		return articleDeletePort.removeArticle(command);
+		return article.getId();
 	}
 
 }

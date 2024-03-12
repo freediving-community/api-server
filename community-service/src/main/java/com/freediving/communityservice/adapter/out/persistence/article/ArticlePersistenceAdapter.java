@@ -66,7 +66,7 @@ public class ArticlePersistenceAdapter
 				boardTypeEq(boardType),
 				articleIdEq(articleId),
 				isShowAll ?
-					null : articleJpaEntity.visible.isTrue()
+					null : articleJpaEntity.deletedAt.isNull()
 			).fetchOne();
 
 		if (foundArticle == null) {
@@ -111,7 +111,7 @@ public class ArticlePersistenceAdapter
 			.from(articleJpaEntity)
 			.where(
 				boardTypeEq(boardType),
-				articleJpaEntity.visible.isTrue()
+				articleJpaEntity.deletedAt.isNull()
 			)
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
@@ -123,7 +123,7 @@ public class ArticlePersistenceAdapter
 			.from(articleJpaEntity)
 			.where(
 				boardTypeEq(boardType),
-				articleJpaEntity.visible.isTrue()
+				articleJpaEntity.deletedAt.isNull()
 			);
 
 		return PageableExecutionUtils.getPage(articleJpaEntityList, pageable, countQuery::fetchOne);
@@ -188,9 +188,11 @@ public class ArticlePersistenceAdapter
 	}
 
 	@Override
-	public Long removeArticle(ArticleRemoveCommand articleRemoveCommand) {
+	public Long markDeleted(ArticleRemoveCommand articleRemoveCommand) {
 
-		articleRepository.deleteById(articleRemoveCommand.getArticleId());
+		ArticleJpaEntity articleJpa = articleRepository.findById(articleRemoveCommand.getArticleId())
+			.orElseThrow(IllegalStateException::new);
+		articleJpa.markDeletedNow();
 
 		return articleRemoveCommand.getArticleId();
 	}
