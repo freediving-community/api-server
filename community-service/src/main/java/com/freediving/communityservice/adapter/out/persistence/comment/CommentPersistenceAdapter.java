@@ -1,5 +1,9 @@
 package com.freediving.communityservice.adapter.out.persistence.comment;
 
+import static com.freediving.communityservice.adapter.out.persistence.comment.QCommentJpaEntity.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
@@ -48,7 +52,13 @@ public class CommentPersistenceAdapter implements CommentWritePort, CommentReadP
 	}
 
 	@Override
-	public void deleteComments(Long articleId) {
-		commentRepository.deleteByArticleId(articleId);
+	public void markDeleted(Long articleId) {
+		List<CommentJpaEntity> comments = jpaQueryFactory
+			.selectFrom(commentJpaEntity)
+			.where(
+				commentJpaEntity.articleId.eq(articleId)
+			).fetch();
+		LocalDateTime deletedAt = LocalDateTime.now();
+		comments.forEach(c -> c.markDeleted(deletedAt));
 	}
 }

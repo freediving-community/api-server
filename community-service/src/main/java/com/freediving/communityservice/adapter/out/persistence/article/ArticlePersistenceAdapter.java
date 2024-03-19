@@ -84,6 +84,7 @@ public class ArticlePersistenceAdapter
 			.selectFrom(commentJpaEntity)
 			.where(
 				commentJpaEntity.articleId.eq(foundArticle.getId()),
+				commentJpaEntity.deletedAt.isNull(),
 				isShowAll ?
 					null : commentJpaEntity.visible.isTrue()
 			).fetch();
@@ -193,8 +194,8 @@ public class ArticlePersistenceAdapter
 		ArticleJpaEntity articleJpa = articleRepository.findById(articleRemoveCommand.getArticleId())
 			.orElseThrow(IllegalStateException::new);
 		articleJpa.markDeletedNow();
+		return 1L;
 
-		return articleRemoveCommand.getArticleId();
 	}
 
 	private BooleanExpression boardTypeEq(BoardType boardType) {

@@ -21,6 +21,7 @@ public class CommentQueryController {
 
 	private final CommentUseCase commentUseCase;
 
+	//TODO 사용하지 않는 API 체크
 	@GetMapping("/boards/{boardType}/articles/{articleId}/comments")
 	public ResponseEntity<Comment> getCommentsOfArticle(
 		UserProvider userProvider,
