@@ -53,12 +53,14 @@ public class CommentPersistenceAdapter implements CommentWritePort, CommentReadP
 
 	@Override
 	public void markDeleted(Long articleId) {
-		List<CommentJpaEntity> comments = jpaQueryFactory
-			.selectFrom(commentJpaEntity)
-			.where(
-				commentJpaEntity.articleId.eq(articleId)
-			).fetch();
+		// List<CommentJpaEntity> comments = jpaQueryFactory
+		// 	.selectFrom(commentJpaEntity)
+		// 	.where(
+		// 		commentJpaEntity.articleId.eq(articleId)
+		// 	).fetch();
+
 		LocalDateTime deletedAt = LocalDateTime.now();
-		comments.forEach(c -> c.markDeleted(deletedAt));
+		commentRepository.markDeleted(articleId, deletedAt);
+		// comments.forEach(c -> c.markDeleted(deletedAt));
 	}
 }
