@@ -1,7 +1,6 @@
 package com.freediving.buddyservice.adapter.in.web.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -54,7 +53,7 @@ public class CreateBuddyEventRequest {
 
 	@ArraySchema(arraySchema = @Schema(description = "버디 이벤트 컨셉"),
 		schema = @Schema(implementation = EventConcept.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED))
-	private List<EventConcept> eventConcepts;
+	private Set<EventConcept> eventConcepts;
 
 	@Schema(description = "카셰어링 여부", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
 	@NotNull

@@ -1,19 +1,15 @@
 package com.freediving.buddyservice.adapter.out.persistence;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 import org.hibernate.annotations.DynamicUpdate;
 
-import com.freediving.buddyservice.adapter.out.persistence.util.EventConceptsListConverter;
-import com.freediving.buddyservice.common.enumeration.EventConcept;
 import com.freediving.buddyservice.common.enumeration.EventStatus;
 import com.freediving.common.persistence.AuditableEntity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -59,10 +55,6 @@ public class BuddyEventsJpaEntity extends AuditableEntity {
 	@Column(name = "participant_count", nullable = false)
 	private Integer participantCount;
 
-	@Convert(converter = EventConceptsListConverter.class)
-	@Column(name = "event_concepts")
-	private List<EventConcept> eventConcepts;
-
 	@Column(name = "car_share_yn", nullable = false)
 	private Boolean carShareYn;
 
@@ -77,6 +69,10 @@ public class BuddyEventsJpaEntity extends AuditableEntity {
 	private String comment;
 
 	// 연관 관계 매핑
+
+	@OneToMany(mappedBy = "buddyEvent", cascade = CascadeType.PERSIST)
+	private Set<EventsConceptMapping> eventConcepts;
+
 	@OneToMany(mappedBy = "buddyEvent", cascade = CascadeType.PERSIST)
 	private Set<EventsDivingPoolMapping> eventsDivingPoolMapping;
 
@@ -85,6 +81,11 @@ public class BuddyEventsJpaEntity extends AuditableEntity {
 
 	@OneToMany(mappedBy = "buddyEvent", cascade = CascadeType.PERSIST)
 	private Set<BuddyEventJoinRequests> buddyEventJoinRequests;
+
+	public BuddyEventsJpaEntity changeEventsConceptMapping(Set<EventsConceptMapping> target) {
+		this.eventConcepts = target;
+		return this;
+	}
 
 	public BuddyEventsJpaEntity changeEventsDivingPoolMapping(Set<EventsDivingPoolMapping> target) {
 		this.eventsDivingPoolMapping = target;

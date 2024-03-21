@@ -1,7 +1,6 @@
 package com.freediving.buddyservice.application.port.in;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 import com.freediving.buddyservice.common.enumeration.EventConcept;
@@ -49,7 +48,7 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 	@Max(value = 5L, message = "최대 모집 인원은 5명까지 가능합니다.")
 	private final Integer participantCount;
 
-	private final List<EventConcept> eventConcepts;
+	private final Set<EventConcept> eventConcepts;
 
 	private final Boolean carShareYn;
 
@@ -66,7 +65,7 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 
 	@Builder
 	private CreateBuddyEventCommand(Long userId, LocalDateTime eventStartDate, LocalDateTime eventEndDate,
-		Integer participantCount, List<EventConcept> eventConcepts, Boolean carShareYn, String kakaoRoomCode,
+		Integer participantCount, Set<EventConcept> eventConcepts, Boolean carShareYn, String kakaoRoomCode,
 		String comment, FreedivingLevel freedivingLevel, Set<DivingPool> divingPools) {
 		this.userId = userId;
 		this.eventStartDate = eventStartDate;

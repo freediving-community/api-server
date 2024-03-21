@@ -53,6 +53,17 @@ CREATE TABLE buddy_event_join_requests
 ALTER TABLE buddy_event_join_requests
     ADD CONSTRAINT PK_BUDDY_EVENT_JOIN_REQUESTS PRIMARY KEY (user_id, event_id);
 
+drop table if exists buddy_event_concept_mapping;
+CREATE TABLE buddy_event_concept_mapping
+(
+    event_id     bigint      NOT NULL,
+    concept_id   varchar(10) NOT NULL,
+    created_date timestamp   NOT NULL,
+    updated_date timestamp   NOT NULL
+);
+ALTER TABLE buddy_event_concept_mapping
+    ADD CONSTRAINT PK_BUDDY_EVENT_CONCEPT_MAPPING PRIMARY KEY (event_id, concept_id);
+
 
 
 drop table if exists buddy_events;
@@ -63,7 +74,6 @@ CREATE TABLE buddy_events
     event_start_date  timestamp     NOT NULL,
     event_end_date    timestamp     NOT NULL,
     participant_count integer       NOT NULL,
-    event_concepts    VARCHAR(255)  NULL,
     car_share_yn      boolean       NOT NULL,
     status            varchar(20)   NOT NULL,
     kakao_room_code   varchar(10)   NULL,

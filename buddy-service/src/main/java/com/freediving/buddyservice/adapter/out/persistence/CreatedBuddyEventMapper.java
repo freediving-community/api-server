@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
+import com.freediving.buddyservice.common.enumeration.EventConcept;
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;
 import com.freediving.common.enumerate.DivingPool;
 
@@ -25,6 +26,11 @@ public class CreatedBuddyEventMapper {
 			for (EventsDivingPoolMapping row : buddyEventsJpaEntity.getEventsDivingPoolMapping())
 				divingPools.add(row.getDivingPoolId());
 
+		Set<EventConcept> eventConcepts = new HashSet<>();
+		if (buddyEventsJpaEntity.getEventConcepts().isEmpty() == false)
+			for (EventsConceptMapping row : buddyEventsJpaEntity.getEventConcepts())
+				eventConcepts.add(row.getConceptId());
+
 		return CreatedBuddyEvent.builder()
 			.eventId(buddyEventsJpaEntity.getEventId())
 			.userId(buddyEventsJpaEntity.getUserId())
@@ -33,7 +39,7 @@ public class CreatedBuddyEventMapper {
 			.participantCount(buddyEventsJpaEntity.getParticipantCount())
 			.status(buddyEventsJpaEntity.getStatus())
 			.carShareYn(buddyEventsJpaEntity.getCarShareYn())
-			.eventConcepts(buddyEventsJpaEntity.getEventConcepts())
+			.eventConcepts(eventConcepts)
 			.comment(buddyEventsJpaEntity.getComment())
 			.kakaoRoomCode(buddyEventsJpaEntity.getKakaoRoomCode())
 			.divingPools(divingPools)

@@ -1,7 +1,6 @@
 package com.freediving.buddyservice.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -43,8 +42,7 @@ public class CreatedBuddyEvent {
 
 	@ArraySchema(arraySchema = @Schema(description = "버디 이벤트 컨셉"),
 		schema = @Schema(implementation = EventConcept.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED))
-
-	private final List<EventConcept> eventConcepts;
+	private final Set<EventConcept> eventConcepts;
 
 	@Schema(description = "카셰어링 여부", example = "true")
 	private final Boolean carShareYn;

@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.freediving.buddyservice.adapter.out.persistence.BuddyEventsJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.CreatedBuddyEventMapper;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
@@ -15,7 +17,6 @@ import com.freediving.buddyservice.common.enumeration.EventStatus;
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;
 import com.freediving.common.config.annotation.UseCase;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @UseCase

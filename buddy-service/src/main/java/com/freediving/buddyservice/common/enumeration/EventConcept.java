@@ -7,9 +7,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum EventConcept {
 	//TODO enum 재 설정 필요
-	FUN_DIVING("펀다이빙"),
+	FUN("펀다이빙"),
 	PRACTICE("연습"),
-	PHOTOGRAPHY("사진촬영"),
+	PHOTO("사진촬영"),
 	TRAINING("강습"),
 	LEVEL_UP("레벨업");
 

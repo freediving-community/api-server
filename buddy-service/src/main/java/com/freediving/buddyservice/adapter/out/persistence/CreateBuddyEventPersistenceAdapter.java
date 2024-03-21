@@ -8,6 +8,7 @@ import java.util.Set;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
+import com.freediving.buddyservice.common.enumeration.EventConcept;
 import com.freediving.buddyservice.common.enumeration.ParticipationStatus;
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;
 import com.freediving.common.config.annotation.PersistenceAdapter;
@@ -40,7 +41,6 @@ public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort 
 				.eventStartDate(createdBuddyEvent.getEventStartDate())
 				.eventEndDate(createdBuddyEvent.getEventEndDate())
 				.participantCount(createdBuddyEvent.getParticipantCount())
-				.eventConcepts(createdBuddyEvent.getEventConcepts())
 				.carShareYn(createdBuddyEvent.getCarShareYn())
 				.status(createdBuddyEvent.getStatus())
 				.kakaoRoomCode(createdBuddyEvent.getKakaoRoomCode())
@@ -51,6 +51,7 @@ public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort 
 		Set<EventsDivingPoolMapping> eventsDivingPoolMapping = new HashSet<>();
 		BuddyEventConditions buddyEventCondition = null;
 		Set<BuddyEventJoinRequests> buddyEventJoinRequests = new HashSet<>();
+		Set<EventsConceptMapping> eventsConceptMapping = new HashSet<>();
 
 		// 2. 다이빙 풀 연관 관계 설정
 		for (DivingPool pool : createdBuddyEvent.getDivingPools())
@@ -68,9 +69,17 @@ public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort 
 			.freedivingLevel(createdBuddyEvent.getFreedivingLevel())
 			.build();
 
+		// 이벤트 컨셉
+		if (createdBuddyEvent.getEventConcepts() != null)
+			for (EventConcept pool : createdBuddyEvent.getEventConcepts())
+				eventsConceptMapping.add(
+					EventsConceptMapping.builder().conceptId(pool).buddyEvent(createdEventJpaEntity)
+						.build());
+
 		createdEventJpaEntity.changeEventsDivingPoolMapping(eventsDivingPoolMapping);
 		createdEventJpaEntity.changeBuddyEventConditions(buddyEventCondition);
 		createdEventJpaEntity.changeBuddyEventJoinRequests(buddyEventJoinRequests);
+		createdEventJpaEntity.changeEventsConceptMapping(eventsConceptMapping);
 
 		return createdEventJpaEntity;
 	}
