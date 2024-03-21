@@ -15,6 +15,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventsJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventsRepository;
 import com.freediving.buddyservice.common.enumeration.EventConcept;
 import com.freediving.buddyservice.common.enumeration.EventStatus;
 import com.freediving.buddyservice.config.CommonModuleScan;

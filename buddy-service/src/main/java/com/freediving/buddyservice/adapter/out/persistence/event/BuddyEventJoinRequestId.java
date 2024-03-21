@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.adapter.out.persistence;
+package com.freediving.buddyservice.adapter.out.persistence.event;
 
 import java.io.Serializable;
 

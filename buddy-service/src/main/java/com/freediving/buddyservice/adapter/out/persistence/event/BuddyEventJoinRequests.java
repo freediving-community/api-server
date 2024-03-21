@@ -1,11 +1,13 @@
-package com.freediving.buddyservice.adapter.out.persistence;
+package com.freediving.buddyservice.adapter.out.persistence.event;
 
-import com.freediving.buddyservice.common.enumeration.EventConcept;
+import com.freediving.buddyservice.common.enumeration.ParticipationStatus;
 import com.freediving.common.persistence.AuditableEntity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
@@ -17,21 +19,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "buddy_event_concept_mapping")
+@Table(name = "buddy_event_join_requests")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@IdClass(EventsConceptMappingId.class)
-public class EventsConceptMapping extends AuditableEntity {
+@IdClass(BuddyEventJoinRequestId.class)
+public class BuddyEventJoinRequests extends AuditableEntity {
+	@Id
+	private Long userId; // 복합 키의 일부
 
 	@Id
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "event_id", referencedColumnName = "event_id", insertable = false, updatable = false)
 	private BuddyEventsJpaEntity buddyEvent;
 
-	@Id
-	@Enumerated(EnumType.STRING)
-	private EventConcept conceptId; // 복합 키의 일부
+	@Column(name = "status")
+	@Enumerated(value = EnumType.STRING)
+	private ParticipationStatus status;
 
 }

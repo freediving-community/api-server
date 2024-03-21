@@ -3,7 +3,7 @@ package com.freediving.buddyservice.application.port.out;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.freediving.buddyservice.adapter.out.persistence.BuddyEventsJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventsJpaEntity;
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;
 
 public interface CreateBuddyEventPort {

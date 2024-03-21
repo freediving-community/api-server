@@ -57,7 +57,7 @@ drop table if exists buddy_event_concept_mapping;
 CREATE TABLE buddy_event_concept_mapping
 (
     event_id     bigint      NOT NULL,
-    concept_id   varchar(10) NOT NULL,
+    concept_id   varchar(20) NOT NULL,
     created_date timestamp   NOT NULL,
     updated_date timestamp   NOT NULL
 );
@@ -104,3 +104,22 @@ ALTER TABLE buddy_event_conditions
 ALTER TABLE buddy_event_join_requests
     ADD CONSTRAINT FK_buddy_events_TO_buddy_event_join_requests_1 FOREIGN KEY (event_id)
         REFERENCES buddy_events (event_id);
+
+ALTER TABLE buddy_event_concept_mapping
+    ADD CONSTRAINT FK_buddy_events_TO_buddy_event_concept_mapping_1 FOREIGN KEY (event_id)
+        REFERENCES buddy_events (event_id);
+
+
+
+drop table if exists buddy_event_concept;
+CREATE TABLE buddy_event_concept
+(
+    concept_id    varchar(20) NOT NULL,
+    concept_name  varchar(20) NOT NULL,
+    enabled       boolean     NOT NULL DEFAULT false,
+    display_order int         NOT NULL,
+    created_date  timestamp   NOT NULL,
+    updated_date  timestamp   NOT NULL
+);
+ALTER TABLE buddy_event_concept
+    ADD CONSTRAINT PK_BUDDY_EVENT_CONCEPT PRIMARY KEY (concept_id);

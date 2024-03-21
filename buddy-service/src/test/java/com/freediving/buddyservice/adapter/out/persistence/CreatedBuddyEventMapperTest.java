@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventsJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.CreatedBuddyEventMapper;
 import com.freediving.buddyservice.common.enumeration.EventConcept;
 import com.freediving.buddyservice.common.enumeration.EventStatus;
 import com.freediving.buddyservice.domain.CreatedBuddyEvent;

@@ -1,6 +1,6 @@
-package com.freediving.buddyservice.adapter.out.persistence;
+package com.freediving.buddyservice.adapter.out.persistence.event;
 
-import com.freediving.common.enumerate.DivingPool;
+import com.freediving.buddyservice.common.enumeration.EventConcept;
 import com.freediving.common.persistence.AuditableEntity;
 
 import jakarta.persistence.Entity;
@@ -17,20 +17,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "events_diving_pool_mapping")
+@Table(name = "buddy_event_concept_mapping")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@IdClass(EventsDivingPoolMappingId.class)
-public class EventsDivingPoolMapping extends AuditableEntity {
-	@Id
-	@Enumerated(EnumType.STRING)
-	private DivingPool divingPoolId; // 복합 키의 일부
+@IdClass(EventsConceptMappingId.class)
+public class EventsConceptMapping extends AuditableEntity {
 
 	@Id
 	@ManyToOne
 	@JoinColumn(name = "event_id", referencedColumnName = "event_id", insertable = false, updatable = false)
 	private BuddyEventsJpaEntity buddyEvent;
+
+	@Id
+	@Enumerated(EnumType.STRING)
+	private EventConcept conceptId; // 복합 키의 일부
 
 }
