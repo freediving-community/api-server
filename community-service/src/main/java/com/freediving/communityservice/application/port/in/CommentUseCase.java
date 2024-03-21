@@ -6,4 +6,6 @@ public interface CommentUseCase {
 	Comment writeComment(CommentWriteCommand command);
 
 	Comment readComments(CommentReadCommand command);
+
+	Comment editComment(CommentEditCommand command);
 }
