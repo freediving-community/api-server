@@ -10,6 +10,7 @@ import com.freediving.communityservice.application.port.in.CommentUseCase;
 import com.freediving.communityservice.application.port.in.CommentWriteCommand;
 import com.freediving.communityservice.application.port.out.ArticleReadPort;
 import com.freediving.communityservice.application.port.out.BoardReadPort;
+import com.freediving.communityservice.application.port.out.CommentEditPort;
 import com.freediving.communityservice.application.port.out.CommentReadPort;
 import com.freediving.communityservice.application.port.out.CommentWritePort;
 import com.freediving.communityservice.domain.Article;
@@ -27,6 +28,7 @@ public class CommentService implements CommentUseCase {
 	private final ArticleReadPort articleReadPort;
 	private final CommentReadPort commentReadPort;
 	private final CommentWritePort commentWritePort;
+	private final CommentEditPort commentEditPort;
 
 	@Override
 	public Comment writeComment(CommentWriteCommand command) {
@@ -56,17 +58,20 @@ public class CommentService implements CommentUseCase {
 
 	@Override
 	public Comment readComments(CommentReadCommand command) {
-		Article article = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), true);
+/*		Article article = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), true);
 		article.canCreateComment();
 
-		commentReadPort.readComments(command);
+		commentReadPort.readComments(command);*/
 		return null;
 	}
 
 	@Override
 	public Comment editComment(CommentEditCommand command) {
-		// 권한 녹여서
-		return null;
+		Comment comment = commentReadPort.findById(CommentReadCommand.builder()
+			.commentId(command.getCommentId())
+			.build());
+		comment.checkCommentOwner( command.getRequestUser().getRequestUserId());
+		return commentEditPort.editComment( command);
 	}
 
 }

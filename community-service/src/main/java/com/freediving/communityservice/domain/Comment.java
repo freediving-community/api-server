@@ -68,4 +68,10 @@ public class Comment {
 		if (this.parentId != null)
 			throw new IllegalArgumentException("답글에는 다시 답글을 달 수 없습니다.");
 	}
+
+	public void checkCommentOwner(Long requestUserId) {
+		if ( ! requestUserId.equals(this.createdBy))
+			throw new IllegalArgumentException("수정 권한이 없습니다.");
+	}
+
 }

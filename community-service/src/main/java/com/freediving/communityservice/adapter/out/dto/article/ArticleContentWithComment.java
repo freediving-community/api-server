@@ -6,8 +6,15 @@ import com.freediving.communityservice.domain.Article;
 import com.freediving.communityservice.domain.Comment;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class ArticleContentWithComment extends ArticleContent {
 
 	private final List<Comment> comments;

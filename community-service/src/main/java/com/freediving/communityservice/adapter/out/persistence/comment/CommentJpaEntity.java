@@ -80,6 +80,11 @@ public class CommentJpaEntity {
 		this.visible = visible;
 	}
 
+	public void editComment(String content, boolean visible) {
+		this.content = content;
+		this.visible = visible;
+	}
+
 	public void markDeleted(LocalDateTime localDateTime) {
 		this.deletedAt = localDateTime;
 	}
