@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.freediving.buddyservice.common.enumeration.EventConcept;
+import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.common.enumeration.FreedivingLevel;
 import com.freediving.common.enumerate.DivingPool;
 
@@ -52,8 +52,8 @@ public class CreateBuddyEventRequest {
 	private Integer participantCount;
 
 	@ArraySchema(arraySchema = @Schema(description = "버디 이벤트 컨셉"),
-		schema = @Schema(implementation = EventConcept.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED))
-	private Set<EventConcept> eventConcepts;
+		schema = @Schema(implementation = BuddyEventConcept.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED))
+	private Set<BuddyEventConcept> buddyEventConcepts;
 
 	@Schema(description = "카셰어링 여부", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
 	@NotNull

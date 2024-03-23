@@ -14,12 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventsJpaEntity;
-import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventsRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventRepository;
 import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
-import com.freediving.buddyservice.common.enumeration.EventConcept;
-import com.freediving.buddyservice.common.enumeration.EventStatus;
-import com.freediving.buddyservice.domain.CreatedBuddyEvent;
+import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
+import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
+import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
 
 @ActiveProfiles("local")
 @SpringBootTest
@@ -28,11 +28,11 @@ class CreateBuddyEventPersistenceAdapterTest {
 	@Autowired
 	CreateBuddyEventPort createBuddyEventPort;
 	@Autowired
-	BuddyEventsRepository buddyEventsRepository;
+	BuddyEventRepository buddyEventRepository;
 
 	@AfterEach
 	void tearDown() {
-		buddyEventsRepository.deleteAllInBatch();
+		buddyEventRepository.deleteAllInBatch();
 	}
 
 	@DisplayName("PersistenceAdapter 역할로서 버디 일정 생성의 연결을 테스트한다.")
@@ -45,32 +45,31 @@ class CreateBuddyEventPersistenceAdapterTest {
 		LocalDateTime StartDate = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
 		LocalDateTime EndDate = LocalDateTime.now().plusHours(4).truncatedTo(ChronoUnit.MILLIS);
 
-		CreatedBuddyEvent buddyEvent = generateBuddyEvent(userId, StartDate, EndDate, 3, null);
+		CreatedBuddyEventResponse buddyEvent = generateBuddyEvent(userId, StartDate, EndDate, 3, null);
 
-		BuddyEventsJpaEntity createdbuddyEvent = createBuddyEventPort.createBuddyEvent(buddyEvent);
+		BuddyEventJpaEntity createdbuddyEvent = createBuddyEventPort.createBuddyEvent(buddyEvent);
 
 		assertThat(createdbuddyEvent)
-			.extracting("userId", "eventStartDate", "eventEndDate", "participantCount", "eventConcepts",
+			.extracting("userId", "eventStartDate", "eventEndDate", "participantCount", "buddyEventConcepts",
 				"status", "carShareYn", "comment")
 			.contains(userId, StartDate.truncatedTo(ChronoUnit.MILLIS), EndDate.truncatedTo(ChronoUnit.MILLIS), 3,
-				List.of(EventConcept.LEVEL_UP, EventConcept.PRACTICE),
-				EventStatus.RECRUITING, false, null);
+				List.of(BuddyEventConcept.LEVEL_UP, BuddyEventConcept.PRACTICE),
+				BuddyEventStatus.RECRUITING, false, null);
 
 	}
 
-	private CreatedBuddyEvent generateBuddyEvent(Long userId, LocalDateTime eventStartDate, LocalDateTime eventEndDate,
+	private CreatedBuddyEventResponse generateBuddyEvent(Long userId, LocalDateTime eventStartDate, LocalDateTime eventEndDate,
 		Integer participantCount, String comment) {
 
-		List<EventConcept> eventConcepts = List.of(EventConcept.LEVEL_UP, EventConcept.PRACTICE);
+		List<BuddyEventConcept> buddyEventConcepts = List.of(BuddyEventConcept.LEVEL_UP, BuddyEventConcept.PRACTICE);
 
-		return CreatedBuddyEvent.builder()
+		return CreatedBuddyEventResponse.builder()
 			.userId(userId)
 			.eventStartDate(eventStartDate)
 			.eventEndDate(eventEndDate)
 			.participantCount(participantCount)
-			.eventConcepts(eventConcepts)
 			.carShareYn(Boolean.FALSE)
-			.status(EventStatus.RECRUITING)
+			.status(BuddyEventStatus.RECRUITING)
 			.comment(comment)
 			.build();
 

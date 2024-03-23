@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.freediving.buddyservice.common.enumeration.EventConcept;
+import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
 
 @Repository
-public interface BuddyEventConceptRepository extends JpaRepository<EventConceptJpaEntity, EventConcept> {
+public interface BuddyEventConceptRepository extends JpaRepository<BuddyEventConceptJpaEntity, BuddyEventConcept> {
 
-	List<EventConceptJpaEntity> findByEnabledIsTrueOrderByDisplayOrderAsc();
+	List<BuddyEventConceptJpaEntity> findByEnabledIsTrueOrderByDisplayOrderAsc();
 
 }

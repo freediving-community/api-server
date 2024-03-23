@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.hibernate.annotations.DynamicUpdate;
 
-import com.freediving.buddyservice.common.enumeration.EventStatus;
+import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
 import com.freediving.common.persistence.AuditableEntity;
 
 import jakarta.persistence.CascadeType;
@@ -32,11 +32,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @Getter
-@Table(name = "buddy_events", indexes = {
+@Table(name = "buddy_event", indexes = {
 	@Index(name = "idx_userid", columnList = "userId"),
 	@Index(name = "idx_eventStartDate", columnList = "eventStartDate")
 })
-public class BuddyEventsJpaEntity extends AuditableEntity {
+public class BuddyEventJpaEntity extends AuditableEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,7 +60,7 @@ public class BuddyEventsJpaEntity extends AuditableEntity {
 
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private EventStatus status;
+	private BuddyEventStatus status;
 
 	@Column(name = "kakao_room_code", length = 10)
 	private String kakaoRoomCode;
@@ -71,42 +71,42 @@ public class BuddyEventsJpaEntity extends AuditableEntity {
 	// 연관 관계 매핑
 
 	@OneToMany(mappedBy = "buddyEvent", cascade = CascadeType.PERSIST)
-	private Set<EventsConceptMapping> eventConcepts;
+	private Set<BuddyEventConceptMappingJpaEntity> eventConcepts;
 
 	@OneToMany(mappedBy = "buddyEvent", cascade = CascadeType.PERSIST)
-	private Set<EventsDivingPoolMapping> eventsDivingPoolMapping;
+	private Set<BuddyEventDivingPoolMappingJpaEntity> buddyEventDivingPoolMappingJpaEntity;
 
 	@OneToOne(mappedBy = "buddyEvent", cascade = CascadeType.PERSIST)
-	private BuddyEventConditions buddyEventConditions;
+	private BuddyEventConditionsJpaEntity buddyEventConditionsJpaEntity;
 
 	@OneToMany(mappedBy = "buddyEvent", cascade = CascadeType.PERSIST)
-	private Set<BuddyEventJoinRequests> buddyEventJoinRequests;
+	private Set<BuddyEventJoinRequestJpaEntity> buddyEventJoinRequests;
 
-	public BuddyEventsJpaEntity changeEventsConceptMapping(Set<EventsConceptMapping> target) {
+	public BuddyEventJpaEntity changeBuddyEventConceptMapping(Set<BuddyEventConceptMappingJpaEntity> target) {
 		this.eventConcepts = target;
 		return this;
 	}
 
-	public BuddyEventsJpaEntity changeEventsDivingPoolMapping(Set<EventsDivingPoolMapping> target) {
-		this.eventsDivingPoolMapping = target;
+	public BuddyEventJpaEntity changeBuddyEventDivingPoolMapping(Set<BuddyEventDivingPoolMappingJpaEntity> target) {
+		this.buddyEventDivingPoolMappingJpaEntity = target;
 		return this;
 	}
 
-	public BuddyEventsJpaEntity changeBuddyEventConditions(BuddyEventConditions target) {
-		this.buddyEventConditions = target;
+	public BuddyEventJpaEntity changeBuddyEventConditions(BuddyEventConditionsJpaEntity target) {
+		this.buddyEventConditionsJpaEntity = target;
 		return this;
 	}
 
-	public BuddyEventsJpaEntity changeBuddyEventJoinRequests(Set<BuddyEventJoinRequests> target) {
+	public BuddyEventJpaEntity changeBuddyEventJoinRequests(Set<BuddyEventJoinRequestJpaEntity> target) {
 		this.buddyEventJoinRequests = target;
 		return this;
 	}
 
 	@Override
 	public String toString() {
-		return "BuddyEventsJpaEntity{" + "eventId=" + eventId + ", userId=" + userId + ", eventStartDate="
+		return "BuddyEventJpaEntity{" + "eventId=" + eventId + ", userId=" + userId + ", eventStartDate="
 			+ eventStartDate + ", eventEndDate=" + eventEndDate + ", participantCount=" + participantCount
-			+ ", eventConcepts=" + eventConcepts + ", carShareYn=" + carShareYn + ", kakaoRoomCode=" + kakaoRoomCode
+			+ ", buddyEventConcepts=" + eventConcepts + ", carShareYn=" + carShareYn + ", kakaoRoomCode=" + kakaoRoomCode
 			+ ", status=" + status + ", comment='"
 			+ comment + '\'' + '}';
 	}

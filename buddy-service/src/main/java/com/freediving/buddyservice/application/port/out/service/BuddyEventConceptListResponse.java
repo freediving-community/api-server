@@ -3,6 +3,8 @@ package com.freediving.buddyservice.application.port.out.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 @Schema(title = "이벤트 콘셉트 조회 결과", description = "GET /v1/attribute/concept 이벤트 콘셉트 조회 결과", hidden = true)
-public class EventConceptListResponse {
+public class BuddyEventConceptListResponse {
 	@Schema(description = "콘셉트 리스트")
 	private List<EventConcept> concepts;
 
@@ -31,7 +33,7 @@ public class EventConceptListResponse {
 	@Builder
 	public static class EventConcept {
 		@Schema(description = "콘셉트 ID", type = "string", example = "FUN")
-		private com.freediving.buddyservice.common.enumeration.EventConcept conceptId;
+		private BuddyEventConcept conceptId;
 		@Schema(description = "콘셉트 이름", example = "펀다이빙")
 		private String conceptName;
 	}

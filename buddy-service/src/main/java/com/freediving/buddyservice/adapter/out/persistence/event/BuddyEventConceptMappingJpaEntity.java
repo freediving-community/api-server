@@ -1,6 +1,6 @@
 package com.freediving.buddyservice.adapter.out.persistence.event;
 
-import com.freediving.buddyservice.common.enumeration.EventConcept;
+import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
 import com.freediving.common.persistence.AuditableEntity;
 
 import jakarta.persistence.Entity;
@@ -22,16 +22,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@IdClass(EventsConceptMappingId.class)
-public class EventsConceptMapping extends AuditableEntity {
+@IdClass(BuddyEventConceptMappingId.class)
+public class BuddyEventConceptMappingJpaEntity extends AuditableEntity {
 
 	@Id
 	@ManyToOne
 	@JoinColumn(name = "event_id", referencedColumnName = "event_id", insertable = false, updatable = false)
-	private BuddyEventsJpaEntity buddyEvent;
+	private BuddyEventJpaEntity buddyEvent;
 
 	@Id
 	@Enumerated(EnumType.STRING)
-	private EventConcept conceptId; // 복합 키의 일부
+	private BuddyEventConcept conceptId; // 복합 키의 일부
 
 }

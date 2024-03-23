@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum EventStatus {
+public enum BuddyEventStatus {
 	//TODO enum 재 설정 필요
 	RECRUITING("모집 중"),
 	RECRUITMENT_CLOSED("모집 마감"),

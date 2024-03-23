@@ -3,8 +3,8 @@ package com.freediving.buddyservice.application.port.in;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import com.freediving.buddyservice.common.enumeration.EventConcept;
-import com.freediving.buddyservice.common.enumeration.EventStatus;
+import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
+import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.common.enumeration.FreedivingLevel;
 import com.freediving.common.SelfValidating;
 import com.freediving.common.enumerate.DivingPool;
@@ -48,11 +48,11 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 	@Max(value = 5L, message = "최대 모집 인원은 5명까지 가능합니다.")
 	private final Integer participantCount;
 
-	private final Set<EventConcept> eventConcepts;
+	private final Set<BuddyEventConcept> buddyEventConcepts;
 
 	private final Boolean carShareYn;
 
-	private final EventStatus status = EventStatus.RECRUITING;
+	private final BuddyEventStatus status = BuddyEventStatus.RECRUITING;
 
 	private final String kakaoRoomCode;
 
@@ -65,7 +65,7 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 
 	@Builder
 	private CreateBuddyEventCommand(Long userId, LocalDateTime eventStartDate, LocalDateTime eventEndDate,
-		Integer participantCount, Set<EventConcept> eventConcepts, Boolean carShareYn, String kakaoRoomCode,
+		Integer participantCount, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn, String kakaoRoomCode,
 		String comment, FreedivingLevel freedivingLevel, Set<DivingPool> divingPools) {
 		this.userId = userId;
 		this.eventStartDate = eventStartDate;
@@ -75,7 +75,7 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 		this.eventEndDate = eventEndDate;
 
 		this.participantCount = participantCount;
-		this.eventConcepts = eventConcepts;
+		this.buddyEventConcepts = buddyEventConcepts;
 		this.carShareYn = (carShareYn == null) ? false : carShareYn; // Default False
 		this.comment = comment;
 		this.kakaoRoomCode = kakaoRoomCode;

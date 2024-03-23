@@ -6,15 +6,15 @@ import java.util.stream.Collectors;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventsJpaEntity;
-import com.freediving.buddyservice.adapter.out.persistence.event.CreatedBuddyEventMapper;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.CreatedBuddyEventResponseMapper;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
 import com.freediving.buddyservice.application.port.out.service.MemberStatus;
 import com.freediving.buddyservice.application.port.out.service.RequestMemberPort;
-import com.freediving.buddyservice.common.enumeration.EventStatus;
-import com.freediving.buddyservice.domain.CreatedBuddyEvent;
+import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
+import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
 import com.freediving.common.config.annotation.UseCase;
 
 import lombok.RequiredArgsConstructor;
@@ -25,11 +25,11 @@ import lombok.RequiredArgsConstructor;
 public class CreateBuddyEventService implements CreateBuddyEventUseCase {
 
 	private final CreateBuddyEventPort createBuddyEventPort;
-	private final CreatedBuddyEventMapper createdBuddyEventMapper;
+	private final CreatedBuddyEventResponseMapper createdBuddyEventResponseMapper;
 	private final RequestMemberPort requestMemberPort;
 
 	@Override
-	public CreatedBuddyEvent createBuddyEvent(CreateBuddyEventCommand command) {
+	public CreatedBuddyEventResponse createBuddyEvent(CreateBuddyEventCommand command) {
 
 		// 1. Member Serivce로 정상적인 사용자 인지 확인 ( 버디 일정 생성 가능한 사용자? 제재 리스트 사용자? 등. 정상적인 사용자 체크)
 		MemberStatus status = requestMemberPort.getMemberStatus(command.getUserId());
@@ -44,13 +44,13 @@ public class CreateBuddyEventService implements CreateBuddyEventUseCase {
 		}
 
 		// 3. 버디 일정 이벤트 생성하기.
-		BuddyEventsJpaEntity createdBuddyEventInfo = createBuddyEventPort.createBuddyEvent(
-			CreatedBuddyEvent.builder()
+		BuddyEventJpaEntity createdBuddyEventInfo = createBuddyEventPort.createBuddyEvent(
+			CreatedBuddyEventResponse.builder()
 				.userId(status.getUserid())
 				.eventStartDate(command.getEventStartDate())
 				.eventEndDate(command.getEventEndDate())
 				.participantCount(command.getParticipantCount())
-				.eventConcepts(command.getEventConcepts())
+				.buddyEventConcepts(command.getBuddyEventConcepts())
 				.carShareYn(command.getCarShareYn())
 				.status(command.getStatus())
 				.kakaoRoomCode(command.getKakaoRoomCode())
@@ -59,17 +59,17 @@ public class CreateBuddyEventService implements CreateBuddyEventUseCase {
 				.divingPools(command.getDivingPools())
 				.build());
 
-		return createdBuddyEventMapper.mapToDomainEntity(createdBuddyEventInfo);
+		return createdBuddyEventResponseMapper.mapToDomainEntity(createdBuddyEventInfo);
 
 	}
 
 	private Boolean isValidBuddyEventOverlap(Long userId, LocalDateTime eventStartTime,
 		LocalDateTime eventEndDate) {
 
-		// EventStatus.RECRUITING, EventStatus.RECRUITMENT_CLOSED 이벤트 상태들에 대해서
+		// BuddyEventStatus.RECRUITING, BuddyEventStatus.RECRUITMENT_CLOSED 이벤트 상태들에 대해서
 		// 시간이 겹치는 지 확인한다.
 
-		List<String> statusNames = List.of(EventStatus.RECRUITING, EventStatus.RECRUITMENT_CLOSED).stream()
+		List<String> statusNames = List.of(BuddyEventStatus.RECRUITING, BuddyEventStatus.RECRUITMENT_CLOSED).stream()
 			.map(Enum::name)
 			.collect(Collectors.toList());
 

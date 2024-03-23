@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum EventConcept {
+public enum BuddyEventConcept {
 	//TODO enum 재 설정 필요
 	FUN("펀다이빙"),
 	PRACTICE("연습"),

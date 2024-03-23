@@ -15,16 +15,16 @@ ALTER TABLE diving_pool
 
 
 
-drop table if exists events_diving_pool_mapping;
-CREATE TABLE events_diving_pool_mapping
+drop table if exists buddy_event_diving_pool_mapping;
+CREATE TABLE buddy_event_diving_pool_mapping
 (
     diving_pool_id varchar(20) NOT NULL,
     event_id       bigint      NOT NULL,
     updated_date   timestamp   NOT NULL,
     created_date   timestamp   NOT NULL
 );
-ALTER TABLE events_diving_pool_mapping
-    ADD CONSTRAINT PK_EVENTS_DIVING_POOL_MAPPING PRIMARY KEY (diving_pool_id, event_id);
+ALTER TABLE buddy_event_diving_pool_mapping
+    ADD CONSTRAINT PK_BUDDY_EVENT_DIVING_POOL_MAPPING PRIMARY KEY (diving_pool_id, event_id);
 
 
 
@@ -66,8 +66,8 @@ ALTER TABLE buddy_event_concept_mapping
 
 
 
-drop table if exists buddy_events;
-CREATE TABLE buddy_events
+drop table if exists buddy_event;
+CREATE TABLE buddy_event
 (
     event_id          bigint        NOT NULL generated always as identity,
     user_id           bigint        NOT NULL,
@@ -81,33 +81,33 @@ CREATE TABLE buddy_events
     updated_date      timestamp     NOT NULL,
     created_date      timestamp     NOT NULL
 );
-ALTER TABLE buddy_events
-    ADD CONSTRAINT PK_BUDDY_EVENTS PRIMARY KEY (event_id);
+ALTER TABLE buddy_event
+    ADD CONSTRAINT PK_BUDDY_EVENT PRIMARY KEY (event_id);
 
-COMMENT ON TABLE buddy_events IS '임시테이블';
-COMMENT ON COLUMN buddy_events.event_id IS '버디 일정 이벤트 식별 ID';
-COMMENT ON COLUMN buddy_events.user_id IS '유저 ID 시퀀스';
-COMMENT ON COLUMN buddy_events.event_start_date IS '버디 일정 시작 날짜+시간';
-COMMENT ON COLUMN buddy_events.event_end_date IS '버디 일정 종료 날짜+시간';
-COMMENT ON COLUMN buddy_events.participant_count IS '버디 일정 모집하는 인원 수';
-COMMENT ON COLUMN buddy_events.updated_date IS 'JPA Auditing 관리';
-COMMENT ON COLUMN buddy_events.created_date IS 'JPA Auditing 관리';
+COMMENT ON TABLE buddy_event IS '임시테이블';
+COMMENT ON COLUMN buddy_event.event_id IS '버디 일정 이벤트 식별 ID';
+COMMENT ON COLUMN buddy_event.user_id IS '유저 ID 시퀀스';
+COMMENT ON COLUMN buddy_event.event_start_date IS '버디 일정 시작 날짜+시간';
+COMMENT ON COLUMN buddy_event.event_end_date IS '버디 일정 종료 날짜+시간';
+COMMENT ON COLUMN buddy_event.participant_count IS '버디 일정 모집하는 인원 수';
+COMMENT ON COLUMN buddy_event.updated_date IS 'JPA Auditing 관리';
+COMMENT ON COLUMN buddy_event.created_date IS 'JPA Auditing 관리';
 
-ALTER TABLE events_diving_pool_mapping
-    ADD CONSTRAINT FK_buddy_events_TO_events_diving_pool_mapping_1 FOREIGN KEY (event_id)
-        REFERENCES buddy_events (event_id);
+ALTER TABLE buddy_event_diving_pool_mapping
+    ADD CONSTRAINT FK_buddy_event_TO_buddy_event_diving_pool_mapping_1 FOREIGN KEY (event_id)
+        REFERENCES buddy_event (event_id);
 
 ALTER TABLE buddy_event_conditions
-    ADD CONSTRAINT FK_buddy_events_TO_buddy_event_conditions_1 FOREIGN KEY (event_id)
-        REFERENCES buddy_events (event_id);
+    ADD CONSTRAINT FK_buddy_event_TO_buddy_event_conditions_1 FOREIGN KEY (event_id)
+        REFERENCES buddy_event (event_id);
 
 ALTER TABLE buddy_event_join_requests
-    ADD CONSTRAINT FK_buddy_events_TO_buddy_event_join_requests_1 FOREIGN KEY (event_id)
-        REFERENCES buddy_events (event_id);
+    ADD CONSTRAINT FK_buddy_event_TO_buddy_event_join_requests_1 FOREIGN KEY (event_id)
+        REFERENCES buddy_event (event_id);
 
 ALTER TABLE buddy_event_concept_mapping
-    ADD CONSTRAINT FK_buddy_events_TO_buddy_event_concept_mapping_1 FOREIGN KEY (event_id)
-        REFERENCES buddy_events (event_id);
+    ADD CONSTRAINT FK_buddy_event_TO_buddy_event_concept_mapping_1 FOREIGN KEY (event_id)
+        REFERENCES buddy_event (event_id);
 
 
 

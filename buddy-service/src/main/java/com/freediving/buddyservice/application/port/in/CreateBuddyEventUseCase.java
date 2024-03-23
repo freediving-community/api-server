@@ -1,6 +1,6 @@
 package com.freediving.buddyservice.application.port.in;
 
-import com.freediving.buddyservice.domain.CreatedBuddyEvent;
+import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
 
 /**
  * 버디 일정 이벤트 생성 Use Case
@@ -18,5 +18,5 @@ public interface CreateBuddyEventUseCase {
 	 * @param  command  버디 일정 이벤트 생성의 Command 정보를 담은 객체
 	 * @return 생성 완료된 버디 일정 이벤트 도메인 객체
 	 */
-	CreatedBuddyEvent createBuddyEvent(CreateBuddyEventCommand command);
+	CreatedBuddyEventResponse createBuddyEvent(CreateBuddyEventCommand command);
 }

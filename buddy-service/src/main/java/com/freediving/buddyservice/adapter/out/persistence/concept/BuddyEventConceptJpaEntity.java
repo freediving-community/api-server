@@ -1,6 +1,6 @@
 package com.freediving.buddyservice.adapter.out.persistence.concept;
 
-import com.freediving.buddyservice.common.enumeration.EventConcept;
+import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
 import com.freediving.common.persistence.AuditableEntity;
 
 import jakarta.persistence.Column;
@@ -21,12 +21,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Table(name = "buddy_event_concept")
-public class EventConceptJpaEntity extends AuditableEntity {
+public class BuddyEventConceptJpaEntity extends AuditableEntity {
 
 	@Id
 	@Enumerated(EnumType.STRING)
 	@Column(name = "concept_id")
-	private EventConcept conceptId;
+	private BuddyEventConcept conceptId;
 
 	@Column(name = "concept_name", nullable = false)
 	private String conceptName;
@@ -39,7 +39,7 @@ public class EventConceptJpaEntity extends AuditableEntity {
 
 	@Override
 	public String toString() {
-		return "EventConceptJpaEntity{" +
+		return "BuddyEventConceptJpaEntity{" +
 			"conceptId=" + conceptId +
 			", conceptName='" + conceptName + '\'' +
 			", enabled=" + enabled +

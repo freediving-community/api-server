@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.freediving.buddyservice.application.port.in.service.GetEventConceptListUseCase;
-import com.freediving.buddyservice.application.port.out.service.EventConceptListResponse;
+import com.freediving.buddyservice.application.port.in.service.GetBuddyEventConceptListUseCase;
+import com.freediving.buddyservice.application.port.out.service.BuddyEventConceptListResponse;
 import com.freediving.common.config.annotation.WebAdapter;
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
@@ -21,9 +21,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/v1/attribute")
 @Tag(name = "Attribute", description = "버디 이벤트 속성 API")
-public class EventAttributeController {
+public class BuddyEventAttributeController {
 
-	private final GetEventConceptListUseCase getEventConceptListUseCase;
+	private final GetBuddyEventConceptListUseCase getBuddyEventConceptListUseCase;
 
 	@Operation(
 		summary = "이벤트 콘셉트 조회",
@@ -39,15 +39,15 @@ public class EventAttributeController {
 		}
 	)
 	@GetMapping("/concept")
-	public ResponseEntity<ResponseJsonObject<EventConceptListResponse>> getEventConcepts() {
+	public ResponseEntity<ResponseJsonObject<BuddyEventConceptListResponse>> getEventConcepts() {
 
 		try {
 
 			// 커멘트 생성 후 UseCase 전달
-			EventConceptListResponse eventConcepts = getEventConceptListUseCase.getEventConcepts();
+			BuddyEventConceptListResponse eventConcepts = getBuddyEventConceptListUseCase.getEventConcepts();
 
 			// 3. Command 요청 및 응답 리턴.
-			ResponseJsonObject<EventConceptListResponse> response = new ResponseJsonObject<>(ServiceStatusCode.OK,
+			ResponseJsonObject<BuddyEventConceptListResponse> response = new ResponseJsonObject<>(ServiceStatusCode.OK,
 				eventConcepts);
 
 			return ResponseEntity.ok(response);
