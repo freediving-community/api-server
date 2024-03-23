@@ -64,7 +64,7 @@ public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort 
 				createdBuddyEventResponse.getUserId()).status(ParticipationStatus.OWNER)
 			.buddyEvent(createdEventJpaEntity).build());
 
-		// 레벨 조건 존재안하면 null , //TODO 레벨 조건 존재안하면 null 테스트 케이스
+		// 레벨 조건
 		buddyEventCondition = BuddyEventConditionsJpaEntity.builder().buddyEvent(createdEventJpaEntity)
 			.freedivingLevel(createdBuddyEventResponse.getFreedivingLevel())
 			.build();

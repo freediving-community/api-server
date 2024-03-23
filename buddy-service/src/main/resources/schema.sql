@@ -32,7 +32,7 @@ drop table if exists buddy_event_conditions;
 CREATE TABLE buddy_event_conditions
 (
     event_id         bigint      NOT NULL,
-    freediving_level varchar(20) NULL,
+    freediving_level bigint      NOT NULL,
     updated_date     timestamp   NOT NULL,
     created_date     timestamp   NOT NULL
 );
