@@ -1,12 +1,15 @@
 package com.freediving.memberservice.adapter.in.web;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.common.config.annotation.WebAdapter;
+import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserLicenceImgUrlRequest;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserLicenceLevelRequest;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserRequest;
@@ -16,6 +19,7 @@ import com.freediving.memberservice.application.port.in.CreateUserLicenceImgUrlC
 import com.freediving.memberservice.application.port.in.CreateUserLicenceLevelCommand;
 import com.freediving.memberservice.application.port.in.CreateUserLicenceUseCase;
 import com.freediving.memberservice.application.port.in.CreateUserUseCase;
+import com.freediving.memberservice.application.port.out.service.buddy.BuddyUseCase;
 import com.freediving.memberservice.domain.User;
 
 import io.swagger.v3.oas.annotations.Hidden;
@@ -24,6 +28,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author         : sasca37
@@ -40,10 +45,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/v1")
 @Tag(name = "User")
+@Slf4j
 public class CreateUserController {
 
 	private final CreateUserUseCase createUserUseCase;
 	private final CreateUserLicenceUseCase createUserLicenceUseCase;
+
+	private final BuddyUseCase buddyUseCase;
 
 	/**
 	 * @Author           : sasca37
@@ -105,5 +113,17 @@ public class CreateUserController {
 			.build();
 
 		createUserLicenceUseCase.createUserLicenceImgUrl(userId, command);
+	}
+
+	@Operation(summary = "다이빙 풀 정보 조회 API"
+		, description = "버디서비스에서 제공하는 다이빙 핑 정보를 받아와서 응답한다.",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
+		})
+	@GetMapping("/pools")
+	public ResponseEntity<ResponseJsonObject<?>> getDivingPools() {
+		return buddyUseCase.getDivingPools();
 	}
 }
