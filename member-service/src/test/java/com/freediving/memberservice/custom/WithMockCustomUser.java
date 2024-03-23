@@ -6,7 +6,6 @@ import java.lang.annotation.RetentionPolicy;
 import org.springframework.security.test.context.support.WithSecurityContext;
 
 import com.freediving.memberservice.domain.OauthType;
-import com.freediving.memberservice.domain.RoleLevel;
 
 @Retention(RetentionPolicy.RUNTIME)
 @WithSecurityContext(factory = WithMockCustomUserSecurityContextFactory.class)

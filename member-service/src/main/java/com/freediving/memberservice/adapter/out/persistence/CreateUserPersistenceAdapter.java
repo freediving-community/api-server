@@ -3,13 +3,13 @@ package com.freediving.memberservice.adapter.out.persistence;
 import org.apache.commons.lang3.ObjectUtils;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
+import com.freediving.common.domain.RoleLevel;
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.in.CreateUserInfoCommand;
 import com.freediving.memberservice.application.port.out.CreateUserPort;
 import com.freediving.memberservice.domain.OauthType;
-import com.freediving.memberservice.domain.RoleLevel;
 import com.freediving.memberservice.domain.User;
 import com.freediving.memberservice.exception.ErrorCode;
 import com.freediving.memberservice.util.NicknameGenerator;

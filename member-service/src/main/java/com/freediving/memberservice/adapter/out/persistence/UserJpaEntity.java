@@ -1,8 +1,8 @@
 package com.freediving.memberservice.adapter.out.persistence;
 
+import com.freediving.common.domain.RoleLevel;
 import com.freediving.common.persistence.AuditableEntity;
 import com.freediving.memberservice.domain.OauthType;
-import com.freediving.memberservice.domain.RoleLevel;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

@@ -2,7 +2,6 @@ package com.freediving.memberservice.fixture;
 
 import com.freediving.memberservice.adapter.out.persistence.UserJpaEntity;
 import com.freediving.memberservice.domain.OauthType;
-import com.freediving.memberservice.domain.RoleLevel;
 
 /**
  * @Author         : sasca37

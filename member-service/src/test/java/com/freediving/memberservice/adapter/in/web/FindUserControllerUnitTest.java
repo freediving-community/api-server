@@ -24,7 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.freediving.memberservice.adapter.in.web.dto.FindUserServiceResponse;
 import com.freediving.memberservice.application.port.in.FindUserUseCase;
 import com.freediving.memberservice.custom.WithMockCustomUser;
-import com.freediving.memberservice.domain.RoleLevel;
 import com.freediving.memberservice.domain.User;
 import com.freediving.memberservice.fixture.FindUserServiceResponseFixture;
 

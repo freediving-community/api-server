@@ -1,8 +1,8 @@
 package com.freediving.memberservice.fixture;
 
+import com.freediving.common.domain.RoleLevel;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.domain.OauthType;
-import com.freediving.memberservice.domain.RoleLevel;
 import com.freediving.memberservice.domain.User;
 import com.freediving.memberservice.domain.UserLicence;
 

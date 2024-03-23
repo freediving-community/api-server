@@ -2,6 +2,7 @@ package com.freediving.memberservice.domain;
 
 import java.util.Optional;
 
+import com.freediving.common.domain.RoleLevel;
 import com.freediving.memberservice.adapter.out.persistence.UserJpaEntity;
 
 /**

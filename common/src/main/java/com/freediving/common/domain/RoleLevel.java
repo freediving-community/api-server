@@ -1,4 +1,4 @@
-package com.freediving.memberservice.domain;
+package com.freediving.common.domain;
 
 import lombok.Getter;
 
@@ -18,14 +18,12 @@ public enum RoleLevel {
 	ANONYMOUS(-1),            // 비로그인 사용자
 
 	UNREGISTER(5),            // 라이센스 미등록 사용자
-
-	LEVEL0(10),
-	LEVEL1(15),
+	NO_LEVEL(9),              // 레벨 0
+	LEVEL1(10),
 	LEVEL2(20),
-	LEVEL3(25),
-	LEVEL4(30),
-	INSTRUCTOR(35),
-
+	LEVEL3(30),
+	LEVEL4(40),
+	INSTRUCTOR(50),
 	ADMIN(99);
 
 	private final int level;
