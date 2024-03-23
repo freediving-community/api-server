@@ -1,9 +1,12 @@
 package com.freediving.communityservice.adapter.out.dto.article;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import com.freediving.communityservice.domain.Article;
 
-@Getter
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
 @AllArgsConstructor
 public class ArticleContent {
+	private final Article article;
 }

@@ -3,6 +3,7 @@ package com.freediving.communityservice.application.service;
 import org.springframework.stereotype.Service;
 
 import com.freediving.communityservice.adapter.in.web.UserProvider;
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.CommentReadCommand;
 import com.freediving.communityservice.application.port.in.CommentUseCase;
 import com.freediving.communityservice.application.port.in.CommentWriteCommand;
@@ -29,9 +30,9 @@ public class CommentService implements CommentUseCase {
 
 	@Override
 	public Comment writeComment(CommentWriteCommand command) {
-		Board board = getPermissionedBoard(command.getBoardId(), command.getRequestUser());
+		Board board = getPermissionedBoard(command.getBoardType(), command.getRequestUser());
 
-		Article article = articleReadPort.readArticle(board.getId(), command.getArticleId(), true);
+		Article article = articleReadPort.readArticle(board.getBoardType(), command.getArticleId(), true);
 
 		if (command.hasParentComment()) {
 			/*
@@ -57,17 +58,18 @@ public class CommentService implements CommentUseCase {
 
 	@Override
 	public Comment readComments(CommentReadCommand command) {
-		Board board = getPermissionedBoard(command.getBoardId(), command.getRequestUser());
-		Article article = articleReadPort.readArticle(board.getId(), command.getArticleId(), true);
+		Board board = getPermissionedBoard(command.getBoardType(), command.getRequestUser());
+		Article article = articleReadPort.readArticle(board.getBoardType(), command.getArticleId(), true);
 		article.canCreateComment();
 
 		commentReadPort.readComments(command);
 		return null;
 	}
 
-	private Board getPermissionedBoard(Long boardId, UserProvider userProvider) {
-		Board board = boardReadPort.findById(boardId);
-		board.checkPermission(boardId, userProvider);
+	private Board getPermissionedBoard(BoardType boardType, UserProvider userProvider) {
+		Board board = boardReadPort.findByBoardType(boardType)
+			.orElseThrow(() -> new IllegalArgumentException("해당하는 게시판이 없습니다."));
+		board.checkPermission(boardType, userProvider);
 		return board;
 	}
 

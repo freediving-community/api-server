@@ -12,9 +12,13 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -48,8 +52,9 @@ public class ArticleJpaEntity {
 	@Column(nullable = false, columnDefinition = "TEXT")
 	private String content;
 
+	@Enumerated(value = EnumType.STRING)
 	@Column(nullable = false)
-	private Long boardId;
+	private BoardType boardType;
 
 	@Column(nullable = false, length = 20)
 	private String authorName;
@@ -93,14 +98,14 @@ public class ArticleJpaEntity {
 	@LastModifiedBy
 	private Long modifiedBy;
 
-	public static ArticleJpaEntity of(String title, String content, Long boardId, String authorName,
+	public static ArticleJpaEntity of(String title, String content, BoardType boardType, String authorName,
 		boolean enableComment) {
-		return new ArticleJpaEntity(null, title, content, boardId, authorName, 0, 0, 0, enableComment,
+		return new ArticleJpaEntity(null, title, content, boardType, authorName, 0, 0, 0, enableComment,
 			true,
 			null, null, null, null);
 	}
 
-	public void changeArticleContents(String title, String content, List<Long> hashtagIds, boolean enableComment){
+	public void changeArticleContents(String title, String content, List<Long> hashtagIds, boolean enableComment) {
 		this.title = title;
 		this.content = content;
 		this.enableComment = enableComment;

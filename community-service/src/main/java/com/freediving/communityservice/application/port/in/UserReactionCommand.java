@@ -3,6 +3,7 @@ package com.freediving.communityservice.application.port.in;
 import com.freediving.common.SelfValidating;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
+import com.freediving.communityservice.adapter.out.persistence.constant.UserReactionType;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -12,8 +13,9 @@ import lombok.EqualsAndHashCode;
 @Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class ArticleRemoveCommand extends SelfValidating<ArticleRemoveCommand> {
+public class UserReactionCommand extends SelfValidating<UserReactionCommand> {
 
+	@NotNull
 	private final UserProvider userProvider;
 
 	@NotNull
@@ -22,10 +24,15 @@ public class ArticleRemoveCommand extends SelfValidating<ArticleRemoveCommand> {
 	@NotNull
 	private final Long articleId;
 
-	public ArticleRemoveCommand(UserProvider userProvider, BoardType boardType, Long articleId) {
+	@NotNull
+	private final UserReactionType userReactionType;
+
+	public UserReactionCommand(UserProvider userProvider, BoardType boardType, Long articleId,
+		UserReactionType userReactionType) {
 		this.userProvider = userProvider;
 		this.boardType = boardType;
 		this.articleId = articleId;
+		this.userReactionType = userReactionType;
 		this.validateSelf();
 	}
 }

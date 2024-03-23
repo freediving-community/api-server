@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.communityservice.adapter.in.web.UserProvider;
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.CommentReadCommand;
 import com.freediving.communityservice.application.port.in.CommentUseCase;
 import com.freediving.communityservice.domain.Comment;
@@ -20,15 +21,15 @@ public class CommentQueryController {
 
 	private final CommentUseCase commentUseCase;
 
-	@GetMapping("/boards/{boardId}/articles/{articleId}/comments")
+	@GetMapping("/boards/{boardType}/articles/{articleId}/comments")
 	public ResponseEntity<Comment> getCommentsOfArticle(
 		UserProvider userProvider,
-		@PathVariable("boardId") Long boardId,
+		@PathVariable("boardType") BoardType boardType,
 		@PathVariable("articleId") Long articleId
 	) {
 		Comment comment = commentUseCase.readComments(CommentReadCommand.builder()
 			.requestUser(userProvider)
-			.boardId(boardId)
+			.boardType(boardType)
 			.articleId(articleId)
 			.build());
 		return ResponseEntity.ok(comment);

@@ -2,6 +2,8 @@ package com.freediving.communityservice.domain;
 
 import java.time.LocalDateTime;
 
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,7 +12,7 @@ import lombok.Getter;
 public class Article {
 	private final Long id;
 
-	private final Long boardId;
+	private final BoardType boardType;
 
 	private final String title;
 
@@ -35,12 +37,12 @@ public class Article {
 	private final Long modifiedBy;
 
 	public void canCreateComment() {
-		if( ! this.enableComment )
+		if (!this.enableComment)
 			throw new IllegalArgumentException("댓글을 작성할 수 없는 게시물입니다.");
 	}
 
 	public void checkHasOwnership(Long requestUserId) {
-		if( ! this.createdBy.equals(requestUserId))
+		if (!this.createdBy.equals(requestUserId))
 			throw new IllegalArgumentException("권한이 없습니다.");
 	}
 

@@ -2,6 +2,7 @@ package com.freediving.communityservice.application.port.in;
 
 import com.freediving.common.SelfValidating;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -20,7 +21,7 @@ public class CommentReadCommand extends SelfValidating<CommentReadCommand> {
 	private Long commentId;
 
 	@NotNull
-	private Long boardId;
+	private BoardType boardType;
 
 	@NotNull
 	private Long articleId;
