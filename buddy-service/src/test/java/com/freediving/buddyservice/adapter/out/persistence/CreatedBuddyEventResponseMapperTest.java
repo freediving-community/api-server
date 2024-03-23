@@ -13,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventConditionsJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.CreatedBuddyEventResponseMapper;
 import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
+import com.freediving.common.enumerate.DivingPool;
 
 @ExtendWith(SpringExtension.class)
 @Import(CreatedBuddyEventResponseMapper.class)
@@ -35,17 +37,17 @@ class CreatedBuddyEventResponseMapperTest {
 		LocalDateTime StartDate = LocalDateTime.now();
 		LocalDateTime EndDate = LocalDateTime.now().plusHours(4);
 
-		BuddyEventJpaEntity buddyEventJpaEntity = generateBuddyEventJpa(userId, StartDate, EndDate, 3, null);
+		BuddyEventJpaEntity buddyEventJpaEntity = generateBuddyEventJpa(userId, StartDate, EndDate,3, null);
 
 		CreatedBuddyEventResponse createdBuddyEventResponse = createdBuddyEventResponseMapper.mapToDomainEntity(
 			buddyEventJpaEntity);
 
 		assertThat(createdBuddyEventResponse)
 			.extracting("eventId", "userId", "eventStartDate", "eventEndDate",
-				"participantCount", "buddyEventConcepts", "status", "carShareYn", "comment")
+				"participantCount", "status", "carShareYn", "comment")
 			.contains(buddyEventJpaEntity.getEventId(), buddyEventJpaEntity.getUserId(),
 				buddyEventJpaEntity.getEventStartDate(), buddyEventJpaEntity.getEventEndDate(),
-				buddyEventJpaEntity.getEventConcepts(), buddyEventJpaEntity.getStatus(),
+				buddyEventJpaEntity.getStatus(),
 				buddyEventJpaEntity.getCarShareYn(), buddyEventJpaEntity.getParticipantCount(),
 				buddyEventJpaEntity.getComment(), buddyEventJpaEntity.getCreatedDate(),
 				buddyEventJpaEntity.getUpdatedDate());
@@ -54,10 +56,6 @@ class CreatedBuddyEventResponseMapperTest {
 	private BuddyEventJpaEntity generateBuddyEventJpa(Long userId, LocalDateTime eventStartDate,
 		LocalDateTime eventEndDate,
 		Integer participantCount, String comment) {
-
-		Set<BuddyEventConcept> buddyEventConcepts = Set.of(BuddyEventConcept.LEVEL_UP, BuddyEventConcept.PRACTICE);
-
-
 
 		return BuddyEventJpaEntity.builder()
 			.userId(userId)

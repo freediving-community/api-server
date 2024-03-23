@@ -22,14 +22,21 @@ public class CreatedBuddyEventResponseMapper {
 
 		Set<DivingPool> divingPools = new HashSet<>();
 
-		if (buddyEventJpaEntity.getBuddyEventDivingPoolMappingJpaEntity().isEmpty() == false)
+		if (buddyEventJpaEntity.getBuddyEventDivingPoolMappingJpaEntity() != null &&
+			buddyEventJpaEntity.getBuddyEventDivingPoolMappingJpaEntity().isEmpty() == false)
 			for (BuddyEventDivingPoolMappingJpaEntity row : buddyEventJpaEntity.getBuddyEventDivingPoolMappingJpaEntity())
 				divingPools.add(row.getDivingPoolId());
 
 		Set<BuddyEventConcept> buddyEventConcepts = new HashSet<>();
-		if (buddyEventJpaEntity.getEventConcepts().isEmpty() == false)
+		if (buddyEventJpaEntity.getEventConcepts() != null &&
+			buddyEventJpaEntity.getEventConcepts().isEmpty() == false)
 			for (BuddyEventConceptMappingJpaEntity row : buddyEventJpaEntity.getEventConcepts())
 				buddyEventConcepts.add(row.getConceptId());
+
+		Integer freedivingLevel = null;
+		if(buddyEventJpaEntity.getBuddyEventConditionsJpaEntity() != null)
+			freedivingLevel = buddyEventJpaEntity.getBuddyEventConditionsJpaEntity().getFreedivingLevel();
+
 
 		return CreatedBuddyEventResponse.builder()
 			.eventId(buddyEventJpaEntity.getEventId())
@@ -43,7 +50,7 @@ public class CreatedBuddyEventResponseMapper {
 			.comment(buddyEventJpaEntity.getComment())
 			.kakaoRoomCode(buddyEventJpaEntity.getKakaoRoomCode())
 			.divingPools(divingPools)
-			.freedivingLevel(buddyEventJpaEntity.getBuddyEventConditionsJpaEntity().getFreedivingLevel())
+			.freedivingLevel(freedivingLevel)
 			.updatedDate(buddyEventJpaEntity.getUpdatedDate())
 			.createdDate(buddyEventJpaEntity.getCreatedDate())
 			.build();

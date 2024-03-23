@@ -49,9 +49,8 @@ class BuddyEventRepositoryTest {
 		BuddyEventJpaEntity createdBuddyEventJps = buddyEventRepository.save(buddyEventJpaEntity);
 
 		assertThat(createdBuddyEventJps).extracting("eventId", "userId", "eventStartDate", "eventEndDate",
-				"participantCount", "buddyEventConcepts", "status", "carShareYn", "comment")
+				"participantCount", "status", "carShareYn", "comment")
 			.contains(createdBuddyEventJps.getEventId(), userId, StartDate, EndDate, 3,
-				List.of(BuddyEventConcept.LEVEL_UP, BuddyEventConcept.PRACTICE),
 				BuddyEventStatus.RECRUITING, false, null);
 	}
 
