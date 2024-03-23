@@ -6,7 +6,7 @@ import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
-import com.freediving.memberservice.application.port.out.CreateUserLicencePort;
+import com.freediving.memberservice.application.port.in.CreateUserInfoCommand;
 import com.freediving.memberservice.application.port.out.CreateUserPort;
 import com.freediving.memberservice.domain.OauthType;
 import com.freediving.memberservice.domain.RoleLevel;
@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class CreateUserPersistenceAdapter implements CreateUserPort, CreateUserLicencePort {
+public class CreateUserPersistenceAdapter implements CreateUserPort {
 	private final UserJpaRepository userJpaRepository;
 
 	/**
@@ -59,21 +59,22 @@ public class CreateUserPersistenceAdapter implements CreateUserPort, CreateUserL
 	}
 
 	@Override
-	public void createUserLicenceLevel(Long userId, Integer licenceLevel) {
+	public void createUserInfo(CreateUserInfoCommand command) {
+		Long userId = command.getUserId();
 		UserJpaEntity userJpaEntity = userJpaRepository.findById(userId).orElseThrow(
 			() -> new BuddyMeException(ServiceStatusCode.BAD_REQUEST, ErrorCode.NOT_FOUND_USER.getMessage()));
-		UserLicenceJpaEntity userLicenceJpaEntity = UserLicenceJpaEntity.createUserLicenceJpaEntity(licenceLevel);
+
+		UserLicenceJpaEntity userLicenceJpaEntity = createUserLicence(command);
 		userJpaEntity.updateUserLicenceJpaEntity(userLicenceJpaEntity);
+		userJpaEntity.updateUserNickname(command.getNickname());
+		userJpaEntity.updateUserContent(command.getContent());
+
+		// TODO : 다이빙 풀 정보, 컨셉 정보 버디서비스 전달
 	}
 
-	@Override
-	public void createUserLicenceImgUrl(Long userId, String licenceImgUrl) {
-		UserJpaEntity userJpaEntity = userJpaRepository.findById(userId).orElseThrow(
-			() -> new BuddyMeException(ServiceStatusCode.BAD_REQUEST, ErrorCode.NOT_FOUND_USER.getMessage()));
-		UserLicenceJpaEntity userLicenceJpaEntity = userJpaEntity.getUserLicenceJpaEntity();
-		if (ObjectUtils.isEmpty(userLicenceJpaEntity)) {
-			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, ErrorCode.INVALID_LICENCE_LEVEL.getMessage());
-		}
-		userLicenceJpaEntity.updateLicenceImgUrl(licenceImgUrl);
+	private UserLicenceJpaEntity createUserLicence(CreateUserInfoCommand command) {
+		return UserLicenceJpaEntity.createUserLicenceJpaEntity(command.getDiveType(), command.getLicenceLevel(),
+			command.getLicenceImgUrl());
 	}
+
 }

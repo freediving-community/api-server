@@ -33,7 +33,7 @@ public class FindUserResponse {
 	@Schema(description = "이메일", example = "sasca37@naver.com")
 	private String email;
 
-	@Schema(description = "프로필 이미지 URL", example = "https://aws-s3.com")
+	@Schema(description = "프로필 이미지 URL", example = "https://d1pjflw6c3jt4r.cloudfront.net")
 	private String profileImgUrl;
 
 	@Schema(description = "닉네임", example = "초보다이버_00001")
@@ -52,7 +52,7 @@ public class FindUserResponse {
 		+ "2 : 2레벨, 3 : 3레벨, 4 : 4레벨, 5 : 강사 ", example = "1")
 	private Integer licenceLevel;
 
-	@Schema(description = "유저 라이센스 이미지 URL", example = "https://aws-s3.com")
+	@Schema(description = "유저 라이센스 이미지 URL", example = "https://d1pjflw6c3jt4r.cloudfront.net")
 	private String licenceImgUrl;
 
 	@Schema(description = "유저 라이센스 관리자 승인 여부 (true, false)", example = "false")

@@ -123,7 +123,7 @@ public class FindUserController {
 	@GetMapping("/users/{nickname}")
 	public ResponseEntity<ResponseJsonObject<FindNicknameResponse>> findNickname(
 		@Pattern(regexp = "^[가-힣a-zA-Z0-9_]+$", message = "닉네임은 한글, 영어, 숫자, 밑줄(_)만 사용할 수 있습니다.")
-		@Size(min = 1, max = 16, message = "닉네임은 1자 이상 16자 이하이어야 합니다.")
+		@Size(min = 1, max = 16, message = "닉네임은 1자 이상 16자 이하여야 합니다.")
 		@PathVariable(name = "nickname") String nickname) {
 
 		boolean isExistNickname = findUserUseCase.findNickname(nickname);

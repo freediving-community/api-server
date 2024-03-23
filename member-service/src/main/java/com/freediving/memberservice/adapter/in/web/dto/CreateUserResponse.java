@@ -28,7 +28,7 @@ public class CreateUserResponse {
 	@Schema(description = "이메일", example = "sasca37@naver.com")
 	private String email;
 
-	@Schema(description = "프로필 이미지 URL", example = "https://aws-s3.com")
+	@Schema(description = "프로필 이미지 URL", example = "https://d1pjflw6c3jt4r.cloudfront.net")
 	private String profileImgUrl;
 
 	@Schema(description = "닉네임", example = "초보다이버_00001")

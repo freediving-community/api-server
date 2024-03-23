@@ -53,6 +53,9 @@ public class UserJpaEntity extends AuditableEntity {
 	@Column(name = "nickname", length = 16)
 	private String nickname;
 
+	@Column(name = "content", length = 400)
+	private String content;
+
 	@Enumerated(value = EnumType.STRING)
 	@Column(name = "oauth_type", nullable = false, length = 20)
 	private OauthType oauthType;
@@ -78,6 +81,10 @@ public class UserJpaEntity extends AuditableEntity {
 
 	public void updateUserNickname(String nickname) {
 		this.nickname = nickname;
+	}
+
+	public void updateUserContent(String content) {
+		this.content = content;
 	}
 
 	public static UserJpaEntity createSimpleUser(OauthType oauthType, String email, String profileImgUrl,

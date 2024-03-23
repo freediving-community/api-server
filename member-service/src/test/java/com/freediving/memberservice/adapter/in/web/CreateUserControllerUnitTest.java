@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserRequest;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
-import com.freediving.memberservice.application.port.in.CreateUserLicenceUseCase;
 import com.freediving.memberservice.application.port.in.CreateUserUseCase;
 import com.freediving.memberservice.domain.User;
 
