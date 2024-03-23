@@ -15,13 +15,14 @@ import com.freediving.memberservice.adapter.out.persistence.UserJpaEntity;
  */
 
 public record User(Long userId, String email, String profileImgUrl,
-				   String nickname, OauthType oauthType, RoleLevel roleLevel,
+				   String nickname, String content, OauthType oauthType, RoleLevel roleLevel,
 				   UserLicence userLicence
 ) {
 
 	public static User fromJpaEntitySimple(UserJpaEntity userJpaEntity) {
 		return new User(userJpaEntity.getUserId(), userJpaEntity.getEmail(), userJpaEntity.getProfileImgUrl(),
-			userJpaEntity.getNickname(), userJpaEntity.getOauthType(), userJpaEntity.getRole(),
+			userJpaEntity.getNickname(), userJpaEntity.getContent(), userJpaEntity.getOauthType(),
+			userJpaEntity.getRole(),
 			null
 		);
 	}
@@ -31,7 +32,8 @@ public record User(Long userId, String email, String profileImgUrl,
 			.map(UserLicence::fromJpaEntity).orElse(null);
 
 		return new User(userJpaEntity.getUserId(), userJpaEntity.getEmail(), userJpaEntity.getProfileImgUrl(),
-			userJpaEntity.getNickname(), userJpaEntity.getOauthType(), userJpaEntity.getRole(), userLicence
+			userJpaEntity.getNickname(), userJpaEntity.getContent(), userJpaEntity.getOauthType(),
+			userJpaEntity.getRole(), userLicence
 		);
 	}
 }

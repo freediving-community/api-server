@@ -19,6 +19,8 @@ public @interface WithMockCustomUser {
 
 	String nickname() default "sasca37";
 
+	String content() default "안녕";
+
 	OauthType oauthType() default OauthType.KAKAO;
 
 	RoleLevel roleLevel() default RoleLevel.UNREGISTER;

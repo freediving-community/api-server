@@ -18,7 +18,7 @@ public class WithMockCustomUserSecurityContextFactory implements WithSecurityCon
 		UserLicence userLicence = new UserLicence(customUser.licenceLevel(), customUser.licenceImgUrl(),
 			customUser.licenceValidTF(), customUser.confirmAdminId());
 		User principal = new User(customUser.id(), customUser.email(), customUser.profileImgUrl(),
-			customUser.nickname(), customUser.oauthType(), customUser.roleLevel(), userLicence);
+			customUser.nickname(), customUser.content(), customUser.oauthType(), customUser.roleLevel(), userLicence);
 		Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, null);
 		context.setAuthentication(authentication);
 

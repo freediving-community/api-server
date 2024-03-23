@@ -30,7 +30,7 @@ public class UserFixture {
 	public static final UserLicence DEFAULT_USER_LICENCE = null;
 
 	public static User createUserFromCommand(CreateUserCommand command) {
-		return new User(DEFAULT_ID, command.getEmail(), command.getProfileImgUrl(), null,
+		return new User(DEFAULT_ID, command.getEmail(), command.getProfileImgUrl(), null, null,
 			command.getOauthType(), null, DEFAULT_USER_LICENCE);
 	}
 }

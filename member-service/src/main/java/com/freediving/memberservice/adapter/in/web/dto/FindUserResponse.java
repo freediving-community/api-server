@@ -39,6 +39,8 @@ public class FindUserResponse {
 	@Schema(description = "닉네임", example = "초보다이버_00001")
 	private String nickname;
 
+	@Schema(description = "자기소개글", example = "안녕하세요")
+	private String content;
 	@Schema(description = "소셜 로그인 타입", example = "KAKAO")
 	private String oauthType;
 
@@ -82,6 +84,7 @@ public class FindUserResponse {
 			.profileImgUrl(user.profileImgUrl())
 			.oauthType(user.oauthType().name())
 			.nickname(user.nickname())
+			.content(user.content())
 			.roleLevel(user.roleLevel().getLevel())
 			.roleLevelCode(user.roleLevel().name())
 			.licenceLevel(licenceLevel)
