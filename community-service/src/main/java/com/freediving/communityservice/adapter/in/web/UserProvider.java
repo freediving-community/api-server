@@ -13,22 +13,31 @@ import lombok.Setter;
 public class UserProvider {
 
 	private Long requestUserId;
-	private RoleLevel roleLevel;
+	// private RoleLevel roleLevel;
 
 	public UserProvider() {
 		this.requestUserId = -1L;
-		this.roleLevel = RoleLevel.ANONYMOUS;
+		// this.roleLevel = RoleLevel.ANONYMOUS;
 	}
 
 	public UserProvider(Long requestUserId, RoleLevel roleLevel) {
 		this.requestUserId = requestUserId;
-		this.roleLevel = roleLevel != null ? roleLevel : RoleLevel.ANONYMOUS;
+		// this.roleLevel = roleLevel != null ? roleLevel : RoleLevel.ANONYMOUS;
 	}
 
 	@Getter
 	public enum RoleLevel {
-		ANONYMOUS(0),
-		USER(1),
+		ANONYMOUS(-1),            // 비로그인 사용자
+
+		UNREGISTER(5),            // 라이센스 미등록 사용자
+
+		LEVEL0(10),
+		LEVEL1(15),
+		LEVEL2(20),
+		LEVEL3(25),
+		LEVEL4(30),
+		INSTRUCTOR(35),
+
 		ADMIN(99);
 
 		private final int value;
@@ -48,8 +57,8 @@ public class UserProvider {
 
 	}
 
-	public void checkAdmin() {
-		if (!this.roleLevel.equals(RoleLevel.ADMIN))
-			throw new IllegalArgumentException("허용되지 않은 요청입니다.");
-	}
+	// public void checkAdmin() {
+	// 	if (!this.roleLevel.equals(RoleLevel.ADMIN))
+	// 		throw new IllegalArgumentException("허용되지 않은 요청입니다.");
+	// }
 }

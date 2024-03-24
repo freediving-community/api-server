@@ -4,12 +4,11 @@ import org.springframework.data.domain.Page;
 
 import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
-import com.freediving.communityservice.domain.Article;
 
 public interface ArticleUseCase {
 
 	// Query
-	Article getArticle(ArticleReadCommand articleReadCommand);
+	// Article getArticle(ArticleReadCommand articleReadCommand);
 
 	ArticleContent getArticleWithComment(ArticleReadCommand articleReadCommand);
 

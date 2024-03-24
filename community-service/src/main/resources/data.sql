@@ -8,23 +8,38 @@ create table article_hashtag (
 ;
 
 insert into board ( board_type, board_name, description, sort_order ,enabled, created_at ,modified_at,  created_by , modified_by)
-values ( 'GENERAL', '자유게시판', '자유롭게 작성하세요', 1 , true,  current_timestamp(), current_timestamp(), 22091008 , 22091008)
+values ( 'GENERAL', '자유게시판', '자유롭게 작성하세요', 1 , true,  current_timestamp(), current_timestamp(), 1111 , 1111)
 ;
 insert into board ( board_type, board_name, description, sort_order ,enabled, created_at ,modified_at,  created_by , modified_by)
-values ( 'QNA', '질의응답', '질문과 답변을 작성', 2 , true,  current_timestamp(), current_timestamp(), 22091008 , 22091008)
+values ( 'QNA', '질의응답', '질문과 답변을 작성', 2 , true,  current_timestamp(), current_timestamp(), 1111 , 1111)
 ;
 insert into board ( board_type, board_name, description, sort_order ,enabled, created_at ,modified_at,  created_by , modified_by)
-values ( 'TIP', 'tip공유', 'tip과 노하우를 공유합니다', 3 , true,  current_timestamp(), current_timestamp(), 22091008 , 22091008)
+values ( 'TIP', 'tip공유', 'tip과 노하우를 공유합니다', 3 , true,  current_timestamp(), current_timestamp(), 1111 , 1111)
 ;
 insert into board ( board_type, board_name, description, sort_order ,enabled, created_at ,modified_at,  created_by , modified_by)
-values ( 'BUDDY_QNA', '모집장 한마디', '버디모집 소개글', 4 , false,  current_timestamp(), current_timestamp(), 22091008 , 22091008)
+values ( 'BUDDY_QNA', '모집장 한마디', '버디모집 소개글', 4 , false,  current_timestamp(), current_timestamp(), 1111 , 1111)
 ;
 
-insert into HASHTAG values (current_timestamp(), 1, 0, 'test001');
-insert into HASHTAG values (current_timestamp(), 2, 0, 'test002');
+--insert into HASHTAG values (current_timestamp(), 1, 0, 'test001');
+--insert into HASHTAG values (current_timestamp(), 2, 0, 'test002');
 
-insert into comment ( article_id, parent_id, content, visible, deleted_at, created_at, created_by, modified_at, modified_by )
-values (1, null, '한마디123', true, null, current_timestamp(), 22091008, current_timestamp(), 22091008);
+INSERT INTO ARTICLE
+(COMMENT_COUNT, ENABLE_COMMENT, LIKE_COUNT, VIEW_COUNT, ARTICLE_ID, CREATED_AT, CREATED_BY, DELETED_AT, MODIFIED_AT, MODIFIED_BY, AUTHOR_NAME, TITLE, BOARD_TYPE, CONTENT)
+VALUES
+(15, TRUE, 20, 300, 1, CURRENT_TIMESTAMP(), 1111, NULL, NULL, NULL, '유저1', '테스트 제목', 'GENERAL', '게시글 본문내용 1');
 
-insert into comment ( article_id, parent_id, content, visible, deleted_at, created_at, created_by, modified_at, modified_by )
-values (1, null, '두마디000', true, null, current_timestamp(), 22091008, current_timestamp(), 22091008);
+INSERT INTO COMMENT (VISIBLE, ARTICLE_ID, COMMENT_ID, CREATED_AT, CREATED_BY, CONTENT) VALUES (TRUE, 1, default, CURRENT_TIMESTAMP(), 1111, '게시글 작성자의 첫 번째 댓글입니다.');
+INSERT INTO COMMENT (VISIBLE, ARTICLE_ID, COMMENT_ID, CREATED_AT, CREATED_BY, CONTENT) VALUES (TRUE, 1, default, CURRENT_TIMESTAMP(), 2222, '사용자 2222의 첫 번째 댓글입니다.');
+INSERT INTO COMMENT (VISIBLE, ARTICLE_ID, COMMENT_ID, CREATED_AT, CREATED_BY, CONTENT) VALUES (FALSE, 1, default, CURRENT_TIMESTAMP(), 3333, '사용자 3333 숨겨진 댓글입니다.');
+INSERT INTO COMMENT (VISIBLE, ARTICLE_ID, COMMENT_ID, CREATED_AT, CREATED_BY, CONTENT, PARENT_ID) VALUES (FALSE, 1, default, CURRENT_TIMESTAMP(), 1111, '3333의 숨겨진 댓글에 대한 게시글 작성자 답글입니다.', 3);
+INSERT INTO COMMENT (VISIBLE, ARTICLE_ID, COMMENT_ID, CREATED_AT, CREATED_BY, CONTENT) VALUES (TRUE, 1, default, CURRENT_TIMESTAMP(), 3333, '일반 댓글입니다.');
+INSERT INTO COMMENT (VISIBLE, ARTICLE_ID, COMMENT_ID, CREATED_AT, CREATED_BY, CONTENT, PARENT_ID) VALUES (TRUE, 1, default, CURRENT_TIMESTAMP(), 1111, '댓글에 대한 첫 번째 답글입니다.', 5);
+INSERT INTO COMMENT (VISIBLE, ARTICLE_ID, COMMENT_ID, CREATED_AT, CREATED_BY, CONTENT, PARENT_ID) VALUES (TRUE, 1, default, CURRENT_TIMESTAMP(), 3333, '댓글에 대한 두 번째 답글입니다.', 5);
+INSERT INTO COMMENT (VISIBLE, ARTICLE_ID, COMMENT_ID, CREATED_AT, CREATED_BY, CONTENT, PARENT_ID) VALUES (TRUE, 1, default, CURRENT_TIMESTAMP(), 2222, '댓글에 대한 세 번째 답글입니다.', 5);
+INSERT INTO COMMENT (VISIBLE, ARTICLE_ID, COMMENT_ID, CREATED_AT, CREATED_BY, CONTENT, PARENT_ID) VALUES (TRUE, 1, default, CURRENT_TIMESTAMP(), 1111, '댓글에 대한 네 번째 답글입니다.', 5);
+INSERT INTO COMMENT (VISIBLE, ARTICLE_ID, COMMENT_ID, CREATED_AT, CREATED_BY, CONTENT, PARENT_ID) VALUES (TRUE, 1, default, CURRENT_TIMESTAMP(), 3333, '댓글에 대한 다섯 번째 답글입니다.', 5);
+INSERT INTO COMMENT (VISIBLE, ARTICLE_ID, COMMENT_ID, CREATED_AT, CREATED_BY, CONTENT) VALUES (TRUE, 1, default, CURRENT_TIMESTAMP(), 1111, '게시글 작성자의 두 번째 댓글입니다.');
+INSERT INTO COMMENT (VISIBLE, ARTICLE_ID, COMMENT_ID, CREATED_AT, CREATED_BY, CONTENT) VALUES (TRUE, 1, default, CURRENT_TIMESTAMP(), 2222, '사용자 2222의 두 번째 댓글입니다.');
+INSERT INTO COMMENT (VISIBLE, ARTICLE_ID, COMMENT_ID, CREATED_AT, CREATED_BY, CONTENT) VALUES (TRUE, 1, default, CURRENT_TIMESTAMP(), 3333, '다른 사용자의 댓글입니다.');
+INSERT INTO COMMENT (VISIBLE, ARTICLE_ID, COMMENT_ID, CREATED_AT, CREATED_BY, CONTENT, PARENT_ID) VALUES (TRUE, 1, default, CURRENT_TIMESTAMP(), 1111, '다른 사용자 댓글에 대한 답글입니다.', 13);
+INSERT INTO COMMENT (VISIBLE, ARTICLE_ID, COMMENT_ID, CREATED_AT, CREATED_BY, CONTENT) VALUES (FALSE, 1, default, CURRENT_TIMESTAMP(), 3333, '또 다른 숨겨진 댓글입니다.');

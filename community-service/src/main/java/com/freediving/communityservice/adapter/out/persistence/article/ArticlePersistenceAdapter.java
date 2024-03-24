@@ -3,6 +3,7 @@ package com.freediving.communityservice.adapter.out.persistence.article;
 import static com.freediving.communityservice.adapter.out.persistence.article.QArticleJpaEntity.*;
 import static com.freediving.communityservice.adapter.out.persistence.comment.QCommentJpaEntity.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.support.PageableExecutionUtils;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
+import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
 import com.freediving.communityservice.adapter.out.persistence.comment.CommentJpaEntity;
@@ -76,18 +78,49 @@ public class ArticlePersistenceAdapter
 	}
 
 	@Override
-	public ArticleContentWithComment readArticleWithComment(BoardType boardType, Long articleId, boolean isShowAll) {
+	public ArticleContentWithComment readArticleWithComment(BoardType boardType, Long articleId, boolean isShowAll,
+		UserProvider requestUser) {
 
 		Article foundArticle = readArticle(boardType, articleId, isShowAll);
+		Long articleOwnerId = foundArticle.getCreatedBy();
 
-		List<CommentJpaEntity> articleComments = jpaQueryFactory
-			.selectFrom(commentJpaEntity)
-			.where(
-				commentJpaEntity.articleId.eq(foundArticle.getId()),
-				commentJpaEntity.deletedAt.isNull(),
-				isShowAll ?
-					null : commentJpaEntity.visible.isTrue()
-			).fetch();
+		/*
+		 * 게시글 요청자
+		 * 1 = 비로그인 사용자
+		 * 2 = 로그인 사용자
+		 * 3 = 게시글 작성자
+		 * */
+		int querySwitchNum = 2;
+
+		if (requestUser.getRequestUserId().equals(-1L)) {
+			querySwitchNum = 1;
+		} else if (articleOwnerId.equals(requestUser.getRequestUserId())) {
+			querySwitchNum = 3;
+		}
+
+		List<CommentJpaEntity> articleComments = new ArrayList<CommentJpaEntity>();
+
+		switch (querySwitchNum) {// TODO Native Query 적용 예정
+			case 1:
+				articleComments = jpaQueryFactory
+					.selectFrom(commentJpaEntity)
+					.where(
+						commentJpaEntity.articleId.eq(foundArticle.getId()),
+						commentJpaEntity.deletedAt.isNull(),
+						isShowAll ?
+							null : commentJpaEntity.visible.isTrue()
+					).fetch();
+				break;
+			case 2:
+				articleComments = jpaQueryFactory
+					.selectFrom(commentJpaEntity)
+					.where(
+						commentJpaEntity.articleId.eq(foundArticle.getId()),
+						commentJpaEntity.deletedAt.isNull()
+					).orderBy(commentJpaEntity.createdAt.desc())
+					.fetch();
+				break;
+		}
 
 		List<Comment> comments = articleComments.stream()
 			.map(commentMapper::mapToDomain)

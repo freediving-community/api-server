@@ -51,25 +51,25 @@ public class ArticleService implements ArticleUseCase {
 	private final UserReactionPort userReactionPort;
 
 	//Query
-	@Override
-	public Article getArticle(ArticleReadCommand command) {
-		return articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), command.isShowAll());
-	}
+	// @Override
+	// public Article getArticle(ArticleReadCommand command) {
+	// 	return articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), command.isShowAll());
+	// }
 
 	@Override
 	public ArticleContent getArticleWithComment(ArticleReadCommand command) {
 
-		if (command.isWithoutComment()) {
+		if (command.isWithoutComment()) { // 본문 내용 수정 등
 			Article onlyArticle = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(),
 				command.isShowAll());
 			return new ArticleContent(onlyArticle);
 		}
 
-		ArticleContentWithComment foundContent = articleReadPort.readArticleWithComment(command.getBoardType(),
-			command.getArticleId(), command.isShowAll());
-		//TODO 글 작성자에게만 보여지는 값 추가시 사용 Long articleOwner = articleContentWithComment.getArticle().getCreatedBy();
-
 		UserProvider requestUser = command.getUserProvider();
+
+		ArticleContentWithComment foundContent = articleReadPort.readArticleWithComment(command.getBoardType(),
+			command.getArticleId(), command.isShowAll(), requestUser);
+		//TODO 글 작성자에게만 보여지는 값 추가시 사용 Long articleOwner = articleContentWithComment.getArticle().getCreatedBy();
 
 		//TODO 관리자는 allComments 가 필요
 

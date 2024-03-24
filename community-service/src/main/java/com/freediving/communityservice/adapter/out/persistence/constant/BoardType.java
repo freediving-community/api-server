@@ -6,17 +6,17 @@ import lombok.Getter;
 
 @Getter
 public enum BoardType {
-	GENERAL(UserProvider.RoleLevel.USER.getValue()),
-	BUDDY_QNA(UserProvider.RoleLevel.USER.getValue()),
-	BUDDY_CHAT(5),
-	QNA(5),
-	TIP(5),
-	FIND_BUDDY(5);
+	GENERAL(UserProvider.RoleLevel.UNREGISTER.getValue()),
+	BUDDY_QNA(UserProvider.RoleLevel.UNREGISTER.getValue()),
+	BUDDY_CHAT(UserProvider.RoleLevel.UNREGISTER.getValue()),
+	QNA(UserProvider.RoleLevel.UNREGISTER.getValue()),
+	TIP(UserProvider.RoleLevel.LEVEL0.getValue());
+	// FIND_BUDDY(5);
 
-	private final int roleLevel;
+	private final int createRoleLevel;
 
-	BoardType(int roleLevel) {
-		this.roleLevel = roleLevel;
+	BoardType(int createRoleLevel) {
+		this.createRoleLevel = createRoleLevel;
 	}
 
 }
