@@ -1,15 +1,14 @@
 package com.freediving.communityservice.adapter.out.persistence.article;
 
 import static com.freediving.communityservice.adapter.out.persistence.article.QArticleJpaEntity.*;
-import static com.freediving.communityservice.adapter.out.persistence.comment.QCommentJpaEntity.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.jdbc.core.simple.JdbcClient;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
@@ -44,6 +43,7 @@ public class ArticlePersistenceAdapter
 	private final JPAQueryFactory jpaQueryFactory;
 	private final ArticlePersistenceMapper articleMapper;
 	private final CommentPersistenceMapper commentMapper;
+	private final JdbcClient jdbcClient;
 
 	@Override
 	public Article writeArticle(ArticleWriteCommand articleWriteCommand) {
@@ -84,43 +84,43 @@ public class ArticlePersistenceAdapter
 		Article foundArticle = readArticle(boardType, articleId, isShowAll);
 		Long articleOwnerId = foundArticle.getCreatedBy();
 
-		/*
-		 * 게시글 요청자
-		 * 1 = 비로그인 사용자
-		 * 2 = 로그인 사용자
-		 * 3 = 게시글 작성자
-		 * */
-		int querySwitchNum = 2;
-
-		if (requestUser.getRequestUserId().equals(-1L)) {
-			querySwitchNum = 1;
-		} else if (articleOwnerId.equals(requestUser.getRequestUserId())) {
-			querySwitchNum = 3;
-		}
-
-		List<CommentJpaEntity> articleComments = new ArrayList<CommentJpaEntity>();
-
-		switch (querySwitchNum) {// TODO Native Query 적용 예정
-			case 1:
-				articleComments = jpaQueryFactory
-					.selectFrom(commentJpaEntity)
-					.where(
-						commentJpaEntity.articleId.eq(foundArticle.getId()),
-						commentJpaEntity.deletedAt.isNull(),
-						isShowAll ?
-							null : commentJpaEntity.visible.isTrue()
-					).fetch();
-				break;
-			case 2:
-				articleComments = jpaQueryFactory
-					.selectFrom(commentJpaEntity)
-					.where(
-						commentJpaEntity.articleId.eq(foundArticle.getId()),
-						commentJpaEntity.deletedAt.isNull()
-					).orderBy(commentJpaEntity.createdAt.desc())
-					.fetch();
-				break;
-		}
+		List<CommentJpaEntity> articleComments = jdbcClient.sql("""
+			WITH ARTICLE_COMMENT AS ( /* 게시글의 댓글 답글 전체 */
+			      	SELECT
+			      		*
+			      	FROM COMMENT
+			      		WHERE ARTICLE_ID = """ + articleId + """
+					AND DELETED_AT IS NULL
+				ORDER BY CREATED_AT DESC
+			),
+			MY_C AS ( /* 요청자의 댓글 전체 */
+				SELECT * FROM ARTICLE_COMMENT
+					WHERE CREATED_BY = """ + requestUser.getRequestUserId() + """
+					AND PARENT_ID IS NULL
+			),
+			MY_C_RPLY AS ( /* 요청자의 댓글에 대한 답글 */
+				SELECT * FROM ARTICLE_COMMENT
+					WHERE PARENT_ID IN ( SELECT COMMENT_ID FROM MY_C )
+			),
+			OTHER_C AS ( /* 요청자 제외 댓글 전체 */
+				SELECT * FROM (
+					SELECT * FROM ARTICLE_COMMENT
+						WHERE CREATED_BY <> """ + requestUser.getRequestUserId() + """
+			      			AND PARENT_ID IS NULL
+			      	) WHERE ROWNUM <= 5
+			      ),
+			 OTHER_C_RPLY AS (
+			SELECT * FROM ARTICLE_COMMENT
+				WHERE PARENT_ID IN ( SELECT COMMENT_ID FROM OTHER_C )
+			 )
+			 SELECT * FROM MY_C
+			 UNION ALL
+			 SELECT * FROM MY_C_RPLY
+			 UNION ALL
+			 SELECT * FROM OTHER_C
+			 UNION ALL
+			 SELECT * FROM OTHER_C_RPLY
+			""").query(CommentJpaEntity.class).list();
 
 		List<Comment> comments = articleComments.stream()
 			.map(commentMapper::mapToDomain)
