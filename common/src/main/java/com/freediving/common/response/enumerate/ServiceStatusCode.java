@@ -19,13 +19,12 @@ import lombok.Getter;
 @Getter
 public enum ServiceStatusCode {
 
-
 	OK(200, null, false),
-  NO_CONTENT(204, null, false),
+	CREATED(201, null, false),
+	NO_CONTENT(204, null, false),
 	BAD_REQUEST(400, "BAD_REQUEST", true),
 
 	INTERVAL_SERVER_ERROR(500, "INTERVAL_SERVER_ERROR", true)
-
 
 	// member-service
 	, MEMBER_SERVICE(0, "멤버 서비스 응답 메시지.", false)

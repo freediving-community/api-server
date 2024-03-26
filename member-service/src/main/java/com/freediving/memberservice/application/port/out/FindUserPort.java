@@ -19,4 +19,6 @@ public interface FindUserPort {
 	User findUserDetailById(Long userId);
 
 	List<User> findUserListByIds(List<Long> userIds);
+
+	boolean findNickname(String trimSafeNickname);
 }

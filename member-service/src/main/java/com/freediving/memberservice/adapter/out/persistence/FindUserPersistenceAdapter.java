@@ -40,4 +40,9 @@ public class FindUserPersistenceAdapter implements FindUserPort {
 		List<UserJpaEntity> userJpaEntityList = userJpaRepository.findAllById(userIds);
 		return userJpaEntityList.stream().map(User::fromJpaEntityDetail).collect(Collectors.toList());
 	}
+
+	@Override
+	public boolean findNickname(String trimSafeNickname) {
+		return userJpaRepository.findByNickname(trimSafeNickname).isPresent();
+	}
 }

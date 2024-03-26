@@ -15,7 +15,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "이미지 PreSigned URL 요청 정보")
 public record CreateImgRequest(
-	@Schema(description = "이미지 저장 디렉토리명", example = "licence")
+	@Schema(description = "이미지 저장 디렉토리명", example = "license")
 	@NotNull(message = "디렉토리명은 필수 입니다.")
 	String directory,
 

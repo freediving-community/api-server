@@ -17,8 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserRequest;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
-import com.freediving.memberservice.application.port.in.CreateUserLicenceUseCase;
 import com.freediving.memberservice.application.port.in.CreateUserUseCase;
+import com.freediving.memberservice.application.port.out.service.buddy.BuddyUseCase;
 import com.freediving.memberservice.domain.User;
 
 /**
@@ -40,9 +40,8 @@ class CreateUserControllerUnitTest {
 
 	@MockBean
 	private CreateUserUseCase createUserUseCase;
-
 	@MockBean
-	private CreateUserLicenceUseCase createUserLicenceUseCase;
+	private BuddyUseCase buddyUseCase;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -62,7 +61,6 @@ class CreateUserControllerUnitTest {
 		// Mocking
 		User mockUser = mock(User.class);
 		when(mockUser.oauthType()).thenReturn(VALID_OAUTH_TYPE);
-		when(mockUser.roleLevel()).thenReturn(DEFAULT_ROLE_LEVEL);
 
 		when(createUserUseCase.createOrGetUser(any(CreateUserCommand.class)))
 			.thenReturn(mockUser);

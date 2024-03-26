@@ -33,8 +33,10 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
 	@Query(
 		"SELECT u " +
 			"FROM UserJpaEntity u " +
-			"LEFT JOIN FETCH u.userLicenceJpaEntity " +
+			"LEFT JOIN FETCH u.userLicenseJpaEntityList " +
 			"WHERE u.userId = :userId"
 	)
 	Optional<UserJpaEntity> findUserDetailById(@Param("userId") Long userId);
+
+	Optional<UserJpaEntity> findByNickname(String trimSafeNickname);
 }

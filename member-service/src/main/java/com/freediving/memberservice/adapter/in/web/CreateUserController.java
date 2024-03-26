@@ -1,21 +1,26 @@
 package com.freediving.memberservice.adapter.in.web;
 
+import java.net.URI;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.freediving.common.config.annotation.WebAdapter;
-import com.freediving.memberservice.adapter.in.web.dto.CreateUserLicenceImgUrlRequest;
-import com.freediving.memberservice.adapter.in.web.dto.CreateUserLicenceLevelRequest;
+import com.freediving.common.response.ResponseJsonObject;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
+import com.freediving.memberservice.adapter.in.web.dto.CreateUserInfoRequest;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserRequest;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
-import com.freediving.memberservice.application.port.in.CreateUserLicenceImgUrlCommand;
-import com.freediving.memberservice.application.port.in.CreateUserLicenceLevelCommand;
-import com.freediving.memberservice.application.port.in.CreateUserLicenceUseCase;
+import com.freediving.memberservice.application.port.in.CreateUserInfoCommand;
 import com.freediving.memberservice.application.port.in.CreateUserUseCase;
+import com.freediving.memberservice.application.port.out.service.buddy.BuddyUseCase;
 import com.freediving.memberservice.domain.User;
 
 import io.swagger.v3.oas.annotations.Hidden;
@@ -24,6 +29,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author         : sasca37
@@ -40,10 +46,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/v1")
 @Tag(name = "User")
+@Slf4j
 public class CreateUserController {
 
 	private final CreateUserUseCase createUserUseCase;
-	private final CreateUserLicenceUseCase createUserLicenceUseCase;
+	private final BuddyUseCase buddyUseCase;
 
 	/**
 	 * @Author           : sasca37
@@ -65,45 +72,45 @@ public class CreateUserController {
 		return CreateUserResponse.from(user);
 	}
 
-	@Operation(summary = "자격증 레벨 등록 API"
-		, description = "자격증 레벨 정보를 request로 요청하여 자격증 레벨을 등록한다. <br/>"
-		+ "자격증 레벨 - 0 : 자격증 없음, 1 : 1레벨, 2 : 2레벨, 3 : 3레벨, 4 : 4레벨, 5 : 강사",
+	@Operation(summary = "유저 정보 등록 API"
+		, description = "라이센스, 다이빙 풀, 컨셉, 유저 정보 등의 정보를 저장한다.",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류"),
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
+		})
+	@PostMapping("/users/info")
+	public ResponseEntity<?> createUserInfo(@Valid @RequestBody CreateUserInfoRequest request,
+		@AuthenticationPrincipal User user) {
+		CreateUserInfoCommand command = CreateUserInfoCommand.builder()
+			.userId(user.userId())
+			.diveType(request.getDiveType())
+			.licenseLevel(request.getLicenseLevel())
+			.licenseImgUrl(request.getLicenseImgUrl())
+			.poolList(request.getPoolList())
+			.conceptList(request.getConceptList())
+			.profileImgUrl(request.getProfileImgUrl())
+			.nickname(request.getNickname())
+			.content(request.getContent())
+			.build();
+		createUserUseCase.createUserInfo(command);
+
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
+		ResponseJsonObject<?> response = new ResponseJsonObject<>(ServiceStatusCode.CREATED, location);
+		return ResponseEntity.created(location).body(response);
+	}
+
+	@Operation(summary = "다이빙 풀 정보 조회 API"
+		, description = "버디서비스에서 제공하는 다이빙 핑 정보를 받아와서 응답한다.",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
 			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
-			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류"),
 			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
 		})
-	@PostMapping("/users/licence/level")
-	public void createLicenceLevel(@Valid @RequestBody CreateUserLicenceLevelRequest request,
-		@AuthenticationPrincipal User user) {
-
-		Long userId = user.userId();
-		CreateUserLicenceLevelCommand command = CreateUserLicenceLevelCommand.builder()
-			.licenceLevel(request.getLicenceLevel())
-			.build();
-
-		createUserLicenceUseCase.createUserLicenceLevel(userId, command);
+	@GetMapping("/pools")
+	public ResponseEntity<ResponseJsonObject<?>> getDivingPools() {
+		return buddyUseCase.getDivingPools();
 	}
 
-	@Operation(summary = "자격증 프로필 이미지 URL 등록 API"
-		, description = "유저가 업로드한 이미지 URL 정보를 받아 서버에 등록한다. <br/>"
-		+ "자격증 레벨 API가 등록되어있지 않으면 (null) 400 오류가 발생한다.",
-		responses = {
-			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
-			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
-			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류"),
-			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
-		})
-	@PostMapping("/users/licence/img")
-	public void createLicenceImgUrl(@Valid @RequestBody CreateUserLicenceImgUrlRequest request,
-		@AuthenticationPrincipal User user) {
-
-		Long userId = user.userId();
-		CreateUserLicenceImgUrlCommand command = CreateUserLicenceImgUrlCommand.builder()
-			.licenceImgUrl(request.getLicenceImgUrl())
-			.build();
-
-		createUserLicenceUseCase.createUserLicenceImgUrl(userId, command);
-	}
 }

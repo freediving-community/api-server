@@ -1,4 +1,4 @@
-package com.freediving.memberservice.application.port.in;
+package com.freediving.memberservice.util;
 
 import java.util.Random;
 

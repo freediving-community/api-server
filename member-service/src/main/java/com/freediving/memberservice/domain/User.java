@@ -1,6 +1,6 @@
 package com.freediving.memberservice.domain;
 
-import java.util.Optional;
+import java.util.List;
 
 import com.freediving.memberservice.adapter.out.persistence.UserJpaEntity;
 
@@ -15,23 +15,23 @@ import com.freediving.memberservice.adapter.out.persistence.UserJpaEntity;
  */
 
 public record User(Long userId, String email, String profileImgUrl,
-				   String nickname, OauthType oauthType, RoleLevel roleLevel,
-				   UserLicence userLicence
+				   String nickname, String content, OauthType oauthType, List<UserLicense> userLicenseList
 ) {
 
 	public static User fromJpaEntitySimple(UserJpaEntity userJpaEntity) {
+		List<UserLicense> userLicenseList = UserLicense.fromJpaEntityList(userJpaEntity.getUserLicenseJpaEntityList());
 		return new User(userJpaEntity.getUserId(), userJpaEntity.getEmail(), userJpaEntity.getProfileImgUrl(),
-			userJpaEntity.getNickname(), userJpaEntity.getOauthType(), userJpaEntity.getRole(),
-			null
+			userJpaEntity.getNickname(), userJpaEntity.getContent(), userJpaEntity.getOauthType(), userLicenseList
 		);
 	}
 
 	public static User fromJpaEntityDetail(UserJpaEntity userJpaEntity) {
-		UserLicence userLicence = Optional.ofNullable(userJpaEntity.getUserLicenceJpaEntity())
-			.map(UserLicence::fromJpaEntity).orElse(null);
+
+		List<UserLicense> userLicenseList = UserLicense.fromJpaEntityList(userJpaEntity.getUserLicenseJpaEntityList());
 
 		return new User(userJpaEntity.getUserId(), userJpaEntity.getEmail(), userJpaEntity.getProfileImgUrl(),
-			userJpaEntity.getNickname(), userJpaEntity.getOauthType(), userJpaEntity.getRole(), userLicence
+			userJpaEntity.getNickname(), userJpaEntity.getContent(), userJpaEntity.getOauthType(),
+			userLicenseList
 		);
 	}
 }

@@ -53,4 +53,9 @@ public class FindUserService implements FindUserUseCase {
 			.collect(Collectors.toList());
 	}
 
+	@Override
+	public boolean findNickname(String trimSafeNickname) {
+		return findUserPort.findNickname(trimSafeNickname);
+	}
+
 }
