@@ -1,8 +1,10 @@
 package com.freediving.memberservice.adapter.out.persistence;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.freediving.common.persistence.AuditableEntity;
 import com.freediving.memberservice.domain.OauthType;
-import com.freediving.memberservice.domain.RoleLevel;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -15,8 +17,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -53,13 +54,12 @@ public class UserJpaEntity extends AuditableEntity {
 	@Column(name = "nickname", length = 16)
 	private String nickname;
 
+	@Column(name = "content", length = 400)
+	private String content;
+
 	@Enumerated(value = EnumType.STRING)
 	@Column(name = "oauth_type", nullable = false, length = 20)
 	private OauthType oauthType;
-
-	@Enumerated(value = EnumType.STRING)
-	@Column(name = "role", length = 20)
-	private RoleLevel role;
 
 	@Embedded
 	private UserPersonalVO userPersonalVO;
@@ -68,36 +68,32 @@ public class UserJpaEntity extends AuditableEntity {
 	@Column(name = "oauth_interlock")
 	private OauthTypeSetVO oauthTypeSetVO;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	@JoinColumn(name = "licence_id")
-	private UserLicenceJpaEntity userLicenceJpaEntity;
-
-	public void updateUserLicenceJpaEntity(UserLicenceJpaEntity userLicenceJpaEntity) {
-		this.userLicenceJpaEntity = userLicenceJpaEntity;
-	}
+	@OneToMany(mappedBy = "userJpaEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<UserLicenseJpaEntity> userLicenseJpaEntityList = new ArrayList<>();
 
 	public void updateUserNickname(String nickname) {
 		this.nickname = nickname;
 	}
 
-	public static UserJpaEntity createSimpleUser(OauthType oauthType, String email, String profileImgUrl,
-		RoleLevel roleLevel) {
-		return new UserJpaEntity(oauthType, email, profileImgUrl, roleLevel);
+	public void updateUserContent(String content) {
+		this.content = content;
 	}
 
-	private UserJpaEntity(OauthType oauthType, String email, String profileImgUrl, RoleLevel role) {
+	public static UserJpaEntity createSimpleUser(OauthType oauthType, String email, String profileImgUrl) {
+		return new UserJpaEntity(oauthType, email, profileImgUrl);
+	}
+
+	private UserJpaEntity(OauthType oauthType, String email, String profileImgUrl) {
 		this.email = email;
 		this.profileImgUrl = profileImgUrl;
 		this.oauthType = oauthType;
-		this.role = role;
 	}
 
 	@Builder(builderMethodName = "createMockUser")
-	public UserJpaEntity(Long userId, String email, String profileImgUrl, OauthType oauthType, RoleLevel role) {
+	public UserJpaEntity(Long userId, String email, String profileImgUrl, OauthType oauthType) {
 		this.userId = userId;
 		this.email = email;
 		this.profileImgUrl = profileImgUrl;
 		this.oauthType = oauthType;
-		this.role = role;
 	}
 }

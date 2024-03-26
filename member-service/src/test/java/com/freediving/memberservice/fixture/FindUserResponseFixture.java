@@ -20,7 +20,6 @@ public class FindUserResponseFixture {
 			.email(user.email())
 			.profileImgUrl(user.profileImgUrl())
 			.oauthType(user.oauthType().name())
-			.roleLevel(user.roleLevel().getLevel())
 			.build();
 	}
 }

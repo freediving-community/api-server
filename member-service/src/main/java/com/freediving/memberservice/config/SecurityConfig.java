@@ -63,7 +63,7 @@ public class SecurityConfig {
 
 			// 회원가입 / 로그인 / swagger / MSA 간 통신을 제외한 나머지 모든 request 헤더 검증
 			.authorizeHttpRequests((request) ->
-				request.requestMatchers("/v*/oauth/**", "/v*/service/**", "/v3/api-docs").permitAll()
+				request.requestMatchers("/v*/oauth/**", "/v*/service/**", "/v3/api-docs", "/sample/**").permitAll()
 					.anyRequest().authenticated()
 			)
 

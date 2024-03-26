@@ -1,6 +1,7 @@
 package com.freediving.authservice.adapter.in.web.dto;
 
 import com.freediving.authservice.domain.OauthUser;
+import com.freediving.common.domain.member.MemberLicenseInfo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -28,7 +29,7 @@ public class UserLoginResponse {
 	@Schema(description = "이메일", example = "sasca37@naver.com")
 	private String email;
 
-	@Schema(description = "프로필 이미지 URL", example = "https://aws-s3.com")
+	@Schema(description = "프로필 이미지 URL", example = "https://d1pjflw6c3jt4r.cloudfront.net")
 	private String profileImgUrl;
 
 	@Schema(description = "닉네임", example = "초보다이버_00001")
@@ -37,12 +38,12 @@ public class UserLoginResponse {
 	@Schema(description = "소셜 로그인 타입", example = "KAKAO")
 	private String oauthType;
 
-	@Schema(description = "유저 권한", example = "0")
-	private Integer roleLevel;
+	@Schema(description = "유저 라이센스 정보", example = "0")
+	private MemberLicenseInfo licenseInfo;
 
 	public static UserLoginResponse from(OauthUser oauthUser) {
 		return new UserLoginResponse(Long.valueOf(oauthUser.getUserId()), oauthUser.getEmail(),
 			oauthUser.getProfileImgUrl(), oauthUser.getNickname(), oauthUser.getOauthType().name(),
-			oauthUser.getRoleLevel());
+			oauthUser.getLicenseInfo());
 	}
 }

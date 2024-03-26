@@ -35,6 +35,13 @@ spring:
             - Path=/member-service/v3/api-docs
           filters:
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
+        
+        - id: member-service-sample
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/member-service/sample/**
+          filters:
+            - RewritePath=/member-service/(?<segment>.*), /$\{segment}
 
         - id: member-service-auth
           predicates:
