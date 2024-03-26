@@ -1,5 +1,6 @@
 package com.freediving.authservice.application.service;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +13,8 @@ import com.freediving.authservice.domain.OauthType;
 import com.freediving.authservice.domain.OauthUser;
 import com.freediving.authservice.domain.Token;
 import com.freediving.common.config.annotation.UseCase;
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,9 +52,9 @@ public class OauthService implements OauthUseCase, MemberUseCase {
 
 		// MemberService 에 소셜 정보를 가진 OauthUser를 전달 및 User 정보 반환
 		OauthUser user = createOrGetUser(oauthUser);
-
-		if (StringUtils.isEmpty(user.getUserId()) || user.getRoleLevel() == null) {
-			// TODO : THROW
+		log.info("OAUTH USER : {}", user);
+		if (StringUtils.isEmpty(user.getUserId()) || ObjectUtils.isEmpty(user.getLicenseInfo())) {
+			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "유저 정보가 유효하지 않습니다.");
 		}
 		Token token = createTokenPort.createTokens(user.getUserId(), user.getOauthType().name());
 

@@ -1,4 +1,4 @@
-package com.freediving.common.domain;
+package com.freediving.common.domain.member;
 
 import lombok.Getter;
 

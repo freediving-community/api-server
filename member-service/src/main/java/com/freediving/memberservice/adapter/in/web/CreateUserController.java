@@ -1,5 +1,7 @@
 package com.freediving.memberservice.adapter.in.web;
 
+import java.net.URI;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,9 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.freediving.common.config.annotation.WebAdapter;
 import com.freediving.common.response.ResponseJsonObject;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserInfoRequest;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserRequest;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
@@ -77,12 +81,13 @@ public class CreateUserController {
 			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
 		})
 	@PostMapping("/users/info")
-	public void createUserInfo(@Valid @RequestBody CreateUserInfoRequest request, @AuthenticationPrincipal User user) {
+	public ResponseEntity<?> createUserInfo(@Valid @RequestBody CreateUserInfoRequest request,
+		@AuthenticationPrincipal User user) {
 		CreateUserInfoCommand command = CreateUserInfoCommand.builder()
 			.userId(user.userId())
 			.diveType(request.getDiveType())
-			.licenceLevel(request.getLicenceLevel())
-			.licenceImgUrl(request.getLicenceImgUrl())
+			.licenseLevel(request.getLicenseLevel())
+			.licenseImgUrl(request.getLicenseImgUrl())
 			.poolList(request.getPoolList())
 			.conceptList(request.getConceptList())
 			.profileImgUrl(request.getProfileImgUrl())
@@ -90,6 +95,10 @@ public class CreateUserController {
 			.content(request.getContent())
 			.build();
 		createUserUseCase.createUserInfo(command);
+
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
+		ResponseJsonObject<?> response = new ResponseJsonObject<>(ServiceStatusCode.CREATED, location);
+		return ResponseEntity.created(location).body(response);
 	}
 
 	@Operation(summary = "다이빙 풀 정보 조회 API"

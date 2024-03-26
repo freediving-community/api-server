@@ -1,6 +1,7 @@
 package com.freediving.memberservice.adapter.in.web;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,14 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.common.config.annotation.WebAdapter;
 import com.freediving.common.response.ResponseJsonObject;
+import com.freediving.common.response.dto.member.MemberFindUserResponse;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.memberservice.adapter.in.web.dto.FindNicknameResponse;
 import com.freediving.memberservice.adapter.in.web.dto.FindUserResponse;
-import com.freediving.memberservice.adapter.in.web.dto.FindUserServiceResponse;
 import com.freediving.memberservice.application.port.in.FindUserListQuery;
 import com.freediving.memberservice.application.port.in.FindUserQuery;
 import com.freediving.memberservice.application.port.in.FindUserUseCase;
 import com.freediving.memberservice.domain.User;
+import com.freediving.memberservice.mapper.internal.FindUserMapper;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -95,7 +97,7 @@ public class FindUserController {
 			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
 		})
 	@GetMapping("/service/users")
-	public ResponseEntity<ResponseJsonObject<List<FindUserServiceResponse>>> findUserListByUserIds(
+	public ResponseEntity<ResponseJsonObject<List<MemberFindUserResponse>>> findUserListByUserIds(
 		@RequestParam(value = "userIds") List<Long> userIdList,
 		@RequestParam(value = "profileImg", required = false, defaultValue = "false") Boolean profileImgTF) {
 
@@ -105,10 +107,10 @@ public class FindUserController {
 			.userIds(uniqueUserIdList)
 			.profileImgTF(profileImgTF)
 			.build();
-
-		List<FindUserServiceResponse> findUserList = findUserUseCase.findUserListByQuery(findUserListQuery);
-
-		return ResponseEntity.ok(new ResponseJsonObject(ServiceStatusCode.OK, findUserList));
+		// List<FindUserServiceResponse> findUserList = findUserUseCase.findUserListByQuery(findUserListQuery);
+		List<MemberFindUserResponse> resp = findUserUseCase.findUserListByQuery(findUserListQuery).stream()
+			.map(r -> FindUserMapper.INSTANCE.toCommonFindUserResponse(r)).collect(Collectors.toList());
+		return ResponseEntity.ok(new ResponseJsonObject(ServiceStatusCode.OK, resp));
 	}
 
 	@Operation(summary = "사용자 닉네임 중복 조회 API"

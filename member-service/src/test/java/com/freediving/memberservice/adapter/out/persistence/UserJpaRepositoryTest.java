@@ -36,8 +36,7 @@ class UserJpaRepositoryTest {
 
 	@BeforeEach
 	public void setUp() {
-		UserJpaEntity user = UserJpaEntity.createSimpleUser(VALID_OAUTH_TYPE, VALID_EMAIL, OPTIONAL_PROFILE_IMG_URL,
-			DEFAULT_ROLE_LEVEL);
+		UserJpaEntity user = UserJpaEntity.createSimpleUser(VALID_OAUTH_TYPE, VALID_EMAIL, OPTIONAL_PROFILE_IMG_URL);
 		entityManager.persistAndFlush(user);
 	}
 
@@ -53,6 +52,5 @@ class UserJpaRepositoryTest {
 		assertThat(findUser).isPresent();
 		assertThat(findUser.get().getEmail()).isEqualTo(VALID_EMAIL);
 		assertThat(findUser.get().getOauthType()).isEqualTo(VALID_OAUTH_TYPE);
-		assertThat(findUser.get().getRole()).isEqualTo(DEFAULT_ROLE_LEVEL);
 	}
 }

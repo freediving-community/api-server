@@ -1,9 +1,9 @@
 package com.freediving.memberservice.adapter.in.web.dto;
 
-import org.apache.commons.lang3.ObjectUtils;
+import java.util.List;
 
 import com.freediving.memberservice.domain.User;
-import com.freediving.memberservice.domain.UserLicence;
+import com.freediving.memberservice.domain.UserLicense;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -44,21 +44,8 @@ public class FindUserResponse {
 	@Schema(description = "소셜 로그인 타입", example = "KAKAO")
 	private String oauthType;
 
-	@Schema(description = "유저 권한", example = "0")
-	private Integer roleLevel;
-
-	@Schema(description = "유저 권한 코드", example = "UNREGISTER")
-	private String roleLevelCode;
-
-	@Schema(description = "유저 라이센스 레벨 (null, 0 ~ 5)  null : 미입력, 0 : 자격증 없음, 1 : 1레벨,"
-		+ "2 : 2레벨, 3 : 3레벨, 4 : 4레벨, 5 : 강사 ", example = "1")
-	private Integer licenceLevel;
-
-	@Schema(description = "유저 라이센스 이미지 URL", example = "https://d1pjflw6c3jt4r.cloudfront.net")
-	private String licenceImgUrl;
-
-	@Schema(description = "유저 라이센스 관리자 승인 여부 (true, false)", example = "false")
-	private Boolean licenceValidTF;
+	@Schema(description = "다이빙 별 라이센스 정보")
+	private LicenseInfo licenseInfo;
 
 	/**
 	 * @Author           : sasca37
@@ -68,16 +55,8 @@ public class FindUserResponse {
 	 * @Description      : UserJpaEntity 정보를 UserDto로 변환
 	 */
 	public static FindUserResponse from(User user) {
-		UserLicence userLicence = user.userLicence();
-
-		Integer licenceLevel = null;
-		String licenceImgUrl = null;
-		Boolean licenceValidTF = false;
-		if (!ObjectUtils.isEmpty(userLicence)) {
-			licenceLevel = userLicence.licenceLevel();
-			licenceImgUrl = userLicence.licenceImgUrl();
-			licenceValidTF = userLicence.confirmTF();
-		}
+		List<UserLicense> userLicenseList = user.userLicenseList();
+		LicenseInfo licenseInfo = LicenseInfo.createLicenseInfo(userLicenseList);
 		return FindUserResponse.builder()
 			.userId(user.userId())
 			.email(user.email())
@@ -85,11 +64,7 @@ public class FindUserResponse {
 			.oauthType(user.oauthType().name())
 			.nickname(user.nickname())
 			.content(user.content())
-			.roleLevel(user.roleLevel().getLevel())
-			.roleLevelCode(user.roleLevel().name())
-			.licenceLevel(licenceLevel)
-			.licenceImgUrl(licenceImgUrl)
-			.licenceValidTF(licenceValidTF)
+			.licenseInfo(licenseInfo)
 			.build();
 	}
 }

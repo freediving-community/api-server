@@ -3,12 +3,12 @@ package com.freediving.memberservice.adapter.out.persistence;
 import org.apache.commons.lang3.ObjectUtils;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
-import com.freediving.common.domain.RoleLevel;
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.in.CreateUserInfoCommand;
 import com.freediving.memberservice.application.port.out.CreateUserPort;
+import com.freediving.memberservice.domain.DiveType;
 import com.freediving.memberservice.domain.OauthType;
 import com.freediving.memberservice.domain.User;
 import com.freediving.memberservice.exception.ErrorCode;
@@ -48,11 +48,17 @@ public class CreateUserPersistenceAdapter implements CreateUserPort {
 
 		// 최초 로그인인 경우
 		if (ObjectUtils.isEmpty(userJpaEntity)) {
-			UserJpaEntity createUserJpaEntity = UserJpaEntity
-				.createSimpleUser(oauthType, email, profileImgUrl, RoleLevel.UNREGISTER);
+			UserJpaEntity createUserJpaEntity = UserJpaEntity.createSimpleUser(oauthType, email, profileImgUrl);
 			UserJpaEntity savedUserJpaEntity = userJpaRepository.save(createUserJpaEntity);
 			String randomNickname = NicknameGenerator.generateNickname(savedUserJpaEntity.getUserId());
 			savedUserJpaEntity.updateUserNickname(randomNickname);
+			UserLicenseJpaEntity freeDivingLicense = UserLicenseJpaEntity.createUserLicenseJpaEntity(savedUserJpaEntity,
+				DiveType.FREE_DIVE);
+			UserLicenseJpaEntity scubaDivingLicense = UserLicenseJpaEntity.createUserLicenseJpaEntity(
+				savedUserJpaEntity,
+				DiveType.SCUBA_DIVE);
+			freeDivingLicense.updateUserEntity(savedUserJpaEntity);
+			scubaDivingLicense.updateUserEntity(savedUserJpaEntity);
 			return User.fromJpaEntitySimple(savedUserJpaEntity);
 		}
 		return User.fromJpaEntityDetail(userJpaEntity);
@@ -63,18 +69,18 @@ public class CreateUserPersistenceAdapter implements CreateUserPort {
 		Long userId = command.getUserId();
 		UserJpaEntity userJpaEntity = userJpaRepository.findById(userId).orElseThrow(
 			() -> new BuddyMeException(ServiceStatusCode.BAD_REQUEST, ErrorCode.NOT_FOUND_USER.getMessage()));
-
-		UserLicenceJpaEntity userLicenceJpaEntity = createUserLicence(command);
-		userJpaEntity.updateUserLicenceJpaEntity(userLicenceJpaEntity);
+		updateUserLicense(userJpaEntity, command);
 		userJpaEntity.updateUserNickname(command.getNickname());
 		userJpaEntity.updateUserContent(command.getContent());
 
 		// TODO : 다이빙 풀 정보, 컨셉 정보 버디서비스 전달
 	}
 
-	private UserLicenceJpaEntity createUserLicence(CreateUserInfoCommand command) {
-		return UserLicenceJpaEntity.createUserLicenceJpaEntity(command.getDiveType(), command.getLicenceLevel(),
-			command.getLicenceImgUrl());
+	private void updateUserLicense(UserJpaEntity userJpaEntity, CreateUserInfoCommand command) {
+		userJpaEntity.getUserLicenseJpaEntityList().stream()
+			.filter(e -> e.getDiveType().equals(command.getDiveType()))
+			.findFirst()
+			.ifPresent(e -> e.updateLicenseInfo(command.getLicenseLevel(), command.getLicenseImgUrl()));
 	}
 
 }

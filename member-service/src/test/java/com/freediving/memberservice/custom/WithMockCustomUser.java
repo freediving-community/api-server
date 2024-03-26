@@ -5,6 +5,8 @@ import java.lang.annotation.RetentionPolicy;
 
 import org.springframework.security.test.context.support.WithSecurityContext;
 
+import com.freediving.common.domain.member.RoleLevel;
+import com.freediving.memberservice.domain.DiveType;
 import com.freediving.memberservice.domain.OauthType;
 
 @Retention(RetentionPolicy.RUNTIME)
@@ -24,11 +26,13 @@ public @interface WithMockCustomUser {
 
 	RoleLevel roleLevel() default RoleLevel.UNREGISTER;
 
-	int licenceLevel() default 0;
+	DiveType diveType() default DiveType.FREE_DIVE;
 
-	String licenceImgUrl() default "";
+	int licenseLevel() default 0;
 
-	boolean licenceValidTF() default false;
+	String licenseImgUrl() default "";
+
+	boolean licenseValidTF() default false;
 
 	long confirmAdminId() default 1L;
 }

@@ -3,7 +3,8 @@ package com.freediving.memberservice.domain;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.freediving.memberservice.adapter.out.persistence.UserLicenceJpaEntity;
+import com.freediving.common.domain.member.RoleLevel;
+import com.freediving.memberservice.adapter.out.persistence.UserLicenseJpaEntity;
 
 /**
  * @Author         : sasca37
@@ -14,14 +15,18 @@ import com.freediving.memberservice.adapter.out.persistence.UserLicenceJpaEntity
  * ===========================================================
  * 2024/01/17        sasca37       최초 생성
  */
-public record UserLicence(Integer licenceLevel, String licenceImgUrl, Boolean confirmTF, Long confirmAdminId) {
+public record UserLicense(DiveType diveType, RoleLevel roleLevel, Integer licenseLevel, String licenseImgUrl,
+						  Boolean confirmTF,
+						  Long confirmAdminId) {
 
-	public static UserLicence fromJpaEntity(UserLicenceJpaEntity userLicenceJpaEntity) {
-		return new UserLicence(userLicenceJpaEntity.getLicenceLevel(), userLicenceJpaEntity.getLicenceImgUrl(),
-			userLicenceJpaEntity.getConfirmTF(), userLicenceJpaEntity.getConfirmAdminId());
+	public static UserLicense fromJpaEntity(UserLicenseJpaEntity userLicenseJpaEntity) {
+		return new UserLicense(userLicenseJpaEntity.getDiveType(), userLicenseJpaEntity.getRole(),
+			userLicenseJpaEntity.getLicenseLevel(),
+			userLicenseJpaEntity.getLicenseImgUrl(), userLicenseJpaEntity.getConfirmTF(),
+			userLicenseJpaEntity.getConfirmAdminId());
 	}
 
-	public static List<UserLicence> fromJpaEntityList(List<UserLicenceJpaEntity> userLicenceJpaEntityList) {
-		return userLicenceJpaEntityList.stream().map(UserLicence::fromJpaEntity).collect(Collectors.toList());
+	public static List<UserLicense> fromJpaEntityList(List<UserLicenseJpaEntity> userLicenseJpaEntityList) {
+		return userLicenseJpaEntityList.stream().map(UserLicense::fromJpaEntity).collect(Collectors.toList());
 	}
 }

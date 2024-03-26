@@ -1,13 +1,15 @@
 package com.freediving.memberservice.adapter.in.web.dto;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.springframework.util.CollectionUtils;
-
+import com.freediving.common.domain.member.FreeDiving;
+import com.freediving.common.domain.member.ScubaDiving;
 import com.freediving.memberservice.domain.DiveType;
 import com.freediving.memberservice.domain.UserLicense;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,6 +26,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class LicenseInfo {
 
 	private FreeDiving freeDiving;
@@ -31,20 +34,19 @@ public class LicenseInfo {
 	private ScubaDiving scubaDiving;
 
 	public static LicenseInfo createLicenseInfo(List<UserLicense> userLicenseList) {
-		FreeDiving freeDiving = new FreeDiving();
-		ScubaDiving scubaDiving = new ScubaDiving();
-		if (!CollectionUtils.isEmpty(userLicenseList)) {
-			for (int i = 0; i < userLicenseList.size(); i++) {
-				UserLicense userLicense = userLicenseList.get(i);
-				if (userLicense.diveType().equals(DiveType.FREE_DIVE)) {
-					freeDiving = new FreeDiving(userLicense.roleLevel().getLevel(), userLicense.roleLevel().name()
-						, userLicense.licenseLevel(), userLicense.licenseImgUrl(), userLicense.confirmTF());
-				} else {
-					scubaDiving = new ScubaDiving(userLicense.roleLevel().getLevel(), userLicense.roleLevel().name()
-						, userLicense.licenseLevel(), userLicense.licenseImgUrl(), userLicense.confirmTF());
-				}
+		FreeDiving freeDiving = null;
+		ScubaDiving scubaDiving = null;
+
+		for (UserLicense userLicense : userLicenseList) {
+			if (DiveType.FREE_DIVE.equals(userLicense.diveType())) {
+				freeDiving = new FreeDiving(userLicense.roleLevel().getLevel(), userLicense.roleLevel().name(),
+					userLicense.licenseLevel(), userLicense.licenseImgUrl(), userLicense.confirmTF());
+			} else if (DiveType.SCUBA_DIVE.equals(userLicense.diveType())) {
+				scubaDiving = new ScubaDiving(userLicense.roleLevel().getLevel(), userLicense.roleLevel().name(),
+					userLicense.licenseLevel(), userLicense.licenseImgUrl(), userLicense.confirmTF());
 			}
 		}
-		return new LicenseInfo(freeDiving, scubaDiving);
+		return new LicenseInfo(Optional.ofNullable(freeDiving).orElse(new FreeDiving()),
+			Optional.ofNullable(scubaDiving).orElse(new ScubaDiving()));
 	}
 }

@@ -37,11 +37,8 @@ public class CreateUserResponse {
 	@Schema(description = "소셜 로그인 타입", example = "KAKAO")
 	private String oauthType;
 
-	@Schema(description = "유저 권한", example = "0")
-	private Integer roleLevel;
-
-	@Schema(description = "유저 권한 코드", example = "UNREGISTER")
-	private String roleLevelCode;
+	@Schema(description = "라이센스 정보")
+	private LicenseInfo licenseInfo;
 
 	/**
 	 * @Author           : sasca37
@@ -51,7 +48,8 @@ public class CreateUserResponse {
 	 * @Description      : User 도메인 정보를 UserDto로 변환
 	 */
 	public static CreateUserResponse from(User user) {
+
 		return new CreateUserResponse(user.userId(), user.email(), user.profileImgUrl(), user.nickname(),
-			user.oauthType().name(), user.roleLevel().getLevel(), user.roleLevel().name());
+			user.oauthType().name(), LicenseInfo.createLicenseInfo(user.userLicenseList()));
 	}
 }

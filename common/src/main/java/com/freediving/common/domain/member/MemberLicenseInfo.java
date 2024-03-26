@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Builder
-public class CommonLicenseInfo {
+public class MemberLicenseInfo {
 	private FreeDiving freeDiving;
 	private ScubaDiving scubaDiving;
 }

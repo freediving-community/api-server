@@ -1,6 +1,6 @@
 package com.freediving.common.response.dto.member;
 
-import com.freediving.common.domain.member.CommonLicenseInfo;
+import com.freediving.common.domain.member.MemberLicenseInfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,12 +21,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommonFindUserResponse {
+public class MemberFindUserResponse {
 	private Long userId;
 
 	private String profileImgUrl;
 
 	private String nickname;
 
-	private CommonLicenseInfo licenseInfo;
+	private MemberLicenseInfo licenseInfo;
 }

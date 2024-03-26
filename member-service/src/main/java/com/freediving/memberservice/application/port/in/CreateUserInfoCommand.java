@@ -26,21 +26,21 @@ public class CreateUserInfoCommand extends SelfValidating<CreateUserInfoCommand>
 
 	private Long userId;
 	private DiveType diveType;
-	private Integer licenceLevel;
-	private String licenceImgUrl;
+	private Integer licenseLevel;
+	private String licenseImgUrl;
 	private List<String> poolList;
 	private List<String> conceptList;
 	private String profileImgUrl;
 	private String nickname;
 	private String content;
 
-	public CreateUserInfoCommand(Long userId, DiveType diveType, Integer licenceLevel, String licenceImgUrl,
+	public CreateUserInfoCommand(Long userId, DiveType diveType, Integer licenseLevel, String licenseImgUrl,
 		List<String> poolList,
 		List<String> conceptList, String profileImgUrl, String nickname, String content) {
 		this.userId = userId;
 		this.diveType = diveType;
-		this.licenceLevel = licenceLevel;
-		this.licenceImgUrl = licenceImgUrl;
+		this.licenseLevel = licenseLevel;
+		this.licenseImgUrl = licenseImgUrl;
 		this.poolList = poolList;
 		this.conceptList = conceptList;
 		this.profileImgUrl = profileImgUrl;

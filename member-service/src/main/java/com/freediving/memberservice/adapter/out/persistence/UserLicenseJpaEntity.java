@@ -1,6 +1,6 @@
 package com.freediving.memberservice.adapter.out.persistence;
 
-import com.freediving.common.domain.RoleLevel;
+import com.freediving.common.domain.member.RoleLevel;
 import com.freediving.common.persistence.AuditableEntity;
 import com.freediving.memberservice.domain.DiveType;
 
@@ -30,14 +30,14 @@ import lombok.NoArgsConstructor;
  * 2024/01/15        sasca37       최초 생성
  */
 @Entity
-@Table(name = "user_licence")
+@Table(name = "user_license")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class UserLicenceJpaEntity extends AuditableEntity {
+public class UserLicenseJpaEntity extends AuditableEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "licence_id")
+	@Column(name = "license_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -47,7 +47,7 @@ public class UserLicenceJpaEntity extends AuditableEntity {
 	@Enumerated(value = EnumType.STRING)
 	@Column(name = "role", nullable = false, length = 20)
 	private RoleLevel role;
-	
+
 	@Column(name = "org_name")
 	private String orgName;
 
@@ -55,11 +55,11 @@ public class UserLicenceJpaEntity extends AuditableEntity {
 	@Column(name = "dive_type", nullable = false)
 	private DiveType diveType;
 
-	@Column(name = "licence_level", nullable = false)
-	private Integer licenceLevel;
+	@Column(name = "license_level")
+	private Integer licenseLevel;
 
-	@Column(name = "licence_img_url")
-	private String licenceImgUrl;
+	@Column(name = "license_img_url")
+	private String licenseImgUrl;
 
 	@Column(name = "confirm_tf", nullable = false, length = 10)
 	private Boolean confirmTF;
@@ -74,20 +74,21 @@ public class UserLicenceJpaEntity extends AuditableEntity {
 
 	public void updateUserEntity(UserJpaEntity userJpaEntity) {
 		this.userJpaEntity = userJpaEntity;
-		userJpaEntity.getUserLicenceJpaEntityList().add(this);
+		userJpaEntity.getUserLicenseJpaEntityList().add(this);
 	}
 
-	public static UserLicenceJpaEntity createUserLicenceJpaEntity(UserJpaEntity userJpaEntity, DiveType diveType,
-		Integer licenceLevel,
-		String licenceImgUrl) {
-		return new UserLicenceJpaEntity(userJpaEntity, diveType, licenceLevel, licenceImgUrl);
+	public static UserLicenseJpaEntity createUserLicenseJpaEntity(UserJpaEntity userJpaEntity, DiveType diveType) {
+		return new UserLicenseJpaEntity(userJpaEntity, diveType, RoleLevel.UNREGISTER);
 	}
 
-	private UserLicenceJpaEntity(UserJpaEntity userJpaEntity, DiveType diveType, Integer licenceLevel,
-		String licenceImgUrl) {
+	private UserLicenseJpaEntity(UserJpaEntity userJpaEntity, DiveType diveType, RoleLevel roleLevel) {
 		this.userJpaEntity = userJpaEntity;
 		this.diveType = diveType;
-		this.licenceLevel = licenceLevel;
-		this.licenceImgUrl = licenceImgUrl;
+		this.role = roleLevel;
+	}
+
+	public void updateLicenseInfo(Integer licenseLevel, String licenseImgUrl) {
+		this.licenseLevel = licenseLevel;
+		this.licenseImgUrl = licenseImgUrl;
 	}
 }

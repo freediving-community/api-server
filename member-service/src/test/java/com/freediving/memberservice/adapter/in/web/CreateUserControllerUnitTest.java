@@ -61,7 +61,6 @@ class CreateUserControllerUnitTest {
 		// Mocking
 		User mockUser = mock(User.class);
 		when(mockUser.oauthType()).thenReturn(VALID_OAUTH_TYPE);
-		when(mockUser.roleLevel()).thenReturn(DEFAULT_ROLE_LEVEL);
 
 		when(createUserUseCase.createOrGetUser(any(CreateUserCommand.class)))
 			.thenReturn(mockUser);

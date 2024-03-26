@@ -57,7 +57,6 @@ class CreateUserPersistenceAdapterUnitTest {
 		assertThat(user.nickname()).isNotNull();
 		assertThat(user.email()).isEqualTo(VALID_EMAIL);
 		assertThat(user.oauthType()).isEqualTo(VALID_OAUTH_TYPE);
-		assertThat(user.roleLevel()).isEqualTo(DEFAULT_ROLE_LEVEL);
 		verify(userJpaRepository, times(1)).save(any(UserJpaEntity.class));
 	}
 
@@ -66,7 +65,7 @@ class CreateUserPersistenceAdapterUnitTest {
 	void getUserSuccess() {
 		CreateUserCommand command = createCommand(VALID_OAUTH_TYPE, VALID_EMAIL, OPTIONAL_PROFILE_IMG_URL);
 		UserJpaEntity existingUser = UserJpaEntity.createSimpleUser(VALID_OAUTH_TYPE, VALID_EMAIL,
-			OPTIONAL_PROFILE_IMG_URL, DEFAULT_ROLE_LEVEL);
+			OPTIONAL_PROFILE_IMG_URL);
 
 		when(userJpaRepository.findByOauthTypeAndEmail(any(OauthType.class), anyString())).thenReturn(
 			Optional.of(existingUser));
@@ -76,7 +75,6 @@ class CreateUserPersistenceAdapterUnitTest {
 		assertThat(user).isNotNull();
 		assertThat(user.email()).isEqualTo(VALID_EMAIL);
 		assertThat(user.oauthType()).isEqualTo(VALID_OAUTH_TYPE);
-		assertThat(user.roleLevel()).isEqualTo(DEFAULT_ROLE_LEVEL);
 
 		verify(userJpaRepository, times(0)).save(any(UserJpaEntity.class));
 	}

@@ -20,7 +20,6 @@ public class UserEntityFixture {
 			.email(email)
 			.profileImgUrl(profileImgUrl)
 			.oauthType(oauthType)
-			.role(RoleLevel.UNREGISTER)
 			.build();
 	}
 

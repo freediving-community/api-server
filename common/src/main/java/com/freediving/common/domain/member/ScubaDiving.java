@@ -1,4 +1,4 @@
-package com.freediving.memberservice.adapter.in.web.dto;
+package com.freediving.common.domain.member;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

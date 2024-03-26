@@ -1,13 +1,10 @@
 package com.freediving.memberservice.adapter.in.web.dto;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.ObjectUtils;
-
 import com.freediving.memberservice.domain.User;
-import com.freediving.memberservice.domain.UserLicence;
+import com.freediving.memberservice.domain.UserLicense;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -35,31 +32,20 @@ public class FindUserServiceResponse {
 
 	private String nickname;
 
-	private Integer roleLevel;
-
-	private String roleLevelCode;
-
-	private Integer licenceLevel;
-
-	private String licenceImgUrl;
-
-	private Boolean licenceValidTF;
+	private LicenseInfo licenseInfo;
 
 	public static List<FindUserServiceResponse> of(List<User> findUserList, Boolean profileImgTF) {
 		return findUserList.stream().map(e -> of(e, profileImgTF)).collect(Collectors.toList());
 	}
 
 	private static FindUserServiceResponse of(User user, Boolean profileImgTF) {
-		UserLicence userLicence = Optional.ofNullable(user.userLicence()).orElse(null);
+		List<UserLicense> userLicenseList = user.userLicenseList();
+		LicenseInfo licenseInfo = LicenseInfo.createLicenseInfo(userLicenseList);
 		return FindUserServiceResponse.builder()
 			.userId(user.userId())
 			.profileImgUrl(profileImgTF == true ? user.profileImgUrl() : null)
 			.nickname(user.nickname())
-			.roleLevel(user.roleLevel().getLevel())
-			.roleLevelCode(user.roleLevel().name())
-			.licenceLevel(!ObjectUtils.isEmpty(userLicence) ? userLicence.licenceLevel() : null)
-			.licenceImgUrl(!ObjectUtils.isEmpty(userLicence) ? userLicence.licenceImgUrl() : null)
-			.licenceValidTF(!ObjectUtils.isEmpty(userLicence) ? userLicence.confirmTF() : null)
+			.licenseInfo(licenseInfo)
 			.build();
 	}
 }

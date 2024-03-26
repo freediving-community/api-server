@@ -1,6 +1,4 @@
-package com.freediving.memberservice.adapter.in.web.dto;
-
-import com.freediving.common.domain.RoleLevel;
+package com.freediving.common.domain.member;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

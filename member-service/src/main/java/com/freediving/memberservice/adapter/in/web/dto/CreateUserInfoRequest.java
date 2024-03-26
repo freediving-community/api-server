@@ -39,11 +39,11 @@ public class CreateUserInfoRequest {
 
 	@Schema(description = "유저 라이센스 레벨 (0 ~ 5)", example = "1")
 	@Range(min = 0, max = 5, message = "자격증 레벨 정보는 0 ~ 5 사이여야 합니다.")
-	private Integer licenceLevel;
+	private Integer licenseLevel;
 
 	@Schema(description = "유저 라이센스 이미지 URL", example = "https://d1pjflw6c3jt4r.cloudfront.net")
 	@NotNull(message = "라이센스 이미지는 필수입니다.")
-	private String licenceImgUrl;
+	private String licenseImgUrl;
 
 	@Size(min = 1, max = 2, message = "다이빙 풀 정보는 1개 이상 2개 이하여야 합니다.")
 	@ArraySchema(schema = @Schema(type = "array", example = "1"))

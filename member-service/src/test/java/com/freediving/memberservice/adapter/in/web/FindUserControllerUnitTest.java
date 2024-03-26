@@ -21,6 +21,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.freediving.common.domain.member.RoleLevel;
 import com.freediving.memberservice.adapter.in.web.dto.FindUserServiceResponse;
 import com.freediving.memberservice.application.port.in.FindUserUseCase;
 import com.freediving.memberservice.custom.WithMockCustomUser;
@@ -56,7 +57,6 @@ class FindUserControllerUnitTest {
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data.email").value(VALID_EMAIL))
 			.andExpect(jsonPath("$.data.oauthType").value(VALID_OAUTH_TYPE.name()))
-			.andExpect(jsonPath("$.data.roleLevel").value(RoleLevel.UNREGISTER.getLevel()))
 			.andDo(print());
 	}
 
@@ -70,7 +70,6 @@ class FindUserControllerUnitTest {
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data.email").value(VALID_EMAIL))
 			.andExpect(jsonPath("$.data.oauthType").value(VALID_OAUTH_TYPE.name()))
-			.andExpect(jsonPath("$.data.roleLevel").value(RoleLevel.ADMIN.getLevel()))
 			.andDo(print());
 	}
 
