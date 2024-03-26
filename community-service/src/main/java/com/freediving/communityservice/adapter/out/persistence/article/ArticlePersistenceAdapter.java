@@ -2,7 +2,9 @@ package com.freediving.communityservice.adapter.out.persistence.article;
 
 import static com.freediving.communityservice.adapter.out.persistence.article.QArticleJpaEntity.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -82,45 +84,77 @@ public class ArticlePersistenceAdapter
 		UserProvider requestUser) {
 
 		Article foundArticle = readArticle(boardType, articleId, isShowAll);
-		Long articleOwnerId = foundArticle.getCreatedBy();
 
-		List<CommentJpaEntity> articleComments = jdbcClient.sql("""
-			WITH ARTICLE_COMMENT AS ( /* 게시글의 댓글 답글 전체 */
-			      	SELECT
-			      		*
-			      	FROM COMMENT
-			      		WHERE ARTICLE_ID = """ + articleId + """
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("articleId", articleId);
+
+		StringBuffer sqlString = new StringBuffer("""
+			WITH ARTICLE_COMMENT AS ( 
+					SELECT
+						*
+					FROM COMMENT
+						WHERE ARTICLE_ID = """+articleId+"""
 					AND DELETED_AT IS NULL
 				ORDER BY CREATED_AT DESC
-			),
-			MY_C AS ( /* 요청자의 댓글 전체 */
-				SELECT * FROM ARTICLE_COMMENT
-					WHERE CREATED_BY = """ + requestUser.getRequestUserId() + """
-					AND PARENT_ID IS NULL
-			),
-			MY_C_RPLY AS ( /* 요청자의 댓글에 대한 답글 */
-				SELECT * FROM ARTICLE_COMMENT
-					WHERE PARENT_ID IN ( SELECT COMMENT_ID FROM MY_C )
-			),
-			OTHER_C AS ( /* 요청자 제외 댓글 전체 */
-				SELECT * FROM (
-					SELECT * FROM ARTICLE_COMMENT
-						WHERE CREATED_BY <> """ + requestUser.getRequestUserId() + """
-			      			AND PARENT_ID IS NULL
-			      	) WHERE ROWNUM <= 5
-			      ),
-			 OTHER_C_RPLY AS (
-			SELECT * FROM ARTICLE_COMMENT
-				WHERE PARENT_ID IN ( SELECT COMMENT_ID FROM OTHER_C )
-			 )
-			 SELECT * FROM MY_C
-			 UNION ALL
-			 SELECT * FROM MY_C_RPLY
-			 UNION ALL
-			 SELECT * FROM OTHER_C
-			 UNION ALL
-			 SELECT * FROM OTHER_C_RPLY
-			""").query(CommentJpaEntity.class).list();
+			)
+			, ROOT_COMMENT AS (
+				SELECT *
+				FROM (
+					SELECT
+						*
+					FROM ARTICLE_COMMENT
+					WHERE PARENT_ID IS NULL
+			""");
+
+		// 로그인 사용자인 경우
+		if( ! requestUser.getRequestUserId().equals(-1L)) { //TODO 비로그인 사용자 공통 영역 추후 정의 후 수정
+			paramMap.put("requestUserId", requestUser.getRequestUserId());
+			sqlString.append("""
+				AND CREATED_BY = """+requestUser.getRequestUserId()+"""
+			""");
+		}
+		sqlString.append("""
+				)
+			""");
+
+		// 로그인 사용자인 경우
+		if( ! requestUser.getRequestUserId().equals(-1L)) { //TODO 비로그인 사용자 공통 영역 추후 정의 후 수정
+			sqlString.append("""
+				UNION ALL
+				SELECT
+				*
+				FROM ARTICLE_COMMENT
+				WHERE PARENT_ID IS NULL
+				AND CREATED_BY <> """+requestUser.getRequestUserId()+"""
+				""");
+		}
+		sqlString.append("""
+					LIMIT 15
+				)
+			SELECT *
+			FROM ROOT_COMMENT
+			UNION ALL
+			SELECT *
+			FROM ARTICLE_COMMENT
+			WHERE PARENT_ID IN ( SELECT COMMENT_ID FROM ROOT_COMMENT )
+			""");
+
+		// 비로그인 요청 시, 숨긴 댓글의 답글 불필요
+		if( requestUser.getRequestUserId().equals(-1L)) {
+			sqlString.append("""
+					MINUS
+					SELECT *
+					FROM ARTICLE_COMMENT
+					WHERE VISIBLE = FALSE
+					AND PARENT_ID IS NOT NULL
+				""");
+		}
+
+		List<CommentJpaEntity> articleComments = jdbcClient
+				.sql(sqlString.toString())
+				.params(paramMap)
+				.query(CommentJpaEntity.class)
+				.list();
 
 		List<Comment> comments = articleComments.stream()
 			.map(commentMapper::mapToDomain)

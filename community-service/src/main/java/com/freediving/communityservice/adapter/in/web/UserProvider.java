@@ -20,7 +20,7 @@ public class UserProvider {
 		// this.roleLevel = RoleLevel.ANONYMOUS;
 	}
 
-	public UserProvider(Long requestUserId, RoleLevel roleLevel) {
+	public UserProvider(Long requestUserId /*, RoleLevel roleLevel*/) {
 		this.requestUserId = requestUserId;
 		// this.roleLevel = roleLevel != null ? roleLevel : RoleLevel.ANONYMOUS;
 	}
@@ -54,7 +54,6 @@ public class UserProvider {
 			}
 			throw new IllegalArgumentException("Invalid");
 		}
-
 	}
 
 	// public void checkAdmin() {
