@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
  * 2024/01/28        sasca37       최초 생성
  */
 @Repository
-public interface UserLicenceJpaRepository extends JpaRepository<UserLicenceJpaEntity, Long> {
+public interface UserLicenceJpaRepository extends JpaRepository<UserLicenseJpaEntity, Long> {
 }

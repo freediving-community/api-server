@@ -1,5 +1,8 @@
 package com.freediving.memberservice.domain;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.freediving.memberservice.adapter.out.persistence.UserLicenceJpaEntity;
 
 /**
@@ -16,5 +19,9 @@ public record UserLicence(Integer licenceLevel, String licenceImgUrl, Boolean co
 	public static UserLicence fromJpaEntity(UserLicenceJpaEntity userLicenceJpaEntity) {
 		return new UserLicence(userLicenceJpaEntity.getLicenceLevel(), userLicenceJpaEntity.getLicenceImgUrl(),
 			userLicenceJpaEntity.getConfirmTF(), userLicenceJpaEntity.getConfirmAdminId());
+	}
+
+	public static List<UserLicence> fromJpaEntityList(List<UserLicenceJpaEntity> userLicenceJpaEntityList) {
+		return userLicenceJpaEntityList.stream().map(UserLicence::fromJpaEntity).collect(Collectors.toList());
 	}
 }
