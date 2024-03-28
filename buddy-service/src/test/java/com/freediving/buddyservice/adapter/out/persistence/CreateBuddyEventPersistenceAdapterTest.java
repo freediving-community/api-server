@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,10 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventConceptMappingRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventConditionsRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventDivingPoolMappingRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJoinRequestRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventRepository;
 import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
-import com.freediving.buddyservice.common.enumeration.EventConcept;
-import com.freediving.buddyservice.common.enumeration.EventStatus;
-import com.freediving.buddyservice.domain.CreatedBuddyEvent;
+import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
+import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
+import com.freediving.common.enumerate.DivingPool;
 
 @ActiveProfiles("local")
 @SpringBootTest
@@ -26,11 +32,24 @@ class CreateBuddyEventPersistenceAdapterTest {
 	@Autowired
 	CreateBuddyEventPort createBuddyEventPort;
 	@Autowired
-	BuddyEventsRepository buddyEventsRepository;
+	BuddyEventRepository buddyEventRepository;
+	@Autowired
+	BuddyEventConceptMappingRepository buddyEventConceptMappingRepository;
+	@Autowired
+	BuddyEventConditionsRepository buddyEventConditionsRepository;
+	@Autowired
+	BuddyEventDivingPoolMappingRepository buddyEventDivingPoolMappingRepository;
+	@Autowired
+	BuddyEventJoinRequestRepository buddyEventJoinRequestRepository;
 
 	@AfterEach
 	void tearDown() {
-		buddyEventsRepository.deleteAllInBatch();
+		buddyEventConceptMappingRepository.deleteAllInBatch();
+		buddyEventConditionsRepository.deleteAllInBatch();
+		buddyEventDivingPoolMappingRepository.deleteAllInBatch();
+		buddyEventJoinRequestRepository.deleteAllInBatch();
+
+		buddyEventRepository.deleteAllInBatch();
 	}
 
 	@DisplayName("PersistenceAdapter 역할로서 버디 일정 생성의 연결을 테스트한다.")
@@ -43,33 +62,33 @@ class CreateBuddyEventPersistenceAdapterTest {
 		LocalDateTime StartDate = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
 		LocalDateTime EndDate = LocalDateTime.now().plusHours(4).truncatedTo(ChronoUnit.MILLIS);
 
-		CreatedBuddyEvent buddyEvent = generateBuddyEvent(userId, StartDate, EndDate, 3, null);
+		CreatedBuddyEventResponse buddyEvent = generateBuddyEvent(userId, StartDate, EndDate, 3, null, 2, Set.of(
+			DivingPool.JAMSIL_DIVING_POOL));
 
-		BuddyEventsJpaEntity createdbuddyEvent = createBuddyEventPort.createBuddyEvent(buddyEvent);
+		BuddyEventJpaEntity createdbuddyEvent = createBuddyEventPort.createBuddyEvent(buddyEvent);
 
 		assertThat(createdbuddyEvent)
-			.extracting("userId", "eventStartDate", "eventEndDate", "participantCount", "eventConcepts",
+			.extracting("userId", "eventStartDate", "eventEndDate", "participantCount",
 				"status", "carShareYn", "comment")
 			.contains(userId, StartDate.truncatedTo(ChronoUnit.MILLIS), EndDate.truncatedTo(ChronoUnit.MILLIS), 3,
-				List.of(EventConcept.LEVEL_UP, EventConcept.PRACTICE),
-				EventStatus.RECRUITING, false, null);
+				BuddyEventStatus.RECRUITING, false, null);
 
 	}
 
-	private CreatedBuddyEvent generateBuddyEvent(Long userId, LocalDateTime eventStartDate, LocalDateTime eventEndDate,
-		Integer participantCount, String comment) {
+	private CreatedBuddyEventResponse generateBuddyEvent(Long userId, LocalDateTime eventStartDate,
+		LocalDateTime eventEndDate,
+		Integer participantCount, String comment, Integer freedivingLevel, Set divingPool) {
 
-		List<EventConcept> eventConcepts = List.of(EventConcept.LEVEL_UP, EventConcept.PRACTICE);
-
-		return CreatedBuddyEvent.builder()
+		return CreatedBuddyEventResponse.builder()
 			.userId(userId)
 			.eventStartDate(eventStartDate)
 			.eventEndDate(eventEndDate)
 			.participantCount(participantCount)
-			.eventConcepts(eventConcepts)
 			.carShareYn(Boolean.FALSE)
-			.status(EventStatus.RECRUITING)
+			.status(BuddyEventStatus.RECRUITING)
 			.comment(comment)
+			.freedivingLevel(freedivingLevel)
+			.divingPools(divingPool)
 			.build();
 
 	}

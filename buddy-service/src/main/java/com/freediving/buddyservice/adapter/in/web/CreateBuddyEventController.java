@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.freediving.buddyservice.adapter.in.web.dto.CreateBuddyEventRequest;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventUseCase;
-import com.freediving.buddyservice.domain.CreatedBuddyEvent;
+import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
 import com.freediving.common.config.annotation.WebAdapter;
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
@@ -55,7 +55,7 @@ public class CreateBuddyEventController {
 		}
 	)
 	@PostMapping("")
-	public ResponseEntity<ResponseJsonObject<CreatedBuddyEvent>> createBuddyEvent(
+	public ResponseEntity<ResponseJsonObject<CreatedBuddyEventResponse>> createBuddyEvent(
 		@Valid @RequestBody CreateBuddyEventRequest request) {
 		try {
 			// 1. JWT 유저 토큰에서 사용자 식별 ID 가져오기
@@ -63,13 +63,13 @@ public class CreateBuddyEventController {
 			Long userId = random.nextLong();
 
 			// 2. Use Case Command 전달.
-			CreatedBuddyEvent createdBuddyEvent = createBuddyEventUseCase.createBuddyEvent(
+			CreatedBuddyEventResponse createdBuddyEventResponse = createBuddyEventUseCase.createBuddyEvent(
 				CreateBuddyEventCommand.builder()
 					.userId(userId)
 					.eventStartDate(request.getEventStartDate())
 					.eventEndDate(request.getEventEndDate())
 					.participantCount(request.getParticipantCount())
-					.eventConcepts(request.getEventConcepts())
+					.buddyEventConcepts(request.getBuddyEventConcepts())
 					.carShareYn(request.getCarShareYn())
 					.kakaoRoomCode(request.getKakaoRoomCode())
 					.comment(request.getComment())
@@ -78,8 +78,8 @@ public class CreateBuddyEventController {
 					.build());
 
 			// 3. Command 요청 및 응답 리턴.
-			ResponseJsonObject<CreatedBuddyEvent> response = new ResponseJsonObject<>(ServiceStatusCode.OK,
-				createdBuddyEvent);
+			ResponseJsonObject<CreatedBuddyEventResponse> response = new ResponseJsonObject<>(ServiceStatusCode.OK,
+				createdBuddyEventResponse);
 
 			return ResponseEntity.ok(response);
 		} catch (Exception e) {

@@ -1,12 +1,10 @@
 package com.freediving.buddyservice.adapter.in.web.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.freediving.buddyservice.common.enumeration.EventConcept;
-import com.freediving.buddyservice.common.enumeration.FreedivingLevel;
+import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
 import com.freediving.common.enumerate.DivingPool;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -53,8 +51,8 @@ public class CreateBuddyEventRequest {
 	private Integer participantCount;
 
 	@ArraySchema(arraySchema = @Schema(description = "버디 이벤트 컨셉"),
-		schema = @Schema(implementation = EventConcept.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED))
-	private List<EventConcept> eventConcepts;
+		schema = @Schema(implementation = BuddyEventConcept.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED))
+	private Set<BuddyEventConcept> buddyEventConcepts;
 
 	@Schema(description = "카셰어링 여부", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
 	@NotNull
@@ -66,8 +64,8 @@ public class CreateBuddyEventRequest {
 	@Schema(description = "추가 코멘트", example = "이번 모임은 캐주얼하게 진행합니다.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 	private String comment;
 
-	@Schema(implementation = FreedivingLevel.class, description = "프리다이빙 레벨제한", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-	private FreedivingLevel freedivingLevel;
+	@Schema( description = "프리다이빙 레벨 제한", example = "0~3" ,minimum = "0",  requiredMode = Schema.RequiredMode.REQUIRED)
+	private Integer freedivingLevel;
 
 	@ArraySchema(arraySchema = @Schema(description = "다이빙 풀"),
 		schema = @Schema(implementation = DivingPool.class, requiredMode = Schema.RequiredMode.REQUIRED))

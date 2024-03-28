@@ -1,7 +1,6 @@
 package com.freediving.buddyservice.adapter.in.web;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,9 +21,8 @@ import com.freediving.buddyservice.adapter.in.web.dto.CreateBuddyEventRequest;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.common.ControllerDefendenciesConfig;
-import com.freediving.buddyservice.common.enumeration.EventConcept;
-import com.freediving.buddyservice.common.enumeration.EventStatus;
-import com.freediving.buddyservice.domain.CreatedBuddyEvent;
+import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
+import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
 
 @WebMvcTest(controllers = CreateBuddyEventController.class)
 @ActiveProfiles("local")
@@ -42,14 +40,13 @@ class CreateBuddyEventControllerTest extends ControllerDefendenciesConfig {
 	@BeforeEach
 	void tearDown() {
 		Mockito.when(createBuddyEventUseCase.createBuddyEvent(Mockito.any(CreateBuddyEventCommand.class)))
-			.thenReturn(CreatedBuddyEvent.builder()
+			.thenReturn(CreatedBuddyEventResponse.builder()
 				.eventId(1L)
 				.userId(1L)
 				.eventStartDate(LocalDateTime.of(2024, 01, 01, 10, 00, 00))
 				.eventEndDate(LocalDateTime.of(2024, 01, 01, 14, 00, 00))
 				.participantCount(5)
-				.eventConcepts(List.of(EventConcept.LEVEL_UP))
-				.status(EventStatus.RECRUITING)
+				.status(BuddyEventStatus.RECRUITING)
 				.carShareYn(false)
 				.comment("ㅋㅋㅋㅋ")
 				.createdDate(LocalDateTime.of(2024, 01, 01, 9, 00, 00))
@@ -66,7 +63,6 @@ class CreateBuddyEventControllerTest extends ControllerDefendenciesConfig {
 			.eventStartDate(LocalDateTime.now().plusHours(2))
 			.eventEndDate(LocalDateTime.now().plusHours(8))
 			.participantCount(5)
-			.eventConcepts(List.of(EventConcept.LEVEL_UP))
 			.carShareYn(false)
 			.comment("ㅋㅋㅋㅋ")
 			.build();
@@ -80,15 +76,14 @@ class CreateBuddyEventControllerTest extends ControllerDefendenciesConfig {
 			.andExpect(MockMvcResultMatchers.jsonPath("$.code").value(200))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.data.eventId").value(1))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.data.userId").value(1))
-			.andExpect(MockMvcResultMatchers.jsonPath("$.data.eventStartDate").value("2024-01-01T10:00:00"))
-			.andExpect(MockMvcResultMatchers.jsonPath("$.data.eventEndDate").value("2024-01-01T14:00:00"))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.data.eventStartDate").value("2024-01-01 10:00:00"))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.data.eventEndDate").value("2024-01-01 14:00:00"))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.data.participantCount").value(5))
-			.andExpect(MockMvcResultMatchers.jsonPath("$.data.eventConcepts[0]").value("LEVEL_UP"))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.data.carShareYn").value(false))
-			.andExpect(MockMvcResultMatchers.jsonPath("$.data.status").value(EventStatus.RECRUITING.name()))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.data.status").value(BuddyEventStatus.RECRUITING.name()))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.data.comment").value("ㅋㅋㅋㅋ"))
-			.andExpect(MockMvcResultMatchers.jsonPath("$.data.createdDate").value("2024-01-01T09:00:00"))
-			.andExpect(MockMvcResultMatchers.jsonPath("$.data.updatedDate").value("2024-01-01T09:00:00"))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.data.createdDate").value("2024-01-01 09:00:00"))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.data.updatedDate").value("2024-01-01 09:00:00"))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.msg").isEmpty());
 	}
 
@@ -99,7 +94,6 @@ class CreateBuddyEventControllerTest extends ControllerDefendenciesConfig {
 		final CreateBuddyEventRequest request = CreateBuddyEventRequest.builder()
 			.eventEndDate(LocalDateTime.now().plusHours(8))
 			.participantCount(11)
-			.eventConcepts(List.of(EventConcept.LEVEL_UP))
 			.carShareYn(false)
 			.comment("ㅋㅋㅋㅋ")
 			.build();
@@ -121,7 +115,6 @@ class CreateBuddyEventControllerTest extends ControllerDefendenciesConfig {
 		final CreateBuddyEventRequest request = CreateBuddyEventRequest.builder()
 			.eventStartDate(LocalDateTime.now().plusHours(8))
 			.participantCount(11)
-			.eventConcepts(List.of(EventConcept.LEVEL_UP))
 			.carShareYn(false)
 			.comment("ㅋㅋㅋㅋ")
 			.build();

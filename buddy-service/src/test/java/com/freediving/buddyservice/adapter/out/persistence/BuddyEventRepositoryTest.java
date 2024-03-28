@@ -15,21 +15,39 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.freediving.buddyservice.common.enumeration.EventConcept;
-import com.freediving.buddyservice.common.enumeration.EventStatus;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventConceptMappingRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventConditionsRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventDivingPoolMappingRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJoinRequestRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventRepository;
+import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
+import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.config.CommonModuleScan;
 
 @ActiveProfiles("local")
 @DataJpaTest // JPA관련된 Bean만 주입받아 테스트 가능.
 @Import(CommonModuleScan.class)
-class BuddyEventsRepositoryTest {
+class BuddyEventRepositoryTest {
 
 	@Autowired
-	private BuddyEventsRepository buddyEventsRepository;
+	private BuddyEventRepository buddyEventRepository;
+	@Autowired
+	BuddyEventConceptMappingRepository buddyEventConceptMappingRepository;
+	@Autowired
+	BuddyEventConditionsRepository buddyEventConditionsRepository;
+	@Autowired
+	BuddyEventDivingPoolMappingRepository buddyEventDivingPoolMappingRepository;
+	@Autowired
+	BuddyEventJoinRequestRepository buddyEventJoinRequestRepository;
 
 	@AfterEach
 	void tearDown() {
-		buddyEventsRepository.deleteAllInBatch();
+		buddyEventConceptMappingRepository.deleteAllInBatch();
+		buddyEventConditionsRepository.deleteAllInBatch();
+		buddyEventDivingPoolMappingRepository.deleteAllInBatch();
+		buddyEventJoinRequestRepository.deleteAllInBatch();
+		buddyEventRepository.deleteAllInBatch();
 	}
 
 	@DisplayName("버디 일정 이벤트를 생성한다.")
@@ -41,16 +59,15 @@ class BuddyEventsRepositoryTest {
 		LocalDateTime StartDate = LocalDateTime.now();
 		LocalDateTime EndDate = LocalDateTime.now().plusHours(4);
 
-		BuddyEventsJpaEntity buddyEventsJpaEntity = generateBuddyEventJpa(userId, StartDate, EndDate, 3, null,
-			EventStatus.RECRUITING);
+		BuddyEventJpaEntity buddyEventJpaEntity = generateBuddyEventJpa(userId, StartDate, EndDate, 3, null,
+			BuddyEventStatus.RECRUITING);
 
-		BuddyEventsJpaEntity createdBuddyEventJps = buddyEventsRepository.save(buddyEventsJpaEntity);
+		BuddyEventJpaEntity createdBuddyEventJps = buddyEventRepository.save(buddyEventJpaEntity);
 
 		assertThat(createdBuddyEventJps).extracting("eventId", "userId", "eventStartDate", "eventEndDate",
-				"participantCount", "eventConcepts", "status", "carShareYn", "comment")
+				"participantCount", "status", "carShareYn", "comment")
 			.contains(createdBuddyEventJps.getEventId(), userId, StartDate, EndDate, 3,
-				List.of(EventConcept.LEVEL_UP, EventConcept.PRACTICE),
-				EventStatus.RECRUITING, false, null);
+				BuddyEventStatus.RECRUITING, false, null);
 	}
 
 	@DisplayName("버디 이벤트 생성시 이미 모집 중인 이벤트와 시작 시간이 겹치는 경우 True.")
@@ -64,20 +81,20 @@ class BuddyEventsRepositoryTest {
 		LocalDateTime startDate = LocalDateTime.of(2024, 1, 1, 14, 00, 00);
 		LocalDateTime endDate = LocalDateTime.of(2024, 1, 1, 18, 00, 00);
 
-		BuddyEventsJpaEntity buddyEventsJpaEntity = generateBuddyEventJpa(userId, startDate, endDate, 3, null,
-			EventStatus.RECRUITING);
-		buddyEventsRepository.save(buddyEventsJpaEntity);
+		BuddyEventJpaEntity buddyEventJpaEntity = generateBuddyEventJpa(userId, startDate, endDate, 3, null,
+			BuddyEventStatus.RECRUITING);
+		buddyEventRepository.save(buddyEventJpaEntity);
 
 		// 10시 ~ 14시 1초
 		LocalDateTime createStartDate = LocalDateTime.of(2024, 1, 1, 10, 00, 00);
 		LocalDateTime createEndDate = LocalDateTime.of(2024, 1, 1, 14, 00, 01);
 
-		List<String> statusNames = List.of(EventStatus.RECRUITING, EventStatus.RECRUITMENT_CLOSED).stream()
+		List<String> statusNames = List.of(BuddyEventStatus.RECRUITING, BuddyEventStatus.RECRUITMENT_CLOSED).stream()
 			.map(Enum::name)
 			.collect(Collectors.toList());
 
 		// when
-		boolean result = buddyEventsRepository.existsBuddyEventByEventTime(userId, createStartDate, createEndDate,
+		boolean result = buddyEventRepository.existsBuddyEventByEventTime(userId, createStartDate, createEndDate,
 			statusNames);
 
 		// then
@@ -96,20 +113,20 @@ class BuddyEventsRepositoryTest {
 		LocalDateTime startDate = LocalDateTime.of(2024, 1, 1, 14, 00, 00);
 		LocalDateTime endDate = LocalDateTime.of(2024, 1, 1, 18, 00, 00);
 
-		BuddyEventsJpaEntity buddyEventsJpaEntity = generateBuddyEventJpa(userId, startDate, endDate, 3, null,
-			EventStatus.RECRUITING);
-		buddyEventsRepository.save(buddyEventsJpaEntity);
+		BuddyEventJpaEntity buddyEventJpaEntity = generateBuddyEventJpa(userId, startDate, endDate, 3, null,
+			BuddyEventStatus.RECRUITING);
+		buddyEventRepository.save(buddyEventJpaEntity);
 
 		// 10시 ~ 14시 1초
 		LocalDateTime createStartDate = LocalDateTime.of(2024, 1, 1, 17, 59, 59);
 		LocalDateTime createEndDate = LocalDateTime.of(2024, 1, 1, 20, 00, 00);
 
-		List<String> statusNames = List.of(EventStatus.RECRUITING, EventStatus.RECRUITMENT_CLOSED).stream()
+		List<String> statusNames = List.of(BuddyEventStatus.RECRUITING, BuddyEventStatus.RECRUITMENT_CLOSED).stream()
 			.map(Enum::name)
 			.collect(Collectors.toList());
 
 		// when
-		boolean result = buddyEventsRepository.existsBuddyEventByEventTime(userId, createStartDate, createEndDate,
+		boolean result = buddyEventRepository.existsBuddyEventByEventTime(userId, createStartDate, createEndDate,
 			statusNames);
 
 		// then
@@ -128,20 +145,20 @@ class BuddyEventsRepositoryTest {
 		LocalDateTime startDate = LocalDateTime.of(2024, 1, 1, 14, 00, 00);
 		LocalDateTime endDate = LocalDateTime.of(2024, 1, 1, 18, 00, 00);
 
-		BuddyEventsJpaEntity buddyEventsJpaEntity = generateBuddyEventJpa(userId, startDate, endDate, 3, null,
-			EventStatus.RECRUITING);
-		buddyEventsRepository.save(buddyEventsJpaEntity);
+		BuddyEventJpaEntity buddyEventJpaEntity = generateBuddyEventJpa(userId, startDate, endDate, 3, null,
+			BuddyEventStatus.RECRUITING);
+		buddyEventRepository.save(buddyEventJpaEntity);
 
 		// 10시 ~ 14시 1초
 		LocalDateTime createStartDate = LocalDateTime.of(2024, 1, 1, 14, 00, 01);
 		LocalDateTime createEndDate = LocalDateTime.of(2024, 1, 1, 17, 59, 59);
 
-		List<String> statusNames = List.of(EventStatus.RECRUITING, EventStatus.RECRUITMENT_CLOSED).stream()
+		List<String> statusNames = List.of(BuddyEventStatus.RECRUITING, BuddyEventStatus.RECRUITMENT_CLOSED).stream()
 			.map(Enum::name)
 			.collect(Collectors.toList());
 
 		// when
-		boolean result = buddyEventsRepository.existsBuddyEventByEventTime(userId, createStartDate, createEndDate,
+		boolean result = buddyEventRepository.existsBuddyEventByEventTime(userId, createStartDate, createEndDate,
 			statusNames);
 
 		// then
@@ -160,20 +177,20 @@ class BuddyEventsRepositoryTest {
 		LocalDateTime startDate = LocalDateTime.of(2024, 1, 1, 14, 00, 00);
 		LocalDateTime endDate = LocalDateTime.of(2024, 1, 1, 18, 00, 00);
 
-		BuddyEventsJpaEntity buddyEventsJpaEntity = generateBuddyEventJpa(userId, startDate, endDate, 3, null,
-			EventStatus.RECRUITING);
-		buddyEventsRepository.save(buddyEventsJpaEntity);
+		BuddyEventJpaEntity buddyEventJpaEntity = generateBuddyEventJpa(userId, startDate, endDate, 3, null,
+			BuddyEventStatus.RECRUITING);
+		buddyEventRepository.save(buddyEventJpaEntity);
 
 		// 10시 ~ 14시 1초
 		LocalDateTime createStartDate = LocalDateTime.of(2024, 1, 1, 10, 00, 00);
 		LocalDateTime createEndDate = LocalDateTime.of(2024, 1, 1, 14, 00, 00);
 
-		List<String> statusNames = List.of(EventStatus.RECRUITING, EventStatus.RECRUITMENT_CLOSED).stream()
+		List<String> statusNames = List.of(BuddyEventStatus.RECRUITING, BuddyEventStatus.RECRUITMENT_CLOSED).stream()
 			.map(Enum::name)
 			.collect(Collectors.toList());
 
 		// when
-		boolean result = buddyEventsRepository.existsBuddyEventByEventTime(userId, createStartDate, createEndDate,
+		boolean result = buddyEventRepository.existsBuddyEventByEventTime(userId, createStartDate, createEndDate,
 			statusNames);
 
 		// then
@@ -192,20 +209,20 @@ class BuddyEventsRepositoryTest {
 		LocalDateTime startDate = LocalDateTime.of(2024, 1, 1, 14, 00, 00);
 		LocalDateTime endDate = LocalDateTime.of(2024, 1, 1, 18, 00, 00);
 
-		BuddyEventsJpaEntity buddyEventsJpaEntity = generateBuddyEventJpa(userId, startDate, endDate, 3, null,
-			EventStatus.RECRUITMENT_DELETED);
-		buddyEventsJpaEntity = buddyEventsRepository.save(buddyEventsJpaEntity);
+		BuddyEventJpaEntity buddyEventJpaEntity = generateBuddyEventJpa(userId, startDate, endDate, 3, null,
+			BuddyEventStatus.RECRUITMENT_DELETED);
+		buddyEventJpaEntity = buddyEventRepository.save(buddyEventJpaEntity);
 
 		// 10시 ~ 14시 1초
 		LocalDateTime createStartDate = LocalDateTime.of(2024, 1, 1, 15, 00, 00);
 		LocalDateTime createEndDate = LocalDateTime.of(2024, 1, 1, 20, 00, 00);
 
-		List<String> statusNames = List.of(EventStatus.RECRUITING, EventStatus.RECRUITMENT_CLOSED).stream()
+		List<String> statusNames = List.of(BuddyEventStatus.RECRUITING, BuddyEventStatus.RECRUITMENT_CLOSED).stream()
 			.map(Enum::name)
 			.collect(Collectors.toList());
 
 		// when
-		boolean result = buddyEventsRepository.existsBuddyEventByEventTime(userId, createStartDate, createEndDate,
+		boolean result = buddyEventRepository.existsBuddyEventByEventTime(userId, createStartDate, createEndDate,
 			statusNames);
 
 		// then
@@ -213,17 +230,16 @@ class BuddyEventsRepositoryTest {
 
 	}
 
-	private BuddyEventsJpaEntity generateBuddyEventJpa(Long userId, LocalDateTime eventStartDate,
-		LocalDateTime eventEndDate, Integer participantCount, String comment, EventStatus status) {
+	private BuddyEventJpaEntity generateBuddyEventJpa(Long userId, LocalDateTime eventStartDate,
+		LocalDateTime eventEndDate, Integer participantCount, String comment, BuddyEventStatus status) {
 
-		List<EventConcept> eventConcepts = List.of(EventConcept.LEVEL_UP, EventConcept.PRACTICE);
+		List<BuddyEventConcept> buddyEventConcepts = List.of(BuddyEventConcept.LEVEL_UP, BuddyEventConcept.PRACTICE);
 
-		return BuddyEventsJpaEntity.builder()
+		return BuddyEventJpaEntity.builder()
 			.userId(userId)
 			.eventStartDate(eventStartDate)
 			.eventEndDate(eventEndDate)
 			.participantCount(participantCount)
-			.eventConcepts(eventConcepts)
 			.status(status)
 			.carShareYn(Boolean.FALSE)
 			.comment(comment)

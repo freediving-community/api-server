@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.adapter.out.persistence;
+package com.freediving.buddyservice.adapter.out.persistence.event;
 
 import com.freediving.common.enumerate.DivingPool;
 import com.freediving.common.persistence.AuditableEntity;
@@ -17,13 +17,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "events_diving_pool_mapping")
+@Table(name = "buddy_event_diving_pool_mapping")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@IdClass(EventsDivingPoolMappingId.class)
-public class EventsDivingPoolMapping extends AuditableEntity {
+@IdClass(BuddyEventDivingPoolMappingId.class)
+public class BuddyEventDivingPoolMappingJpaEntity extends AuditableEntity {
 	@Id
 	@Enumerated(EnumType.STRING)
 	private DivingPool divingPoolId; // 복합 키의 일부
@@ -31,6 +31,6 @@ public class EventsDivingPoolMapping extends AuditableEntity {
 	@Id
 	@ManyToOne
 	@JoinColumn(name = "event_id", referencedColumnName = "event_id", insertable = false, updatable = false)
-	private BuddyEventsJpaEntity buddyEvent;
+	private BuddyEventJpaEntity buddyEvent;
 
 }

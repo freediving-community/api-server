@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.adapter.out.persistence;
+package com.freediving.buddyservice.adapter.out.persistence.event;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BuddyEventsRepository extends JpaRepository<BuddyEventsJpaEntity, Long> {
+public interface BuddyEventRepository extends JpaRepository<BuddyEventJpaEntity, Long> {
 
 	/**
 	 * 사용자가 생성할 이벤트의 시작 시간과 종료 시간에 이미
@@ -21,7 +21,7 @@ public interface BuddyEventsRepository extends JpaRepository<BuddyEventsJpaEntit
 	 * @return 이미 생성한 이벤트 존재 여부
 	 */
 	@Query(value =
-		"SELECT EXISTS (SELECT 1 FROM buddy_events e WHERE (( e.event_start_date < :eventStartTime AND "
+		"SELECT EXISTS (SELECT 1 FROM buddy_event e WHERE (( e.event_start_date < :eventStartTime AND "
 			+ " :eventStartTime < e.event_end_date) OR ( e.event_start_date < :eventEndTime AND "
 			+ " :eventEndTime < e.event_end_date )) AND e.user_id = :userId AND e.status in (:statuses) ) ", nativeQuery = true)
 	boolean existsBuddyEventByEventTime(@Param("userId") Long userId,

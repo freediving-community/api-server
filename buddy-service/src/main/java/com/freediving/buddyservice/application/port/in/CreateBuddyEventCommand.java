@@ -1,12 +1,10 @@
 package com.freediving.buddyservice.application.port.in;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
-import com.freediving.buddyservice.common.enumeration.EventConcept;
-import com.freediving.buddyservice.common.enumeration.EventStatus;
-import com.freediving.buddyservice.common.enumeration.FreedivingLevel;
+import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
+import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
 import com.freediving.common.SelfValidating;
 import com.freediving.common.enumerate.DivingPool;
 import com.freediving.common.handler.exception.BuddyMeException;
@@ -49,25 +47,27 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 	@Max(value = 5L, message = "최대 모집 인원은 5명까지 가능합니다.")
 	private final Integer participantCount;
 
-	private final List<EventConcept> eventConcepts;
+	private final Set<BuddyEventConcept> buddyEventConcepts;
 
 	private final Boolean carShareYn;
 
-	private final EventStatus status = EventStatus.RECRUITING;
+	private final BuddyEventStatus status = BuddyEventStatus.RECRUITING;
 
 	private final String kakaoRoomCode;
 
 	@Size(min = 0, max = 500, message = "코멘트는 최대 500자까지 입력 가능합니다.")
 	private final String comment;
 
-	private FreedivingLevel freedivingLevel;
+	@Min(value = 0, message = "레벨 조건의 최소는 0(누구나) 입니다.")
+	@Max(value = 4, message = "레벨 조건의 최대는 4레벨 입니다.")
+	private Integer freedivingLevel;
 
 	private Set<DivingPool> divingPools;
 
 	@Builder
 	private CreateBuddyEventCommand(Long userId, LocalDateTime eventStartDate, LocalDateTime eventEndDate,
-		Integer participantCount, List<EventConcept> eventConcepts, Boolean carShareYn, String kakaoRoomCode,
-		String comment, FreedivingLevel freedivingLevel, Set<DivingPool> divingPools) {
+		Integer participantCount, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn, String kakaoRoomCode,
+		String comment, Integer freedivingLevel, Set<DivingPool> divingPools) {
 		this.userId = userId;
 		this.eventStartDate = eventStartDate;
 
@@ -76,7 +76,7 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 		this.eventEndDate = eventEndDate;
 
 		this.participantCount = participantCount;
-		this.eventConcepts = eventConcepts;
+		this.buddyEventConcepts = buddyEventConcepts;
 		this.carShareYn = (carShareYn == null) ? false : carShareYn; // Default False
 		this.comment = comment;
 		this.kakaoRoomCode = kakaoRoomCode;

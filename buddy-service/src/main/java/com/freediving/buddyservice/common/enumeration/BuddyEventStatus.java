@@ -5,13 +5,11 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum EventConcept {
+public enum BuddyEventStatus {
 	//TODO enum 재 설정 필요
-	FUN_DIVING("펀다이빙"),
-	PRACTICE("연습"),
-	PHOTOGRAPHY("사진촬영"),
-	TRAINING("강습"),
-	LEVEL_UP("레벨업");
+	RECRUITING("모집 중"),
+	RECRUITMENT_CLOSED("모집 마감"),
+	RECRUITMENT_DELETED("모집 삭제");
 
 	private final String displayValue;
 

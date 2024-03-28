@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.freediving.divingpool.common.DivingPoolTestCommon;
@@ -16,6 +17,7 @@ import com.freediving.divingpool.data.dao.DivingPoolJpaEntity;
 
 @ActiveProfiles("local")
 @DataJpaTest // JPA 관련된 Bean만 주입받아 테스트 가능.
+@EnableJpaAuditing
 class DivingPoolRepositoryTest {
 
 	@Autowired
