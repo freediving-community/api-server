@@ -70,16 +70,16 @@ public class BuddyEventJpaEntity extends AuditableEntity {
 
 	// 연관 관계 매핑
 
-	@OneToMany(mappedBy = "buddyEvent", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "buddyEvent", cascade = {CascadeType.ALL})
 	private Set<BuddyEventConceptMappingJpaEntity> eventConcepts;
 
-	@OneToMany(mappedBy = "buddyEvent", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "buddyEvent", cascade = CascadeType.ALL)
 	private Set<BuddyEventDivingPoolMappingJpaEntity> buddyEventDivingPoolMappingJpaEntity;
 
-	@OneToOne(mappedBy = "buddyEvent", cascade = CascadeType.PERSIST)
+	@OneToOne(mappedBy = "buddyEvent", cascade = CascadeType.ALL)
 	private BuddyEventConditionsJpaEntity buddyEventConditionsJpaEntity;
 
-	@OneToMany(mappedBy = "buddyEvent", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "buddyEvent", cascade = CascadeType.ALL)
 	private Set<BuddyEventJoinRequestJpaEntity> buddyEventJoinRequests;
 
 	public BuddyEventJpaEntity changeBuddyEventConceptMapping(Set<BuddyEventConceptMappingJpaEntity> target) {
@@ -106,7 +106,8 @@ public class BuddyEventJpaEntity extends AuditableEntity {
 	public String toString() {
 		return "BuddyEventJpaEntity{" + "eventId=" + eventId + ", userId=" + userId + ", eventStartDate="
 			+ eventStartDate + ", eventEndDate=" + eventEndDate + ", participantCount=" + participantCount
-			+ ", buddyEventConcepts=" + eventConcepts + ", carShareYn=" + carShareYn + ", kakaoRoomCode=" + kakaoRoomCode
+			+ ", buddyEventConcepts=" + eventConcepts + ", carShareYn=" + carShareYn + ", kakaoRoomCode="
+			+ kakaoRoomCode
 			+ ", status=" + status + ", comment='"
 			+ comment + '\'' + '}';
 	}

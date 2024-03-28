@@ -76,15 +76,14 @@ class CreateBuddyEventControllerTest extends ControllerDefendenciesConfig {
 			.andExpect(MockMvcResultMatchers.jsonPath("$.code").value(200))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.data.eventId").value(1))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.data.userId").value(1))
-			.andExpect(MockMvcResultMatchers.jsonPath("$.data.eventStartDate").value("2024-01-01T10:00:00"))
-			.andExpect(MockMvcResultMatchers.jsonPath("$.data.eventEndDate").value("2024-01-01T14:00:00"))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.data.eventStartDate").value("2024-01-01 10:00:00"))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.data.eventEndDate").value("2024-01-01 14:00:00"))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.data.participantCount").value(5))
-			.andExpect(MockMvcResultMatchers.jsonPath("$.data.eventConcepts[0]").value("LEVEL_UP"))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.data.carShareYn").value(false))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.data.status").value(BuddyEventStatus.RECRUITING.name()))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.data.comment").value("ㅋㅋㅋㅋ"))
-			.andExpect(MockMvcResultMatchers.jsonPath("$.data.createdDate").value("2024-01-01T09:00:00"))
-			.andExpect(MockMvcResultMatchers.jsonPath("$.data.updatedDate").value("2024-01-01T09:00:00"))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.data.createdDate").value("2024-01-01 09:00:00"))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.data.updatedDate").value("2024-01-01 09:00:00"))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.msg").isEmpty());
 	}
 

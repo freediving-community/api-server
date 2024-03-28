@@ -15,6 +15,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventConceptMappingRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventConditionsRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventDivingPoolMappingRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJoinRequestRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventRepository;
 import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
@@ -28,9 +32,21 @@ class BuddyEventRepositoryTest {
 
 	@Autowired
 	private BuddyEventRepository buddyEventRepository;
+	@Autowired
+	BuddyEventConceptMappingRepository buddyEventConceptMappingRepository;
+	@Autowired
+	BuddyEventConditionsRepository buddyEventConditionsRepository;
+	@Autowired
+	BuddyEventDivingPoolMappingRepository buddyEventDivingPoolMappingRepository;
+	@Autowired
+	BuddyEventJoinRequestRepository buddyEventJoinRequestRepository;
 
 	@AfterEach
 	void tearDown() {
+		buddyEventConceptMappingRepository.deleteAllInBatch();
+		buddyEventConditionsRepository.deleteAllInBatch();
+		buddyEventDivingPoolMappingRepository.deleteAllInBatch();
+		buddyEventJoinRequestRepository.deleteAllInBatch();
 		buddyEventRepository.deleteAllInBatch();
 	}
 

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +16,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventConceptMappingRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventConditionsRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventDivingPoolMappingRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJoinRequestRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventRepository;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
@@ -24,6 +29,7 @@ import com.freediving.buddyservice.application.port.out.service.RequestMemberPor
 import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
+import com.freediving.common.enumerate.DivingPool;
 
 @SpringBootTest
 @ActiveProfiles("local")
@@ -37,9 +43,21 @@ class CreateBuddyEventServiceTest {
 
 	@MockBean
 	private RequestMemberPort requestMemberPort;
+	@Autowired
+	BuddyEventConceptMappingRepository buddyEventConceptMappingRepository;
+	@Autowired
+	BuddyEventConditionsRepository buddyEventConditionsRepository;
+	@Autowired
+	BuddyEventDivingPoolMappingRepository buddyEventDivingPoolMappingRepository;
+	@Autowired
+	BuddyEventJoinRequestRepository buddyEventJoinRequestRepository;
 
 	@AfterEach
 	void tearDown() {
+		buddyEventConceptMappingRepository.deleteAllInBatch();
+		buddyEventConditionsRepository.deleteAllInBatch();
+		buddyEventDivingPoolMappingRepository.deleteAllInBatch();
+		buddyEventJoinRequestRepository.deleteAllInBatch();
 		buddyEventRepository.deleteAllInBatch();
 	}
 
@@ -134,6 +152,8 @@ class CreateBuddyEventServiceTest {
 			.participantCount(3)
 			.carShareYn(true)
 			.comment("zzzz")
+			.divingPools(Set.of(DivingPool.PARADIVE))
+			.freedivingLevel(2)
 			.build();
 
 		//  RequestMemberPort의 MemberStauts 상태 조회 결과를 성공으로 만든다.
@@ -145,11 +165,11 @@ class CreateBuddyEventServiceTest {
 
 		// then
 		assertThat(createdBuddyEventResponse).extracting("eventId", "userId", "eventStartDate", "eventEndDate",
-				"participantCount", "buddyEventConcepts",
+				"participantCount", "freedivingLevel",
 				"status", "carShareYn", "comment")
 			.contains(createdBuddyEventResponse.getEventId(), userId, createStartDate,
 				createEndDate, 3,
-				List.of(BuddyEventConcept.LEVEL_UP),
+				2,
 				BuddyEventStatus.RECRUITING, true, "zzzz");
 
 	}
