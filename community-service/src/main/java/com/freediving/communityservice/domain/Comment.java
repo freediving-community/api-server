@@ -1,11 +1,10 @@
 package com.freediving.communityservice.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import com.freediving.communityservice.adapter.in.web.UserProvider;
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -32,25 +31,38 @@ public class Comment {
 
 	private final Long modifiedBy;
 
-	public static List<Comment> getVisibleComments(Long requestUserId, List<Comment> allComments) {
-		return allComments.stream()
-			.map(c -> {
-				if (c.isVisible() || c.getCreatedBy().equals(requestUserId)) {
-					return c;
-				} else {
-					return Comment.builder()
-						.commentId(c.getCommentId())
-						.articleId(c.getArticleId())
-						.parentId(c.getParentId())
-						.content("")
-						.visible(c.isVisible())
-						.createdAt(c.getCreatedAt())
-						.createdBy(0L)
-						.modifiedAt(c.getModifiedAt())
-						.modifiedBy(0L)
-						.build();
-				}
-			}).collect(Collectors.toList());
+	public Comment filterComment(BoardType boardType, Long articleOwnerId, Long requestUserId) {
+
+		// TODO BoardType에 따른 댓글 분류
+		switch (boardType) {
+			// 스토리(자유게시판), 버디모집글 QNA
+			case BoardType.GENERAL, BoardType.BUDDY_QNA -> {
+				if (this.visible)
+					return this;
+				if (articleOwnerId.equals(requestUserId))
+					return this;
+				if (this.createdBy.equals(requestUserId))
+					return this;
+				// 쿼리에서 다른 사용자의 비밀글에 대한 답글은 제거됨.
+				if (this.parentId == null)
+					return toSecretComment(this);
+			}
+		}
+		return null;
+	}
+
+	private Comment toSecretComment(Comment comment) {
+		return Comment.builder()
+			.commentId(comment.commentId)
+			.articleId(comment.getArticleId())
+			.parentId(comment.parentId)
+			.content(null)
+			.visible(comment.isVisible())
+			.createdAt(comment.getCreatedAt())
+			.createdBy(null)
+			.modifiedAt(null)
+			.modifiedBy(null)
+			.build();
 	}
 
 	public void checkCommentVisible(UserProvider requestUser, Long parentCommentCreatedBy, Long articleCreatedBy) {
@@ -70,7 +82,7 @@ public class Comment {
 	}
 
 	public void checkCommentOwner(Long requestUserId) {
-		if ( ! requestUserId.equals(this.createdBy))
+		if (!requestUserId.equals(this.createdBy))
 			throw new IllegalArgumentException("수정 권한이 없습니다.");
 	}
 

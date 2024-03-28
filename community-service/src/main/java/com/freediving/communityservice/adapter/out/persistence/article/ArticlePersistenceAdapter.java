@@ -2,9 +2,7 @@ package com.freediving.communityservice.adapter.out.persistence.article;
 
 import static com.freediving.communityservice.adapter.out.persistence.article.QArticleJpaEntity.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -85,76 +83,64 @@ public class ArticlePersistenceAdapter
 
 		Article foundArticle = readArticle(boardType, articleId, isShowAll);
 
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("articleId", articleId);
-
-		StringBuffer sqlString = new StringBuffer("""
-			WITH ARTICLE_COMMENT AS ( 
-					SELECT
-						*
-					FROM COMMENT
-						WHERE ARTICLE_ID = """+articleId+"""
-					AND DELETED_AT IS NULL
-				ORDER BY CREATED_AT DESC
+		// 게시글에 해당하는 댓글
+		StringBuffer sql = new StringBuffer("""
+			WITH ARTICLE_COMMENT AS (
+			    SELECT *
+			    FROM COMMENT
+			    WHERE article_id = :articleId
+			      AND DELETED_AT IS NULL
+			    ORDER BY CREATED_AT DESC
 			)
-			, ROOT_COMMENT AS (
-				SELECT *
-				FROM (
-					SELECT
-						*
-					FROM ARTICLE_COMMENT
-					WHERE PARENT_ID IS NULL
+				SELECT * FROM ARTICLE_COMMENT WHERE PARENT_ID IS NULL 
 			""");
-
-		// 로그인 사용자인 경우
-		if( ! requestUser.getRequestUserId().equals(-1L)) { //TODO 비로그인 사용자 공통 영역 추후 정의 후 수정
-			paramMap.put("requestUserId", requestUser.getRequestUserId());
-			sqlString.append("""
-				AND CREATED_BY = """+requestUser.getRequestUserId()+"""
-			""");
-		}
-		sqlString.append("""
-				)
-			""");
-
-		// 로그인 사용자인 경우
-		if( ! requestUser.getRequestUserId().equals(-1L)) { //TODO 비로그인 사용자 공통 영역 추후 정의 후 수정
-			sqlString.append("""
+		// 로그인 사용자의 댓글 먼저 추출 후 일반 댓글
+		if (!requestUser.getRequestUserId().equals(-1L)) {
+			sql.append("""
+				AND CREATED_BY = :requestUserId
 				UNION ALL
-				SELECT
-				*
-				FROM ARTICLE_COMMENT
-				WHERE PARENT_ID IS NULL
-				AND CREATED_BY <> """+requestUser.getRequestUserId()+"""
+				SELECT * FROM ARTICLE_COMMENT WHERE PARENT_ID IS NULL AND CREATED_BY <> :requestUserId""");
+		}
+		// 추출 댓글 순서에 따른 답글
+		sql.append("""
+				UNION ALL
+				SELECT *
+				FROM ARTICLE_COMMENT WHERE PARENT_ID IN (
+				SELECT COMMENT_ID FROM ARTICLE_COMMENT WHERE PARENT_ID IS NULL
+			""");
+		// 로그인 사용자 댓글에 대한 답글 먼저 추출
+		if (!requestUser.getRequestUserId().equals(-1L)) {
+			sql.append("""
+				AND CREATED_BY = :requestUserId
+				UNION ALL
+				SELECT COMMENT_ID FROM ARTICLE_COMMENT WHERE PARENT_ID IS NULL AND CREATED_BY <> :requestUserId
 				""");
 		}
-		sqlString.append("""
-					LIMIT 15
-				)
-			SELECT *
-			FROM ROOT_COMMENT
-			UNION ALL
-			SELECT *
-			FROM ARTICLE_COMMENT
-			WHERE PARENT_ID IN ( SELECT COMMENT_ID FROM ROOT_COMMENT )
-			""");
+		sql.append(")");
 
-		// 비로그인 요청 시, 숨긴 댓글의 답글 불필요
-		if( requestUser.getRequestUserId().equals(-1L)) {
-			sqlString.append("""
-					MINUS
-					SELECT *
-					FROM ARTICLE_COMMENT
-					WHERE VISIBLE = FALSE
-					AND PARENT_ID IS NOT NULL
+		/*
+		 * 글 작성자 1111 : 비밀글도 상관없이 전부 필요함.
+		 * -1, 2222, 3333 그 외 사용자 => ARTICLE_ID : 다른 사람의 비밀 댓글에 / 달린 답글 제거.
+		 * */
+		if (!foundArticle.getCreatedBy().equals(requestUser.getRequestUserId())) {
+			sql.append("""
+								MINUS
+								SELECT * FROM ARTICLE_COMMENT 
+								WHERE PARENT_ID IN (
+									SELECT COMMENT_ID FROM ARTICLE_COMMENT
+									WHERE PARENT_ID IS NULL
+									AND VISIBLE = false 
+									AND CREATED_BY <> :requestUserId
+								) 
 				""");
 		}
 
 		List<CommentJpaEntity> articleComments = jdbcClient
-				.sql(sqlString.toString())
-				.params(paramMap)
-				.query(CommentJpaEntity.class)
-				.list();
+			.sql(sql.toString())
+			.param("articleId", articleId)
+			.param("requestUserId", requestUser.getRequestUserId())
+			.query(CommentJpaEntity.class)
+			.list();
 
 		List<Comment> comments = articleComments.stream()
 			.map(commentMapper::mapToDomain)

@@ -3,6 +3,7 @@ package com.freediving.communityservice.application.service;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,7 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
@@ -60,32 +60,39 @@ public class ArticleService implements ArticleUseCase {
 	public ArticleContent getArticleWithComment(ArticleReadCommand command) {
 
 		if (command.isWithoutComment()) { // 본문 내용 수정 등
-			Article onlyArticle = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(),
-				command.isShowAll());
+			Article onlyArticle = articleReadPort.readArticle(
+				command.getBoardType(),
+				command.getArticleId(),
+				command.isShowAll()
+			);
 			return new ArticleContent(onlyArticle);
 		}
 
-		UserProvider requestUser = command.getUserProvider();
-
-		ArticleContentWithComment foundContent = articleReadPort.readArticleWithComment(command.getBoardType(),
-			command.getArticleId(), command.isShowAll(), requestUser);
-		//TODO 글 작성자에게만 보여지는 값 추가시 사용 Long articleOwner = articleContentWithComment.getArticle().getCreatedBy();
-
-		//TODO 관리자는 allComments 가 필요
+		ArticleContentWithComment foundContent = articleReadPort.readArticleWithComment(
+			command.getBoardType(),
+			command.getArticleId(),
+			command.isShowAll(),
+			command.getUserProvider()
+		);
 
 		// 비밀로 설정된 댓글,답글에 대한 처리
-		List<Comment> allComments = foundContent.getComments();
-		List<Comment> filteredComments = Comment.getVisibleComments(requestUser.getRequestUserId(), allComments);
+		List<Comment> filteredComments = foundContent.getComments().stream()
+			.map(comment -> comment.filterComment(
+				command.getBoardType(),
+				foundContent.getArticle().getCreatedBy(),
+				command.getUserProvider().getRequestUserId())
+			)
+			.collect(Collectors.toList());
 
 		boolean isLiked = false;
 
-		if (requestUser.getRequestUserId() != null) {
+		if (command.getUserProvider().getRequestUserId() != null) {
 			UserReactionType userReactionType = userReactionPort.getReactionTypeById(
 				UserReactionId.builder()
 					.boardType(command.getBoardType())
 					.articleId(command.getArticleId())
 					.userReactionType(UserReactionType.LIKE)
-					.createdBy(requestUser.getRequestUserId())
+					.createdBy(command.getUserProvider().getRequestUserId())
 					.build()
 			);
 			isLiked = ObjectUtils.nullSafeEquals(UserReactionType.LIKE, userReactionType);
