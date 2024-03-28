@@ -16,12 +16,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventConceptMappingRepository;
-import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventConditionsRepository;
-import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventDivingPoolMappingRepository;
-import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJoinRequestRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.concep.BuddyEventConceptMappingRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.condition.BuddyEventConditionsRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestRepository;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.application.port.out.service.MemberStatus;

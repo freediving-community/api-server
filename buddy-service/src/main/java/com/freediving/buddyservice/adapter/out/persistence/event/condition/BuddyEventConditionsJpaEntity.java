@@ -1,5 +1,6 @@
-package com.freediving.buddyservice.adapter.out.persistence.event;
+package com.freediving.buddyservice.adapter.out.persistence.event.condition;
 
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
 import com.freediving.common.persistence.AuditableEntity;
 
 import jakarta.persistence.Column;

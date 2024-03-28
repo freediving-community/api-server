@@ -1,13 +1,12 @@
-package com.freediving.buddyservice.adapter.out.persistence.event;
+package com.freediving.buddyservice.adapter.out.persistence.event.divingpool;
 
-import com.freediving.buddyservice.common.enumeration.ParticipationStatus;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
+import com.freediving.common.enumerate.DivingPool;
 import com.freediving.common.persistence.AuditableEntity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
@@ -19,23 +18,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "buddy_event_join_requests")
+@Table(name = "buddy_event_diving_pool_mapping")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@IdClass(BuddyEventJoinRequestId.class)
-public class BuddyEventJoinRequestJpaEntity extends AuditableEntity {
+@IdClass(BuddyEventDivingPoolMappingId.class)
+public class BuddyEventDivingPoolMappingJpaEntity extends AuditableEntity {
 	@Id
-	private Long userId; // 복합 키의 일부
+	@Enumerated(EnumType.STRING)
+	private DivingPool divingPoolId; // 복합 키의 일부
 
 	@Id
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "event_id", referencedColumnName = "event_id", insertable = false, updatable = false)
 	private BuddyEventJpaEntity buddyEvent;
-
-	@Column(name = "status")
-	@Enumerated(value = EnumType.STRING)
-	private ParticipationStatus status;
 
 }

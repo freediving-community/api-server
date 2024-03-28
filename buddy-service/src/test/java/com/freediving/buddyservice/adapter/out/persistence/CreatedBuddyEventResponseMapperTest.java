@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.Random;
-import java.util.Set;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,13 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventConditionsJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.CreatedBuddyEventResponseMapper;
-import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
-import com.freediving.common.enumerate.DivingPool;
 
 @ExtendWith(SpringExtension.class)
 @Import(CreatedBuddyEventResponseMapper.class)
@@ -37,7 +33,7 @@ class CreatedBuddyEventResponseMapperTest {
 		LocalDateTime StartDate = LocalDateTime.now();
 		LocalDateTime EndDate = LocalDateTime.now().plusHours(4);
 
-		BuddyEventJpaEntity buddyEventJpaEntity = generateBuddyEventJpa(userId, StartDate, EndDate,3, null);
+		BuddyEventJpaEntity buddyEventJpaEntity = generateBuddyEventJpa(userId, StartDate, EndDate, 3, null);
 
 		CreatedBuddyEventResponse createdBuddyEventResponse = createdBuddyEventResponseMapper.mapToDomainEntity(
 			buddyEventJpaEntity);

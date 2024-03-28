@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.adapter.out.persistence.event;
+package com.freediving.buddyservice.adapter.out.persistence.event.condition;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

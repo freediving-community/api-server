@@ -7,6 +7,10 @@ import java.util.Set;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.freediving.buddyservice.adapter.out.persistence.event.concep.BuddyEventConceptMappingJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.condition.BuddyEventConditionsJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestJpaEntity;
 import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
 import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.common.enumeration.ParticipationStatus;

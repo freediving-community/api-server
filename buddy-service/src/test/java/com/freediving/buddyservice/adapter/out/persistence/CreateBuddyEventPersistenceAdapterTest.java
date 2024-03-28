@@ -14,12 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventConceptMappingRepository;
-import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventConditionsRepository;
-import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventDivingPoolMappingRepository;
-import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJoinRequestRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.concep.BuddyEventConceptMappingRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.condition.BuddyEventConditionsRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestRepository;
 import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
