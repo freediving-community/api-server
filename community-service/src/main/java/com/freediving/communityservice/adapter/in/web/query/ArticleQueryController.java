@@ -56,7 +56,7 @@ public class ArticleQueryController {
 	}
 
 	@GetMapping("/boards/{boardType}/articles/{articleId}")
-	public ResponseEntity<ArticleContent> getArticleContent(
+	public ResponseEntity<ResponseJsonObject<ArticleContent>> getArticleContent(
 		UserProvider userProvider,
 		@PathVariable("boardType") BoardType boardType,
 		@PathVariable("articleId") Long articleId,
@@ -77,7 +77,7 @@ public class ArticleQueryController {
 				.withoutComment(withoutComment)
 				.build());
 		// return ResponseEntity.ok(articleContent);
-		return ResponseEntity.ok(articleContentDetail);
+		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, articleContentDetail));
 	}
 
 }

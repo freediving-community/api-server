@@ -18,11 +18,11 @@ public class CommentReadCommand extends SelfValidating<CommentReadCommand> {
 	private UserProvider requestUser;
 
 	@NotNull
-	private Long commentId;
-
-	@NotNull
 	private BoardType boardType;
 
 	@NotNull
 	private Long articleId;
+
+	@NotNull
+	private Long commentId;
 }

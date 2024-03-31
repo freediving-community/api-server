@@ -31,7 +31,7 @@ public class Comment {
 
 	private final Long modifiedBy;
 
-	public Comment filterComment(BoardType boardType, Long articleOwnerId, Long requestUserId) {
+	public Comment processSecretComment(BoardType boardType, Long articleOwnerId, Long requestUserId) {
 
 		// TODO BoardType에 따른 댓글 분류
 		switch (boardType) {

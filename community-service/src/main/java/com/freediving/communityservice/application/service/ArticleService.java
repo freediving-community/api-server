@@ -3,7 +3,7 @@ package com.freediving.communityservice.application.service;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +29,7 @@ import com.freediving.communityservice.application.port.out.ArticleReadPort;
 import com.freediving.communityservice.application.port.out.ArticleWritePort;
 import com.freediving.communityservice.application.port.out.BoardReadPort;
 import com.freediving.communityservice.application.port.out.CommentDeletePort;
+import com.freediving.communityservice.application.port.out.CommentReadPort;
 import com.freediving.communityservice.application.port.out.UserReactionPort;
 import com.freediving.communityservice.domain.Article;
 import com.freediving.communityservice.domain.Board;
@@ -47,6 +48,7 @@ public class ArticleService implements ArticleUseCase {
 	private final ArticleReadPort articleReadPort;
 	private final ArticleEditPort articleEditPort;
 	private final ArticleDeletePort articleDeletePort;
+	private final CommentReadPort commentReadPort;
 	private final CommentDeletePort commentDeletePort;
 	private final UserReactionPort userReactionPort;
 
@@ -59,33 +61,45 @@ public class ArticleService implements ArticleUseCase {
 	@Override
 	public ArticleContent getArticleWithComment(ArticleReadCommand command) {
 
-		if (command.isWithoutComment()) { // 본문 내용 수정 등
-			Article onlyArticle = articleReadPort.readArticle(
-				command.getBoardType(),
-				command.getArticleId(),
-				command.isShowAll()
-			);
-			return new ArticleContent(onlyArticle);
-		}
-
-		ArticleContentWithComment foundContent = articleReadPort.readArticleWithComment(
+		Article article = articleReadPort.readArticle(
 			command.getBoardType(),
 			command.getArticleId(),
-			command.isShowAll(),
-			command.getUserProvider()
+			command.isShowAll()
 		);
 
-		// 비밀로 설정된 댓글,답글에 대한 처리
-		List<Comment> filteredComments = foundContent.getComments().stream()
-			.map(comment -> comment.filterComment(
+		if (command.isWithoutComment()) { // 본문 내용 수정 등
+			return new ArticleContent(article);
+		}
+
+		int allCommentCount = commentReadPort.getCommentCountOfArticle(article.getId());
+
+		List<Comment> comments = commentReadPort.readDefaultComments(
+			command.getBoardType(),
+			article.getId(),
+			article.getCreatedBy(),
+			command.getUserProvider().getRequestUserId()
+		);
+
+		// 비로그인, 로그인, 글 작성자 조회에 따라, 숨겨진 댓글과 답글에 대한 처리
+		List<Comment> filteredComments = comments.stream()
+			.map(comment -> comment.processSecretComment(
 				command.getBoardType(),
-				foundContent.getArticle().getCreatedBy(),
+				article.getCreatedBy(),
 				command.getUserProvider().getRequestUserId())
 			)
-			.collect(Collectors.toList());
+			.toList();
+
+		List<Long> validCommentIds = filteredComments.stream()
+			.filter(Comment::isVisible)
+			.map(Comment::getCommentId)
+			.toList();
+
+		List<Comment> commentReplies = commentReadPort.readRepliesByCommentId(
+			article.getId(),
+			validCommentIds
+		);
 
 		boolean isLiked = false;
-
 		if (command.getUserProvider().getRequestUserId() != null) {
 			UserReactionType userReactionType = userReactionPort.getReactionTypeById(
 				UserReactionId.builder()
@@ -98,7 +112,12 @@ public class ArticleService implements ArticleUseCase {
 			isLiked = ObjectUtils.nullSafeEquals(UserReactionType.LIKE, userReactionType);
 		}
 
-		return new ArticleContentWithComment(foundContent.getArticle(), filteredComments, isLiked);
+		return new ArticleContentWithComment(
+			article,
+			Stream.concat(filteredComments.stream(), commentReplies.stream()).toList(),
+			isLiked,
+			allCommentCount
+		);
 	}
 
 	@Override

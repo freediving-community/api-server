@@ -8,14 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.support.PageableExecutionUtils;
-import org.springframework.jdbc.core.simple.JdbcClient;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
-import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
-import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
-import com.freediving.communityservice.adapter.out.persistence.comment.CommentJpaEntity;
-import com.freediving.communityservice.adapter.out.persistence.comment.CommentPersistenceMapper;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
@@ -24,7 +19,6 @@ import com.freediving.communityservice.application.port.out.ArticleEditPort;
 import com.freediving.communityservice.application.port.out.ArticleReadPort;
 import com.freediving.communityservice.application.port.out.ArticleWritePort;
 import com.freediving.communityservice.domain.Article;
-import com.freediving.communityservice.domain.Comment;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -42,8 +36,6 @@ public class ArticlePersistenceAdapter
 	private final ArticleRepository articleRepository;
 	private final JPAQueryFactory jpaQueryFactory;
 	private final ArticlePersistenceMapper articleMapper;
-	private final CommentPersistenceMapper commentMapper;
-	private final JdbcClient jdbcClient;
 
 	@Override
 	public Article writeArticle(ArticleWriteCommand articleWriteCommand) {
@@ -77,76 +69,15 @@ public class ArticlePersistenceAdapter
 		return articleMapper.mapToDomain(foundArticle);
 	}
 
-	@Override
-	public ArticleContentWithComment readArticleWithComment(BoardType boardType, Long articleId, boolean isShowAll,
-		UserProvider requestUser) {
-
-		Article foundArticle = readArticle(boardType, articleId, isShowAll);
-
-		// 게시글에 해당하는 댓글
-		StringBuffer sql = new StringBuffer("""
-			WITH ARTICLE_COMMENT AS (
-			    SELECT *
-			    FROM COMMENT
-			    WHERE article_id = :articleId
-			      AND DELETED_AT IS NULL
-			    ORDER BY CREATED_AT DESC
-			)
-				SELECT * FROM ARTICLE_COMMENT WHERE PARENT_ID IS NULL 
-			""");
-		// 로그인 사용자의 댓글 먼저 추출 후 일반 댓글
-		if (!requestUser.getRequestUserId().equals(-1L)) {
-			sql.append("""
-				AND CREATED_BY = :requestUserId
-				UNION ALL
-				SELECT * FROM ARTICLE_COMMENT WHERE PARENT_ID IS NULL AND CREATED_BY <> :requestUserId""");
-		}
-		// 추출 댓글 순서에 따른 답글
-		sql.append("""
-				UNION ALL
-				SELECT *
-				FROM ARTICLE_COMMENT WHERE PARENT_ID IN (
-				SELECT COMMENT_ID FROM ARTICLE_COMMENT WHERE PARENT_ID IS NULL
-			""");
-		// 로그인 사용자 댓글에 대한 답글 먼저 추출
-		if (!requestUser.getRequestUserId().equals(-1L)) {
-			sql.append("""
-				AND CREATED_BY = :requestUserId
-				UNION ALL
-				SELECT COMMENT_ID FROM ARTICLE_COMMENT WHERE PARENT_ID IS NULL AND CREATED_BY <> :requestUserId
-				""");
-		}
-		sql.append(")");
-
-		/*
-		 * 글 작성자 1111 : 비밀글도 상관없이 전부 필요함.
-		 * -1, 2222, 3333 그 외 사용자 => ARTICLE_ID : 다른 사람의 비밀 댓글에 / 달린 답글 제거.
-		 * */
-		if (!foundArticle.getCreatedBy().equals(requestUser.getRequestUserId())) {
-			sql.append("""
-								MINUS
-								SELECT * FROM ARTICLE_COMMENT 
-								WHERE PARENT_ID IN (
-									SELECT COMMENT_ID FROM ARTICLE_COMMENT
-									WHERE PARENT_ID IS NULL
-									AND VISIBLE = false 
-									AND CREATED_BY <> :requestUserId
-								) 
-				""");
-		}
-
-		List<CommentJpaEntity> articleComments = jdbcClient
-			.sql(sql.toString())
-			.param("articleId", articleId)
-			.param("requestUserId", requestUser.getRequestUserId())
-			.query(CommentJpaEntity.class)
-			.list();
-
-		List<Comment> comments = articleComments.stream()
-			.map(commentMapper::mapToDomain)
-			.toList();
-		return new ArticleContentWithComment(foundArticle, comments, false);
-	}
+	// @Override
+	// public ArticleContentWithComment readArticleWithComment(BoardType boardType, Long articleId, boolean isShowAll,
+	// 	UserProvider requestUser) {
+	//
+	// 	Article foundArticle = readArticle(boardType, articleId, isShowAll);
+	//
+	// 	List<Comment> comments = commentReadPort.
+	// 	return new ArticleContentWithComment(foundArticle, comments, false);
+	// }
 
 	@Override
 	public Page<ArticleBriefDto> retrieveArticleIndexList(BoardType boardType, Long cursor, Pageable pageable) {
