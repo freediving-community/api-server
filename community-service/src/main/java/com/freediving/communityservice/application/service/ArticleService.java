@@ -3,6 +3,7 @@ package com.freediving.communityservice.application.service;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,7 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
@@ -29,6 +29,7 @@ import com.freediving.communityservice.application.port.out.ArticleReadPort;
 import com.freediving.communityservice.application.port.out.ArticleWritePort;
 import com.freediving.communityservice.application.port.out.BoardReadPort;
 import com.freediving.communityservice.application.port.out.CommentDeletePort;
+import com.freediving.communityservice.application.port.out.CommentReadPort;
 import com.freediving.communityservice.application.port.out.UserReactionPort;
 import com.freediving.communityservice.domain.Article;
 import com.freediving.communityservice.domain.Board;
@@ -47,51 +48,76 @@ public class ArticleService implements ArticleUseCase {
 	private final ArticleReadPort articleReadPort;
 	private final ArticleEditPort articleEditPort;
 	private final ArticleDeletePort articleDeletePort;
+	private final CommentReadPort commentReadPort;
 	private final CommentDeletePort commentDeletePort;
 	private final UserReactionPort userReactionPort;
 
 	//Query
-	@Override
-	public Article getArticle(ArticleReadCommand command) {
-		return articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), command.isShowAll());
-	}
+	// @Override
+	// public Article getArticle(ArticleReadCommand command) {
+	// 	return articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), command.isShowAll());
+	// }
 
 	@Override
 	public ArticleContent getArticleWithComment(ArticleReadCommand command) {
 
-		if (command.isWithoutComment()) {
-			Article onlyArticle = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(),
-				command.isShowAll());
-			return new ArticleContent(onlyArticle);
+		Article article = articleReadPort.readArticle(
+			command.getBoardType(),
+			command.getArticleId(),
+			command.isShowAll()
+		);
+
+		if (command.isWithoutComment()) { // 본문 내용 수정 등
+			return new ArticleContent(article);
 		}
 
-		ArticleContentWithComment foundContent = articleReadPort.readArticleWithComment(command.getBoardType(),
-			command.getArticleId(), command.isShowAll());
-		//TODO 글 작성자에게만 보여지는 값 추가시 사용 Long articleOwner = articleContentWithComment.getArticle().getCreatedBy();
+		int allCommentCount = commentReadPort.getCommentCountOfArticle(article.getId());
 
-		UserProvider requestUser = command.getUserProvider();
+		List<Comment> comments = commentReadPort.readDefaultComments(
+			command.getBoardType(),
+			article.getId(),
+			article.getCreatedBy(),
+			command.getUserProvider().getRequestUserId()
+		);
 
-		//TODO 관리자는 allComments 가 필요
+		// 비로그인, 로그인, 글 작성자 조회에 따라, 숨겨진 댓글과 답글에 대한 처리
+		List<Comment> filteredComments = comments.stream()
+			.map(comment -> comment.processSecretComment(
+				command.getBoardType(),
+				article.getCreatedBy(),
+				command.getUserProvider().getRequestUserId())
+			)
+			.toList();
 
-		// 비밀로 설정된 댓글,답글에 대한 처리
-		List<Comment> allComments = foundContent.getComments();
-		List<Comment> filteredComments = Comment.getVisibleComments(requestUser.getRequestUserId(), allComments);
+		List<Long> validCommentIds = filteredComments.stream()
+			.filter(Comment::isVisible)
+			.map(Comment::getCommentId)
+			.toList();
+
+		List<Comment> commentReplies = commentReadPort.readRepliesByCommentId(
+			article.getId(),
+			validCommentIds
+		);
 
 		boolean isLiked = false;
-
-		if (requestUser.getRequestUserId() != null) {
+		if (command.getUserProvider().getRequestUserId() != null) {
 			UserReactionType userReactionType = userReactionPort.getReactionTypeById(
 				UserReactionId.builder()
 					.boardType(command.getBoardType())
 					.articleId(command.getArticleId())
 					.userReactionType(UserReactionType.LIKE)
-					.createdBy(requestUser.getRequestUserId())
+					.createdBy(command.getUserProvider().getRequestUserId())
 					.build()
 			);
 			isLiked = ObjectUtils.nullSafeEquals(UserReactionType.LIKE, userReactionType);
 		}
 
-		return new ArticleContentWithComment(foundContent.getArticle(), filteredComments, isLiked);
+		return new ArticleContentWithComment(
+			article,
+			Stream.concat(filteredComments.stream(), commentReplies.stream()).toList(),
+			isLiked,
+			allCommentCount
+		);
 	}
 
 	@Override
@@ -153,9 +179,10 @@ public class ArticleService implements ArticleUseCase {
 		}
 		article.checkHasOwnership(command.getUserProvider().getRequestUserId());
 
-		commentDeletePort.deleteComments(article.getId());
+		articleDeletePort.markDeleted(command);
+		commentDeletePort.markDeleted(article.getId());
 
-		return articleDeletePort.removeArticle(command);
+		return article.getId();
 	}
 
 }

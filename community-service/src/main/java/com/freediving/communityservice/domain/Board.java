@@ -2,7 +2,6 @@ package com.freediving.communityservice.domain;
 
 import java.time.LocalDateTime;
 
-import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
 
@@ -50,17 +49,17 @@ public class Board {
 		}
 	}
 
-	public void checkPermission(BoardType boardType, UserProvider userProvider) {
-		/* TODO
-		 * 	 - 조회 권한
-		 * 	 - 조작 권한
-		 * */
-		if (hasPermissionLevel(userProvider)) {
-			System.out.println("BOARDTYPE====>" + this.boardType.equals(BoardType.GENERAL));
-		}
-	}
+	// public void checkPermission(BoardType boardType, UserProvider userProvider) {
+	// 	/* TODO
+	// 	 * 	 - 조회 권한
+	// 	 * 	 - 조작 권한
+	// 	 * */
+	// 	if (hasPermissionLevel(userProvider)) {
+	// 		System.out.println("BOARDTYPE====>" + this.boardType.equals(BoardType.GENERAL));
+	// 	}
+	// }
 
-	private boolean hasPermissionLevel(UserProvider requestUser) {
-		return requestUser.getRoleLevel().getValue() >= this.boardType.getRoleLevel();
-	}
+	// private boolean hasPermissionLevel(UserProvider requestUser) {
+	// 	return requestUser.getRoleLevel().getValue() >= this.boardType.getCreateRoleLevel();
+	// }
 }

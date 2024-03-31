@@ -1,18 +1,18 @@
 package com.freediving.communityservice.application.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import com.freediving.communityservice.adapter.in.web.UserProvider;
-import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
+import com.freediving.communityservice.application.port.in.CommentEditCommand;
 import com.freediving.communityservice.application.port.in.CommentReadCommand;
 import com.freediving.communityservice.application.port.in.CommentUseCase;
 import com.freediving.communityservice.application.port.in.CommentWriteCommand;
 import com.freediving.communityservice.application.port.out.ArticleReadPort;
-import com.freediving.communityservice.application.port.out.BoardReadPort;
+import com.freediving.communityservice.application.port.out.CommentEditPort;
 import com.freediving.communityservice.application.port.out.CommentReadPort;
 import com.freediving.communityservice.application.port.out.CommentWritePort;
 import com.freediving.communityservice.domain.Article;
-import com.freediving.communityservice.domain.Board;
 import com.freediving.communityservice.domain.Comment;
 
 import jakarta.transaction.Transactional;
@@ -23,16 +23,14 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class CommentService implements CommentUseCase {
 
-	private final BoardReadPort boardReadPort;
 	private final ArticleReadPort articleReadPort;
 	private final CommentReadPort commentReadPort;
 	private final CommentWritePort commentWritePort;
+	private final CommentEditPort commentEditPort;
 
 	@Override
 	public Comment writeComment(CommentWriteCommand command) {
-		Board board = getPermissionedBoard(command.getBoardType(), command.getRequestUser());
-
-		Article article = articleReadPort.readArticle(board.getBoardType(), command.getArticleId(), true);
+		Article article = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), true);
 
 		if (command.hasParentComment()) {
 			/*
@@ -58,19 +56,42 @@ public class CommentService implements CommentUseCase {
 
 	@Override
 	public Comment readComments(CommentReadCommand command) {
-		Board board = getPermissionedBoard(command.getBoardType(), command.getRequestUser());
-		Article article = articleReadPort.readArticle(board.getBoardType(), command.getArticleId(), true);
+/*		Article article = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), true);
 		article.canCreateComment();
 
-		commentReadPort.readComments(command);
+		commentReadPort.readComments(command);*/
 		return null;
 	}
 
-	private Board getPermissionedBoard(BoardType boardType, UserProvider userProvider) {
-		Board board = boardReadPort.findByBoardType(boardType)
-			.orElseThrow(() -> new IllegalArgumentException("해당하는 게시판이 없습니다."));
-		board.checkPermission(boardType, userProvider);
-		return board;
+	@Override
+	public Comment editComment(CommentEditCommand command) {
+		Comment comment = commentReadPort.findById(CommentReadCommand.builder()
+			.commentId(command.getCommentId())
+			.build());
+		comment.checkCommentOwner(command.getRequestUser().getRequestUserId());
+		return commentEditPort.editComment(command);
+	}
+
+	@Override
+	public List<Comment> getNextCommentsByLastCommentId(CommentReadCommand command) {
+		Article targetArticle = articleReadPort.readArticle(
+			command.getBoardType(),
+			command.getArticleId(),
+			false
+		);
+
+		List<Comment> nextComments = commentReadPort.getNextCommentsByLastCommentId(
+			targetArticle.getId(),
+			command.getCommentId(),
+			command.getRequestUser().getRequestUserId()
+		);
+
+		return nextComments.stream()
+			.map(comment -> comment.processSecretComment(
+				targetArticle.getBoardType(),
+				targetArticle.getCreatedBy(),
+				command.getRequestUser().getRequestUserId()
+			)).toList();
 	}
 
 }

@@ -34,6 +34,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert // null 인 값은 제외하고 Insert. DB DefaultValue 사용을 위함.
+// @SQLDelete(sql = "UPDATE article SET deleted_at = SYSDATE WHERE article_id = ?")
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "article", indexes = {@Index(name = "idx_article_title", columnList = "title"),
 	/* @Index(name = "idx_article_createdAt", columnList = "createdAt"), == PK desc */
@@ -76,8 +77,8 @@ public class ArticleJpaEntity {
 	@Column(nullable = false, columnDefinition = "boolean default true")
 	private boolean enableComment;
 
-	@Column(nullable = false, columnDefinition = "boolean default true")
-	private boolean visible;
+	@Column(nullable = true)
+	private LocalDateTime deletedAt;
 
 	// Auditing
 	@CreatedDate
@@ -101,7 +102,7 @@ public class ArticleJpaEntity {
 	public static ArticleJpaEntity of(String title, String content, BoardType boardType, String authorName,
 		boolean enableComment) {
 		return new ArticleJpaEntity(null, title, content, boardType, authorName, 0, 0, 0, enableComment,
-			true,
+			null,
 			null, null, null, null);
 	}
 
@@ -109,6 +110,10 @@ public class ArticleJpaEntity {
 		this.title = title;
 		this.content = content;
 		this.enableComment = enableComment;
+	}
+
+	public void markDeletedNow() {
+		this.deletedAt = LocalDateTime.now();
 	}
 
 	@Override

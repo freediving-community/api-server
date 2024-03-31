@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.freediving.common.response.ResponseJsonObject;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.out.dto.board.BoardResponse;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.BoardReadCommand;
@@ -25,19 +27,21 @@ public class BoardQueryController {
 	private final BoardUseCase boardUseCase;
 
 	@GetMapping("/boards")
-	public ResponseEntity<BoardResponse> getBoards() {
+	public ResponseEntity<ResponseJsonObject<BoardResponse>> getBoards() {
 		boolean isAdmin = false;
 		// boolean isAdmin = checkAdmin(principal); //TODO 관리자인지 확인하는 로직
 		BoardReadCommand boardReadCommand = BoardReadCommand.builder()
 			.isEnabledOnly(isAdmin)
 			.build();
 		List<Board> boards = boardUseCase.readBoardList(boardReadCommand);
-		return ResponseEntity.ok(BoardResponse.of("success", boards));
+		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, BoardResponse.of("success", boards)));
 	}
 
 	@GetMapping("/boards/{boardType}")
-	public ResponseEntity<BoardResponse> getBoardDetail(@PathVariable("boardType") BoardType boardType) {
+	public ResponseEntity<ResponseJsonObject<BoardResponse>> getBoardDetail(
+		@PathVariable("boardType") BoardType boardType) {
 		Optional<Board> board = boardUseCase.readBoard(boardType);
-		return ResponseEntity.ok(BoardResponse.of("success", board.orElseThrow(IllegalArgumentException::new)));
+		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK,
+			BoardResponse.of("success", board.orElseThrow(IllegalArgumentException::new))));
 	}
 }

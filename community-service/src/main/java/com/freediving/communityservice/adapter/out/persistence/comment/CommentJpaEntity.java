@@ -49,6 +49,9 @@ public class CommentJpaEntity {
 	@Column(nullable = false, columnDefinition = "boolean default true")
 	private boolean visible;
 
+	@Column(nullable = true)
+	private LocalDateTime deletedAt;
+
 	// Auditing
 	@CreatedDate
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -75,6 +78,15 @@ public class CommentJpaEntity {
 		this.parentId = parentId;
 		this.content = content;
 		this.visible = visible;
+	}
+
+	public void editComment(String content, boolean visible) {
+		this.content = content;
+		this.visible = visible;
+	}
+
+	public void markDeleted(LocalDateTime localDateTime) {
+		this.deletedAt = localDateTime;
 	}
 
 	@Override

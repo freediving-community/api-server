@@ -5,18 +5,25 @@ import java.util.List;
 import com.freediving.communityservice.domain.Article;
 import com.freediving.communityservice.domain.Comment;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class ArticleContentWithComment extends ArticleContent {
+	//TODO 필드 전부 받고 DTO로 분리해야 함.
 
 	private final List<Comment> comments;
 	private final boolean isLiked;
+	private final int allCommentCount;
 
-	public ArticleContentWithComment(Article article, List<Comment> comments, boolean isLiked) {
+	public ArticleContentWithComment(Article article, List<Comment> comments, boolean isLiked, int allCommentCount) {
 		super(article);
 		this.comments = comments;
 		this.isLiked = isLiked;
+		this.allCommentCount = allCommentCount;
 	}
 
 }

@@ -9,8 +9,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import com.freediving.communityservice.adapter.in.web.UserProvider.RoleLevel;
-
 @Component
 public class UserProviderArgumentResolver implements HandlerMethodArgumentResolver {
 
@@ -30,20 +28,17 @@ public class UserProviderArgumentResolver implements HandlerMethodArgumentResolv
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 		NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 		String userId = webRequest.getHeader("UserId");
-		String roleLevel = webRequest.getHeader("RoleLevel");
+		// String roleLevel = webRequest.getHeader("RoleLevel");
 		UserProvider currentUserProvider = userProvider.getObject();
 
-		if (userId == null || roleLevel == null) {
+		if (userId == null/* || roleLevel == null*/) {
 			currentUserProvider.setRequestUserId(-1L);
-			currentUserProvider.setRoleLevel(RoleLevel.ANONYMOUS);
-			// return new UserProvider(-1L, RoleLevel.ANONYMOUS);
+			// currentUserProvider.setRoleLevel(RoleLevel.ANONYMOUS);
 		} else {
-			RoleLevel rl = RoleLevel.valueOf(Integer.parseInt(roleLevel));
+			// RoleLevel rl = RoleLevel.valueOf(Integer.parseInt(roleLevel));
 			currentUserProvider.setRequestUserId(Long.valueOf(userId));
-			currentUserProvider.setRoleLevel(rl);
+			// currentUserProvider.setRoleLevel(rl);
 		}
 		return currentUserProvider;
-		// RoleLevel rl = RoleLevel.valueOf(Integer.parseInt(roleLevel));
-		// return new UserProvider(Long.valueOf(userId), rl);
 	}
 }

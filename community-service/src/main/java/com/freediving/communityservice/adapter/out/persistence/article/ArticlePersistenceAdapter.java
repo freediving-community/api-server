@@ -1,7 +1,6 @@
 package com.freediving.communityservice.adapter.out.persistence.article;
 
 import static com.freediving.communityservice.adapter.out.persistence.article.QArticleJpaEntity.*;
-import static com.freediving.communityservice.adapter.out.persistence.comment.QCommentJpaEntity.*;
 
 import java.util.List;
 
@@ -12,9 +11,6 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
-import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
-import com.freediving.communityservice.adapter.out.persistence.comment.CommentJpaEntity;
-import com.freediving.communityservice.adapter.out.persistence.comment.CommentPersistenceMapper;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
@@ -23,7 +19,6 @@ import com.freediving.communityservice.application.port.out.ArticleEditPort;
 import com.freediving.communityservice.application.port.out.ArticleReadPort;
 import com.freediving.communityservice.application.port.out.ArticleWritePort;
 import com.freediving.communityservice.domain.Article;
-import com.freediving.communityservice.domain.Comment;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -41,7 +36,6 @@ public class ArticlePersistenceAdapter
 	private final ArticleRepository articleRepository;
 	private final JPAQueryFactory jpaQueryFactory;
 	private final ArticlePersistenceMapper articleMapper;
-	private final CommentPersistenceMapper commentMapper;
 
 	@Override
 	public Article writeArticle(ArticleWriteCommand articleWriteCommand) {
@@ -66,7 +60,7 @@ public class ArticlePersistenceAdapter
 				boardTypeEq(boardType),
 				articleIdEq(articleId),
 				isShowAll ?
-					null : articleJpaEntity.visible.isTrue()
+					null : articleJpaEntity.deletedAt.isNull()
 			).fetchOne();
 
 		if (foundArticle == null) {
@@ -75,24 +69,15 @@ public class ArticlePersistenceAdapter
 		return articleMapper.mapToDomain(foundArticle);
 	}
 
-	@Override
-	public ArticleContentWithComment readArticleWithComment(BoardType boardType, Long articleId, boolean isShowAll) {
-
-		Article foundArticle = readArticle(boardType, articleId, isShowAll);
-
-		List<CommentJpaEntity> articleComments = jpaQueryFactory
-			.selectFrom(commentJpaEntity)
-			.where(
-				commentJpaEntity.articleId.eq(foundArticle.getId()),
-				isShowAll ?
-					null : commentJpaEntity.visible.isTrue()
-			).fetch();
-
-		List<Comment> comments = articleComments.stream()
-			.map(commentMapper::mapToDomain)
-			.toList();
-		return new ArticleContentWithComment(foundArticle, comments, false);
-	}
+	// @Override
+	// public ArticleContentWithComment readArticleWithComment(BoardType boardType, Long articleId, boolean isShowAll,
+	// 	UserProvider requestUser) {
+	//
+	// 	Article foundArticle = readArticle(boardType, articleId, isShowAll);
+	//
+	// 	List<Comment> comments = commentReadPort.
+	// 	return new ArticleContentWithComment(foundArticle, comments, false);
+	// }
 
 	@Override
 	public Page<ArticleBriefDto> retrieveArticleIndexList(BoardType boardType, Long cursor, Pageable pageable) {
@@ -111,7 +96,7 @@ public class ArticlePersistenceAdapter
 			.from(articleJpaEntity)
 			.where(
 				boardTypeEq(boardType),
-				articleJpaEntity.visible.isTrue()
+				articleJpaEntity.deletedAt.isNull()
 			)
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
@@ -123,7 +108,7 @@ public class ArticlePersistenceAdapter
 			.from(articleJpaEntity)
 			.where(
 				boardTypeEq(boardType),
-				articleJpaEntity.visible.isTrue()
+				articleJpaEntity.deletedAt.isNull()
 			);
 
 		return PageableExecutionUtils.getPage(articleJpaEntityList, pageable, countQuery::fetchOne);
@@ -188,11 +173,13 @@ public class ArticlePersistenceAdapter
 	}
 
 	@Override
-	public Long removeArticle(ArticleRemoveCommand articleRemoveCommand) {
+	public Long markDeleted(ArticleRemoveCommand articleRemoveCommand) {
 
-		articleRepository.deleteById(articleRemoveCommand.getArticleId());
+		ArticleJpaEntity articleJpa = articleRepository.findById(articleRemoveCommand.getArticleId())
+			.orElseThrow(IllegalStateException::new);
+		articleJpa.markDeletedNow();
+		return 1L;
 
-		return articleRemoveCommand.getArticleId();
 	}
 
 	private BooleanExpression boardTypeEq(BoardType boardType) {

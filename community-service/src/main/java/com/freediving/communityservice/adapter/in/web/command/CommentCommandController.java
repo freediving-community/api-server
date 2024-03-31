@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.freediving.communityservice.adapter.in.dto.CommentEditRequest;
 import com.freediving.communityservice.adapter.in.dto.CommentWriteRequest;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
+import com.freediving.communityservice.application.port.in.CommentEditCommand;
 import com.freediving.communityservice.application.port.in.CommentUseCase;
 import com.freediving.communityservice.application.port.in.CommentWriteCommand;
 import com.freediving.communityservice.domain.Comment;
@@ -43,5 +45,29 @@ public class CommentCommandController {
 
 		return ResponseEntity.ok(comment);
 	}
+
+	@PostMapping("/boards/{boardType}/articles/{articleId}/comments/{commentId}")
+	public ResponseEntity<Comment> editComment(
+		UserProvider userProvider,
+		@PathVariable("boardType") BoardType boardType,
+		@PathVariable("articleId") Long articleId,
+		@PathVariable("commentId") Long commentId,
+		@RequestBody CommentEditRequest commentEditRequest
+	) {
+		Comment comment = commentUseCase.editComment(
+			CommentEditCommand.builder()
+				.requestUser(userProvider)
+				.boardType(boardType)
+				.articleId(articleId)
+				.parentId(commentEditRequest.getParentId())
+				.commentId(commentId)
+				.content(commentEditRequest.getContent())
+				.visible(commentEditRequest.isVisible())
+				.build()
+		);
+
+		return ResponseEntity.ok(comment);
+	}
+
 
 }

@@ -16,7 +16,7 @@ public class ArticlePersistenceMapper {
 			.viewCount(articleJpaEntity.getViewCount())
 			.likeCount(articleJpaEntity.getLikeCount())
 			.enableComment(articleJpaEntity.isEnableComment())
-			.visible(articleJpaEntity.isVisible())
+			.deletedAt(articleJpaEntity.getDeletedAt())
 			.createdAt(articleJpaEntity.getCreatedAt())
 			.createdBy(articleJpaEntity.getCreatedBy())
 			.modifiedAt(articleJpaEntity.getModifiedAt())
