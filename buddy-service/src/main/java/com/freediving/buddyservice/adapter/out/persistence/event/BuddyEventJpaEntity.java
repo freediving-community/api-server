@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.hibernate.annotations.DynamicUpdate;
 
-import com.freediving.buddyservice.adapter.out.persistence.event.concep.BuddyEventConceptMappingJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.condition.BuddyEventConditionsJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestJpaEntity;
@@ -66,10 +66,10 @@ public class BuddyEventJpaEntity extends AuditableEntity {
 	@Enumerated(EnumType.STRING)
 	private BuddyEventStatus status;
 
-	@Column(name = "kakao_room_code", length = 10)
+	@Column(name = "kakao_room_code", length = 10, nullable = true)
 	private String kakaoRoomCode;
 
-	@Column(name = "comment", length = 1000)
+	@Column(name = "comment", length = 1000, nullable = true)
 	private String comment;
 
 	// 연관 관계 매핑

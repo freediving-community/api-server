@@ -1,5 +1,6 @@
 package com.freediving.divingpool.data.dto;
 
+import com.freediving.common.enumerate.DivingPool;
 import com.freediving.divingpool.data.dao.DivingPoolJpaEntity;
 
 import lombok.AccessLevel;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class DivingPoolResponse {
 
-	private String divingPoolId;
+	private DivingPool divingPoolId;
 	private String divingPoolName;
 	private String address;
 	private String description;
@@ -23,7 +24,7 @@ public class DivingPoolResponse {
 	@Override
 	public String toString() {
 		return "DivingPoolResponse{" +
-			"divingPoolId='" + divingPoolId + '\'' +
+			"divingPoolId='" + divingPoolId.toString() + '\'' +
 			", divingPoolName=" + divingPoolName +
 			", address='" + address + '\'' +
 			", description='" + description + '\'' +

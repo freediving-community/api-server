@@ -35,7 +35,7 @@ public class BuddyEventJoinRequestJpaEntity extends AuditableEntity {
 	@JoinColumn(name = "event_id", referencedColumnName = "event_id", insertable = false, updatable = false)
 	private BuddyEventJpaEntity buddyEvent;
 
-	@Column(name = "status")
+	@Column(name = "status", nullable = false)
 	@Enumerated(value = EnumType.STRING)
 	private ParticipationStatus status;
 

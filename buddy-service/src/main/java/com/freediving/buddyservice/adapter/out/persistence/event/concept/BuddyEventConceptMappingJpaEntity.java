@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.adapter.out.persistence.event.concep;
+package com.freediving.buddyservice.adapter.out.persistence.event.concept;
 
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
 import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;

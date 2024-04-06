@@ -7,8 +7,8 @@ CREATE TABLE diving_pool
     description      VARCHAR(255) NOT NULL,
     is_visible       Boolean      NOT NULL DEFAULT false,
     display_order    integer      NOT NULL DEFAULT 0,
-    updated_date     timestamp             default current_timestamp NOT NULL,
-    created_date     timestamp             default current_timestamp NOT NULL
+    updated_date     timestamp    NOT NULL default current_timestamp NOT NULL,
+    created_date     timestamp    NOT NULL default current_timestamp NOT NULL
 );
 ALTER TABLE diving_pool
     ADD CONSTRAINT PK_DIVING_POOL PRIMARY KEY (diving_pool_id);

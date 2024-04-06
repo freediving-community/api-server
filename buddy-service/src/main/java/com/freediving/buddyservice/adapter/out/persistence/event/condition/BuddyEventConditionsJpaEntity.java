@@ -31,10 +31,10 @@ public class BuddyEventConditionsJpaEntity extends AuditableEntity {
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@MapsId // 이 줄을 추가
-	@JoinColumn(name = "event_id", referencedColumnName = "event_id")
+	@JoinColumn(name = "event_id", referencedColumnName = "event_id", insertable = false, updatable = false)
 	private BuddyEventJpaEntity buddyEvent;
 
 	// 나머지 컬럼 정의 및 getters and setters
-	@Column(name = "freediving_level")
+	@Column(name = "freediving_level", nullable = false)
 	private Integer freedivingLevel;
 }

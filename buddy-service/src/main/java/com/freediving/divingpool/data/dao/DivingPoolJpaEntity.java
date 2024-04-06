@@ -1,9 +1,12 @@
 package com.freediving.divingpool.data.dao;
 
+import com.freediving.common.enumerate.DivingPool;
 import com.freediving.common.persistence.AuditableEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
@@ -24,21 +27,23 @@ import lombok.NoArgsConstructor;
 public class DivingPoolJpaEntity extends AuditableEntity {
 
 	@Id
-	private String divingPoolId;
+	@Enumerated(EnumType.STRING)
+	@Column(name="diving_pool_id", nullable = false)
+	private DivingPool divingPoolId;
 
-	@Column(nullable = false)
+	@Column(name="diving_pool_name", nullable = false)
 	private String divingPoolName;
 
-	@Column(length = 255, nullable = false)
+	@Column(name="address", length = 255, nullable = false)
 	private String address;
 
-	@Column(length = 255, nullable = false)
+	@Column(name="description", length = 255, nullable = false)
 	private String description;
 
-	@Column(nullable = false)
+	@Column(name="is_visible", nullable = false)
 	private Boolean isVisible;
 
-	@Column(nullable = false)
+	@Column(name="display_order", nullable = false)
 	private Integer displayOrder;
 
 	@Override
