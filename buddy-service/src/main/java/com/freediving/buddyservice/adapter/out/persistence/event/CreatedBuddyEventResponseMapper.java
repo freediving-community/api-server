@@ -5,6 +5,8 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
+import com.freediving.buddyservice.adapter.out.persistence.event.concep.BuddyEventConceptMappingJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingJpaEntity;
 import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
 import com.freediving.common.enumerate.DivingPool;
@@ -34,9 +36,8 @@ public class CreatedBuddyEventResponseMapper {
 				buddyEventConcepts.add(row.getConceptId());
 
 		Integer freedivingLevel = null;
-		if(buddyEventJpaEntity.getBuddyEventConditionsJpaEntity() != null)
+		if (buddyEventJpaEntity.getBuddyEventConditionsJpaEntity() != null)
 			freedivingLevel = buddyEventJpaEntity.getBuddyEventConditionsJpaEntity().getFreedivingLevel();
-
 
 		return CreatedBuddyEventResponse.builder()
 			.eventId(buddyEventJpaEntity.getEventId())
