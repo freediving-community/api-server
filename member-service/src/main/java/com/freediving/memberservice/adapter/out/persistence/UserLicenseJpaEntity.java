@@ -3,6 +3,7 @@ package com.freediving.memberservice.adapter.out.persistence;
 import com.freediving.common.domain.member.RoleLevel;
 import com.freediving.common.persistence.AuditableEntity;
 import com.freediving.memberservice.domain.DiveType;
+import com.freediving.memberservice.domain.LicenseStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,6 +56,10 @@ public class UserLicenseJpaEntity extends AuditableEntity {
 	@Column(name = "dive_type", nullable = false)
 	private DiveType diveType;
 
+	@Enumerated(value = EnumType.STRING)
+	@Column(name = "license_status", nullable = false, length = 20)
+	private LicenseStatus licenseStatus;
+
 	@Column(name = "license_level")
 	private Integer licenseLevel;
 
@@ -70,11 +75,7 @@ public class UserLicenseJpaEntity extends AuditableEntity {
 	@PrePersist
 	void prePersist() {
 		this.confirmTF = false;
-	}
-
-	public void updateUserEntity(UserJpaEntity userJpaEntity) {
-		this.userJpaEntity = userJpaEntity;
-		userJpaEntity.getUserLicenseJpaEntityList().add(this);
+		this.licenseStatus = LicenseStatus.EVALUATION;
 	}
 
 	public static UserLicenseJpaEntity createUserLicenseJpaEntity(UserJpaEntity userJpaEntity, DiveType diveType) {
@@ -85,10 +86,5 @@ public class UserLicenseJpaEntity extends AuditableEntity {
 		this.userJpaEntity = userJpaEntity;
 		this.diveType = diveType;
 		this.role = roleLevel;
-	}
-
-	public void updateLicenseInfo(Integer licenseLevel, String licenseImgUrl) {
-		this.licenseLevel = licenseLevel;
-		this.licenseImgUrl = licenseImgUrl;
 	}
 }
