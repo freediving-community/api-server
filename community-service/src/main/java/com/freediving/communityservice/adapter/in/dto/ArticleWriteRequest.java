@@ -24,4 +24,5 @@ public class ArticleWriteRequest {
 
 	private Long createdBy;
 
+	private List<ArticleImageRequest> images;
 }
