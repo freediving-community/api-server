@@ -5,6 +5,7 @@ import java.util.List;
 import com.freediving.common.SelfValidating;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
+import com.freediving.communityservice.application.port.in.dto.ImageInfoCommand;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -35,10 +36,10 @@ public class ArticleWriteCommand extends SelfValidating<ArticleWriteCommand> {
 
 	private final boolean enableComment;
 
+	private final List<ImageInfoCommand> images;
+
 	public ArticleWriteCommand(UserProvider userProvider, BoardType boardType, String title, String content,
-		String authorName,
-		List<Long> hashtagIds,
-		boolean enableComment) {
+		String authorName, List<Long> hashtagIds, boolean enableComment, List<ImageInfoCommand> images) {
 		this.userProvider = userProvider;
 		this.boardType = boardType;
 		this.title = title;
@@ -46,6 +47,7 @@ public class ArticleWriteCommand extends SelfValidating<ArticleWriteCommand> {
 		this.authorName = authorName;
 		this.hashtagIds = hashtagIds;
 		this.enableComment = enableComment;
+		this.images = images;
 		this.validateSelf();
 	}
 }

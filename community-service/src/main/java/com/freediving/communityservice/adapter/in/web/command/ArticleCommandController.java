@@ -1,8 +1,11 @@
 package com.freediving.communityservice.adapter.in.web.command;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +22,7 @@ import com.freediving.communityservice.application.port.in.ArticleEditCommand;
 import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleUseCase;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
+import com.freediving.communityservice.application.port.in.dto.ImageInfoCommand;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +38,15 @@ public class ArticleCommandController {
 		UserProvider userProvider,
 		@PathVariable("boardType") BoardType boardType,
 		@RequestBody ArticleWriteRequest articleWriteRequest) {
+
+		List<ImageInfoCommand> uploadedImages =
+			CollectionUtils.isEmpty(articleWriteRequest.getImages()) ? new ArrayList<ImageInfoCommand>() :
+				articleWriteRequest.getImages()
+					.stream()
+					.map(image -> new ImageInfoCommand(image.getSortNumber(), image.getUrl(), image.getSize(),
+						image.getFileName(), image.getExtension()))
+					.toList();
+
 		Long articleId = articleUseCase.writeArticle(
 			ArticleWriteCommand.builder()
 				.userProvider(userProvider)
@@ -43,9 +56,9 @@ public class ArticleCommandController {
 				.authorName(articleWriteRequest.getAuthorName())
 				.hashtagIds(articleWriteRequest.getHashtagIds())
 				.enableComment(articleWriteRequest.isEnableComment())
+				.images(uploadedImages)
 				.build());
 
-		// return ResponseEntity.ok(articleId);
 		URI location = ServletUriComponentsBuilder
 			.fromCurrentRequest()
 			.path("/{id}")
@@ -90,7 +103,7 @@ public class ArticleCommandController {
 				.articleId(articleId)
 				.build()
 		);
-		return ResponseEntity.ok(1L);
+		return ResponseEntity.ok(deletedArticleId);
 	}
 
 }

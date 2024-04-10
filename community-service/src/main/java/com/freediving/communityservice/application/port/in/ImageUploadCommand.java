@@ -1,9 +1,12 @@
 package com.freediving.communityservice.application.port.in;
 
+import java.util.List;
+
 import com.freediving.common.SelfValidating;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
+import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
+import com.freediving.communityservice.application.port.in.dto.ImageInfoCommand;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
@@ -17,33 +20,20 @@ public class ImageUploadCommand extends SelfValidating<ImageUploadCommand> {
 	@NotNull
 	private final UserProvider userProvider;
 
-	private final Integer width;
+	@NotNull
+	private final BoardType boardType;
 
-	private final Integer height;
+	@NotNull
+	private final Long articleId;
 
-	private final String style;
+	private final List<ImageInfoCommand> images;
 
-	private final String description;
-
-	@NotBlank
-	private final String originName;
-
-	@NotBlank
-	private final String extension;
-
-	@NotBlank
-	private final Integer size;
-
-	public ImageUploadCommand(UserProvider userProvider, Integer width, Integer height, String style,
-		String description, String originName, String extension, Integer size) {
+	public ImageUploadCommand(UserProvider userProvider, BoardType boardType, Long articleId,
+		List<ImageInfoCommand> images) {
 		this.userProvider = userProvider;
-		this.width = width;
-		this.height = height;
-		this.style = style;
-		this.description = description;
-		this.originName = originName;
-		this.extension = extension;
-		this.size = size;
+		this.boardType = boardType;
+		this.articleId = articleId;
+		this.images = images;
 		this.validateSelf();
 	}
 }

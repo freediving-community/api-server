@@ -1,6 +1,7 @@
 package com.freediving.communityservice.adapter.out.persistence.image;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,38 +25,19 @@ public class ImageJpaEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	// @Column(nullable = false, unique = true)
-	private String imageServerId;
+	@Column(nullable = false)
+	private Long articleId;
 
-	@Column(nullable = false, length = 1000)
+	@Column(nullable = false, length = 2000)
 	private String url;
 
-	private Integer width;
+	private int sortNumber;
 
-	private Integer height;
+	private int size;
 
-	private String style;
-
-	private String description;
-
-	private String quality;
-
-	// @Column(nullable = false)
-	// private String serviceName;
-
-	private String domainName;
-
-	private String domainId;
-
-	private String originName;
-
-	@Column(nullable = false)
 	private String extension;
 
-	@Column(nullable = false)
-	private Integer size;
-
-	private boolean secret;
+	private LocalDateTime deletedAt;
 
 	@Column(nullable = false)
 	private Long createdBy;
@@ -63,24 +45,41 @@ public class ImageJpaEntity {
 	@Column(nullable = false)
 	private LocalDateTime createdAt;
 
+	// private int width;
+
+	// private int height;
+
+	// private String style;
+
+	// private String description;
+
 	@Builder
-	public ImageJpaEntity(String imageServerId, String url, Integer width, Integer height, String style,
-		String description, String quality, String domainName, String domainId, String originName, String extension,
-		Integer size, boolean secret, Long createdBy, LocalDateTime createdAt) {
-		this.imageServerId = imageServerId;
+	public ImageJpaEntity(Long articleId, String url, int sortNumber, int size, String extension, Long createdBy,
+		LocalDateTime createdAt) {
+		this.articleId = articleId;
 		this.url = url;
-		this.width = width;
-		this.height = height;
-		this.style = style;
-		this.description = description;
-		this.quality = quality;
-		this.domainName = domainName;
-		this.domainId = domainId;
-		this.originName = originName;
-		this.extension = extension;
+		this.sortNumber = sortNumber;
 		this.size = size;
-		this.secret = secret;
+		this.extension = extension;
 		this.createdBy = createdBy;
 		this.createdAt = createdAt;
+	}
+
+	public void markDeleted(LocalDateTime localDateTime) {
+		this.deletedAt = localDateTime;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (!(o instanceof ImageJpaEntity that))
+			return false;
+		return Objects.equals(id, that.id) && Objects.equals(url, that.url);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, url);
 	}
 }
