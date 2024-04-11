@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.application.port.in;
+package com.freediving.buddyservice.application.port.in.command;
 
 import java.time.LocalDateTime;
 import java.util.Set;

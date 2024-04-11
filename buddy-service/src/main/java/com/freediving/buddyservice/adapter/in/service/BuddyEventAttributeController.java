@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.freediving.buddyservice.application.port.in.service.GetBuddyEventConceptListUseCase;
+import com.freediving.buddyservice.application.port.in.externalservice.query.GetBuddyEventConceptListUseCase;
 import com.freediving.buddyservice.application.port.out.service.BuddyEventConceptListResponse;
 import com.freediving.common.config.annotation.WebAdapter;
 import com.freediving.common.response.ResponseJsonObject;

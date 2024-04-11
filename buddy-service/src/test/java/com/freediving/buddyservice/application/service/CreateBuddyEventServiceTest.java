@@ -22,13 +22,13 @@ import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEv
 import com.freediving.buddyservice.adapter.out.persistence.event.condition.BuddyEventConditionsRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestRepository;
-import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
-import com.freediving.buddyservice.application.port.in.CreateBuddyEventUseCase;
+import com.freediving.buddyservice.application.port.in.command.CreateBuddyEventCommand;
+import com.freediving.buddyservice.application.port.in.command.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.application.port.out.service.MemberStatus;
 import com.freediving.buddyservice.application.port.out.service.RequestMemberPort;
 import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
-import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
+import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.common.enumerate.DivingPool;
 
 @SpringBootTest

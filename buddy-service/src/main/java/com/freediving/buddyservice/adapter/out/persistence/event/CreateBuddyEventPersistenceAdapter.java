@@ -14,7 +14,7 @@ import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEvent
 import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
 import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.common.enumeration.ParticipationStatus;
-import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
+import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.common.enumerate.DivingPool;
 

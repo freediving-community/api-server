@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.application.port.in.service;
+package com.freediving.buddyservice.application.port.in.externalservice.query;
 
 import com.freediving.buddyservice.application.port.out.service.BuddyEventConceptListResponse;
 import com.freediving.common.config.annotation.UseCase;

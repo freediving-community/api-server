@@ -1,6 +1,6 @@
-package com.freediving.buddyservice.application.port.in;
+package com.freediving.buddyservice.application.port.in.command;
 
-import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
+import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 
 /**
  * 버디 일정 이벤트 생성 Use Case

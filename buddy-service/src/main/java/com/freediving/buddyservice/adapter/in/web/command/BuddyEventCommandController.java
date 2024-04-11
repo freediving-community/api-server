@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.adapter.in.web;
+package com.freediving.buddyservice.adapter.in.web.command;
 
 import java.util.Random;
 
@@ -8,10 +8,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.freediving.buddyservice.adapter.in.web.dto.CreateBuddyEventRequest;
-import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
-import com.freediving.buddyservice.application.port.in.CreateBuddyEventUseCase;
-import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
+import com.freediving.buddyservice.adapter.in.web.command.dto.BuddyEventLikeToggleRequest;
+import com.freediving.buddyservice.adapter.in.web.command.dto.CreateBuddyEventRequest;
+import com.freediving.buddyservice.application.port.in.command.CreateBuddyEventCommand;
+import com.freediving.buddyservice.application.port.in.command.CreateBuddyEventUseCase;
+import com.freediving.buddyservice.application.port.in.command.like.BuddyEventLikeToggleCommand;
+import com.freediving.buddyservice.application.port.in.command.like.BuddyEventLikeToggleUseCase;
+import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.common.config.annotation.WebAdapter;
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
@@ -35,9 +38,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/v1/event")
 @Tag(name = "Buddy Event", description = "버디 이벤트 관련 API")
-public class CreateBuddyEventController {
+public class BuddyEventCommandController {
 
 	private final CreateBuddyEventUseCase createBuddyEventUseCase;
+	private final BuddyEventLikeToggleUseCase buddyEventLikeActionUseCase;
 
 	@Operation(
 		summary = "버디 이벤트 생성하기",
@@ -80,6 +84,46 @@ public class CreateBuddyEventController {
 			// 3. Command 요청 및 응답 리턴.
 			ResponseJsonObject<CreatedBuddyEventResponse> response = new ResponseJsonObject<>(ServiceStatusCode.OK,
 				createdBuddyEventResponse);
+
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Operation(
+		summary = "버디 이벤트 좋아요 설정/해지",
+		description = "버디 이벤트 좋아요 설정/해지를 한다.",
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "버디 이벤트 좋아요 설정/해지 성공",
+				useReturnTypeSchema = true
+			),
+			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "401", ref = "#/components/responses/401"),
+			@ApiResponse(responseCode = "403", ref = "#/components/responses/403"),
+			@ApiResponse(responseCode = "500", ref = "#/components/responses/500")
+		}
+	)
+	@PostMapping("/like")
+	public ResponseEntity<ResponseJsonObject> toggleBuddyEventLike(
+		@Valid @RequestBody BuddyEventLikeToggleRequest request) {
+		try {
+			// 1. JWT 유저 토큰 사용자 식별 ID 가져오기
+			Random random = new Random();
+			Long userId = random.nextLong();
+
+			// 2. Use Case Command 전달.
+			buddyEventLikeActionUseCase.toggleBuddyEventLike(
+				BuddyEventLikeToggleCommand.builder()
+					.userId(userId)
+					.eventId(request.getEventId())
+					.likeStatus(request.isLikeStatus())
+					.build());
+
+			// 3. Command 요청 및 응답 리턴.
+			ResponseJsonObject response = new ResponseJsonObject(ServiceStatusCode.OK,null);
 
 			return ResponseEntity.ok(response);
 		} catch (Exception e) {

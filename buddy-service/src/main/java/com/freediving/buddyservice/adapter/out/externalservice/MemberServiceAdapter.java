@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.adapter.out.service;
+package com.freediving.buddyservice.adapter.out.externalservice;
 
 import org.springframework.stereotype.Component;
 

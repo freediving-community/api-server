@@ -22,7 +22,7 @@ import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.Budd
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestRepository;
 import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
-import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
+import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.common.enumerate.DivingPool;
 
 @ActiveProfiles("local")

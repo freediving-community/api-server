@@ -17,16 +17,17 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.freediving.buddyservice.adapter.in.web.dto.CreateBuddyEventRequest;
-import com.freediving.buddyservice.application.port.in.CreateBuddyEventCommand;
-import com.freediving.buddyservice.application.port.in.CreateBuddyEventUseCase;
+import com.freediving.buddyservice.adapter.in.web.command.BuddyEventCommandController;
+import com.freediving.buddyservice.adapter.in.web.command.dto.CreateBuddyEventRequest;
+import com.freediving.buddyservice.application.port.in.command.CreateBuddyEventCommand;
+import com.freediving.buddyservice.application.port.in.command.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.common.ControllerDefendenciesConfig;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
-import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
+import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 
-@WebMvcTest(controllers = CreateBuddyEventController.class)
+@WebMvcTest(controllers = BuddyEventCommandController.class)
 @ActiveProfiles("local")
-class CreateBuddyEventControllerTest extends ControllerDefendenciesConfig {
+class BuddyEventCommandControllerTest extends ControllerDefendenciesConfig {
 
 	@MockBean
 	private CreateBuddyEventUseCase createBuddyEventUseCase;

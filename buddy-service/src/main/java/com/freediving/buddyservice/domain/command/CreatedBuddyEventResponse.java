@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.domain;
+package com.freediving.buddyservice.domain.command;
 
 import java.time.LocalDateTime;
 import java.util.Set;

@@ -1,11 +1,11 @@
-package com.freediving.buddyservice.application.service.external;
+package com.freediving.buddyservice.application.service.externalservice;
 
 import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
 import com.freediving.buddyservice.adapter.out.persistence.concept.BuddyEventConceptJpaEntity;
-import com.freediving.buddyservice.application.port.in.service.GetBuddyEventConceptListUseCase;
+import com.freediving.buddyservice.application.port.in.externalservice.query.GetBuddyEventConceptListUseCase;
 import com.freediving.buddyservice.application.port.out.service.BuddyEventConceptListResponse;
 import com.freediving.buddyservice.application.port.out.service.GetBuddyEventConceptListPort;
 import com.freediving.common.config.annotation.UseCase;

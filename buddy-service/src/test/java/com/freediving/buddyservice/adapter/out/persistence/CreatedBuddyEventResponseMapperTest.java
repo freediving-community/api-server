@@ -15,7 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.CreatedBuddyEventResponseMapper;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
-import com.freediving.buddyservice.domain.CreatedBuddyEventResponse;
+import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 
 @ExtendWith(SpringExtension.class)
 @Import(CreatedBuddyEventResponseMapper.class)
