@@ -41,4 +41,4 @@ jobs:
           script: | 
             sudo docker pull ${{ secrets.DOCKER_REPO }}/discovery-service
             sudo docker image prune -a -f
-            docker-compose -p discovery -f /docker/docker-compose-discovery.yml up -d
+            docker-compose -p discovery -f /docker/docker-compose-discovery-dev.yml up -d
