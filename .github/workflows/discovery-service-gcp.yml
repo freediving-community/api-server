@@ -19,10 +19,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - name: Create application-gcp.yml
+      - name: Create application-dev.yml
         run: |
-          touch ./discovery-service/src/main/resources/application-gcp.yml
-          echo "${{ secrets.DISCOVERY_APPLICATION_GCP_YML }}" > ./discovery-service/src/main/resources/application-gcp.yml
+          touch ./discovery-service/src/main/resources/application-dev.yml
+          echo "${{ secrets.DISCOVERY_APPLICATION_GCP_YML }}" > ./discovery-service/src/main/resources/application-dev.yml
       - name: Build with Gradle
         run: ./gradlew discovery-service:build
       - name: Docker build and push
