@@ -41,4 +41,4 @@ jobs:
           script: | 
             sudo docker pull ${{ secrets.DOCKER_REPO }}/gateway-service
             sudo docker image prune -a -f
-            docker-compose -p gateway -f /docker/docker-compose-gateway-dev.yml up -d
+            docker-compose -f /docker/docker-compose.yml up -d
