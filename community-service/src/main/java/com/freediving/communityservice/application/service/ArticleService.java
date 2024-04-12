@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
@@ -30,6 +31,7 @@ import com.freediving.communityservice.application.port.out.ArticleWritePort;
 import com.freediving.communityservice.application.port.out.BoardReadPort;
 import com.freediving.communityservice.application.port.out.CommentDeletePort;
 import com.freediving.communityservice.application.port.out.CommentReadPort;
+import com.freediving.communityservice.application.port.out.ImageWritePort;
 import com.freediving.communityservice.application.port.out.UserReactionPort;
 import com.freediving.communityservice.domain.Article;
 import com.freediving.communityservice.domain.Board;
@@ -51,6 +53,7 @@ public class ArticleService implements ArticleUseCase {
 	private final CommentReadPort commentReadPort;
 	private final CommentDeletePort commentDeletePort;
 	private final UserReactionPort userReactionPort;
+	private final ImageWritePort imageWritePort;
 
 	//Query
 	// @Override
@@ -146,13 +149,22 @@ public class ArticleService implements ArticleUseCase {
 	//Command
 	@Override
 	public Long writeArticle(ArticleWriteCommand articleWriteCommand) {
-		//TODO 한 사용자는 같은 게시판에 00초 내로 글 추가가 제한됨. 프론트에서 먼저 체크 등.
+		//TODO 한 사용자는 같은 게시판에 X분 연속으로 글 등록하기가 제한됨. => 서버 캐시 등
 		// articleReadPort.getXXXByAuthorId()
 		Optional<Board> foundBoard = boardReadPort.findByBoardType(articleWriteCommand.getBoardType());
 		Board board = foundBoard.orElseThrow(() -> new IllegalArgumentException("해당하는 게시판이 없습니다."));
 		board.checkPermission(articleWriteCommand);
+
 		Article savedArticle = articleWritePort.writeArticle(articleWriteCommand);
 		//TODO articleWriteCommand Hashtag 저장
+
+		if (!CollectionUtils.isEmpty(articleWriteCommand.getImages())) {
+			int savedImageCount = imageWritePort.saveImages(savedArticle, articleWriteCommand.getImages());
+
+			// savedImageCount 추후 사용자별 이미지 저장 수 제한 정책 시
+			if (savedImageCount < 1)
+				throw new RuntimeException("이미지 저장에 실패했습니다.");
+		}
 
 		return savedArticle.getId();
 	}

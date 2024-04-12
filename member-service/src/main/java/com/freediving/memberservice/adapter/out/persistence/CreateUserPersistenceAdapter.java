@@ -1,5 +1,8 @@
 package com.freediving.memberservice.adapter.out.persistence;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.commons.lang3.ObjectUtils;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
@@ -30,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CreateUserPersistenceAdapter implements CreateUserPort {
 	private final UserJpaRepository userJpaRepository;
+	private final UserLicenseJpaRepository userLicenseJpaRepository;
 
 	/**
 	 * @Author           : sasca37
@@ -57,11 +61,17 @@ public class CreateUserPersistenceAdapter implements CreateUserPort {
 			UserLicenseJpaEntity scubaDivingLicense = UserLicenseJpaEntity.createUserLicenseJpaEntity(
 				savedUserJpaEntity,
 				DiveType.SCUBA_DIVE);
-			freeDivingLicense.updateUserEntity(savedUserJpaEntity);
-			scubaDivingLicense.updateUserEntity(savedUserJpaEntity);
-			return User.fromJpaEntitySimple(savedUserJpaEntity);
+			userLicenseJpaRepository.save(freeDivingLicense);
+			userLicenseJpaRepository.save(scubaDivingLicense);
+
+			List<UserLicenseJpaEntity> userLicenceJpaList = List.of(freeDivingLicense, scubaDivingLicense);
+			return User.fromJpaEntityList(savedUserJpaEntity, userLicenceJpaList);
 		}
-		return User.fromJpaEntityDetail(userJpaEntity);
+
+		// 기존 가입자인 경우
+		List<UserLicenseJpaEntity> userLicenceJpaList = userLicenseJpaRepository.findAllById(
+			Collections.singleton(userJpaEntity.getUserId()));
+		return User.fromJpaEntityList(userJpaEntity, userLicenceJpaList);
 	}
 
 	@Override
@@ -69,18 +79,10 @@ public class CreateUserPersistenceAdapter implements CreateUserPort {
 		Long userId = command.getUserId();
 		UserJpaEntity userJpaEntity = userJpaRepository.findById(userId).orElseThrow(
 			() -> new BuddyMeException(ServiceStatusCode.BAD_REQUEST, ErrorCode.NOT_FOUND_USER.getMessage()));
-		updateUserLicense(userJpaEntity, command);
 		userJpaEntity.updateUserNickname(command.getNickname());
 		userJpaEntity.updateUserContent(command.getContent());
 
 		// TODO : 다이빙 풀 정보, 컨셉 정보 버디서비스 전달
-	}
-
-	private void updateUserLicense(UserJpaEntity userJpaEntity, CreateUserInfoCommand command) {
-		userJpaEntity.getUserLicenseJpaEntityList().stream()
-			.filter(e -> e.getDiveType().equals(command.getDiveType()))
-			.findFirst()
-			.ifPresent(e -> e.updateLicenseInfo(command.getLicenseLevel(), command.getLicenseImgUrl()));
 	}
 
 }

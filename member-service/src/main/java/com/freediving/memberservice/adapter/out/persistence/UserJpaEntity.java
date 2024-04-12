@@ -1,23 +1,18 @@
 package com.freediving.memberservice.adapter.out.persistence;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.freediving.common.persistence.AuditableEntity;
 import com.freediving.memberservice.domain.OauthType;
+import com.freediving.memberservice.domain.UserStatus;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -68,8 +63,9 @@ public class UserJpaEntity extends AuditableEntity {
 	@Column(name = "oauth_interlock")
 	private OauthTypeSetVO oauthTypeSetVO;
 
-	@OneToMany(mappedBy = "userJpaEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<UserLicenseJpaEntity> userLicenseJpaEntityList = new ArrayList<>();
+	@Enumerated(value = EnumType.STRING)
+	@Column(name = "user_status", nullable = false, length = 20)
+	private UserStatus userStatus;
 
 	public void updateUserNickname(String nickname) {
 		this.nickname = nickname;
@@ -87,6 +83,7 @@ public class UserJpaEntity extends AuditableEntity {
 		this.email = email;
 		this.profileImgUrl = profileImgUrl;
 		this.oauthType = oauthType;
+		this.userStatus = UserStatus.ACTIVE;
 	}
 
 	@Builder(builderMethodName = "createMockUser")
@@ -95,5 +92,9 @@ public class UserJpaEntity extends AuditableEntity {
 		this.email = email;
 		this.profileImgUrl = profileImgUrl;
 		this.oauthType = oauthType;
+	}
+
+	public void updateStatue(UserStatus userStatus) {
+		this.userStatus = userStatus;
 	}
 }
