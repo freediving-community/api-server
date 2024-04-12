@@ -21,7 +21,7 @@ jobs:
           distribution: 'temurin'
       - name: Create application-gcp.yml
         run: |
-          touch ./discovery-service/src/main/resources/application-dev.yml
+          touch ./discovery-service/src/main/resources/application-gcp.yml
           echo "${{ secrets.DISCOVERY_APPLICATION_GCP_YML }}" > ./discovery-service/src/main/resources/application-gcp.yml
       - name: Build with Gradle
         run: ./gradlew discovery-service:build
