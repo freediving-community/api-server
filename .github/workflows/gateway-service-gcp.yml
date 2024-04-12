@@ -22,7 +22,7 @@ jobs:
       - name: Create application-dev.yml
         run: |
           touch ./gateway-service/src/main/resources/application-dev.yml
-          echo "${{ secrets.GATEWAY_APPLICATION_DEV_YML }}" > ./gateway-service/src/main/resources/application-dev.yml
+          echo "${{ secrets.GATEWAY_APPLICATION_GCP_YML }}" > ./gateway-service/src/main/resources/application-dev.yml
       - name: Build with Gradle
         run: ./gradlew gateway-service:build
       - name: Docker build and push
