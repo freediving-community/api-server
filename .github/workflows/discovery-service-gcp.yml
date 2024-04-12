@@ -1,4 +1,4 @@
-name: CI & CD for discovery-service
+name: CI & CD for discovery-service-gcp
 
 on:
   push:
