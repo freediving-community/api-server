@@ -40,8 +40,5 @@ jobs:
           passphrase: ${{ secrets.GCP_SSH_PASSPHRASE }}
           script: | 
             sudo docker pull ${{ secrets.DOCKER_REPO }}/discovery-service
-            sudo docker stop $(sudo docker ps -a | grep discovery-service | awk '{print $1}')
-            sudo docker rm $(sudo docker ps -a | grep discovery-service | awk '{print $1}')
             sudo docker image prune -a -f
-            sudo docker-compose -p discovery -f /docker/docker-compose-discovery.yml down --rmi all
             sudo docker-compose -p discovery -f /docker/docker-compose-discovery.yml up -d
