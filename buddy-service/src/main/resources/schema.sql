@@ -1,7 +1,7 @@
 drop table if exists diving_pool;
 CREATE TABLE diving_pool
 (
-    diving_pool_id   varchar(20)  NOT NULL,
+    diving_pool_id   varchar(30)  NOT NULL,
     diving_pool_name varchar(30)  NOT NULL,
     address          VARCHAR(255) NOT NULL,
     description      VARCHAR(255) NOT NULL,
@@ -18,7 +18,7 @@ ALTER TABLE diving_pool
 drop table if exists buddy_event_diving_pool_mapping;
 CREATE TABLE buddy_event_diving_pool_mapping
 (
-    diving_pool_id varchar(20) NOT NULL,
+    diving_pool_id varchar(30) NOT NULL,
     event_id       bigint      NOT NULL,
     updated_date   timestamp   NOT NULL,
     created_date   timestamp   NOT NULL
@@ -46,7 +46,7 @@ CREATE TABLE buddy_event_join_requests
 (
     user_id      bigint      NOT NULL,
     event_id     bigint      NOT NULL,
-    status       varchar(20) NOT NULL,
+    status      varchar(30) NOT NULL,
     created_date timestamp   NOT NULL,
     updated_date timestamp   NOT NULL
 );
@@ -57,7 +57,7 @@ drop table if exists buddy_event_concept_mapping;
 CREATE TABLE buddy_event_concept_mapping
 (
     event_id     bigint      NOT NULL,
-    concept_id   varchar(20) NOT NULL,
+    concept_id   varchar(30) NOT NULL,
     created_date timestamp   NOT NULL,
     updated_date timestamp   NOT NULL
 );
@@ -75,7 +75,7 @@ CREATE TABLE buddy_event
     event_end_date    timestamp     NOT NULL,
     participant_count integer       NOT NULL,
     car_share_yn      boolean       NOT NULL,
-    status            varchar(20)   NOT NULL,
+    status            varchar(30)   NOT NULL,
     kakao_room_code   varchar(10)   NULL,
     comment           varchar(1000) NULL,
     updated_date      timestamp     NOT NULL,
@@ -114,7 +114,7 @@ ALTER TABLE buddy_event_concept_mapping
 drop table if exists buddy_event_concept;
 CREATE TABLE buddy_event_concept
 (
-    concept_id    varchar(20) NOT NULL,
+    concept_id    varchar(30) NOT NULL,
     concept_name  varchar(20) NOT NULL,
     enabled       boolean     NOT NULL DEFAULT false,
     display_order int         NOT NULL,
