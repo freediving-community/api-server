@@ -1,8 +1,5 @@
 
-이제 제공된 풀장 정보를 이용하여 SQL INSERT 문을 만들어보겠습니다. 아래는 각 잠수풀에 대한 기본 정보를 입력하는 SQL 쿼리입니다.
 
-                           sql
-Copy code
 insert into diving_pool (diving_pool_id,
                          diving_pool_name,
                          address,

@@ -37,6 +37,9 @@ dependencies {
     // postgres
     runtimeOnly 'org.postgresql:postgresql'
 
+    // kafka
+    implementation 'org.springframework.kafka:spring-kafka'
+
     // test
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'

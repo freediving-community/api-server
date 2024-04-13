@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.application.port.out.service;
+package com.freediving.buddyservice.application.port.out.externalservice.query;
 
 import java.util.List;
 

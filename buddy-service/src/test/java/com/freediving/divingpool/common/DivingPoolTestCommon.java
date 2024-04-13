@@ -1,5 +1,6 @@
 package com.freediving.divingpool.common;
 
+import com.freediving.common.enumerate.DivingPool;
 import com.freediving.divingpool.data.dao.DivingPoolJpaEntity;
 
 public class DivingPoolTestCommon {
@@ -19,7 +20,7 @@ public class DivingPoolTestCommon {
 		, String description, Boolean isVisible, Integer displayOrder) {
 
 		return DivingPoolJpaEntity.builder()
-			.divingPoolId(divingPoolId)
+			.divingPoolId(DivingPool.valueOf(divingPoolId))
 			.divingPoolName(divingPoolName)
 			.address(address)
 			.description(description)

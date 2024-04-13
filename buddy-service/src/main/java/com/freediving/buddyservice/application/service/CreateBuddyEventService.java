@@ -11,8 +11,8 @@ import com.freediving.buddyservice.adapter.out.persistence.event.CreatedBuddyEve
 import com.freediving.buddyservice.application.port.in.command.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.command.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
-import com.freediving.buddyservice.application.port.out.service.MemberStatus;
-import com.freediving.buddyservice.application.port.out.service.RequestMemberPort;
+import com.freediving.buddyservice.application.port.out.externalservice.query.MemberStatus;
+import com.freediving.buddyservice.application.port.out.externalservice.query.RequestMemberPort;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.common.config.annotation.UseCase;
