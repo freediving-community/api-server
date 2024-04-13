@@ -233,3 +233,5 @@ gradle-app.setting
 # Ignore Application YML
 application-dev.yml
 application-prd.yml
+
+member-service/src/main/generated/

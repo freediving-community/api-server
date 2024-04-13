@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.communityservice.adapter.in.dto.ImageUploadRequest;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
-import com.freediving.communityservice.application.port.in.ImageUploadCommand;
 import com.freediving.communityservice.application.port.in.ImageUseCase;
 
 import lombok.RequiredArgsConstructor;
@@ -27,16 +26,16 @@ public class ImageCommandController {
 		ImageUploadRequest imageUploadRequest
 	) {
 
-		String signedUrl = imageUseCase.getPresignedUrl(ImageUploadCommand.builder()
-			.userProvider(userProvider)
-			.width(imageUploadRequest.getWidth())
-			.height(imageUploadRequest.getHeight())
-			.style(imageUploadRequest.getStyle())
-			.description(imageUploadRequest.getDescription())
-			.originName(imageUploadRequest.getOriginName())
-			.extension(imageUploadRequest.getExtension())
-			.size(imageUploadRequest.getSize())
-			.build());
+		// String signedUrl = imageUseCase.getPresignedUrl(ImageUploadCommand.builder()
+		// 	.userProvider(userProvider)
+		// 	.width(imageUploadRequest.getWidth())
+		// 	.height(imageUploadRequest.getHeight())
+		// 	.style(imageUploadRequest.getStyle())
+		// 	.description(imageUploadRequest.getDescription())
+		// 	.originName(imageUploadRequest.getOriginName())
+		// 	.extension(imageUploadRequest.getExtension())
+		// 	.size(imageUploadRequest.getSize())
+		// 	.build());
 
 		return null;
 /*

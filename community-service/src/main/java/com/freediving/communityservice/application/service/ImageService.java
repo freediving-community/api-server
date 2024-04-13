@@ -14,19 +14,14 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class ImageService implements ImageUseCase {
 
-	// private final AwsImageUploadPort awsImageUploadPort;
 	private final ImageWritePort imageWritePort;
 
 	@Override
-	public String getPresignedUrl(ImageUploadCommand command) {
-		Long userId = command.getUserProvider().getRequestUserId();
+	public String saveImages(ImageUploadCommand command) {
+		// 2개의 테이블에 동일한 N개만큼의 INSERT 수행. 나뉘어져야 함.
+		// 1. imageRepository에 저장한다.
+		// 2. article_image 매핑 테이블에 저장한다.
 
-		//TODO 필요한 값으로 조작 후 Member-Service에 presigned URL 요청
-		String presignedURL = "";
-		String parsedURL = "";
-		Long imageId = imageWritePort.saveImageTemporary(parsedURL);
-		// awsImageUploadPort.generatePresignedUrl();
-		return presignedURL;
+		return "";
 	}
-
 }

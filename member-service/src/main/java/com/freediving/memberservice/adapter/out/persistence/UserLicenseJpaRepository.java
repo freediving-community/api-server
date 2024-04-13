@@ -1,6 +1,10 @@
 package com.freediving.memberservice.adapter.out.persistence;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,4 +18,22 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserLicenseJpaRepository extends JpaRepository<UserLicenseJpaEntity, Long> {
+
+	@Query(
+		"SELECT u " +
+			"FROM UserLicenseJpaEntity u " +
+			"WHERE u.userJpaEntity = :userJpaEntity"
+	)
+	List<UserLicenseJpaEntity> findAllByUserId(@Param("userJpaEntity") UserJpaEntity userJpaEntity);
+
+	@Query(
+		"SELECT u " +
+			"FROM UserLicenseJpaEntity u " +
+			"JOIN FETCH  UserJpaEntity  uj " +
+			"ON u.userJpaEntity.userId = uj.userId " +
+			"WHERE u.userJpaEntity.userId in :userIdList " +
+			"ORDER BY uj.userId"
+	)
+	List<UserLicenseJpaEntity> findAllByUserIdList(
+		@Param("userIdList") List<Long> userIdList);
 }

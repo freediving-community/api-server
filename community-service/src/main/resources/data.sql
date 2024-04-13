@@ -6,7 +6,12 @@ create table article_hashtag (
     primary key (id)
 )
 ;
-
+create table article_image (
+    board_id bigint not null,
+    article_id bigint not null,
+    image_id bigint not null
+)
+;
 insert into board ( board_type, board_name, description, sort_order ,enabled, created_at ,modified_at,  created_by , modified_by)
 values ( 'GENERAL', '자유게시판', '자유롭게 작성하세요', 1 , true,  current_timestamp(), current_timestamp(), 1111 , 1111)
 ;
