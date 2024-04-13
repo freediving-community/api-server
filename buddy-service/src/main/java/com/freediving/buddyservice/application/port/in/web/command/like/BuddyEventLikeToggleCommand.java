@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.application.port.in.command.like;
+package com.freediving.buddyservice.application.port.in.web.command.like;
 
 import com.freediving.common.SelfValidating;
 
@@ -9,13 +9,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
-* BuddyEventLikeToggleCommand 서비스 레이어로 전달하는 명령 객체
-* 서비스 비즈니스 유효성 체크를 진행한다.
+ * BuddyEventLikeToggleCommand 서비스 레이어로 전달하는 명령 객체
+ * 서비스 비즈니스 유효성 체크를 진행한다.
  *
-* @author pus__
-* @version 1.0.0
-* 작성일 2024-04-10
-**/
+ * @author pus__
+ * @version 1.0.0
+ * 작성일 2024-04-10
+ **/
 
 @EqualsAndHashCode(callSuper = false)
 @Getter

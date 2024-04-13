@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.buddyservice.adapter.in.web.command.dto.BuddyEventLikeToggleRequest;
 import com.freediving.buddyservice.adapter.in.web.command.dto.CreateBuddyEventRequest;
-import com.freediving.buddyservice.application.port.in.command.CreateBuddyEventCommand;
-import com.freediving.buddyservice.application.port.in.command.CreateBuddyEventUseCase;
-import com.freediving.buddyservice.application.port.in.command.like.BuddyEventLikeToggleCommand;
-import com.freediving.buddyservice.application.port.in.command.like.BuddyEventLikeToggleUseCase;
+import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventCommand;
+import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventUseCase;
+import com.freediving.buddyservice.application.port.in.web.command.like.BuddyEventLikeToggleCommand;
+import com.freediving.buddyservice.application.port.in.web.command.like.BuddyEventLikeToggleUseCase;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.common.config.annotation.WebAdapter;
 import com.freediving.common.response.ResponseJsonObject;
@@ -123,7 +123,7 @@ public class BuddyEventCommandController {
 					.build());
 
 			// 3. Command 요청 및 응답 리턴.
-			ResponseJsonObject response = new ResponseJsonObject(ServiceStatusCode.OK,null);
+			ResponseJsonObject response = new ResponseJsonObject(ServiceStatusCode.OK, null);
 
 			return ResponseEntity.ok(response);
 		} catch (Exception e) {

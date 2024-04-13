@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.application.port.out.externalservice.query;
+package com.freediving.buddyservice.application.port.out.web.query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +27,13 @@ public class BuddyEventConceptListResponse {
 	@Schema(description = "콘셉트 리스트")
 	private List<EventConcept> concepts;
 
+	public void add(EventConcept concept) {
+		if (concepts == null)
+			this.concepts = new ArrayList<>();
+
+		this.concepts.add(concept);
+	}
+
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Getter
@@ -36,12 +43,5 @@ public class BuddyEventConceptListResponse {
 		private BuddyEventConcept conceptId;
 		@Schema(description = "콘셉트 이름", example = "펀다이빙")
 		private String conceptName;
-	}
-
-	public void add(EventConcept concept) {
-		if (concepts == null)
-			this.concepts = new ArrayList<>();
-
-		this.concepts.add(concept);
 	}
 }

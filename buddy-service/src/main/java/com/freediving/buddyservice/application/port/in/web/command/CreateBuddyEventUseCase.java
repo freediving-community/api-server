@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.application.port.in.command;
+package com.freediving.buddyservice.application.port.in.web.command;
 
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 

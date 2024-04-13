@@ -22,8 +22,8 @@ import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEv
 import com.freediving.buddyservice.adapter.out.persistence.event.condition.BuddyEventConditionsRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestRepository;
-import com.freediving.buddyservice.application.port.in.command.CreateBuddyEventCommand;
-import com.freediving.buddyservice.application.port.in.command.CreateBuddyEventUseCase;
+import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventCommand;
+import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.application.port.out.externalservice.query.MemberStatus;
 import com.freediving.buddyservice.application.port.out.externalservice.query.RequestMemberPort;
 import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
@@ -36,14 +36,6 @@ import com.freediving.common.enumerate.DivingPool;
 class CreateBuddyEventServiceTest {
 
 	@Autowired
-	private CreateBuddyEventUseCase createBuddyEventUseCase;
-
-	@Autowired
-	private BuddyEventRepository buddyEventRepository;
-
-	@MockBean
-	private RequestMemberPort requestMemberPort;
-	@Autowired
 	BuddyEventConceptMappingRepository buddyEventConceptMappingRepository;
 	@Autowired
 	BuddyEventConditionsRepository buddyEventConditionsRepository;
@@ -51,6 +43,12 @@ class CreateBuddyEventServiceTest {
 	BuddyEventDivingPoolMappingRepository buddyEventDivingPoolMappingRepository;
 	@Autowired
 	BuddyEventJoinRequestRepository buddyEventJoinRequestRepository;
+	@Autowired
+	private CreateBuddyEventUseCase createBuddyEventUseCase;
+	@Autowired
+	private BuddyEventRepository buddyEventRepository;
+	@MockBean
+	private RequestMemberPort requestMemberPort;
 
 	@AfterEach
 	void tearDown() {

@@ -9,6 +9,8 @@ import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEv
 import com.freediving.buddyservice.adapter.out.persistence.event.condition.BuddyEventConditionsJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.likecount.BuddyEventLikeCountJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.viewcount.BuddyEventViewCountJpaEntity;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
 import com.freediving.common.persistence.AuditableEntity;
 
@@ -85,6 +87,12 @@ public class BuddyEventJpaEntity extends AuditableEntity {
 
 	@OneToMany(mappedBy = "buddyEvent", cascade = CascadeType.ALL)
 	private Set<BuddyEventJoinRequestJpaEntity> buddyEventJoinRequests;
+
+	@OneToOne(mappedBy = "buddyEvent", cascade = CascadeType.PERSIST)
+	private BuddyEventLikeCountJpaEntity buddyEventLikeCountJpaEntity;
+
+	@OneToOne(mappedBy = "buddyEvent", cascade = CascadeType.PERSIST)
+	private BuddyEventViewCountJpaEntity buddyEventViewCountJpaEntity;
 
 	public BuddyEventJpaEntity changeBuddyEventConceptMapping(Set<BuddyEventConceptMappingJpaEntity> target) {
 		this.eventConcepts = target;

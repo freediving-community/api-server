@@ -40,7 +40,6 @@ ALTER TABLE buddy_event_conditions
     ADD CONSTRAINT PK_BUDDY_EVENT_CONDITIONS PRIMARY KEY (event_id);
 
 
-
 drop table if exists buddy_event_join_requests;
 CREATE TABLE buddy_event_join_requests
 (
@@ -63,6 +62,29 @@ CREATE TABLE buddy_event_concept_mapping
 );
 ALTER TABLE buddy_event_concept_mapping
     ADD CONSTRAINT PK_BUDDY_EVENT_CONCEPT_MAPPING PRIMARY KEY (event_id, concept_id);
+
+
+
+drop table if exists buddy_event_view_count;
+CREATE TABLE buddy_event_view_count
+(
+    event_id         bigint      NOT NULL,
+    view_count       bigint      NOT NULL DEFAULT 0,
+    created_date     timestamp   NOT NULL
+);
+ALTER TABLE buddy_event_view_count
+    ADD CONSTRAINT PK_BUDDY_EVENT_VIEW_COUNT PRIMARY KEY (event_id);
+
+drop table if exists buddy_event_like_count;
+CREATE TABLE buddy_event_like_count
+(
+    event_id         bigint      NOT NULL,
+    like_count       bigint      NOT NULL DEFAULT 0,
+    created_date     timestamp   NOT NULL
+);
+ALTER TABLE buddy_event_like_count
+    ADD CONSTRAINT PK_BUDDY_EVENT_LIKE_COUNT PRIMARY KEY (event_id);
+
 
 
 
@@ -109,6 +131,13 @@ ALTER TABLE buddy_event_concept_mapping
     ADD CONSTRAINT FK_buddy_event_TO_buddy_event_concept_mapping_1 FOREIGN KEY (event_id)
         REFERENCES buddy_event (event_id);
 
+ALTER TABLE buddy_event_view_count
+    ADD CONSTRAINT FK_buddy_event_TO_buddy_event_view_count_1 FOREIGN KEY (event_id)
+        REFERENCES buddy_event (event_id);
+
+ALTER TABLE buddy_event_like_count
+    ADD CONSTRAINT FK_buddy_event_TO_buddy_event_like_count_1 FOREIGN KEY (event_id)
+        REFERENCES buddy_event (event_id);
 
 
 drop table if exists buddy_event_concept;

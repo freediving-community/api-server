@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.freediving.buddyservice.adapter.out.persistence.concept.BuddyEventConceptJpaEntity;
 import com.freediving.buddyservice.application.port.in.externalservice.query.GetBuddyEventConceptListUseCase;
-import com.freediving.buddyservice.application.port.out.externalservice.query.BuddyEventConceptListResponse;
-import com.freediving.buddyservice.application.port.out.externalservice.query.GetBuddyEventConceptListPort;
+import com.freediving.buddyservice.application.port.out.web.query.BuddyEventConceptListResponse;
+import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventConceptListPort;
 import com.freediving.common.config.annotation.UseCase;
 
 import lombok.RequiredArgsConstructor;
@@ -27,8 +27,9 @@ public class GetBuddyEventConceptListService implements GetBuddyEventConceptList
 		BuddyEventConceptListResponse result = BuddyEventConceptListResponse.builder().build();
 
 		for (BuddyEventConceptJpaEntity entity : eventConceptList)
-			result.add(BuddyEventConceptListResponse.EventConcept.builder().conceptId(entity.getConceptId()).conceptName(
-				entity.getConceptName()).build());
+			result.add(
+				BuddyEventConceptListResponse.EventConcept.builder().conceptId(entity.getConceptId()).conceptName(
+					entity.getConceptName()).build());
 
 		return result;
 	}

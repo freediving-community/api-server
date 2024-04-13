@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.freediving.buddyservice.application.port.in.command.CreateBuddyEventCommand;
+import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventCommand;
 
 import jakarta.validation.ConstraintViolationException;
 

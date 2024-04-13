@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.application.service;
+package com.freediving.buddyservice.application.service.web;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.CreatedBuddyEventResponseMapper;
-import com.freediving.buddyservice.application.port.in.command.CreateBuddyEventCommand;
-import com.freediving.buddyservice.application.port.in.command.CreateBuddyEventUseCase;
+import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventCommand;
+import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
 import com.freediving.buddyservice.application.port.out.externalservice.query.MemberStatus;
 import com.freediving.buddyservice.application.port.out.externalservice.query.RequestMemberPort;
