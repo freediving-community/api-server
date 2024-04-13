@@ -15,23 +15,22 @@ import com.freediving.buddyservice.common.task.domain.BuddyEventLikeToggleTask;
 @Component
 public class BuddyEventLikeToggleTaskProducer implements SendBuddyEventLikeToggleTaskPort {
 
-	private final KafkaProducer<String,String> producer;
+	private final KafkaProducer<String, String> producer;
 	private final String topic;
 
 	public BuddyEventLikeToggleTaskProducer(@Value("${kafka.clusters.bootstrapservers}") String bootstrapServer,
-		@Value("${task.topic.like-action}") String topic) {
+		@Value("${task.topic.like-toggle}") String topic) {
 		Properties props = new Properties();
 		props.put("bootstrap.servers", bootstrapServer);
-		props.put("key.serializer",   "org.apache.kafka.common.serialization.StringSerializer");
+		props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 		props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
 		this.producer = new KafkaProducer<>(props);
 		this.topic = topic;
 	}
 
-
 	// Kafka Cluster [key, value] Produce
-	public void sendMessage( BuddyEventLikeToggleTask value) {
+	public void sendMessage(BuddyEventLikeToggleTask value) {
 
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonStringToProduce;
@@ -42,17 +41,17 @@ public class BuddyEventLikeToggleTaskProducer implements SendBuddyEventLikeToggl
 			throw new RuntimeException(e);
 		}
 
-
 		ProducerRecord<String, String> record = new ProducerRecord<>(topic, jsonStringToProduce);
 		producer.send(record, (metadata, exception) -> {
 			if (exception == null) {
-				 System.out.println("Message sent successfully. Offset: " + metadata.offset());
+				System.out.println("Message sent successfully. Offset: " + metadata.offset());
 			} else {
 				exception.printStackTrace();
 				// System.err.println("Failed to send message: " + exception.getMessage());
 			}
 		});
 	}
+
 	@Override
 	public void sendRechargingMoneyTaskPort(BuddyEventLikeToggleTask task) {
 		this.sendMessage(task);
