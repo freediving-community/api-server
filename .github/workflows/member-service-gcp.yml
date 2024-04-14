@@ -6,6 +6,9 @@ on:
     #      - 'member-service/**'
     branches: [ "chore/#113" ]
 
+env:
+  MEMBER_APPLICATION_DEV_GCP_YML: ${{ secrets.MEMBER_APPLICATION_DEV_GCP_YML }}
+
 permissions:
   contents: read
 
@@ -22,9 +25,7 @@ jobs:
       - name: Create application-dev.yml
         run: |
           touch ./member-service/src/main/resources/application-dev.yml
-          echo "MEMBER_APPLICATION_DEV_GCP_YML" > ./member-service/src/main/resources/application-dev.yml
-        env:
-          MEMBER_APPLICATION_DEV_GCP_YML: ${{ secrets.MEMBER_APPLICATION_DEV_GCP_YML }}
+          echo "$MEMBER_APPLICATION_DEV_GCP_YML" > ./member-service/src/main/resources/application-dev.yml
       - name: Build with Gradle
         run: ./gradlew member-service:build
       - name: Docker build and push
