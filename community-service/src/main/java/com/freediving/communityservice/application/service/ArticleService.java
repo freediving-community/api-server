@@ -16,6 +16,7 @@ import org.springframework.util.ObjectUtils;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
+import com.freediving.communityservice.adapter.out.dto.image.ImageResponse;
 import com.freediving.communityservice.adapter.out.persistence.constant.UserReactionType;
 import com.freediving.communityservice.adapter.out.persistence.userreact.UserReactionId;
 import com.freediving.communityservice.application.port.in.ArticleEditCommand;
@@ -31,6 +32,7 @@ import com.freediving.communityservice.application.port.out.ArticleWritePort;
 import com.freediving.communityservice.application.port.out.BoardReadPort;
 import com.freediving.communityservice.application.port.out.CommentDeletePort;
 import com.freediving.communityservice.application.port.out.CommentReadPort;
+import com.freediving.communityservice.application.port.out.ImageReadPort;
 import com.freediving.communityservice.application.port.out.ImageWritePort;
 import com.freediving.communityservice.application.port.out.UserReactionPort;
 import com.freediving.communityservice.domain.Article;
@@ -54,6 +56,7 @@ public class ArticleService implements ArticleUseCase {
 	private final CommentDeletePort commentDeletePort;
 	private final UserReactionPort userReactionPort;
 	private final ImageWritePort imageWritePort;
+	private final ImageReadPort imageReadPort;
 
 	//Query
 	// @Override
@@ -69,9 +72,10 @@ public class ArticleService implements ArticleUseCase {
 			command.getArticleId(),
 			command.isShowAll()
 		);
+		List<ImageResponse> images = imageReadPort.getImageListByArticle(article.getId());
 
 		if (command.isWithoutComment()) { // 본문 내용 수정 등
-			return new ArticleContent(article);
+			return new ArticleContent(article, images);
 		}
 
 		int allCommentCount = commentReadPort.getCommentCountOfArticle(article.getId());
@@ -117,6 +121,7 @@ public class ArticleService implements ArticleUseCase {
 
 		return new ArticleContentWithComment(
 			article,
+			images,
 			Stream.concat(filteredComments.stream(), commentReplies.stream()).toList(),
 			isLiked,
 			allCommentCount
@@ -125,10 +130,17 @@ public class ArticleService implements ArticleUseCase {
 
 	@Override
 	public Page<ArticleBriefDto> getArticleIndexList(ArticleIndexListCommand command) {
-		Pageable pageable = PageRequest.of(command.getPage(), command.getOffset(),
+		Pageable pageable = PageRequest.of(
+			command.getPage(),
+			command.getOffset(),
 			Sort.by(Sort.Direction.DESC, command.getOrderBy()));
-		Page<ArticleBriefDto> pagingArticleList = articleReadPort.retrieveArticleIndexList(command.getBoardType(),
-			command.getCursor(), pageable);
+
+		Page<ArticleBriefDto> pagingArticleList = articleReadPort.retrieveArticleIndexList(
+			command.getBoardType(),
+			command.getCursor(),
+			command.isOnlyPicture(),
+			pageable
+		);
 
 		//TODO ArticleBriefDto pagingArticleList.getContent() 멤버 서비스 : 사용자 상태 및 profileImg 요청
 		//TODO "pageable"-"pageNumber": 1 등의 값만 사용. 응답값 재구성
@@ -162,8 +174,8 @@ public class ArticleService implements ArticleUseCase {
 			int savedImageCount = imageWritePort.saveImages(savedArticle, articleWriteCommand.getImages());
 
 			// savedImageCount 추후 사용자별 이미지 저장 수 제한 정책 시
-			if (savedImageCount < 1)
-				throw new RuntimeException("이미지 저장에 실패했습니다.");
+			if (savedImageCount != articleWriteCommand.getImages().size())
+				throw new RuntimeException("게시글 이미지 저장에 실패했습니다.");
 		}
 
 		return savedArticle.getId();

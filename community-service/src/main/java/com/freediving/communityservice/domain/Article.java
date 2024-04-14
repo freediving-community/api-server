@@ -11,6 +11,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class Article {
+
 	private final Long id;
 
 	private final BoardType boardType;

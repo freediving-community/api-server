@@ -1,6 +1,7 @@
 package com.freediving.communityservice.adapter.out.persistence.article;
 
 import static com.freediving.communityservice.adapter.out.persistence.article.QArticleJpaEntity.*;
+import static com.freediving.communityservice.adapter.out.persistence.image.QImageJpaEntity.*;
 
 import java.util.List;
 
@@ -8,6 +9,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.util.ObjectUtils;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
@@ -19,9 +23,6 @@ import com.freediving.communityservice.application.port.out.ArticleEditPort;
 import com.freediving.communityservice.application.port.out.ArticleReadPort;
 import com.freediving.communityservice.application.port.out.ArticleWritePort;
 import com.freediving.communityservice.domain.Article;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -36,6 +37,7 @@ public class ArticlePersistenceAdapter
 	private final ArticleRepository articleRepository;
 	private final JPAQueryFactory jpaQueryFactory;
 	private final ArticlePersistenceMapper articleMapper;
+	private final JdbcClient jdbcClient;
 
 	@Override
 	public Article writeArticle(ArticleWriteCommand articleWriteCommand) {
@@ -80,42 +82,126 @@ public class ArticlePersistenceAdapter
 	// }
 
 	@Override
-	public Page<ArticleBriefDto> retrieveArticleIndexList(BoardType boardType, Long cursor, Pageable pageable) {
-		List<ArticleBriefDto> articleJpaEntityList = jpaQueryFactory
-			.select(
-				Projections.bean(ArticleBriefDto.class,
-					articleJpaEntity.articleId,
-					articleJpaEntity.title,
-					articleJpaEntity.authorName,
-					articleJpaEntity.createdBy,
-					articleJpaEntity.viewCount,
-					articleJpaEntity.likeCount,
-					articleJpaEntity.commentCount
-				)
-			)
-			.from(articleJpaEntity)
-			.where(
-				boardTypeEq(boardType),
-				articleJpaEntity.deletedAt.isNull()
-			)
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
-			.orderBy(articleSort(pageable))
-			.fetch();
+	public Page<ArticleBriefDto> retrieveArticleIndexList(BoardType boardType, Long cursor, boolean onlyPicture,
+		Pageable pageable) {
 
-		JPAQuery<Long> countQuery = jpaQueryFactory
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("boardType", boardType.name());
+		paramMap.addValue("offset", pageable.getPageSize());
+
+		StringBuffer articleIndexQuery = new StringBuffer("""
+			SELECT
+			        A.ARTICLE_ID   ,
+			        A.TITLE        ,
+			        A.CONTENT      ,
+			        A.AUTHOR_NAME  ,
+			        A.CREATED_AT   ,
+			        A.CREATED_BY   ,
+			        A.VIEW_COUNT   ,
+			        A.LIKE_COUNT   ,
+			        A.COMMENT_COUNT,
+			        I.SORT_NUMBER  ,
+			        I.URL          ,
+			        CNT_I.CNT
+			FROM (
+				SELECT
+						*
+				FROM ARTICLE
+				WHERE DELETED_AT IS NULL
+				AND BOARD_TYPE = :boardType 
+			""");
+
+		if (!ObjectUtils.isEmpty(cursor)) {
+			articleIndexQuery.append(" AND ARTICLE_ID < :articleId ");
+			paramMap.addValue("articleId", cursor);
+		}
+
+		articleIndexQuery
+			.append(" ORDER BY ")
+			.append(articleSort(pageable))
+			.append(" DESC LIMIT :offset ) A ");
+		articleIndexQuery.append(onlyPicture ? " INNER " : " LEFT ");
+
+		articleIndexQuery.append("""
+			JOIN IMAGE I
+			ON A.ARTICLE_ID  = I.ARTICLE_ID
+			AND I.SORT_NUMBER = 1
+			LEFT JOIN (
+			SELECT
+					ARTICLE_ID,
+					COUNT(ARTICLE_ID) AS CNT
+			FROM IMAGE
+			GROUP BY ARTICLE_ID 
+			) CNT_I
+			ON I.ARTICLE_ID = CNT_I.ARTICLE_ID 
+			""");
+		if (onlyPicture) {
+			articleIndexQuery
+				.append(" ORDER BY ")
+				.append(articleSort(pageable))
+				.append(" DESC ");
+		}
+
+		List<ArticleBriefDto> articleJpaEntityList = jdbcClient
+			.sql(articleIndexQuery.toString())
+			.paramSource(paramMap)
+			.query((rs, rowNum) -> ArticleBriefDto.builder()
+				.articleId(rs.getLong("article_id"))
+				.title(rs.getString("title"))
+				.content(rs.getString("content"))
+				.authorName(rs.getString("author_name"))
+				.createdAt(
+					rs.getTimestamp("created_at") == null ? null : rs.getTimestamp("created_at").toLocalDateTime())
+				.createdBy(rs.getLong("created_by"))
+				.viewCount(rs.getInt("view_count"))
+				.likeCount(rs.getInt("like_count"))
+				.commentCount(rs.getInt("comment_count"))
+				.sortNumber(rs.getInt("sort_number"))
+				.url(rs.getString("url"))
+				.imageTotalCount(rs.getInt("cnt"))
+				.build()
+			)
+			.list();
+
+		//TODO: JdbcClient로 대체하여 Page 수정 필요
+
+		JPAQuery<Long> totalCount = jpaQueryFactory
 			.select(articleJpaEntity.count())
 			.from(articleJpaEntity)
 			.where(
 				boardTypeEq(boardType),
 				articleJpaEntity.deletedAt.isNull()
 			);
+		if (onlyPicture) {
+			totalCount
+				.innerJoin(imageJpaEntity)
+				.on(articleJpaEntity.articleId.eq(imageJpaEntity.articleId));
+		}
 
-		return PageableExecutionUtils.getPage(articleJpaEntityList, pageable, countQuery::fetchOne);
+		return PageableExecutionUtils.getPage(articleJpaEntityList, pageable, totalCount::fetchOne);
 
 	}
 
-	private OrderSpecifier<?> articleSort(Pageable pageable) {
+	private String articleSort(Pageable pageable) {
+
+		if (pageable.getSort().isEmpty()) {
+			return " created_at ";
+		}
+
+		for (Sort.Order order : pageable.getSort()) {
+			return switch (order.getProperty()) {
+				case "liked" -> "like_count DESC, created_at ";
+				case "comment" -> "comment_count DESC, created_at ";
+				case "hits" -> "view_count DESC, created_at ";
+				default -> " created_at ";
+			};
+		}
+
+		return "created_at";
+	}
+
+/*
+	private OrderSpecifier<?> articleSort2(Pageable pageable) {
 
 		if (pageable.getSort().isEmpty()) {
 			return null;
@@ -137,6 +223,7 @@ public class ArticlePersistenceAdapter
 
 		return null;
 	}
+*/
 
 	@Override
 	public Long updateArticle(BoardType boardType, Long articleId, String title, String content, List<Long> hashtagIds,
