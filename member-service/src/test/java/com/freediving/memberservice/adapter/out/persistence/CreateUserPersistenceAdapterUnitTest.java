@@ -35,6 +35,9 @@ class CreateUserPersistenceAdapterUnitTest {
 	@Mock
 	private UserJpaRepository userJpaRepository;
 
+	@Mock
+	private UserLicenseJpaRepository userLicenseJpaRepository;
+
 	@InjectMocks
 	private CreateUserPersistenceAdapter createUserPersistenceAdapter;
 
