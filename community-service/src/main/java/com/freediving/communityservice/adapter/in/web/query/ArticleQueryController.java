@@ -32,9 +32,10 @@ public class ArticleQueryController {
 		UserProvider userProvider,
 		@PathVariable("boardType") BoardType boardType,
 		@RequestParam(value = "page", required = false, defaultValue = "1") int page,
-		@RequestParam(value = "offset", required = false, defaultValue = "10") int offset,
+		@RequestParam(value = "offset", required = false, defaultValue = "20") int offset,
 		@RequestParam(value = "orderBy", required = false, defaultValue = "createdAt") String orderBy,
-		@RequestParam(value = "c", required = false, defaultValue = "") Long cursor
+		@RequestParam(value = "c", required = false, defaultValue = "") Long cursor,
+		@RequestParam(value = "onlyPicture", required = false) boolean onlyPicture
 	) {
 		Page<ArticleBriefDto> articleIndexList = articleUseCase.getArticleIndexList(
 			ArticleIndexListCommand.builder()
@@ -42,12 +43,11 @@ public class ArticleQueryController {
 				.boardType(boardType)
 				.page(page)
 				.offset(offset)
+				.onlyPicture(onlyPicture)
 				.orderBy(orderBy)
 				.cursor(cursor)
 				.build()
 		);
-
-		// new ArticleContentWithComment(Article.builder().id(123L).content("내용").build(), null);
 
 		ResponseJsonObject<Page<ArticleBriefDto>> response = new ResponseJsonObject<>(ServiceStatusCode.OK,
 			articleIndexList);

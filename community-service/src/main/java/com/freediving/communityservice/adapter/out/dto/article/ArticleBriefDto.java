@@ -1,13 +1,14 @@
 package com.freediving.communityservice.adapter.out.dto.article;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@AllArgsConstructor
+import com.freediving.communityservice.adapter.out.dto.image.ImageBriefResponse;
+
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
 @NoArgsConstructor
 public class ArticleBriefDto {
 
@@ -15,7 +16,11 @@ public class ArticleBriefDto {
 
 	private String title;
 
+	private String content;
+
 	private String authorName;
+
+	private LocalDateTime createdAt;
 
 	private Long createdBy;
 
@@ -24,5 +29,23 @@ public class ArticleBriefDto {
 	private int likeCount;
 
 	private int commentCount;
+
+	private ImageBriefResponse images;
+
+	@Builder
+	public ArticleBriefDto(Long articleId, String title, String content, String authorName, LocalDateTime createdAt,
+		Long createdBy, int viewCount, int likeCount, int commentCount, int sortNumber, String url,
+		int imageTotalCount) {
+		this.articleId = articleId;
+		this.title = title;
+		this.content = content;
+		this.authorName = authorName;
+		this.createdAt = createdAt;
+		this.createdBy = createdBy;
+		this.viewCount = viewCount;
+		this.likeCount = likeCount;
+		this.commentCount = commentCount;
+		this.images = new ImageBriefResponse(sortNumber, url, imageTotalCount);
+	}
 
 }

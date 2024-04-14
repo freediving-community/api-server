@@ -25,17 +25,21 @@ public class ArticleIndexListCommand extends SelfValidating<ArticleIndexListComm
 	@NotNull
 	private final int offset;
 
+	private final boolean onlyPicture;
+
 	@NotNull
 	private final String orderBy;
 
 	private final Long cursor;
 
-	public ArticleIndexListCommand(UserProvider userProvider, BoardType boardType, int page, int offset, String orderBy,
+	public ArticleIndexListCommand(UserProvider userProvider, BoardType boardType, int page, int offset,
+		boolean onlyPicture, String orderBy,
 		Long cursor) {
 		this.userProvider = userProvider;
 		this.boardType = boardType;
 		this.page = page - 1;
 		this.offset = Math.min(offset, 100);
+		this.onlyPicture = onlyPicture;
 		this.orderBy = orderBy;
 		this.cursor = cursor; //TODO cursor 구현( articleId 그대로 노출? ) 및 유효값 검사
 		this.validateSelf();

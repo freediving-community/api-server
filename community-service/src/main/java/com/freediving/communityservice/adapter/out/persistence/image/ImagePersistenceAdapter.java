@@ -3,7 +3,9 @@ package com.freediving.communityservice.adapter.out.persistence.image;
 import java.util.List;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
+import com.freediving.communityservice.adapter.out.dto.image.ImageResponse;
 import com.freediving.communityservice.application.port.in.dto.ImageInfoCommand;
+import com.freediving.communityservice.application.port.out.ImageReadPort;
 import com.freediving.communityservice.application.port.out.ImageWritePort;
 import com.freediving.communityservice.domain.Article;
 
@@ -11,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class ImagePersistenceAdapter implements ImageWritePort {
+public class ImagePersistenceAdapter implements ImageWritePort, ImageReadPort {
 
 	private final ImageRepository imageRepository;
 
@@ -34,5 +36,10 @@ public class ImagePersistenceAdapter implements ImageWritePort {
 		List<ImageJpaEntity> imageJpaEntities = imageRepository.saveAll(images);
 
 		return imageJpaEntities.size();
+	}
+
+	@Override
+	public List<ImageResponse> getImageListByArticle(Long articleId) {
+		return imageRepository.findByArticleIdAndDeletedAtIsNullOrderBySortNumber(articleId);
 	}
 }
