@@ -32,6 +32,7 @@ import com.freediving.communityservice.application.port.out.ArticleWritePort;
 import com.freediving.communityservice.application.port.out.BoardReadPort;
 import com.freediving.communityservice.application.port.out.CommentDeletePort;
 import com.freediving.communityservice.application.port.out.CommentReadPort;
+import com.freediving.communityservice.application.port.out.ImageDeletePort;
 import com.freediving.communityservice.application.port.out.ImageReadPort;
 import com.freediving.communityservice.application.port.out.ImageWritePort;
 import com.freediving.communityservice.application.port.out.UserReactionPort;
@@ -57,6 +58,8 @@ public class ArticleService implements ArticleUseCase {
 	private final UserReactionPort userReactionPort;
 	private final ImageWritePort imageWritePort;
 	private final ImageReadPort imageReadPort;
+	// private final ImageEditPort imageEditPort;
+	private final ImageDeletePort imageDeletePort;
 
 	//Query
 	// @Override
@@ -167,8 +170,8 @@ public class ArticleService implements ArticleUseCase {
 		Board board = foundBoard.orElseThrow(() -> new IllegalArgumentException("해당하는 게시판이 없습니다."));
 		board.checkPermission(articleWriteCommand);
 
+		//TODO: Article 도메인 객체에서 비즈니스 로직을 처리하며 생성 후 넘겨야 한다.
 		Article savedArticle = articleWritePort.writeArticle(articleWriteCommand);
-		//TODO articleWriteCommand Hashtag 저장
 
 		if (!CollectionUtils.isEmpty(articleWriteCommand.getImages())) {
 			int savedImageCount = imageWritePort.saveImages(savedArticle, articleWriteCommand.getImages());
@@ -186,8 +189,14 @@ public class ArticleService implements ArticleUseCase {
 		Article originalArticle = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), false);
 		originalArticle.checkHasOwnership(command.getUserProvider().getRequestUserId());
 
-		Long updatedArticleId = articleEditPort.updateArticle(command.getBoardType(), command.getArticleId(),
-			command.getTitle(), command.getContent(), command.getHashtagIds(), command.isEnableComment());
+		Article changedArticle = originalArticle.copyWithChanges(
+			originalArticle,
+			command.getTitle(),
+			command.getContent(),
+			command.isEnableComment()
+		);
+
+		Long updatedArticleId = articleEditPort.updateArticle(changedArticle);
 
 		return null;
 	}
@@ -205,6 +214,7 @@ public class ArticleService implements ArticleUseCase {
 
 		articleDeletePort.markDeleted(command);
 		commentDeletePort.markDeleted(article.getId());
+		imageDeletePort.deleteAllByArticleId(article.getId());
 
 		return article.getId();
 	}

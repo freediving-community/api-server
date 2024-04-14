@@ -5,6 +5,7 @@ import java.util.List;
 import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.communityservice.adapter.out.dto.image.ImageResponse;
 import com.freediving.communityservice.application.port.in.dto.ImageInfoCommand;
+import com.freediving.communityservice.application.port.out.ImageDeletePort;
 import com.freediving.communityservice.application.port.out.ImageReadPort;
 import com.freediving.communityservice.application.port.out.ImageWritePort;
 import com.freediving.communityservice.domain.Article;
@@ -13,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class ImagePersistenceAdapter implements ImageWritePort, ImageReadPort {
+public class ImagePersistenceAdapter implements ImageWritePort, ImageReadPort, ImageDeletePort {
 
 	private final ImageRepository imageRepository;
 
@@ -41,5 +42,10 @@ public class ImagePersistenceAdapter implements ImageWritePort, ImageReadPort {
 	@Override
 	public List<ImageResponse> getImageListByArticle(Long articleId) {
 		return imageRepository.findByArticleIdAndDeletedAtIsNullOrderBySortNumber(articleId);
+	}
+
+	@Override
+	public void deleteAllByArticleId(Long articleId) {
+		imageRepository.deleteAllByArticleId(articleId);
 	}
 }

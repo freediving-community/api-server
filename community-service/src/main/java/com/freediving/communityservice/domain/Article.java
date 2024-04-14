@@ -51,4 +51,21 @@ public class Article {
 			throw new IllegalArgumentException("권한이 없습니다.");
 	}
 
+	public Article copyWithChanges(Article originalArticle, String title, String content, boolean enableComment) {
+		return Article.builder()
+			.id(originalArticle.getId())
+			.boardType(originalArticle.getBoardType())
+			.title(title)
+			.content(content)
+			.authorName(originalArticle.getAuthorName())
+			.viewCount(originalArticle.getViewCount())
+			.likeCount(originalArticle.getLikeCount())
+			.enableComment(enableComment)
+			.createdAt(originalArticle.getCreatedAt())
+			.createdBy(originalArticle.getCreatedBy())
+			.modifiedAt(LocalDateTime.now())
+			.modifiedBy(originalArticle.getModifiedBy())
+			.build();
+	}
+
 }

@@ -1,7 +1,6 @@
 package com.freediving.communityservice.adapter.out.persistence.article;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 import org.hibernate.annotations.DynamicInsert;
@@ -106,7 +105,7 @@ public class ArticleJpaEntity {
 			null, null, null, null);
 	}
 
-	public void changeArticleContents(String title, String content, List<Long> hashtagIds, boolean enableComment) {
+	public void changeArticleContents(String title, String content, boolean enableComment) {
 		this.title = title;
 		this.content = content;
 		this.enableComment = enableComment;
