@@ -6,9 +6,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.freediving.common.enumerate.DivingPool;
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.divingpool.common.DivingPoolTestCommon;
@@ -62,7 +62,7 @@ class DivingPoolServiceTest {
 		assertThat(divingPoolListResponse).isNotNull();
 		assertThat(divingPoolListResponse.getDivingPools()).hasSize(1)
 			.extracting("divingPoolId", "divingPoolName", "address", "description", "displayOrder")
-			.containsExactlyInAnyOrder(tuple("DEEPSTATION", "딥스테이션"
+			.containsExactlyInAnyOrder(tuple(DivingPool.DEEPSTATION, "딥스테이션"
 				, "경기도 용인시 처인구 포곡읍", "딥스테이션 설명", 0));
 
 	}

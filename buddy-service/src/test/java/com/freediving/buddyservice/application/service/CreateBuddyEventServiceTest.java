@@ -19,9 +19,10 @@ import org.springframework.test.context.ActiveProfiles;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingRepository;
-import com.freediving.buddyservice.adapter.out.persistence.event.condition.BuddyEventConditionsRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.likecount.BuddyEventLikeCountRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.viewcount.BuddyEventViewCountRepository;
 import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.application.port.out.externalservice.query.MemberStatus;
@@ -38,11 +39,13 @@ class CreateBuddyEventServiceTest {
 	@Autowired
 	BuddyEventConceptMappingRepository buddyEventConceptMappingRepository;
 	@Autowired
-	BuddyEventConditionsRepository buddyEventConditionsRepository;
-	@Autowired
 	BuddyEventDivingPoolMappingRepository buddyEventDivingPoolMappingRepository;
 	@Autowired
 	BuddyEventJoinRequestRepository buddyEventJoinRequestRepository;
+	@Autowired
+	BuddyEventLikeCountRepository buddyEventLikeCountRepository;
+	@Autowired
+	BuddyEventViewCountRepository buddyEventViewCountRepository;
 	@Autowired
 	private CreateBuddyEventUseCase createBuddyEventUseCase;
 	@Autowired
@@ -53,10 +56,13 @@ class CreateBuddyEventServiceTest {
 	@AfterEach
 	void tearDown() {
 		buddyEventConceptMappingRepository.deleteAllInBatch();
-		buddyEventConditionsRepository.deleteAllInBatch();
 		buddyEventDivingPoolMappingRepository.deleteAllInBatch();
 		buddyEventJoinRequestRepository.deleteAllInBatch();
+		buddyEventLikeCountRepository.deleteAllInBatch();
+		buddyEventViewCountRepository.deleteAllInBatch();
+
 		buddyEventRepository.deleteAllInBatch();
+
 	}
 
 	@DisplayName("비정상적인 사용자의 버디 이벤트 생성 요청인 경우 실패한다.")
@@ -182,6 +188,7 @@ class CreateBuddyEventServiceTest {
 			.eventStartDate(eventStartDate)
 			.eventEndDate(eventEndDate)
 			.participantCount(participantCount)
+			.freedivingLevel(0)
 			.status(BuddyEventStatus.RECRUITING)
 			.carShareYn(Boolean.FALSE)
 			.comment(comment)

@@ -18,7 +18,6 @@ import org.springframework.test.context.ActiveProfiles;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingRepository;
-import com.freediving.buddyservice.adapter.out.persistence.event.condition.BuddyEventConditionsRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestRepository;
 import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
@@ -35,8 +34,6 @@ class BuddyEventRepositoryTest {
 	@Autowired
 	BuddyEventConceptMappingRepository buddyEventConceptMappingRepository;
 	@Autowired
-	BuddyEventConditionsRepository buddyEventConditionsRepository;
-	@Autowired
 	BuddyEventDivingPoolMappingRepository buddyEventDivingPoolMappingRepository;
 	@Autowired
 	BuddyEventJoinRequestRepository buddyEventJoinRequestRepository;
@@ -44,7 +41,6 @@ class BuddyEventRepositoryTest {
 	@AfterEach
 	void tearDown() {
 		buddyEventConceptMappingRepository.deleteAllInBatch();
-		buddyEventConditionsRepository.deleteAllInBatch();
 		buddyEventDivingPoolMappingRepository.deleteAllInBatch();
 		buddyEventJoinRequestRepository.deleteAllInBatch();
 		buddyEventRepository.deleteAllInBatch();
@@ -241,6 +237,7 @@ class BuddyEventRepositoryTest {
 			.eventEndDate(eventEndDate)
 			.participantCount(participantCount)
 			.status(status)
+			.freedivingLevel(0)
 			.carShareYn(Boolean.FALSE)
 			.comment(comment)
 			.build();

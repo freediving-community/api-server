@@ -17,7 +17,6 @@ import org.springframework.test.context.ActiveProfiles;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingRepository;
-import com.freediving.buddyservice.adapter.out.persistence.event.condition.BuddyEventConditionsRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestRepository;
 import com.freediving.buddyservice.application.port.out.web.CreateBuddyEventPort;
@@ -36,8 +35,6 @@ class BuddyEventPersistenceAdapterTest {
 	@Autowired
 	BuddyEventConceptMappingRepository buddyEventConceptMappingRepository;
 	@Autowired
-	BuddyEventConditionsRepository buddyEventConditionsRepository;
-	@Autowired
 	BuddyEventDivingPoolMappingRepository buddyEventDivingPoolMappingRepository;
 	@Autowired
 	BuddyEventJoinRequestRepository buddyEventJoinRequestRepository;
@@ -45,7 +42,6 @@ class BuddyEventPersistenceAdapterTest {
 	@AfterEach
 	void tearDown() {
 		buddyEventConceptMappingRepository.deleteAllInBatch();
-		buddyEventConditionsRepository.deleteAllInBatch();
 		buddyEventDivingPoolMappingRepository.deleteAllInBatch();
 		buddyEventJoinRequestRepository.deleteAllInBatch();
 
@@ -63,7 +59,7 @@ class BuddyEventPersistenceAdapterTest {
 		LocalDateTime EndDate = LocalDateTime.now().plusHours(4).truncatedTo(ChronoUnit.MILLIS);
 
 		CreatedBuddyEventResponse buddyEvent = generateBuddyEvent(userId, StartDate, EndDate, 3, null, 2, Set.of(
-			DivingPool.JAMSIL_DIVING_POOL));
+			DivingPool.PARADIVE));
 
 		BuddyEventJpaEntity createdbuddyEvent = createBuddyEventPort.createBuddyEvent(buddyEvent);
 
