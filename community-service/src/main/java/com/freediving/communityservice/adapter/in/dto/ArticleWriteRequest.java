@@ -18,8 +18,6 @@ public class ArticleWriteRequest {
 
 	private String authorName;
 
-	private List<Long> hashtagIds;
-
 	private boolean enableComment;
 
 	private Long createdBy;

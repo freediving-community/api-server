@@ -28,14 +28,10 @@ public class ImageJpaEntity {
 	@Column(nullable = false)
 	private Long articleId;
 
-	@Column(nullable = false, length = 2000)
+	@Column(nullable = false, length = 2000, unique = true)
 	private String url;
 
 	private int sortNumber;
-
-	private int size;
-
-	private String extension;
 
 	private LocalDateTime deletedAt;
 
@@ -59,14 +55,16 @@ public class ImageJpaEntity {
 		this.articleId = articleId;
 		this.url = url;
 		this.sortNumber = sortNumber;
-		this.size = size;
-		this.extension = extension;
 		this.createdBy = createdBy;
 		this.createdAt = createdAt;
 	}
 
 	public void markDeleted(LocalDateTime localDateTime) {
 		this.deletedAt = localDateTime;
+	}
+
+	public void changeSortNumber(int sortNumber) {
+		this.sortNumber = sortNumber;
 	}
 
 	@Override

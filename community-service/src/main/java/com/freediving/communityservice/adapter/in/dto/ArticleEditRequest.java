@@ -16,8 +16,9 @@ public class ArticleEditRequest {
 
 	private String content;
 
-	private List<Long> hashtagIds;
+	private String authorName;
 
 	private boolean enableComment;
 
+	private List<ArticleImageRequest> images;
 }

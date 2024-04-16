@@ -1,8 +1,13 @@
 package com.freediving.communityservice.application.service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
@@ -25,6 +30,7 @@ import com.freediving.communityservice.application.port.in.ArticleReadCommand;
 import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleUseCase;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
+import com.freediving.communityservice.application.port.in.dto.ImageInfoCommand;
 import com.freediving.communityservice.application.port.out.ArticleDeletePort;
 import com.freediving.communityservice.application.port.out.ArticleEditPort;
 import com.freediving.communityservice.application.port.out.ArticleReadPort;
@@ -33,6 +39,7 @@ import com.freediving.communityservice.application.port.out.BoardReadPort;
 import com.freediving.communityservice.application.port.out.CommentDeletePort;
 import com.freediving.communityservice.application.port.out.CommentReadPort;
 import com.freediving.communityservice.application.port.out.ImageDeletePort;
+import com.freediving.communityservice.application.port.out.ImageEditPort;
 import com.freediving.communityservice.application.port.out.ImageReadPort;
 import com.freediving.communityservice.application.port.out.ImageWritePort;
 import com.freediving.communityservice.application.port.out.UserReactionPort;
@@ -58,7 +65,7 @@ public class ArticleService implements ArticleUseCase {
 	private final UserReactionPort userReactionPort;
 	private final ImageWritePort imageWritePort;
 	private final ImageReadPort imageReadPort;
-	// private final ImageEditPort imageEditPort;
+	private final ImageEditPort imageEditPort;
 	private final ImageDeletePort imageDeletePort;
 
 	//Query
@@ -174,7 +181,12 @@ public class ArticleService implements ArticleUseCase {
 		Article savedArticle = articleWritePort.writeArticle(articleWriteCommand);
 
 		if (!CollectionUtils.isEmpty(articleWriteCommand.getImages())) {
-			int savedImageCount = imageWritePort.saveImages(savedArticle, articleWriteCommand.getImages());
+			int savedImageCount = imageWritePort.saveImages(
+				savedArticle.getId(),
+				savedArticle.getCreatedBy(),
+				savedArticle.getCreatedAt(),
+				articleWriteCommand.getImages()
+			);
 
 			// savedImageCount 추후 사용자별 이미지 저장 수 제한 정책 시
 			if (savedImageCount != articleWriteCommand.getImages().size())
@@ -189,6 +201,14 @@ public class ArticleService implements ArticleUseCase {
 		Article originalArticle = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), false);
 		originalArticle.checkHasOwnership(command.getUserProvider().getRequestUserId());
 
+		List<ImageResponse> registeredImages = imageReadPort.getImageListByArticle(originalArticle.getId());
+		List<ImageResponse> editedImages = command.getImages().stream()
+			.sorted(Comparator.comparingInt(ImageInfoCommand::getSortNumber))
+			.map(image -> new ImageResponse(image.getSortNumber(), image.getUrl()))
+			.toList();
+
+		processArticleImages(originalArticle, registeredImages, editedImages);
+
 		Article changedArticle = originalArticle.copyWithChanges(
 			originalArticle,
 			command.getTitle(),
@@ -196,9 +216,56 @@ public class ArticleService implements ArticleUseCase {
 			command.isEnableComment()
 		);
 
-		Long updatedArticleId = articleEditPort.updateArticle(changedArticle);
+		return articleEditPort.updateArticle(changedArticle);
+	}
 
-		return null;
+	private void processArticleImages(
+		Article article,
+		List<ImageResponse> registeredImages,
+		List<ImageResponse> editedImages
+	) {
+		/*
+		1. 원본에서 'url' 없었던 놈 찾기 -> 등록 대상
+		2. 원본에서 'url' 사라진 놈 찾기 -> 삭제 대상
+		3. 원본에서 순서만 변경된 것 찾기 -> 수정 대상
+		4. 수정본에서 순서 정렬 순서 유효성 검증
+		5. CUD 작업 수행 -> Read하여 수정본과 비교하여 일치 여부 검증
+		*/
+
+		// 비교를 위한 Map 생성
+		Map<String, ImageResponse> registeredImagesMap = registeredImages.stream()
+			.collect(Collectors.toMap(ImageResponse::url, image -> image));
+		Map<String, ImageResponse> editedImagesMap = editedImages.stream()
+			.collect(Collectors.toMap(ImageResponse::url, image -> image));
+
+		// 삭제할 이미지 찾기: 기존 이미지 중 새 이미지 리스트에 없는 것들
+		List<String> imageUrlsToDelete = registeredImages.stream()
+			.filter(image -> !editedImagesMap.containsKey(image.url()))
+			.map(ImageResponse::url)
+			.toList();
+		List<ImageInfoCommand> imagesToCreate = new ArrayList<>();
+		Map<String, ImageResponse> imageMapToUpdate = new HashMap<>();
+
+		// 추가 및 순서 변경 확인
+		for (ImageResponse targetImage : editedImages) {
+			ImageResponse registeredImage = registeredImagesMap.get(targetImage.url());
+			if (registeredImage == null) {
+				// 새 이미지 추가
+				imagesToCreate.add(
+					ImageInfoCommand.builder()
+						.sortNumber(targetImage.sortNumber())
+						.url(targetImage.url())
+						.build()
+				);
+			} else if (registeredImage.sortNumber() != targetImage.sortNumber()) {
+				// 순서가 변경된 경우
+				imageMapToUpdate.put(targetImage.url(), targetImage);
+			}
+		}
+		imageWritePort.saveImages(article.getId(), article.getCreatedBy(), article.getCreatedAt(), imagesToCreate);
+		//TODO: Member에 AWS 삭제 요청
+		imageDeletePort.deleteAllByArticleIdAndUrlIn(article.getId(), imageUrlsToDelete);
+		imageEditPort.editAllImageSortNumber(article.getId(), imageMapToUpdate);
 	}
 
 	@Override
@@ -215,6 +282,7 @@ public class ArticleService implements ArticleUseCase {
 		articleDeletePort.markDeleted(command);
 		commentDeletePort.markDeleted(article.getId());
 		imageDeletePort.deleteAllByArticleId(article.getId());
+		//TODO: Member로 AWS Image삭제 요청
 
 		return article.getId();
 	}
