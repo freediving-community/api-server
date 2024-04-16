@@ -29,7 +29,7 @@ public interface OauthRedirectUrlPort {
 	 * @Return           : 소셜 로그인 팝업을 띄우기 위한 request url
 	 * @Description      : 클라이언트의 요청을 받아 소셜 별 request url을 생성
 	 */
-	String createRequestUrl();
+	String createRequestUrl(String profile);
 
 	/**
 	 * @Author           : sasca37

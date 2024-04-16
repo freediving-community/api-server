@@ -17,7 +17,7 @@ import com.freediving.common.config.annotation.UseCase;
 @UseCase
 public interface OauthUseCase {
 
-	String provideOauthType(OauthType oauthType);
+	String provideOauthType(OauthType oauthType, String profile);
 
-	OauthUser login(OauthType oauthType, String code);
+	OauthUser login(OauthType oauthType, String code, String profile);
 }

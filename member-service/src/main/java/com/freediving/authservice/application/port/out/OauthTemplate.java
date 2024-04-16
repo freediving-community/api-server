@@ -2,7 +2,6 @@ package com.freediving.authservice.application.port.out;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -12,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import com.freediving.authservice.domain.OauthType;
 import com.freediving.authservice.domain.OauthUser;
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,11 +39,12 @@ public class OauthTemplate implements InitializingBean {
 	 * @Return           : 로그인 팝업 URL
 	 * @Description      : 요청온 소셜 타입을 검증하고, 팝업 URL을 가져올 수 있는 경우 반환
 	 */
-	public String doRequest(OauthType oauthType) {
+	public String doRequest(OauthType oauthType, String profile) {
 		return Optional.ofNullable(feignPortMap.get(oauthType))
 			.filter(port -> port.canRequest(oauthType))
-			.map(OauthRedirectUrlPort::createRequestUrl)
-			.orElseThrow(() -> new NoSuchElementException("No OauthRedirectUrlPort found for " + oauthType));
+			.map(o -> o.createRequestUrl(profile))
+			.orElseThrow(() -> new BuddyMeException(ServiceStatusCode.BAD_REQUEST,
+				"No OauthRedirectUrlPort found for " + oauthType));
 	}
 
 	/**
@@ -52,11 +54,12 @@ public class OauthTemplate implements InitializingBean {
 	 * @Return           : OauthUser
 	 * @Description      : 사용자 정보 요청을 위한 토큰 정보를 가져와서 요청 후 유저 정보 반환
 	 */
-	public OauthUser doPostTokenAndGetInfo(OauthType oauthType, String code) {
+	public OauthUser doPostTokenAndGetInfo(OauthType oauthType, String code, String profile) {
 		return Optional.ofNullable(feignPortMap.get(oauthType))
 			.filter(port -> port.canRequest(oauthType))
-			.map(port -> port.fetch(code))
-			.orElseThrow(() -> new NoSuchElementException("No OauthFeignPort found for " + oauthType));
+			.map(port -> port.fetch(code, profile))
+			.orElseThrow(() -> new BuddyMeException(ServiceStatusCode.BAD_REQUEST,
+				"No OauthFeignPort found for " + oauthType));
 	}
 
 	/**

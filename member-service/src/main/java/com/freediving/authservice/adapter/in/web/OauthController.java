@@ -66,8 +66,10 @@ public class OauthController {
 		})
 	@GetMapping("/{socialType}")
 	public ResponseEntity<ResponseJsonObject<Void>> redirectAuthLogin(
-		@PathVariable(name = "socialType") String socialType, HttpServletResponse response) {
-		String redirectUrl = oauthUseCase.provideOauthType(OauthType.from(socialType));
+		@PathVariable(name = "socialType") String socialType,
+		@RequestParam(name = "profile") String profile,
+		HttpServletResponse response) {
+		String redirectUrl = oauthUseCase.provideOauthType(OauthType.from(socialType), profile);
 		try {
 			response.sendRedirect(redirectUrl);
 		} catch (IOException e) {
@@ -94,8 +96,11 @@ public class OauthController {
 	@GetMapping("/login/{socialType}")
 	public ResponseEntity<ResponseJsonObject<UserLoginResponse>> login(
 		@PathVariable(name = "socialType") String socialType,
-		@RequestParam("code") String code) {
-		OauthUser oauthUser = oauthUseCase.login(OauthType.from(socialType), code);
+		@RequestParam("code") String code,
+		@RequestParam(name = "profile") String profile
+	) {
+
+		OauthUser oauthUser = oauthUseCase.login(OauthType.from(socialType), code, profile);
 
 		UserLoginResponse userLoginResponse = UserLoginResponse.from(oauthUser);
 		HttpHeaders headers = new HttpHeaders();
