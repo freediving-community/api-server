@@ -1,5 +1,6 @@
 package com.freediving.authservice.adapter.out.external.naver;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -12,6 +13,8 @@ import com.freediving.authservice.config.NaverOauthConfig;
 import com.freediving.authservice.domain.OauthType;
 import com.freediving.authservice.domain.OauthUser;
 import com.freediving.common.config.annotation.ExternalSystemAdapter;
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,12 +44,12 @@ public class NaverOauthExternalAdapter implements OauthFeignPort {
 	}
 
 	@Override
-	public String createRequestUrl() {
+	public String createRequestUrl(String profile) {
 		String url = UriComponentsBuilder
 			.fromUriString(naverOauthConfig.codeUri())
 			.queryParam("response_type", "code")
 			.queryParam("client_id", naverOauthConfig.clientId())
-			.queryParam("redirect_uri", naverOauthConfig.redirectUri())
+			.queryParam("redirect_uri", getRedirectUriByProfile(profile))
 			.queryParam("state", naverOauthConfig.state())
 			.build()
 			.toUriString();
@@ -56,7 +59,7 @@ public class NaverOauthExternalAdapter implements OauthFeignPort {
 	}
 
 	@Override
-	public OauthUser fetch(String code) {
+	public OauthUser fetch(String code, String profile) {
 		NaverTokenResponse naverTokenResponse = naverTokenFeignClient.postToken(tokenParamMap(code));
 
 		log.info("NAVER TOKEN {}", naverTokenResponse);
@@ -70,6 +73,19 @@ public class NaverOauthExternalAdapter implements OauthFeignPort {
 			naverInfoResponse.response().profileImage());
 		OauthUser oauthUser = OauthUser.from(oauthResponse);
 		return oauthUser;
+	}
+
+	@Override
+	public String getRedirectUriByProfile(String profile) {
+		if (StringUtils.equals(profile, "local")) {
+			return naverOauthConfig.localRedirectUri();
+		} else if (StringUtils.equals(profile, "dev")) {
+			return naverOauthConfig.devRedirectUri();
+		} else if (StringUtils.equals(profile, "prd")) {
+			return naverOauthConfig.prdRedirectUri();
+		} else {
+			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "프로필 정보가 유효하지 않습니다.");
+		}
 	}
 
 	private MultiValueMap<String, String> tokenParamMap(String code) {

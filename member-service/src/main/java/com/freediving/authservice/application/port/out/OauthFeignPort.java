@@ -13,5 +13,7 @@ import com.freediving.authservice.domain.OauthUser;
  */
 public interface OauthFeignPort extends OauthRedirectUrlPort {
 
-	OauthUser fetch(String code);
+	OauthUser fetch(String code, String profile);
+
+	String getRedirectUriByProfile(String profile);
 }

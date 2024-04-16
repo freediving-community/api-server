@@ -1,5 +1,6 @@
 package com.freediving.authservice.adapter.out.external.google;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -12,6 +13,8 @@ import com.freediving.authservice.config.GoogleOauthConfig;
 import com.freediving.authservice.domain.OauthType;
 import com.freediving.authservice.domain.OauthUser;
 import com.freediving.common.config.annotation.ExternalSystemAdapter;
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,11 +44,11 @@ public class GoogleOauthExternalAdapter implements OauthFeignPort {
 	}
 
 	@Override
-	public String createRequestUrl() {
+	public String createRequestUrl(String profile) {
 		String url = UriComponentsBuilder
 			.fromUriString(googleOauthConfig.codeUri())
 			.queryParam("client_id", googleOauthConfig.clientId())
-			.queryParam("redirect_uri", googleOauthConfig.redirectUri())
+			.queryParam("redirect_uri", getRedirectUriByProfile(profile))
 			.queryParam("response_type", "code")
 			.queryParam("scope", googleOauthConfig.scope())
 			.toUriString();
@@ -55,8 +58,8 @@ public class GoogleOauthExternalAdapter implements OauthFeignPort {
 	}
 
 	@Override
-	public OauthUser fetch(String code) {
-		GoogleTokenResponse googleTokenResponse = googleTokenFeignClient.postToken(tokenParamMap(code));
+	public OauthUser fetch(String code, String profile) {
+		GoogleTokenResponse googleTokenResponse = googleTokenFeignClient.postToken(tokenParamMap(code, profile));
 		log.info("GOOGLE TOKEN : {}", googleTokenResponse);
 		GoogleInfoResponse googleInfoResponse = googleInfoFeignClient.postInfo(
 			"Bearer " + googleTokenResponse.accessToken());
@@ -69,15 +72,29 @@ public class GoogleOauthExternalAdapter implements OauthFeignPort {
 		return oauthUser;
 	}
 
-	private MultiValueMap<String, String> tokenParamMap(String code) {
+	@Override
+	public String getRedirectUriByProfile(String profile) {
+		if (StringUtils.equals(profile, "local")) {
+			return googleOauthConfig.localRedirectUri();
+		} else if (StringUtils.equals(profile, "dev")) {
+			return googleOauthConfig.devRedirectUri();
+		} else if (StringUtils.equals(profile, "prd")) {
+			return googleOauthConfig.prdRedirectUri();
+		} else {
+			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "프로필 정보가 유효하지 않습니다.");
+		}
+	}
+
+	private MultiValueMap<String, String> tokenParamMap(String code, String profile) {
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 		params.add("client_id", googleOauthConfig.clientId());
 		params.add("client_secret", googleOauthConfig.clientSecret());
 		params.add("code", code);
 		params.add("grant_type", "authorization_code");
-		params.add("redirect_uri", googleOauthConfig.redirectUri());
+		params.add("redirect_uri", getRedirectUriByProfile(profile));
 		return params;
 	}
+
 }
 
 

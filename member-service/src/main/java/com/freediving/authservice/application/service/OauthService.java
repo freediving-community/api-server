@@ -41,14 +41,14 @@ public class OauthService implements OauthUseCase, MemberUseCase {
 	private final CreateTokenPort createTokenPort;
 
 	@Override
-	public String provideOauthType(OauthType oauthType) {
-		return oauthTemplate.doRequest(oauthType);
+	public String provideOauthType(OauthType oauthType, String profile) {
+		return oauthTemplate.doRequest(oauthType, profile);
 	}
 
 	@Override
-	public OauthUser login(OauthType oauthType, String code) {
+	public OauthUser login(OauthType oauthType, String code, String profile) {
 		// 소셜 로그인
-		OauthUser oauthUser = oauthTemplate.doPostTokenAndGetInfo(oauthType, code);
+		OauthUser oauthUser = oauthTemplate.doPostTokenAndGetInfo(oauthType, code, profile);
 
 		// MemberService 에 소셜 정보를 가진 OauthUser를 전달 및 User 정보 반환
 		OauthUser user = createOrGetUser(oauthUser);
