@@ -40,12 +40,19 @@ public class SwaggerConfig {
 			.bearerFormat("JWT")
 			.name("Authorization");
 
+		SecurityScheme userIdHeaderScheme = new SecurityScheme()
+			.type(SecurityScheme.Type.APIKEY)
+			.in(SecurityScheme.In.HEADER)
+			.name("User-Id")
+			.description("User-Id long type gateway 없이 버디로 바로 요청시 사용");
+
 		SecurityRequirement securityRequirement = new SecurityRequirement()
-			.addList("Access Token");
+			.addList("Access Token").addList("User-Id");
 
 		return new OpenAPI().addServersItem(new Server().url(url).description(description))
 			.components(
 				new Components().addSecuritySchemes("Access Token", securityScheme)
+					.addSecuritySchemes("User-Id", userIdHeaderScheme)
 					.addResponses("400", new ApiResponse().description("Bad Request").content(new Content()
 						.addMediaType("application/json", new MediaType()
 								.example(

@@ -4,15 +4,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
-import com.freediving.buddyservice.adapter.out.persistence.event.CreatedBuddyEventResponseMapper;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventResponseMapper;
 import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventUseCase;
-import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
 import com.freediving.buddyservice.application.port.out.externalservice.query.MemberStatus;
 import com.freediving.buddyservice.application.port.out.externalservice.query.RequestMemberPort;
+import com.freediving.buddyservice.application.port.out.web.CreateBuddyEventPort;
+import com.freediving.buddyservice.application.port.out.web.ValidationBuddyEventPort;
+import com.freediving.buddyservice.application.port.out.web.command.like.BuddyEventLikeTogglePort;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.common.config.annotation.UseCase;
@@ -21,17 +24,20 @@ import lombok.RequiredArgsConstructor;
 
 @UseCase
 @RequiredArgsConstructor
-@Transactional
 public class CreateBuddyEventService implements CreateBuddyEventUseCase {
 
 	private final CreateBuddyEventPort createBuddyEventPort;
-	private final CreatedBuddyEventResponseMapper createdBuddyEventResponseMapper;
+	private final ValidationBuddyEventPort validationBuddyEventPort;
+	private final BuddyEventResponseMapper buddyEventResponseMapper;
 	private final RequestMemberPort requestMemberPort;
 
+	private final BuddyEventLikeTogglePort buddyEventLikeTogglePort;
+
 	@Override
+	@Transactional(isolation = Isolation.READ_UNCOMMITTED)
 	public CreatedBuddyEventResponse createBuddyEvent(CreateBuddyEventCommand command) {
 
-		// 1. Member Serivce로 정상적인 사용자 인지 확인 ( 버디 일정 생성 가능한 사용자? 제재 리스트 사용자? 등. 정상적인 사용자 체크)
+		// 1. Member Service로 정상적인 사용자 인지 확인 ( 버디 일정 생성 가능한 사용자? 제재 리스트 사용자? 등. 정상적인 사용자 체크)
 		MemberStatus status = requestMemberPort.getMemberStatus(command.getUserId());
 		if (status.isValid() == false) {
 			throw new RuntimeException("비정상적인 사용자."); // TODO 예외 처리
@@ -59,7 +65,10 @@ public class CreateBuddyEventService implements CreateBuddyEventUseCase {
 				.divingPools(command.getDivingPools())
 				.build());
 
-		return createdBuddyEventResponseMapper.mapToDomainEntity(createdBuddyEventInfo);
+		// 4. 좋아요 관심 데이터 생성
+		buddyEventLikeTogglePort.buddyEventLikeToggleSet(createdBuddyEventInfo);
+
+		return buddyEventResponseMapper.mapToDomainEntity(createdBuddyEventInfo);
 
 	}
 
@@ -73,7 +82,7 @@ public class CreateBuddyEventService implements CreateBuddyEventUseCase {
 			.map(Enum::name)
 			.collect(Collectors.toList());
 
-		return createBuddyEventPort.isValidBuddyEventOverlap(userId, eventStartTime, eventEndDate
+		return validationBuddyEventPort.isValidBuddyEventOverlap(userId, eventStartTime, eventEndDate
 			, statusNames);
 	}
 }

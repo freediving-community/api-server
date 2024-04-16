@@ -1,17 +1,14 @@
 package com.freediving.buddyservice.adapter.out.persistence.event;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.springframework.transaction.annotation.Transactional;
 
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingJpaEntity;
-import com.freediving.buddyservice.adapter.out.persistence.event.condition.BuddyEventConditionsJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestJpaEntity;
-import com.freediving.buddyservice.application.port.out.CreateBuddyEventPort;
+import com.freediving.buddyservice.application.port.out.web.CreateBuddyEventPort;
 import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.common.enumeration.ParticipationStatus;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
@@ -30,7 +27,7 @@ import lombok.RequiredArgsConstructor;
  **/
 @RequiredArgsConstructor
 @PersistenceAdapter
-public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort {
+public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort {
 
 	private final BuddyEventRepository buddyEventRepository;
 
@@ -46,6 +43,7 @@ public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort 
 				.eventEndDate(createdBuddyEventResponse.getEventEndDate())
 				.participantCount(createdBuddyEventResponse.getParticipantCount())
 				.carShareYn(createdBuddyEventResponse.getCarShareYn())
+				.freedivingLevel(createdBuddyEventResponse.getFreedivingLevel())
 				.status(createdBuddyEventResponse.getStatus())
 				.kakaoRoomCode(createdBuddyEventResponse.getKakaoRoomCode())
 				.comment(createdBuddyEventResponse.getComment())
@@ -53,7 +51,6 @@ public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort 
 		);
 
 		Set<BuddyEventDivingPoolMappingJpaEntity> buddyEventDivingPoolMappingJpaEntity = new HashSet<>();
-		BuddyEventConditionsJpaEntity buddyEventCondition = null;
 		Set<BuddyEventJoinRequestJpaEntity> buddyEventJoinRequests = new HashSet<>();
 		Set<BuddyEventConceptMappingJpaEntity> buddyEventConceptMappingJpaEntity = new HashSet<>();
 
@@ -68,11 +65,6 @@ public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort 
 				createdBuddyEventResponse.getUserId()).status(ParticipationStatus.OWNER)
 			.buddyEvent(createdEventJpaEntity).build());
 
-		// 레벨 조건
-		buddyEventCondition = BuddyEventConditionsJpaEntity.builder().buddyEvent(createdEventJpaEntity)
-			.freedivingLevel(createdBuddyEventResponse.getFreedivingLevel())
-			.build();
-
 		// 이벤트 컨셉
 		if (createdBuddyEventResponse.getBuddyEventConcepts() != null)
 			for (BuddyEventConcept pool : createdBuddyEventResponse.getBuddyEventConcepts())
@@ -81,22 +73,10 @@ public class CreateBuddyEventPersistenceAdapter implements CreateBuddyEventPort 
 						.build());
 
 		createdEventJpaEntity.changeBuddyEventDivingPoolMapping(buddyEventDivingPoolMappingJpaEntity);
-		createdEventJpaEntity.changeBuddyEventConditions(buddyEventCondition);
 		createdEventJpaEntity.changeBuddyEventJoinRequests(buddyEventJoinRequests);
 		createdEventJpaEntity.changeBuddyEventConceptMapping(buddyEventConceptMappingJpaEntity);
 
 		return createdEventJpaEntity;
-	}
-
-	@Override
-	public Boolean isValidBuddyEventOverlap(Long userId, LocalDateTime eventStartDate, LocalDateTime eventEndTime,
-		List<String> statuses) {
-		if (buddyEventRepository.existsBuddyEventByEventTime(userId, eventStartDate
-			, eventEndTime, statuses) == true)
-			return false;
-
-		return true;
-
 	}
 
 }

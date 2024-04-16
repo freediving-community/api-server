@@ -13,16 +13,16 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
-import com.freediving.buddyservice.adapter.out.persistence.event.CreatedBuddyEventResponseMapper;
+import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventResponseMapper;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 
 @ExtendWith(SpringExtension.class)
-@Import(CreatedBuddyEventResponseMapper.class)
-class CreatedBuddyEventResponseMapperTest {
+@Import(BuddyEventResponseMapper.class)
+class BuddyEventResponseMapperTest {
 
 	@Autowired
-	private CreatedBuddyEventResponseMapper createdBuddyEventResponseMapper;
+	private BuddyEventResponseMapper buddyEventResponseMapper;
 
 	@DisplayName("버디 일정 이벤트 JPA 객체를 버디 일정 이벤트 도메인 객체로 맵핑하여 생성한다.")
 	@Test
@@ -35,7 +35,7 @@ class CreatedBuddyEventResponseMapperTest {
 
 		BuddyEventJpaEntity buddyEventJpaEntity = generateBuddyEventJpa(userId, StartDate, EndDate, 3, null);
 
-		CreatedBuddyEventResponse createdBuddyEventResponse = createdBuddyEventResponseMapper.mapToDomainEntity(
+		CreatedBuddyEventResponse createdBuddyEventResponse = buddyEventResponseMapper.mapToDomainEntity(
 			buddyEventJpaEntity);
 
 		assertThat(createdBuddyEventResponse)

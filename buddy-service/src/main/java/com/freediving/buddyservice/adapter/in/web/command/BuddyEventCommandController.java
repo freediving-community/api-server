@@ -1,7 +1,5 @@
 package com.freediving.buddyservice.adapter.in.web.command;
 
-import java.util.Random;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,12 +14,14 @@ import com.freediving.buddyservice.application.port.in.web.command.like.BuddyEve
 import com.freediving.buddyservice.application.port.in.web.command.like.BuddyEventLikeToggleUseCase;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.common.config.annotation.WebAdapter;
+import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -60,11 +60,13 @@ public class BuddyEventCommandController {
 	)
 	@PostMapping("")
 	public ResponseEntity<ResponseJsonObject<CreatedBuddyEventResponse>> createBuddyEvent(
-		@Valid @RequestBody CreateBuddyEventRequest request) {
+		@Valid @RequestBody CreateBuddyEventRequest request, HttpServletRequest httpServletRequest) {
 		try {
-			// 1. JWT 유저 토큰에서 사용자 식별 ID 가져오기
-			Random random = new Random();
-			Long userId = random.nextLong();
+			// 1. UserID 추출하기
+			Long userId = Long.parseLong(httpServletRequest.getAttribute("User-Id").toString());
+
+			if (userId == null)
+				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
 
 			// 2. Use Case Command 전달.
 			CreatedBuddyEventResponse createdBuddyEventResponse = createBuddyEventUseCase.createBuddyEvent(
@@ -93,7 +95,8 @@ public class BuddyEventCommandController {
 
 	@Operation(
 		summary = "버디 이벤트 좋아요 설정/해지",
-		description = "버디 이벤트 좋아요 설정/해지를 한다.",
+		description = "버디 이벤트 좋아요 설정/해지를 한다.  좋아요 설정이 되어있는 버디 이벤트에 좋아요를 하거나, 좋아요 해지 상태의 "
+			+ "버디이벤트에 해지를 요청해도 아무런 로직이 실행되지는 않는다. 결과는 200 리턴이 된다.",
 		responses = {
 			@ApiResponse(
 				responseCode = "200",
@@ -108,14 +111,16 @@ public class BuddyEventCommandController {
 	)
 	@PostMapping("/like")
 	public ResponseEntity<ResponseJsonObject> toggleBuddyEventLike(
-		@Valid @RequestBody BuddyEventLikeToggleRequest request) {
+		@Valid @RequestBody BuddyEventLikeToggleRequest request, HttpServletRequest httpServletRequest) {
 		try {
-			// 1. JWT 유저 토큰 사용자 식별 ID 가져오기
-			Random random = new Random();
-			Long userId = random.nextLong();
+			// 1. UserID 추출하기
+			Long userId = Long.parseLong(httpServletRequest.getAttribute("User-Id").toString());
+
+			if (userId == null)
+				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
 
 			// 2. Use Case Command 전달.
-			buddyEventLikeActionUseCase.toggleBuddyEventLike(
+			buddyEventLikeActionUseCase.buddyEventLikeToggle(
 				BuddyEventLikeToggleCommand.builder()
 					.userId(userId)
 					.eventId(request.getEventId())

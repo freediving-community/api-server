@@ -37,4 +37,22 @@ public class BuddyEventLikeCountJpaEntity extends CreatedDateEntity {
 	// 나머지 컬럼 정의 및 getters and setters
 	@Column(name = "like_count", nullable = false)
 	private Integer likeCount;
+
+	public BuddyEventLikeCountJpaEntity likeCountUp() {
+		if (likeCount == null) {
+			likeCount = 1;
+			return this;
+		}
+		this.likeCount += 1;
+		return this;
+	}
+
+	public BuddyEventLikeCountJpaEntity likeCountDown() {
+		if (likeCount == null || likeCount == 0) {
+			likeCount = 0;
+			return this;
+		}
+		this.likeCount -= 1;
+		return this;
+	}
 }
