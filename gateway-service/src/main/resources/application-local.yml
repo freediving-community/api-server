@@ -35,7 +35,7 @@ spring:
             - Path=/member-service/v3/api-docs
           filters:
             - RewritePath=/member-service/(?<segment>.*), /$\{segment}
-        
+
         - id: member-service-sample
           uri: lb://MEMBER-SERVICE
           predicates:
@@ -79,6 +79,7 @@ spring:
             allowedOriginPatterns: '*'
             allowCredentials: true
             allowedHeaders: '*'
+            exposedHeaders: 'Access-Token, Refresh-Token'
             allowedMethods:
               - PUT
               - GET
