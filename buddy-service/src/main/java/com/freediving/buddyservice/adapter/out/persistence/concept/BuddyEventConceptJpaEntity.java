@@ -25,7 +25,7 @@ public class BuddyEventConceptJpaEntity extends AuditableEntity {
 
 	@Id
 	@Enumerated(EnumType.STRING)
-	@Column(name = "concept_id")
+	@Column(name = "concept_id", nullable = false)
 	private BuddyEventConcept conceptId;
 
 	@Column(name = "concept_name", nullable = false)

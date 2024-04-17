@@ -15,7 +15,7 @@ spring:
       path: /h2-console
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     properties:
       hibernate:
         show_sql: true
@@ -25,6 +25,8 @@ spring:
       mode: always
       data-locations: classpath:data.sql
       schema-locations: classpath:schema.sql
+    #kafka:
+    #bootstrap-servers: 35.199.188.230:19993
 eureka:
   instance:
     hostname: localhost
@@ -32,9 +34,9 @@ eureka:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
   client:
     # Eureka 서버 등록
-    register-with-eureka: true
+    register-with-eureka: false
     # Eureka 서버로부터 인스턴스 정보를 주기적으로 가져오는 기능
-    fetch-registry: true
+    fetch-registry: false
     # Eureka 서버 위치 등록
     service-url:
       # endpoint 지정
@@ -52,6 +54,13 @@ swagger:
   servers:
     title: "Buddy Service Swagger"
     version: "V1"
-    url: http://localhost:8000/${spring.application.name}
-    #url: http://localhost:40000
+    #url: http://localhost:8000/${spring.application.name}
+    url: http://localhost:40000
     description: Local Gateway Server
+
+#kafka:
+#  clusters:
+#    bootstrapservers: 35.199.188.230:19993
+#task:
+#  topic:
+#    like-toggle: buddyservice.task.like-action

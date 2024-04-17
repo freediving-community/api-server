@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.freediving.common.enumerate.DivingPool;
 import com.freediving.divingpool.common.DivingPoolTestCommon;
 import com.freediving.divingpool.data.dao.DivingPoolJpaEntity;
 
@@ -47,7 +48,7 @@ class DivingPoolRepositoryTest {
 		// then
 		assertThat(divingPoolResponses).hasSize(1)
 			.extracting("divingPoolId", "divingPoolName", "address", "description", "isVisible", "displayOrder")
-			.containsExactlyInAnyOrder(tuple("DEEPSTATION", "딥스테이션"
+			.containsExactlyInAnyOrder(tuple(DivingPool.DEEPSTATION, "딥스테이션"
 				, "경기도 용인시 처인구 포곡읍", "딥스테이션 설명", true, 0));
 
 	}

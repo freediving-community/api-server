@@ -23,6 +23,8 @@ public enum ServiceStatusCode {
 	CREATED(201, null, false),
 	NO_CONTENT(204, null, false),
 	BAD_REQUEST(400, "BAD_REQUEST", true),
+	UNAUTHORIZED(401, "UNAUTHORIZED", true),
+	FORBIDDEN(403, "FORBIDDEN", true),
 
 	INTERVAL_SERVER_ERROR(500, "INTERVAL_SERVER_ERROR", true)
 
