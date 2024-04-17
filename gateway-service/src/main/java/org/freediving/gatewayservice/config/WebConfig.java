@@ -14,6 +14,7 @@ public class WebConfig implements WebFluxConfigurer {
 			.allowedOriginPatterns("*")
 			.allowedMethods("*")
 			.allowedHeaders("*")
-			.allowCredentials(true);
+			.allowCredentials(true)
+			.exposedHeaders("Access-Token", "access-token", "Refresh-Token", "refresh-token");
 	}
 }
