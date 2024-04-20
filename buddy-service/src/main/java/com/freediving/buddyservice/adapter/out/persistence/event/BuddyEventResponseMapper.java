@@ -34,6 +34,7 @@ public class BuddyEventResponseMapper {
 			.eventEndDate(buddyEventJpaEntity.getEventEndDate())
 			.participantCount(buddyEventJpaEntity.getParticipantCount())
 			.status(buddyEventJpaEntity.getStatus())
+			.genderType(buddyEventJpaEntity.getGenderType())
 			.carShareYn(buddyEventJpaEntity.getCarShareYn())
 			.freedivingLevel(buddyEventJpaEntity.getFreedivingLevel())
 			.comment(buddyEventJpaEntity.getComment())

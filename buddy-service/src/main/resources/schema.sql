@@ -95,6 +95,7 @@ CREATE TABLE buddy_event
     event_end_date    timestamp     NOT NULL,
     participant_count integer       NOT NULL,
     car_share_yn      boolean       NOT NULL,
+    gender_type       varchar(30)   NOT NULL,
     status            varchar(30)   NOT NULL,
     kakao_room_code   varchar(10)   NULL,
     freediving_level  integer       NOT NULL,
@@ -104,15 +105,6 @@ CREATE TABLE buddy_event
 );
 ALTER TABLE buddy_event
     ADD CONSTRAINT PK_BUDDY_EVENT PRIMARY KEY (event_id);
-
-COMMENT ON TABLE buddy_event IS '임시테이블';
-COMMENT ON COLUMN buddy_event.event_id IS '버디 일정 이벤트 식별 ID';
-COMMENT ON COLUMN buddy_event.user_id IS '유저 ID 시퀀스';
-COMMENT ON COLUMN buddy_event.event_start_date IS '버디 일정 시작 날짜+시간';
-COMMENT ON COLUMN buddy_event.event_end_date IS '버디 일정 종료 날짜+시간';
-COMMENT ON COLUMN buddy_event.participant_count IS '버디 일정 모집하는 인원 수';
-COMMENT ON COLUMN buddy_event.updated_date IS 'JPA Auditing 관리';
-COMMENT ON COLUMN buddy_event.created_date IS 'JPA Auditing 관리';
 
 ALTER TABLE buddy_event_diving_pool_mapping
     ADD CONSTRAINT FK_buddy_event_TO_buddy_event_diving_pool_mapping_1 FOREIGN KEY (event_id)

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
+import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.common.SelfValidating;
 import com.freediving.common.enumerate.DivingPool;
 import com.freediving.common.handler.exception.BuddyMeException;
@@ -49,6 +50,8 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 
 	private final Set<BuddyEventConcept> buddyEventConcepts;
 
+	private final GenderType genderType;
+
 	private final Boolean carShareYn;
 
 	private final BuddyEventStatus status = BuddyEventStatus.RECRUITING;
@@ -67,7 +70,7 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 	@Builder
 	private CreateBuddyEventCommand(Long userId, LocalDateTime eventStartDate, LocalDateTime eventEndDate,
 		Integer participantCount, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn, String kakaoRoomCode,
-		String comment, Integer freedivingLevel, Set<DivingPool> divingPools) {
+		String comment, Integer freedivingLevel, Set<DivingPool> divingPools, GenderType genderType) {
 		this.userId = userId;
 		this.eventStartDate = eventStartDate;
 
@@ -82,6 +85,7 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 		this.kakaoRoomCode = kakaoRoomCode;
 		this.freedivingLevel = freedivingLevel;
 		this.divingPools = divingPools;
+		this.genderType = genderType;
 		this.validateSelf();
 	}
 }

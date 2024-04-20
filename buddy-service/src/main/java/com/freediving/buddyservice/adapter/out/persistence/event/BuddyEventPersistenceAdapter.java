@@ -42,6 +42,7 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort {
 				.eventStartDate(createdBuddyEventResponse.getEventStartDate())
 				.eventEndDate(createdBuddyEventResponse.getEventEndDate())
 				.participantCount(createdBuddyEventResponse.getParticipantCount())
+				.genderType(createdBuddyEventResponse.getGenderType())
 				.carShareYn(createdBuddyEventResponse.getCarShareYn())
 				.freedivingLevel(createdBuddyEventResponse.getFreedivingLevel())
 				.status(createdBuddyEventResponse.getStatus())

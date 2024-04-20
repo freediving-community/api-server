@@ -63,6 +63,7 @@ public class CreateBuddyEventService implements CreateBuddyEventUseCase {
 				.comment(command.getComment())
 				.freedivingLevel(command.getFreedivingLevel())
 				.divingPools(command.getDivingPools())
+				.genderType(command.getGenderType())
 				.build());
 
 		// 4. 좋아요 관심 데이터 생성
