@@ -15,4 +15,5 @@ public interface CreateTokenPort {
 
 	Token createTokens(String userId, String oauthType);
 
+	String updateTokens(String userId, String oauthTypeName);
 }

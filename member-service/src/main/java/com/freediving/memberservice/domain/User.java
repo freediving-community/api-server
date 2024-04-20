@@ -16,7 +16,8 @@ import com.freediving.memberservice.adapter.out.persistence.UserLicenseJpaEntity
  */
 
 public record User(Long userId, String email, String profileImgUrl,
-				   String nickname, String content, OauthType oauthType, List<UserLicense> userLicenseList
+				   String nickname, String content, OauthType oauthType,
+				   List<UserLicense> userLicenseList
 ) {
 
 	public static User fromJpaEntityList(UserJpaEntity userJpaEntity, List<UserLicenseJpaEntity> userLicenceJpaList) {

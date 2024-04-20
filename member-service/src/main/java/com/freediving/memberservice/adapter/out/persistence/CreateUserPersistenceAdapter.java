@@ -6,15 +6,14 @@ import java.util.List;
 import org.apache.commons.lang3.ObjectUtils;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
-import com.freediving.common.handler.exception.BuddyMeException;
-import com.freediving.common.response.enumerate.ServiceStatusCode;
+import com.freediving.common.domain.member.RoleLevel;
+import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.in.CreateUserInfoCommand;
 import com.freediving.memberservice.application.port.out.CreateUserPort;
 import com.freediving.memberservice.domain.DiveType;
 import com.freediving.memberservice.domain.OauthType;
 import com.freediving.memberservice.domain.User;
-import com.freediving.memberservice.exception.ErrorCode;
 import com.freediving.memberservice.util.NicknameGenerator;
 
 import lombok.RequiredArgsConstructor;
@@ -43,7 +42,7 @@ public class CreateUserPersistenceAdapter implements CreateUserPort {
 	 * @Description      : 최초 로그인인 경우 회원가입 / 기존 가입자인 경우 사용자 정보 반환
 	 */
 	@Override
-	public User createOrGetUser(CreateUserCommand createUserCommand) {
+	public CreateUserResponse createOrGetUser(CreateUserCommand createUserCommand) {
 		final OauthType oauthType = createUserCommand.getOauthType();
 		final String email = createUserCommand.getEmail();
 		final String profileImgUrl = createUserCommand.getProfileImgUrl();
@@ -65,20 +64,34 @@ public class CreateUserPersistenceAdapter implements CreateUserPort {
 			userLicenseJpaRepository.save(scubaDivingLicense);
 
 			List<UserLicenseJpaEntity> userLicenceJpaList = List.of(freeDivingLicense, scubaDivingLicense);
-			return User.fromJpaEntityList(savedUserJpaEntity, userLicenceJpaList);
+
+			User user = User.fromJpaEntityList(savedUserJpaEntity, userLicenceJpaList);
+			return CreateUserResponse.from(user, true);
 		}
 
 		// 기존 가입자인 경우
 		List<UserLicenseJpaEntity> userLicenceJpaList = userLicenseJpaRepository.findAllById(
 			Collections.singleton(userJpaEntity.getUserId()));
-		return User.fromJpaEntityList(userJpaEntity, userLicenceJpaList);
+		User user = User.fromJpaEntityList(userJpaEntity, userLicenceJpaList);
+		return CreateUserResponse.from(user, false);
 	}
 
 	@Override
 	public void createUserInfo(CreateUserInfoCommand command) {
 		Long userId = command.getUserId();
-		UserJpaEntity userJpaEntity = userJpaRepository.findById(userId).orElseThrow(
-			() -> new BuddyMeException(ServiceStatusCode.BAD_REQUEST, ErrorCode.NOT_FOUND_USER.getMessage()));
+		DiveType diveType = command.getDiveType();
+		UserLicenseJpaEntity userLicenseJpaEntity = userLicenseJpaRepository.findByUserIdAndDiveType(userId, diveType);
+		userLicenseJpaEntity.updateLicenseImgUrl(command.getLicenseImgUrl());
+		userLicenseJpaEntity.updateLicenseLevel(command.getLicenseLevel());
+		// 0레벨인 경우 심사 없이 바로 승인 나머지는 심사중 상태로 변경
+		if (command.getLicenseLevel() == 0) {
+			userLicenseJpaEntity.updateRoleLevel(RoleLevel.NO_LEVEL);
+		} else {
+			userLicenseJpaEntity.updateRoleLevel(RoleLevel.WAIT_LICENSE_APPROVAL);
+		}
+
+		UserJpaEntity userJpaEntity = userLicenseJpaEntity.getUserJpaEntity();
+		userJpaEntity.updateProfileImgUrl(command.getProfileImgUrl());
 		userJpaEntity.updateUserNickname(command.getNickname());
 		userJpaEntity.updateUserContent(command.getContent());
 

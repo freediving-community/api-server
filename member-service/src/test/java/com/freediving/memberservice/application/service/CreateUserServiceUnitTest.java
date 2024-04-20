@@ -12,10 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.out.CreateUserPort;
-import com.freediving.memberservice.domain.User;
-import com.freediving.memberservice.fixture.UserFixture;
+import com.freediving.memberservice.fixture.CreateUserResponseFixture;
 
 import jakarta.validation.ConstraintViolationException;
 
@@ -44,11 +44,11 @@ class CreateUserServiceUnitTest {
 	void createOrGetUserSuccess() {
 		CreateUserCommand command = createCommand(VALID_OAUTH_TYPE, VALID_EMAIL, OPTIONAL_PROFILE_IMG_URL);
 
-		User expectedUser = UserFixture.createUserFromCommand(command);
+		CreateUserResponse expectedUser = CreateUserResponseFixture.createUserResponseFromCommand(command);
 
 		when(createUserPort.createOrGetUser(command)).thenReturn(expectedUser);
 
-		User resultUser = createUserService.createOrGetUser(command);
+		CreateUserResponse resultUser = createUserService.createOrGetUser(command);
 
 		assertEquals(expectedUser, resultUser);
 	}

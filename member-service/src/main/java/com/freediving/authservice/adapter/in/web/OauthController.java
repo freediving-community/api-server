@@ -61,8 +61,8 @@ public class OauthController {
 		+ "Client Redirect URL : (/auth/kakao, /auth/google, /auth/naver)",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
-			@ApiResponse(responseCode = "400", description = "실패 - socialType 정보 오류"),
-			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
+			@ApiResponse(responseCode = "400", description = "실패 - socialType 정보 오류", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
 	@GetMapping("/{socialType}")
 	public ResponseEntity<ResponseJsonObject<Void>> redirectAuthLogin(
@@ -90,8 +90,8 @@ public class OauthController {
 		, description = "사용자 로그인 후 발급되는 Code 정보를 요청하여, 사용자 정보 및 JWT 발급 정보를 응답받는다.",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
-			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류"),
-			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
+			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
 	@GetMapping("/login/{socialType}")
 	public ResponseEntity<ResponseJsonObject<UserLoginResponse>> login(

@@ -1,16 +1,15 @@
 package com.freediving.memberservice.adapter.in.web;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.common.config.annotation.WebAdapter;
-import com.freediving.memberservice.application.port.in.DeleteUserUseCase;
-import com.freediving.memberservice.domain.User;
+import com.freediving.common.response.ResponseJsonObject;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,38 +18,33 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * @Author         : sasca37
- * @Date           : 2024/03/31
- * @Description    : 유저 정보 삭제
+ * @Date           : 2024/04/20
+ * @Description    :
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * ===========================================================
- * 2024/03/31        sasca37       최초 생성
+ * 2024/04/20        sasca37       최초 생성
  */
 
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1")
+@RequestMapping("/v1/admin")
+@Tag(name = "Admin")
 @Slf4j
-@Validated
-@Tag(name = "User", description = "유저 관련 API")
-public class DeleteUserController {
+public class AdminController {
 
-	private final DeleteUserUseCase deleteUserUseCase;
-
-	@Operation(summary = "회원 탈퇴 API"
-		, description = "JWT 정보를 기반으로 사용자 정보를 조회하여 해당 유저를 탈퇴한다.",
+	@Operation(summary = "자격증 등록한 사용자 라이센스 정보 조회 API"
+		, description = "가입 시 또는 회원정보 수정을 통해 자격증을 등록한 사용자 라이센스 정보를 조회한다.",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
 			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
 			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
-	@DeleteMapping("/users/me")
-	public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal User user) {
-
-		Long deleteUserCommand = user.userId();
-		deleteUserUseCase.deleteUser(deleteUserCommand);
-
-		return ResponseEntity.noContent().build();
+	@GetMapping("/users/license")
+	@PreAuthorize(value = "ADMIN")
+	@Hidden
+	public ResponseEntity<ResponseJsonObject<?>> getUserLicenseList() {
+		return null;
 	}
 }

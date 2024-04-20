@@ -68,17 +68,16 @@ public class CreateUserController {
 			.email(request.getEmail())
 			.profileImgUrl(request.getProfileImgUrl())
 			.build();
-		User user = createUserUseCase.createOrGetUser(command);
-		return CreateUserResponse.from(user);
+		return createUserUseCase.createOrGetUser(command);
 	}
 
 	@Operation(summary = "유저 정보 등록 API"
-		, description = "라이센스, 다이빙 풀, 컨셉, 유저 정보 등의 정보를 저장한다.",
+		, description = "다이브타입 [F (프리다이빙), S (스쿠버다이빙)], 라이센스, 다이빙 풀, 컨셉, 유저 정보 등의 정보를 저장한다.",
 		responses = {
-			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
-			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류"),
-			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
-			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
+			@ApiResponse(responseCode = "201", description = "성공", ref = "#/components/responses/201"),
+			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
 	@PostMapping("/users/info")
 	public ResponseEntity<?> createUserInfo(@Valid @RequestBody CreateUserInfoRequest request,
@@ -105,8 +104,8 @@ public class CreateUserController {
 		, description = "버디서비스에서 제공하는 다이빙 핑 정보를 받아와서 응답한다.",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
-			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
-			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
 	@GetMapping("/pools")
 	public ResponseEntity<ResponseJsonObject<?>> getDivingPools() {

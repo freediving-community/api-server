@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.freediving.memberservice.domain.DiveType;
+
 /**
  * @Author         : sasca37
  * @Date           : 2024/01/28
@@ -36,4 +38,14 @@ public interface UserLicenseJpaRepository extends JpaRepository<UserLicenseJpaEn
 	)
 	List<UserLicenseJpaEntity> findAllByUserIdList(
 		@Param("userIdList") List<Long> userIdList);
+
+	@Query(
+		"SELECT u " +
+			"FROM UserLicenseJpaEntity u " +
+			"JOIN FETCH  UserJpaEntity  uj " +
+			"ON u.userJpaEntity.userId = uj.userId " +
+			"WHERE u.userJpaEntity.userId = :userId " +
+			"AND u.diveType = :diveType"
+	)
+	UserLicenseJpaEntity findByUserIdAndDiveType(@Param("userId") Long userId, @Param("diveType") DiveType diveType);
 }
