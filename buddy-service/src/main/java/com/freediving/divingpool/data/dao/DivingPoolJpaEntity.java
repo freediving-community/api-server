@@ -28,22 +28,40 @@ public class DivingPoolJpaEntity extends AuditableEntity {
 
 	@Id
 	@Enumerated(EnumType.STRING)
-	@Column(name="diving_pool_id", nullable = false)
+	@Column(name = "diving_pool_id", nullable = false)
 	private DivingPool divingPoolId;
 
-	@Column(name="diving_pool_name", nullable = false)
+	@Column(name = "diving_pool_name", nullable = false)
 	private String divingPoolName;
 
-	@Column(name="address", length = 255, nullable = false)
+	@Column(name = "address", length = 255, nullable = false)
 	private String address;
 
-	@Column(name="description", length = 255, nullable = false)
+	@Column(name = "simple_address", length = 255, nullable = false)
+	private String simpleAddress; // 새로 추가된 필드
+
+	@Column(name = "operating_hours", length = 255, nullable = false)
+	private String operatingHours;
+
+	@Column(name = "price_info", length = 255, nullable = false)
+	private String priceInfo;
+
+	@Column(name = "website_url", length = 255, nullable = false)
+	private String websiteUrl;
+
+	@Column(name = "recommended_level", length = 50, nullable = false)
+	private String recommendedLevel;
+
+	@Column(name = "depth", length = 50, nullable = false)
+	private String depth;
+
+	@Column(name = "description", length = 255, nullable = false)
 	private String description;
 
-	@Column(name="is_visible", nullable = false)
+	@Column(name = "is_visible", nullable = false)
 	private Boolean isVisible;
 
-	@Column(name="display_order", nullable = false)
+	@Column(name = "display_order", nullable = false)
 	private Integer displayOrder;
 
 	@Override
