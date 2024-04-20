@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.authservice.util.JwtTokenUtils;
+import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.in.CreateUserUseCase;
 import com.freediving.memberservice.domain.OauthType;
-import com.freediving.memberservice.domain.User;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +37,8 @@ public class HelloController {
 			.email("sasca37@naver.com")
 			.profileImgUrl("https://img.com")
 			.build();
-		User user = createUserUseCase.createOrGetUser(command);
-		return JwtTokenUtils.generateRefreshToken(String.valueOf(user.userId()),
-			String.valueOf(user.oauthType()), key);
+		CreateUserResponse response = createUserUseCase.createOrGetUser(command);
+		return JwtTokenUtils.generateRefreshToken(String.valueOf(response.getUserId()),
+			String.valueOf(response.getOauthType()), key);
 	}
 }

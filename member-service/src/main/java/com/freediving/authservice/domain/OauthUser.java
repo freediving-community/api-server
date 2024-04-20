@@ -35,6 +35,7 @@ public class OauthUser {
 
 	private MemberLicenseInfo licenseInfo;
 
+	private Boolean firstJoinTF = false;
 	private String accessToken;
 	private String refreshToken;
 

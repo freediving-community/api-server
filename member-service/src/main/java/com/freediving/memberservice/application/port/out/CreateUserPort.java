@@ -1,8 +1,8 @@
 package com.freediving.memberservice.application.port.out;
 
+import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.in.CreateUserInfoCommand;
-import com.freediving.memberservice.domain.User;
 
 /**
  * @Author         : sasca37
@@ -16,7 +16,7 @@ import com.freediving.memberservice.domain.User;
 
 public interface CreateUserPort {
 
-	User createOrGetUser(CreateUserCommand createUserCommand);
+	CreateUserResponse createOrGetUser(CreateUserCommand createUserCommand);
 
 	void createUserInfo(CreateUserInfoCommand command);
 }

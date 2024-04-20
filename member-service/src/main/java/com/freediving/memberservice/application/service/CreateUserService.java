@@ -3,11 +3,11 @@ package com.freediving.memberservice.application.service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.freediving.common.config.annotation.UseCase;
+import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.in.CreateUserInfoCommand;
 import com.freediving.memberservice.application.port.in.CreateUserUseCase;
 import com.freediving.memberservice.application.port.out.CreateUserPort;
-import com.freediving.memberservice.domain.User;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,9 +29,8 @@ public class CreateUserService implements CreateUserUseCase {
 	private final CreateUserPort createUserPort;
 
 	@Override
-	public User createOrGetUser(CreateUserCommand command) {
-		User user = createUserPort.createOrGetUser(command);
-		return user;
+	public CreateUserResponse createOrGetUser(CreateUserCommand command) {
+		return createUserPort.createOrGetUser(command);
 	}
 
 	@Override

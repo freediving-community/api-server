@@ -68,8 +68,7 @@ public class CreateUserController {
 			.email(request.getEmail())
 			.profileImgUrl(request.getProfileImgUrl())
 			.build();
-		User user = createUserUseCase.createOrGetUser(command);
-		return CreateUserResponse.from(user);
+		return createUserUseCase.createOrGetUser(command);
 	}
 
 	@Operation(summary = "유저 정보 등록 API"

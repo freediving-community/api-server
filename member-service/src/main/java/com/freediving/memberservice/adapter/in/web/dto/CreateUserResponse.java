@@ -3,7 +3,6 @@ package com.freediving.memberservice.adapter.in.web.dto;
 import com.freediving.memberservice.domain.User;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -18,7 +17,7 @@ import lombok.Getter;
  */
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 @Schema(description = "유저 생성 응답 DTO")
 public class CreateUserResponse {
 
@@ -37,6 +36,9 @@ public class CreateUserResponse {
 	@Schema(description = "소셜 로그인 타입", example = "KAKAO")
 	private String oauthType;
 
+	@Schema(description = "최초 가입 여부", example = "false")
+	private Boolean firstJoinTF;
+
 	@Schema(description = "라이센스 정보")
 	private LicenseInfo licenseInfo;
 
@@ -47,9 +49,9 @@ public class CreateUserResponse {
 	 * @Return           : 로그인에 필요한 정보를 담은 UserDto
 	 * @Description      : User 도메인 정보를 UserDto로 변환
 	 */
-	public static CreateUserResponse from(User user) {
+	public static CreateUserResponse from(User user, Boolean firstJoinTF) {
 
 		return new CreateUserResponse(user.userId(), user.email(), user.profileImgUrl(), user.nickname(),
-			user.oauthType().name(), LicenseInfo.createLicenseInfo(user.userLicenseList()));
+			user.oauthType().name(), firstJoinTF, LicenseInfo.createLicenseInfo(user.userLicenseList()));
 	}
 }
