@@ -52,7 +52,7 @@ public class CreateBuddyEventRequest {
 	private Integer participantCount;
 
 	@ArraySchema(arraySchema = @Schema(description = "버디 이벤트 컨셉"),
-		schema = @Schema(implementation = BuddyEventConcept.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED))
+		schema = @Schema(implementation = BuddyEventConcept.class, requiredMode = Schema.RequiredMode.REQUIRED))
 	private Set<BuddyEventConcept> buddyEventConcepts;
 
 	@Schema(description = "성별 여부", implementation = GenderType.class, requiredMode = Schema.RequiredMode.REQUIRED)
@@ -63,17 +63,17 @@ public class CreateBuddyEventRequest {
 	@NotNull
 	private Boolean carShareYn;
 
-	@Schema(description = "카카오 채팅방 코드", example = "gQWkq2Uf", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-	private String kakaoRoomCode;
-
-	@Schema(description = "추가 코멘트", example = "이번 모임은 캐주얼하게 진행합니다.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-	private String comment;
-
 	@Schema(description = "프리다이빙 레벨 제한", example = "0~3", minimum = "0", requiredMode = Schema.RequiredMode.REQUIRED)
 	private Integer freedivingLevel;
 
 	@ArraySchema(arraySchema = @Schema(description = "다이빙 풀"),
 		schema = @Schema(implementation = DivingPool.class, requiredMode = Schema.RequiredMode.REQUIRED))
 	private Set<DivingPool> divingPools;
+
+	@Schema(description = "카카오 채팅방 코드", example = "gQWkq2Uf", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+	private String kakaoRoomCode;
+
+	@Schema(description = "추가 코멘트", example = "이번 모임은 캐주얼하게 진행합니다.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+	private String comment;
 
 }
