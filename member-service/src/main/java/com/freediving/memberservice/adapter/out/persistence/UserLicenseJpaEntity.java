@@ -46,7 +46,7 @@ public class UserLicenseJpaEntity extends AuditableEntity {
 	private UserJpaEntity userJpaEntity;
 
 	@Enumerated(value = EnumType.STRING)
-	@Column(name = "role", nullable = false, length = 20)
+	@Column(name = "role", nullable = false, length = 50)
 	private RoleLevel role;
 
 	@Column(name = "org_name")
@@ -86,5 +86,13 @@ public class UserLicenseJpaEntity extends AuditableEntity {
 		this.userJpaEntity = userJpaEntity;
 		this.diveType = diveType;
 		this.role = roleLevel;
+	}
+
+	public void updateRoleLevel(RoleLevel roleLevel) {
+		this.role = roleLevel;
+	}
+
+	public void updateLicenseImgUrl(String licenseImgUrl) {
+		this.licenseImgUrl = licenseImgUrl;
 	}
 }

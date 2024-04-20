@@ -6,8 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.ObjectUtils;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
-import com.freediving.common.handler.exception.BuddyMeException;
-import com.freediving.common.response.enumerate.ServiceStatusCode;
+import com.freediving.common.domain.member.RoleLevel;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.in.CreateUserInfoCommand;
@@ -15,7 +14,6 @@ import com.freediving.memberservice.application.port.out.CreateUserPort;
 import com.freediving.memberservice.domain.DiveType;
 import com.freediving.memberservice.domain.OauthType;
 import com.freediving.memberservice.domain.User;
-import com.freediving.memberservice.exception.ErrorCode;
 import com.freediving.memberservice.util.NicknameGenerator;
 
 import lombok.RequiredArgsConstructor;
@@ -81,8 +79,18 @@ public class CreateUserPersistenceAdapter implements CreateUserPort {
 	@Override
 	public void createUserInfo(CreateUserInfoCommand command) {
 		Long userId = command.getUserId();
-		UserJpaEntity userJpaEntity = userJpaRepository.findById(userId).orElseThrow(
-			() -> new BuddyMeException(ServiceStatusCode.BAD_REQUEST, ErrorCode.NOT_FOUND_USER.getMessage()));
+		DiveType diveType = command.getDiveType();
+		UserLicenseJpaEntity userLicenseJpaEntity = userLicenseJpaRepository.findByUserIdAndDiveType(userId, diveType);
+		userLicenseJpaEntity.updateLicenseImgUrl(command.getLicenseImgUrl());
+		// 0레벨인 경우 심사 없이 바로 승인 나머지는 심사중 상태로 변경
+		if (command.getLicenseLevel() == 0) {
+			userLicenseJpaEntity.updateRoleLevel(RoleLevel.NO_LEVEL);
+		} else {
+			userLicenseJpaEntity.updateRoleLevel(RoleLevel.WAIT_LICENSE_APPROVAL);
+		}
+
+		UserJpaEntity userJpaEntity = userLicenseJpaEntity.getUserJpaEntity();
+		userJpaEntity.updateProfileImgUrl(command.getProfileImgUrl());
 		userJpaEntity.updateUserNickname(command.getNickname());
 		userJpaEntity.updateUserContent(command.getContent());
 

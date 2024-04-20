@@ -40,6 +40,7 @@ public class SwaggerConfig {
 	@Value("${swagger.servers.version}")
 	private String version;
 
+	private final String CREATED = "201";
 	private final String NO_CONTENT = "204";
 	private final String BAD_REQUEST = "400";
 	private final String UNAUTHORIZED = "401";
@@ -64,6 +65,7 @@ public class SwaggerConfig {
 
 	private Components initComponents() {
 		return new Components().addSecuritySchemes(TOKEN_NAME, initSecurityScheme())
+			.addResponses(CREATED, getApiResponseByKey(CREATED))
 			.addResponses(NO_CONTENT, getApiResponseByKey(NO_CONTENT))
 			.addResponses(BAD_REQUEST, getApiResponseByKey(BAD_REQUEST))
 			.addResponses(UNAUTHORIZED, getApiResponseByKey(UNAUTHORIZED))
@@ -73,6 +75,18 @@ public class SwaggerConfig {
 
 	private ApiResponse getApiResponseByKey(String key) {
 		switch (key) {
+			case CREATED -> {
+				return new ApiResponse().description("Created")
+					.content(new Content().addMediaType("application/json", new MediaType()
+						.example(
+							ResponseJsonObject.builder()
+								.code(ServiceStatusCode.CREATED)
+								.data("{}")
+								.expandMsg("msg")
+								.build()
+						)))
+					;
+			}
 			case NO_CONTENT -> {
 				return new ApiResponse().description("No Content")
 					.content(new Content().addMediaType("application/json", new MediaType()

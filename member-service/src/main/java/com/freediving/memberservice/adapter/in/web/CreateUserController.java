@@ -72,9 +72,9 @@ public class CreateUserController {
 	}
 
 	@Operation(summary = "유저 정보 등록 API"
-		, description = "라이센스, 다이빙 풀, 컨셉, 유저 정보 등의 정보를 저장한다.",
+		, description = "다이브타입 [F (프리다이빙), S (스쿠버다이빙)], 라이센스, 다이빙 풀, 컨셉, 유저 정보 등의 정보를 저장한다.",
 		responses = {
-			@ApiResponse(responseCode = "204", description = "성공", ref = "#/components/responses/204"),
+			@ApiResponse(responseCode = "201", description = "성공", ref = "#/components/responses/201"),
 			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),
 			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
 			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")

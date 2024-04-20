@@ -75,6 +75,14 @@ public class UserJpaEntity extends AuditableEntity {
 		this.content = content;
 	}
 
+	public void updateProfileImgUrl(String profileImgUrl) {
+		this.profileImgUrl = profileImgUrl;
+	}
+
+	public void updateStatue(UserStatus userStatus) {
+		this.userStatus = userStatus;
+	}
+
 	public static UserJpaEntity createSimpleUser(OauthType oauthType, String email, String profileImgUrl) {
 		return new UserJpaEntity(oauthType, email, profileImgUrl);
 	}
@@ -94,7 +102,4 @@ public class UserJpaEntity extends AuditableEntity {
 		this.oauthType = oauthType;
 	}
 
-	public void updateStatue(UserStatus userStatus) {
-		this.userStatus = userStatus;
-	}
 }

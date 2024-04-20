@@ -9,7 +9,6 @@ import com.freediving.memberservice.valid.EnumValid;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -42,7 +41,6 @@ public class CreateUserInfoRequest {
 	private Integer licenseLevel;
 
 	@Schema(description = "유저 라이센스 이미지 URL", example = "https://d1pjflw6c3jt4r.cloudfront.net")
-	@NotNull(message = "라이센스 이미지는 필수입니다.")
 	private String licenseImgUrl;
 
 	@Size(min = 1, max = 2, message = "다이빙 풀 정보는 1개 이상 2개 이하여야 합니다.")

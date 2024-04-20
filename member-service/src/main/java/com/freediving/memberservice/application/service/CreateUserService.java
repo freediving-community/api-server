@@ -1,8 +1,11 @@
 package com.freediving.memberservice.application.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.freediving.common.config.annotation.UseCase;
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.in.CreateUserInfoCommand;
@@ -35,6 +38,11 @@ public class CreateUserService implements CreateUserUseCase {
 
 	@Override
 	public void createUserInfo(CreateUserInfoCommand command) {
+
+		// 라이센스 레벨이 0이 아니면서 자격증 이미지 정보가 없은 경우 예외
+		if (command.getLicenseLevel() != 0 && StringUtils.isEmpty(command.getLicenseImgUrl())) {
+			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "자격증 이미지 정보는 필수입니다.");
+		}
 		createUserPort.createUserInfo(command);
 	}
 }
