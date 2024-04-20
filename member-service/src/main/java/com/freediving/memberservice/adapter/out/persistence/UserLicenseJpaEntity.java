@@ -95,4 +95,8 @@ public class UserLicenseJpaEntity extends AuditableEntity {
 	public void updateLicenseImgUrl(String licenseImgUrl) {
 		this.licenseImgUrl = licenseImgUrl;
 	}
+
+	public void updateLicenseLevel(Integer licenseLevel) {
+		this.licenseLevel = licenseLevel;
+	}
 }

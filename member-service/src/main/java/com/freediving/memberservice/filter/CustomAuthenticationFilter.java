@@ -3,14 +3,17 @@ package com.freediving.memberservice.filter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.freediving.memberservice.application.port.in.FindUserQuery;
 import com.freediving.memberservice.application.service.FindUserService;
+import com.freediving.memberservice.domain.DiveType;
 import com.freediving.memberservice.domain.User;
 
 import jakarta.servlet.FilterChain;
@@ -81,8 +84,16 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
 		FindUserQuery findUserQuery = FindUserQuery.builder().userId(userId).build();
 		User user = findUserService.findUserDetailByQuery(findUserQuery);
+		List<String> roleList = user.userLicenseList()
+			.stream()
+			.filter(l -> l.diveType().equals(DiveType.FREE_DIVE))
+			.map(l -> l.roleLevel().name())
+			.collect(Collectors.toList());
+		List<SimpleGrantedAuthority> authorities = roleList.stream()
+			.map(SimpleGrantedAuthority::new)
+			.collect(Collectors.toList());
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-			user, null, null
+			user, null, authorities
 		);
 		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 		SecurityContextHolder.getContext().setAuthentication(authentication);

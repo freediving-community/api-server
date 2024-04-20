@@ -82,6 +82,7 @@ public class CreateUserPersistenceAdapter implements CreateUserPort {
 		DiveType diveType = command.getDiveType();
 		UserLicenseJpaEntity userLicenseJpaEntity = userLicenseJpaRepository.findByUserIdAndDiveType(userId, diveType);
 		userLicenseJpaEntity.updateLicenseImgUrl(command.getLicenseImgUrl());
+		userLicenseJpaEntity.updateLicenseLevel(command.getLicenseLevel());
 		// 0레벨인 경우 심사 없이 바로 승인 나머지는 심사중 상태로 변경
 		if (command.getLicenseLevel() == 0) {
 			userLicenseJpaEntity.updateRoleLevel(RoleLevel.NO_LEVEL);
