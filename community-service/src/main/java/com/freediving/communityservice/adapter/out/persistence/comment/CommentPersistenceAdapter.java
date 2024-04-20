@@ -189,24 +189,31 @@ public class CommentPersistenceAdapter
 	}
 
 	@Override
-	public void markDeleted(Long articleId) {
-		// List<CommentJpaEntity> comments = jpaQueryFactory
-		// 	.selectFrom(commentJpaEntity)
-		// 	.where(
-		// 		commentJpaEntity.articleId.eq(articleId)
-		// 	).fetch();
-
-		LocalDateTime deletedAt = LocalDateTime.now();
-		commentRepository.markDeleted(articleId, deletedAt);
-		// comments.forEach(c -> c.markDeleted(deletedAt));
-	}
-
-	@Override
 	public Comment editComment(CommentEditCommand command) {
 		CommentJpaEntity commentJpa = commentRepository.findById(command.getCommentId())
 			.orElseThrow(() -> new IllegalArgumentException("해당하는 댓글이 없습니다."));
-		commentJpa.editComment(command.getContent(), command.isVisible());
+		commentJpa.editComment(command.getContent()/*, command.isVisible()*/);
 
 		return commentMapper.mapToDomain(commentJpa);
+	}
+
+	@Override
+	public void markDeletedByArticleId(Long articleId) {
+		LocalDateTime deletedAt = LocalDateTime.now();
+		commentRepository.markDeletedByArticleId(articleId, deletedAt);
+	}
+
+	@Override
+	public void markDeletedWithReply(Long commentId) {
+		LocalDateTime deletedAt = LocalDateTime.now();
+		commentRepository.markDeletedByParentId(commentId, deletedAt);
+	}
+
+	@Override
+	public void markDeleted(Long commentId) {
+		LocalDateTime deletedAt = LocalDateTime.now();
+		CommentJpaEntity commentJpa = commentRepository.findById(commentId)
+			.orElseThrow(() -> new IllegalArgumentException("해당하는 댓글이 없습니다."));
+		commentJpa.markDeleted(deletedAt);
 	}
 }

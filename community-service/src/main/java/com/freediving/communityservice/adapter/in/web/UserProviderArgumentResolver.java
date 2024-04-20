@@ -27,7 +27,7 @@ public class UserProviderArgumentResolver implements HandlerMethodArgumentResolv
 	@Override
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 		NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-		String userId = webRequest.getHeader("UserId");
+		String userId = webRequest.getHeader("User-Id");
 		// String roleLevel = webRequest.getHeader("RoleLevel");
 		UserProvider currentUserProvider = userProvider.getObject();
 

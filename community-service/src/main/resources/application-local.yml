@@ -71,7 +71,7 @@ swagger:
   servers:
     title: "Community Service Swagger"
     version: "v1"
-    url: http://localhost:8080/${spring.application.name}
+    url: http://localhost:8080
     description: Local Community
 
 feign:

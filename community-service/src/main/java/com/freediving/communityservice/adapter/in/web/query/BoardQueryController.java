@@ -17,8 +17,12 @@ import com.freediving.communityservice.application.port.in.BoardReadCommand;
 import com.freediving.communityservice.application.port.in.BoardUseCase;
 import com.freediving.communityservice.domain.Board;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Board 게시판", description = "게시판 조회 API")
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 @RestController
@@ -26,6 +30,17 @@ public class BoardQueryController {
 
 	private final BoardUseCase boardUseCase;
 
+	@Operation(
+		summary = "게시판 목록 조회",
+		description = "게시판 목록 조회",
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "게시판 목록 조회됨",
+				useReturnTypeSchema = true
+			)
+		}
+	)
 	@GetMapping("/boards")
 	public ResponseEntity<ResponseJsonObject<BoardResponse>> getBoards() {
 		boolean isAdmin = false;
@@ -37,6 +52,17 @@ public class BoardQueryController {
 		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, BoardResponse.of("success", boards)));
 	}
 
+	@Operation(
+		summary = "게시판 상세 조회",
+		description = "게시판 상세 정보 조회",
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "게시판 상세 정보 조회됨",
+				useReturnTypeSchema = true
+			)
+		}
+	)
 	@GetMapping("/boards/{boardType}")
 	public ResponseEntity<ResponseJsonObject<BoardResponse>> getBoardDetail(
 		@PathVariable("boardType") BoardType boardType) {

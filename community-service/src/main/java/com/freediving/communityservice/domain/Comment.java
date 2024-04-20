@@ -3,6 +3,8 @@ package com.freediving.communityservice.domain;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import org.springframework.util.ObjectUtils;
+
 import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 
@@ -76,7 +78,7 @@ public class Comment {
 		}
 	}
 
-	public void isParentComment() {
+	public void checkParentComment() {
 		if (this.parentId != null)
 			throw new IllegalArgumentException("답글에는 다시 답글을 달 수 없습니다.");
 	}
@@ -84,6 +86,10 @@ public class Comment {
 	public void checkCommentOwner(Long requestUserId) {
 		if (!requestUserId.equals(this.createdBy))
 			throw new IllegalArgumentException("수정 권한이 없습니다.");
+	}
+
+	public boolean isRootComment() {
+		return !ObjectUtils.isEmpty(this.parentId);
 	}
 
 }

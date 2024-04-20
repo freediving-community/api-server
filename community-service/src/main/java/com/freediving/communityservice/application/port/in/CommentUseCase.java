@@ -12,4 +12,6 @@ public interface CommentUseCase {
 	Comment editComment(CommentEditCommand command);
 
 	List<Comment> getNextCommentsByLastCommentId(CommentReadCommand command);
+
+	Long removeComment(CommentDeleteCommand command);
 }

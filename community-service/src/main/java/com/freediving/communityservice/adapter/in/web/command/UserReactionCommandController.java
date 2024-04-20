@@ -17,8 +17,13 @@ import com.freediving.communityservice.adapter.out.persistence.constant.UserReac
 import com.freediving.communityservice.application.port.in.UserReactionCommand;
 import com.freediving.communityservice.application.port.in.UserReactionUseCase;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "UserReaction 좋아요", description = "유저 상호작용(좋아요) API")
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 @RestController
@@ -26,9 +31,20 @@ public class UserReactionCommandController {
 
 	private final UserReactionUseCase userReactionUseCase;
 
+	@Operation(
+		summary = "좋아요 등록",
+		description = "좋아요를 등록",
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "좋아요 등록됨",
+				useReturnTypeSchema = true
+			)
+		}
+	)
 	@PostMapping("/boards/{boardType}/articles/{articleId}/reaction")
 	public ResponseEntity<ResponseJsonObject<Object>> recordUserReaction(
-		UserProvider userProvider,
+		@Parameter(hidden = true) UserProvider userProvider,
 		@PathVariable("boardType") BoardType boardType,
 		@PathVariable("articleId") Long articleId,
 		@RequestBody UserReactionRequest userReactionRequest
@@ -52,9 +68,20 @@ public class UserReactionCommandController {
 		return ResponseEntity.ok(response);
 	}
 
+	@Operation(
+		summary = "좋아요 취소",
+		description = "좋아요를 취소(삭제)",
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "좋아요 취소됨",
+				useReturnTypeSchema = true
+			)
+		}
+	)
 	@DeleteMapping("/boards/{boardType}/articles/{articleId}/reaction")
 	public ResponseEntity<ResponseJsonObject<Object>> deleteUserReaction(
-		UserProvider userProvider,
+		@Parameter(hidden = true) UserProvider userProvider,
 		@PathVariable("boardType") BoardType boardType,
 		@PathVariable("articleId") Long articleId,
 		@RequestBody UserReactionRequest userReactionRequest

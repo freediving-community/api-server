@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.freediving.common.response.ResponseJsonObject;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.in.dto.ArticleEditRequest;
 import com.freediving.communityservice.adapter.in.dto.ArticleWriteRequest;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
@@ -24,8 +26,13 @@ import com.freediving.communityservice.application.port.in.ArticleUseCase;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
 import com.freediving.communityservice.application.port.in.dto.ImageInfoCommand;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Article 게시글", description = "게시글 API")
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 @RestController
@@ -33,9 +40,20 @@ public class ArticleCommandController {
 
 	private final ArticleUseCase articleUseCase;
 
+	@Operation(
+		summary = "게시글 등록",
+		description = "게시글 (이미지 포함)을 등록",
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "게시글 등록됨",
+				useReturnTypeSchema = true
+			)
+		}
+	)
 	@PostMapping("/boards/{boardType}/articles")
-	public ResponseEntity<Long> writeArticleContent(
-		UserProvider userProvider,
+	public ResponseEntity<ResponseJsonObject<Long>> writeArticleContent(
+		@Parameter(hidden = true) UserProvider userProvider,
 		@PathVariable("boardType") BoardType boardType,
 		@RequestBody ArticleWriteRequest articleWriteRequest) {
 
@@ -62,12 +80,27 @@ public class ArticleCommandController {
 			.path("/{id}")
 			.buildAndExpand(articleId)
 			.toUri();
-		return ResponseEntity.created(location).build();
+
+		return ResponseEntity
+			.ok(new ResponseJsonObject(ServiceStatusCode.OK, location))
+			.created(location)
+			.build();
 	}
 
+	@Operation(
+		summary = "게시글 내용 수정",
+		description = "게시글 (이미지 포함)을 수정",
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "게시글 수정됨",
+				useReturnTypeSchema = true
+			)
+		}
+	)
 	@PostMapping("/boards/{boardType}/articles/{articleId}")
-	public ResponseEntity<Long> editArticleContent(
-		UserProvider userProvider,
+	public ResponseEntity<ResponseJsonObject<Long>> editArticleContent(
+		@Parameter(hidden = true) UserProvider userProvider,
 		@PathVariable("boardType") BoardType boardType,
 		@PathVariable("articleId") Long articleId,
 		@RequestBody ArticleEditRequest articleEditRequest
@@ -91,12 +124,23 @@ public class ArticleCommandController {
 				.build()
 		);
 
-		return ResponseEntity.ok(editedArticleId);
+		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, editedArticleId));
 	}
 
+	@Operation(
+		summary = "게시글 삭제",
+		description = "게시글 (이미지, 댓글 포함)을 삭제",
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "게시글 삭제됨",
+				useReturnTypeSchema = true
+			)
+		}
+	)
 	@DeleteMapping("/boards/{boardType}/articles/{articleId}")
-	public ResponseEntity<Long> removeArticle(
-		UserProvider userProvider,
+	public ResponseEntity<ResponseJsonObject<Long>> removeArticle(
+		@Parameter(hidden = true) UserProvider userProvider,
 		@PathVariable("boardType") BoardType boardType,
 		@PathVariable("articleId") Long articleId
 	) {
@@ -108,7 +152,7 @@ public class ArticleCommandController {
 				.articleId(articleId)
 				.build()
 		);
-		return ResponseEntity.ok(deletedArticleId);
+		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, deletedArticleId));
 	}
 
 }
