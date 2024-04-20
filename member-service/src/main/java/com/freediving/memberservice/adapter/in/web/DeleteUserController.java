@@ -42,8 +42,8 @@ public class DeleteUserController {
 		, description = "JWT 정보를 기반으로 사용자 정보를 조회하여 해당 유저를 탈퇴한다.",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
-			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
-			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
 	@DeleteMapping("/users/me")
 	public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal User user) {

@@ -56,9 +56,9 @@ public class CreateImgController {
 		, description = "이미지 업로드 요청할 PreSigned URL 정보를 반환한다.",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
-			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류"),
-			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
-			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
+			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
 	@PostMapping
 	public ResponseEntity<ResponseJsonObject<CreateImgResponse>> createPreSignedUrl(
