@@ -9,4 +9,10 @@ import com.freediving.communityservice.adapter.out.dto.image.ImageResponse;
 public interface ImageRepository extends JpaRepository<ImageJpaEntity, Long> {
 
 	List<ImageResponse> findByArticleIdAndDeletedAtIsNullOrderBySortNumber(Long articleId);
+
+	void deleteAllByArticleId(Long articleId);
+
+	void deleteAllByArticleIdAndUrlIn(Long articleId, List<String> urls);
+
+	List<ImageJpaEntity> findAllByArticleIdAndUrlIn(Long articleId, List<String> urls);
 }

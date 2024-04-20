@@ -49,10 +49,7 @@ public class ArticleQueryController {
 				.build()
 		);
 
-		ResponseJsonObject<Page<ArticleBriefDto>> response = new ResponseJsonObject<>(ServiceStatusCode.OK,
-			articleIndexList);
-
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, articleIndexList));
 	}
 
 	@GetMapping("/boards/{boardType}/articles/{articleId}")

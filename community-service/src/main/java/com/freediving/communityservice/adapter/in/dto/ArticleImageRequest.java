@@ -14,9 +14,9 @@ public class ArticleImageRequest {
 
 	private String url;
 
-	private int size;
-
-	private String fileName;
-
-	private String extension;
+	// private int size;
+	//
+	// private String fileName;
+	//
+	// private String extension;
 }

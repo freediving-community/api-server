@@ -43,8 +43,7 @@ public class ArticleCommandController {
 			CollectionUtils.isEmpty(articleWriteRequest.getImages()) ? new ArrayList<ImageInfoCommand>() :
 				articleWriteRequest.getImages()
 					.stream()
-					.map(image -> new ImageInfoCommand(image.getSortNumber(), image.getUrl(), image.getSize(),
-						image.getFileName(), image.getExtension()))
+					.map(image -> new ImageInfoCommand(image.getSortNumber(), image.getUrl()))
 					.toList();
 
 		Long articleId = articleUseCase.writeArticle(
@@ -54,7 +53,6 @@ public class ArticleCommandController {
 				.title(articleWriteRequest.getTitle())
 				.content(articleWriteRequest.getContent())
 				.authorName(articleWriteRequest.getAuthorName())
-				.hashtagIds(articleWriteRequest.getHashtagIds())
 				.enableComment(articleWriteRequest.isEnableComment())
 				.images(uploadedImages)
 				.build());
@@ -74,6 +72,13 @@ public class ArticleCommandController {
 		@PathVariable("articleId") Long articleId,
 		@RequestBody ArticleEditRequest articleEditRequest
 	) {
+		List<ImageInfoCommand> contentImages =
+			CollectionUtils.isEmpty(articleEditRequest.getImages()) ? new ArrayList<ImageInfoCommand>() :
+				articleEditRequest.getImages()
+					.stream()
+					.map(image -> new ImageInfoCommand(image.getSortNumber(), image.getUrl()))
+					.toList();
+
 		Long editedArticleId = articleUseCase.editArticle(
 			ArticleEditCommand.builder()
 				.userProvider(userProvider)
@@ -81,8 +86,8 @@ public class ArticleCommandController {
 				.articleId(articleId)
 				.title(articleEditRequest.getTitle())
 				.content(articleEditRequest.getContent())
-				.hashtagIds(articleEditRequest.getHashtagIds())
 				.enableComment(articleEditRequest.isEnableComment())
+				.images(contentImages)
 				.build()
 		);
 

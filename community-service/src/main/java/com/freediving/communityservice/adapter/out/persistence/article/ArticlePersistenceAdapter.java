@@ -226,20 +226,20 @@ public class ArticlePersistenceAdapter
 */
 
 	@Override
-	public Long updateArticle(BoardType boardType, Long articleId, String title, String content, List<Long> hashtagIds,
-		boolean enableComment) {
+	public Long updateArticle(Article changedArticle) {
 		ArticleJpaEntity foundArticle = jpaQueryFactory
 			.selectFrom(articleJpaEntity)
 			.where(
-				boardTypeEq(boardType),
-				articleIdEq(articleId)
+				boardTypeEq(changedArticle.getBoardType()),
+				articleIdEq(changedArticle.getId())
 			).fetchOne();
 
 		if (foundArticle == null) {
 			throw new IllegalArgumentException("해당하는 게시글이 없습니다.");
 		}
 
-		foundArticle.changeArticleContents(title, content, hashtagIds, enableComment);
+		foundArticle.changeArticleContents(changedArticle.getTitle(), changedArticle.getContent(),
+			changedArticle.isEnableComment());
 
 		return foundArticle.getArticleId();
 	}
