@@ -9,6 +9,7 @@ import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEv
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestJpaEntity;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
+import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.common.persistence.AuditableEntity;
 
 import jakarta.persistence.CascadeType;
@@ -57,6 +58,10 @@ public class BuddyEventJpaEntity extends AuditableEntity {
 
 	@Column(name = "participant_count", nullable = false)
 	private Integer participantCount;
+
+	@Column(name = "gender_type", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private GenderType genderType;
 
 	@Column(name = "car_share_yn", nullable = false)
 	private Boolean carShareYn;

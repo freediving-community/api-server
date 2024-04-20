@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
+import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.common.enumerate.DivingPool;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -35,12 +36,12 @@ import lombok.NoArgsConstructor;
 @Schema(title = "버디 이벤트 생성 요청 ( CreateBuddyEventRequest )", name = "CreateBuddyEventRequest", description = "POST /v1/event 버디 이벤트 생성에 요청 Schema")
 public class CreateBuddyEventRequest {
 
-	@Schema(description = "일정 시작 시간", type = "string", example = "2024-01-17 15:30:00", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(description = "일정 시작 시간", type = "string", example = "2024-05-17 15:30:00", requiredMode = Schema.RequiredMode.REQUIRED)
 	@NotNull(message = "일정 시작 시간은 필수입니다.")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime eventStartDate;
 
-	@Schema(description = "일정 종료 시간", type = "string", example = "2024-01-17 17:30:00", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(description = "일정 종료 시간", type = "string", example = "2024-05-17 17:30:00", requiredMode = Schema.RequiredMode.REQUIRED)
 	@NotNull(message = "일정 종료 시간은 필수입니다.")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime eventEndDate;
@@ -54,6 +55,10 @@ public class CreateBuddyEventRequest {
 		schema = @Schema(implementation = BuddyEventConcept.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED))
 	private Set<BuddyEventConcept> buddyEventConcepts;
 
+	@Schema(description = "성별 여부", implementation = GenderType.class, requiredMode = Schema.RequiredMode.REQUIRED)
+	@NotNull
+	private GenderType genderType;
+
 	@Schema(description = "카셰어링 여부", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
 	@NotNull
 	private Boolean carShareYn;
@@ -64,7 +69,7 @@ public class CreateBuddyEventRequest {
 	@Schema(description = "추가 코멘트", example = "이번 모임은 캐주얼하게 진행합니다.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 	private String comment;
 
-	@Schema( description = "프리다이빙 레벨 제한", example = "0~3" ,minimum = "0",  requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(description = "프리다이빙 레벨 제한", example = "0~3", minimum = "0", requiredMode = Schema.RequiredMode.REQUIRED)
 	private Integer freedivingLevel;
 
 	@ArraySchema(arraySchema = @Schema(description = "다이빙 풀"),
