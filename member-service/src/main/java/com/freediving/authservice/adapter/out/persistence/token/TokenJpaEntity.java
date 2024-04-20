@@ -34,17 +34,21 @@ public class TokenJpaEntity extends AuditableEntity {
 	@Column(name = "token_id")
 	private Long id;
 
+	@Column(name = "user_id")
+	private String userId;
+
 	@Column(name = "refresh_token", nullable = false)
 	private String refreshToken;
 
 	@Column(name = "fcm_token")
 	private String fcmToken;
 
-	public static TokenJpaEntity createToken(String refreshToken) {
-		return new TokenJpaEntity(refreshToken);
+	public static TokenJpaEntity createToken(String userId, String refreshToken) {
+		return new TokenJpaEntity(userId, refreshToken);
 	}
 
-	private TokenJpaEntity(String refreshToken) {
+	private TokenJpaEntity(String userId, String refreshToken) {
+		this.userId = userId;
 		this.refreshToken = refreshToken;
 	}
 

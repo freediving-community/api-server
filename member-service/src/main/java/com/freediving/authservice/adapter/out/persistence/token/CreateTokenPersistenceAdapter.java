@@ -1,5 +1,7 @@
 package com.freediving.authservice.adapter.out.persistence.token;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Value;
 
 import com.freediving.authservice.application.port.out.CreateTokenPort;
@@ -28,14 +30,25 @@ public class CreateTokenPersistenceAdapter implements CreateTokenPort {
 	private String key;
 
 	@Override
-	public Token createTokens(String userId, String oauthType) {
-		String accessToken = JwtTokenUtils.generateAccessToken(userId, oauthType, key);
-		String refreshToken = JwtTokenUtils.generateRefreshToken(userId, oauthType, key);
+	public Token createTokens(String userId, String oauthTypeName) {
+		String accessToken = JwtTokenUtils.generateAccessToken(userId, oauthTypeName, key);
+		String refreshToken = JwtTokenUtils.generateRefreshToken(userId, oauthTypeName, key);
 
 		Token token = Token.createToken(accessToken, refreshToken);
-		TokenJpaEntity tokenJpaEntity = TokenJpaEntity.createToken(token.refreshToken());
-		tokenJpaRepository.save(tokenJpaEntity);
+
+		Optional<TokenJpaEntity> tokenJpaEntity = tokenJpaRepository.findByUserId(userId);
+		if (tokenJpaEntity.isPresent()) {
+			tokenJpaEntity.get().updateRefreshToken(refreshToken);
+		} else {
+			TokenJpaEntity newTokenJpaEntity = TokenJpaEntity.createToken(userId, token.refreshToken());
+			tokenJpaRepository.save(newTokenJpaEntity);
+		}
 
 		return token;
+	}
+
+	@Override
+	public String updateTokens(String userId, String oauthTypeName) {
+		return JwtTokenUtils.generateAccessToken(userId, oauthTypeName, key);
 	}
 }
