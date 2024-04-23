@@ -58,6 +58,18 @@ swagger:
     url: http://localhost:40000
     description: Local Gateway Server
 
+# OpenFeign 설정
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+  external-service:
+    community-service: http://35.199.188.230:53221/community-service #community-service
+    member-service: http://35.199.188.230:53221/member-service #member-service
+
+
 #kafka:
 #  clusters:
 #    bootstrapservers: 35.199.188.230:19993
