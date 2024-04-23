@@ -21,6 +21,7 @@ import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.Budd
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestRepository;
 import com.freediving.buddyservice.application.port.out.web.CreateBuddyEventPort;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
+import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.common.enumerate.DivingPool;
 
@@ -82,6 +83,7 @@ class BuddyEventPersistenceAdapterTest {
 			.participantCount(participantCount)
 			.carShareYn(Boolean.FALSE)
 			.status(BuddyEventStatus.RECRUITING)
+			.genderType(GenderType.ALL)
 			.comment(comment)
 			.freedivingLevel(freedivingLevel)
 			.divingPools(divingPool)

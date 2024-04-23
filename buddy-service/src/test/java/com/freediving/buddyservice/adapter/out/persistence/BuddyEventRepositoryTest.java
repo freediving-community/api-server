@@ -23,6 +23,7 @@ import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEvent
 import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.config.CommonModuleScan;
+import com.freediving.buddyservice.config.enumerate.GenderType;
 
 @ActiveProfiles("local")
 @DataJpaTest // JPA관련된 Bean만 주입받아 테스트 가능.
@@ -236,6 +237,7 @@ class BuddyEventRepositoryTest {
 			.eventStartDate(eventStartDate)
 			.eventEndDate(eventEndDate)
 			.participantCount(participantCount)
+			.genderType(GenderType.ALL)
 			.status(status)
 			.freedivingLevel(0)
 			.carShareYn(Boolean.FALSE)
