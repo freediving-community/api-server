@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class DivingPoolListResponse {
 
-	private List<DivingPoolResponse> divingPools;
+	private List<Object> divingPools;
 
 	@Override
 	public String toString() {

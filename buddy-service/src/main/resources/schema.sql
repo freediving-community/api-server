@@ -1,14 +1,22 @@
 drop table if exists diving_pool;
 CREATE TABLE diving_pool
 (
-    diving_pool_id   varchar(30)  NOT NULL,
-    diving_pool_name varchar(30)  NOT NULL,
-    address          VARCHAR(255) NOT NULL,
-    description      VARCHAR(255) NOT NULL,
-    is_visible       Boolean      NOT NULL DEFAULT false,
-    display_order    integer      NOT NULL DEFAULT 0,
-    updated_date     timestamp    NOT NULL default current_timestamp NOT NULL,
-    created_date     timestamp    NOT NULL default current_timestamp NOT NULL
+    diving_pool_id    VARCHAR(30)  NOT NULL,
+    diving_pool_name  VARCHAR(30)  NOT NULL,
+    address           VARCHAR(255) NOT NULL,
+    description       VARCHAR(255) NOT NULL,
+    simple_address    VARCHAR(255),
+    operating_hours   VARCHAR(255),
+    price_info        VARCHAR(255),
+    website_url       VARCHAR(255),
+    recommended_level VARCHAR(50),
+    depth             VARCHAR(50),
+    contact_number    VARCHAR(50),
+    regular_closure   VARCHAR(50),
+    is_visible        BOOLEAN      NOT NULL DEFAULT false,
+    display_order     INTEGER      NOT NULL DEFAULT 0,
+    updated_date      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_date      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 ALTER TABLE diving_pool
     ADD CONSTRAINT PK_DIVING_POOL PRIMARY KEY (diving_pool_id);

@@ -3,16 +3,21 @@ package com.freediving.divingpool.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
+import com.freediving.divingpool.config.enumerate.DetailLevel;
 import com.freediving.divingpool.data.dto.DivingPoolListResponse;
 import com.freediving.divingpool.service.DivingPoolService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -37,9 +42,11 @@ public class DivingPoolController {
 		}
 	)
 	@GetMapping()
-	public ResponseEntity<ResponseJsonObject<DivingPoolListResponse>> findByAllDivingPool() {
+	public ResponseEntity<ResponseJsonObject<DivingPoolListResponse>> findByAllDivingPool(
+		@Schema(description = "디테일 강도", implementation = DetailLevel.class)
+		@RequestParam(value = "detail") @Valid @NotNull DetailLevel detail) {
 
-		DivingPoolListResponse divingPoolListResponse = divingPoolService.findByAllDivingPool();
+		DivingPoolListResponse divingPoolListResponse = divingPoolService.findByAllDivingPool(detail);
 
 		ResponseJsonObject responseJsonObject = ResponseJsonObject.builder()
 			.code(ServiceStatusCode.OK)

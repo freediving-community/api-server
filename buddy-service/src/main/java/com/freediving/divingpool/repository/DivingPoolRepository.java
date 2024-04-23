@@ -11,6 +11,6 @@ import com.freediving.divingpool.data.dao.DivingPoolJpaEntity;
 @Repository
 public interface DivingPoolRepository extends JpaRepository<DivingPoolJpaEntity, DivingPool> {
 
-	List<DivingPoolJpaEntity> findAllByIsVisibleTrue();
+	List<DivingPoolJpaEntity> findAllByIsVisibleTrueOrderByDisplayOrderAsc();
 
 }
