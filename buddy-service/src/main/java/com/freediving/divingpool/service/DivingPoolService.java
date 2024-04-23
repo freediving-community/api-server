@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
+import com.freediving.divingpool.config.enumerate.DetailLevel;
 import com.freediving.divingpool.data.dao.DivingPoolJpaEntity;
 import com.freediving.divingpool.data.dto.DivingPoolListResponse;
 import com.freediving.divingpool.data.dto.DivingPoolResponse;
+import com.freediving.divingpool.data.dto.DivingPoolSimpleResponse;
 import com.freediving.divingpool.repository.DivingPoolRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,16 +28,19 @@ public class DivingPoolService {
 	 * @return DivingPool DTO 모델
 	 */
 
-	public DivingPoolListResponse findByAllDivingPool() throws BuddyMeException {
+	public DivingPoolListResponse findByAllDivingPool(DetailLevel detail) throws BuddyMeException {
 
-		List<DivingPoolJpaEntity> divingPoolsJpaEntity = divingPoolRepository.findAllByIsVisibleTrue();
+		List<DivingPoolJpaEntity> divingPoolsJpaEntity = divingPoolRepository.findAllByIsVisibleTrueOrderByDisplayOrderAsc();
 
 		// No Content
 		if (divingPoolsJpaEntity == null || divingPoolsJpaEntity.size() == 0)
 			throw new BuddyMeException(ServiceStatusCode.NO_CONTENT);
 
-		List<DivingPoolResponse> divingPoolResponseList = divingPoolsJpaEntity.stream().map(e -> {
-				return DivingPoolResponse.of(e);
+		List<Object> divingPoolResponseList = divingPoolsJpaEntity.stream().map(e -> {
+				if (detail.equals(DetailLevel.HIGH))
+					return DivingPoolResponse.of(e);
+				else
+					return DivingPoolSimpleResponse.of(e);
 			})
 			.collect(Collectors.toList());
 

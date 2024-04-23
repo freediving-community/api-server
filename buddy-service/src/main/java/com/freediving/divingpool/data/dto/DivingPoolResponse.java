@@ -19,26 +19,29 @@ public class DivingPoolResponse {
 	private String divingPoolName;
 	private String address;
 	private String description;
-	private Integer displayOrder;
-
-	@Override
-	public String toString() {
-		return "DivingPoolResponse{" +
-			"divingPoolId='" + divingPoolId.toString() + '\'' +
-			", divingPoolName=" + divingPoolName +
-			", address='" + address + '\'' +
-			", description='" + description + '\'' +
-			", displayOrder=" + displayOrder +
-			'}';
-	}
+	private String simpleAddress; // 새로 추가된 필드
+	private String operatingHours;
+	private String priceInfo;
+	private String websiteUrl;
+	private String recommendedLevel;
+	private String depth;
+	private String contactNumber;
+	private String regularClosure;
 
 	public static DivingPoolResponse of(DivingPoolJpaEntity entity) {
 		return DivingPoolResponse.builder()
 			.divingPoolId(entity.getDivingPoolId())
 			.divingPoolName(entity.getDivingPoolName())
 			.address(entity.getAddress())
+			.simpleAddress(entity.getSimpleAddress())
+			.operatingHours(entity.getOperatingHours())
+			.priceInfo(entity.getPriceInfo())
+			.websiteUrl(entity.getWebsiteUrl())
+			.recommendedLevel(entity.getRecommendedLevel())
+			.depth(entity.getDepth())
+			.contactNumber(entity.getContactNumber())
+			.regularClosure(entity.getRegularClosure())
 			.description(entity.getDescription())
-			.displayOrder(entity.getDisplayOrder())
 			.build();
 	}
 }

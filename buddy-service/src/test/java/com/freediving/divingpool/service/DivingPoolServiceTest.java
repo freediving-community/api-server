@@ -12,6 +12,7 @@ import com.freediving.common.enumerate.DivingPool;
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.divingpool.common.DivingPoolTestCommon;
+import com.freediving.divingpool.config.enumerate.DetailLevel;
 import com.freediving.divingpool.data.dto.DivingPoolListResponse;
 import com.freediving.divingpool.repository.DivingPoolRepository;
 
@@ -37,7 +38,7 @@ class DivingPoolServiceTest {
 			, "경기도 시흥시", "파라다이브 설명", false, 1));
 
 		// 2.when, then
-		assertThatThrownBy(() -> divingPoolService.findByAllDivingPool())
+		assertThatThrownBy(() -> divingPoolService.findByAllDivingPool(DetailLevel.LOW))
 			.isInstanceOf(BuddyMeException.class).extracting("serviceStatusCode")
 			.isEqualTo(ServiceStatusCode.NO_CONTENT);
 
@@ -56,7 +57,7 @@ class DivingPoolServiceTest {
 			, "경기도 시흥시", "파라다이브 설명", false, 1));
 
 		// 2.when
-		DivingPoolListResponse divingPoolListResponse = divingPoolService.findByAllDivingPool();
+		DivingPoolListResponse divingPoolListResponse = divingPoolService.findByAllDivingPool(DetailLevel.LOW);
 
 		// 3. then
 		assertThat(divingPoolListResponse).isNotNull();
