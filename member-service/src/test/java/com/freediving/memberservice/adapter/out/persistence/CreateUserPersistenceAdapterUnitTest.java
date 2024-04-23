@@ -14,9 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.domain.OauthType;
-import com.freediving.memberservice.domain.User;
 import com.freediving.memberservice.fixture.UserEntityFixture;
 
 /**
@@ -54,12 +54,12 @@ class CreateUserPersistenceAdapterUnitTest {
 
 		when(userJpaRepository.save(any(UserJpaEntity.class))).thenReturn(mockedUserJpaEntity);
 
-		User user = createUserPersistenceAdapter.createOrGetUser(command);
+		CreateUserResponse user = createUserPersistenceAdapter.createOrGetUser(command);
 
 		assertThat(user).isNotNull();
-		assertThat(user.nickname()).isNotNull();
-		assertThat(user.email()).isEqualTo(VALID_EMAIL);
-		assertThat(user.oauthType()).isEqualTo(VALID_OAUTH_TYPE);
+		assertThat(user.getNickname()).isNotNull();
+		assertThat(user.getEmail()).isEqualTo(VALID_EMAIL);
+		assertThat(user.getOauthType()).isEqualTo(VALID_OAUTH_TYPE.name());
 		verify(userJpaRepository, times(1)).save(any(UserJpaEntity.class));
 	}
 
@@ -73,11 +73,11 @@ class CreateUserPersistenceAdapterUnitTest {
 		when(userJpaRepository.findByOauthTypeAndEmail(any(OauthType.class), anyString())).thenReturn(
 			Optional.of(existingUser));
 
-		User user = createUserPersistenceAdapter.createOrGetUser(command);
+		CreateUserResponse user = createUserPersistenceAdapter.createOrGetUser(command);
 
 		assertThat(user).isNotNull();
-		assertThat(user.email()).isEqualTo(VALID_EMAIL);
-		assertThat(user.oauthType()).isEqualTo(VALID_OAUTH_TYPE);
+		assertThat(user.getEmail()).isEqualTo(VALID_EMAIL);
+		assertThat(user.getOauthType()).isEqualTo(VALID_OAUTH_TYPE.name());
 
 		verify(userJpaRepository, times(0)).save(any(UserJpaEntity.class));
 	}

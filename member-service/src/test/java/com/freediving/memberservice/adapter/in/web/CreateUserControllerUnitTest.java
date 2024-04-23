@@ -16,10 +16,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserRequest;
+import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.in.CreateUserUseCase;
 import com.freediving.memberservice.application.port.out.service.buddy.BuddyUseCase;
-import com.freediving.memberservice.domain.User;
 
 /**
  * @Author         : sasca37
@@ -59,8 +59,8 @@ class CreateUserControllerUnitTest {
 			.build();
 
 		// Mocking
-		User mockUser = mock(User.class);
-		when(mockUser.oauthType()).thenReturn(VALID_OAUTH_TYPE);
+		CreateUserResponse mockUser = mock(CreateUserResponse.class);
+		when(mockUser.getOauthType()).thenReturn(VALID_OAUTH_TYPE.name());
 
 		when(createUserUseCase.createOrGetUser(any(CreateUserCommand.class)))
 			.thenReturn(mockUser);

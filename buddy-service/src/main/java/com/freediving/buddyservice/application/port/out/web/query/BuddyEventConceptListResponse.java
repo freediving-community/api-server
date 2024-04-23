@@ -43,5 +43,7 @@ public class BuddyEventConceptListResponse {
 		private BuddyEventConcept conceptId;
 		@Schema(description = "콘셉트 이름", example = "펀다이빙")
 		private String conceptName;
+		@Schema(description = "콘셉트 설명", example = "가볍게 즐기면서 하고 싶어요")
+		private String conceptDesc;
 	}
 }

@@ -66,9 +66,9 @@ public class FindUserController {
 		+ "응답 정보에는 사용자 ID, 이메일, 프로필 이미지, 닉네임, 소셜 정보, 라이센스 정보 등이 들어있다.",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
-			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류"),
-			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
-			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
+			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
 	@GetMapping("/users/me")
 	public ResponseEntity<ResponseJsonObject<FindUserResponse>> findUserByUserId(@AuthenticationPrincipal User user) {
@@ -92,9 +92,9 @@ public class FindUserController {
 		+ "탈퇴 등으로 조회되지 않은 유저에 대해서도 기본 값을 생성하여 반환",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
-			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류"),
-			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
-			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
+			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
 	@GetMapping("/service/users")
 	public ResponseEntity<ResponseJsonObject<List<MemberFindUserResponse>>> findUserListByUserIds(
@@ -118,9 +118,9 @@ public class FindUserController {
 		+ "닉네임은 한글, 영어, 숫자, 언더바(_)만 사용 가능하고 16자리까지 생성이 가능합니다.",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
-			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류"),
-			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
-			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
+			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
 	@GetMapping("/users/{nickname}")
 	public ResponseEntity<ResponseJsonObject<FindNicknameResponse>> findNickname(

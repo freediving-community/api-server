@@ -38,12 +38,15 @@ public class UserLoginResponse {
 	@Schema(description = "소셜 로그인 타입", example = "KAKAO")
 	private String oauthType;
 
+	@Schema(description = "소셜 로그인 타입", example = "KAKAO")
+	private Boolean firstJoinTF;
+
 	@Schema(description = "유저 라이센스 정보", example = "0")
 	private MemberLicenseInfo licenseInfo;
 
 	public static UserLoginResponse from(OauthUser oauthUser) {
 		return new UserLoginResponse(Long.valueOf(oauthUser.getUserId()), oauthUser.getEmail(),
 			oauthUser.getProfileImgUrl(), oauthUser.getNickname(), oauthUser.getOauthType().name(),
-			oauthUser.getLicenseInfo());
+			oauthUser.getFirstJoinTF(), oauthUser.getLicenseInfo());
 	}
 }

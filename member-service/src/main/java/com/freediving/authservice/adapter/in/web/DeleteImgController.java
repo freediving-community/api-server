@@ -41,9 +41,9 @@ public class DeleteImgController {
 		, description = "이미지 단건, 다건 삭제 처리 (요청한 이미지가 존재하지 않는 경우에도 204 응답)",
 		responses = {
 			@ApiResponse(responseCode = "204", description = "성공", useReturnTypeSchema = true),
-			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류"),
-			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류"),
-			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류")
+			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
 	@DeleteMapping("/service/imgs")
 	public ResponseEntity<Void> deletePreSignedUrl(@RequestBody DeleteImgRequest request) {

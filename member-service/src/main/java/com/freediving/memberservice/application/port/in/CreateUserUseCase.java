@@ -1,7 +1,7 @@
 package com.freediving.memberservice.application.port.in;
 
 import com.freediving.common.config.annotation.UseCase;
-import com.freediving.memberservice.domain.User;
+import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
 
 /**
  * @Author         : sasca37
@@ -15,7 +15,7 @@ import com.freediving.memberservice.domain.User;
 
 @UseCase
 public interface CreateUserUseCase {
-	User createOrGetUser(CreateUserCommand command);
+	CreateUserResponse createOrGetUser(CreateUserCommand command);
 
 	void createUserInfo(CreateUserInfoCommand command);
 }

@@ -18,6 +18,7 @@ public enum RoleLevel {
 	ANONYMOUS(-1),            // 비로그인 사용자
 
 	UNREGISTER(5),            // 라이센스 미등록 사용자
+	WAIT_LICENSE_APPROVAL(7), // 심사중
 	NO_LEVEL(9),              // 레벨 0
 	LEVEL1(10),
 	LEVEL2(20),

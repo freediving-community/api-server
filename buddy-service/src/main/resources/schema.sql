@@ -145,6 +145,7 @@ CREATE TABLE buddy_event_concept
 (
     concept_id    varchar(30) NOT NULL,
     concept_name  varchar(20) NOT NULL,
+    concept_desc  varchar(100) NOT NULL,
     enabled       boolean     NOT NULL DEFAULT false,
     display_order int         NOT NULL,
     created_date  timestamp   NOT NULL,
