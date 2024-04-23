@@ -62,9 +62,9 @@ class DivingPoolServiceTest {
 		// 3. then
 		assertThat(divingPoolListResponse).isNotNull();
 		assertThat(divingPoolListResponse.getDivingPools()).hasSize(1)
-			.extracting("divingPoolId", "divingPoolName", "address", "description", "displayOrder")
+			.extracting("divingPoolId", "divingPoolName", "address", "description")
 			.containsExactlyInAnyOrder(tuple(DivingPool.DEEPSTATION, "딥스테이션"
-				, "경기도 용인시 처인구 포곡읍", "딥스테이션 설명", 0));
+				, "경기도 용인시 처인구 포곡읍", "딥스테이션 설명"));
 
 	}
 }

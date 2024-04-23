@@ -43,7 +43,7 @@ class DivingPoolRepositoryTest {
 			, "경기도 시흥시", "파라다이브 설명", false, 1));
 
 		// 2.when
-		List<DivingPoolJpaEntity> divingPoolResponses = divingPoolRepository.findAllByIsVisibleTrue();
+		List<DivingPoolJpaEntity> divingPoolResponses = divingPoolRepository.findAllByIsVisibleTrueOrderByDisplayOrderAsc();
 
 		// then
 		assertThat(divingPoolResponses).hasSize(1)
