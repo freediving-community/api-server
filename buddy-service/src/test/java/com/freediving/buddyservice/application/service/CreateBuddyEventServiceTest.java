@@ -29,6 +29,7 @@ import com.freediving.buddyservice.application.port.out.externalservice.query.Me
 import com.freediving.buddyservice.application.port.out.externalservice.query.RequestMemberPort;
 import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
+import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.common.enumerate.DivingPool;
 
@@ -116,6 +117,7 @@ class CreateBuddyEventServiceTest {
 			.eventStartDate(createStartDate)
 			.eventEndDate(createEndDate)
 			.participantCount(3)
+			.genderType(GenderType.ALL)
 			.carShareYn(true)
 			.comment("zzzz")
 			.build();
@@ -154,6 +156,7 @@ class CreateBuddyEventServiceTest {
 			.eventStartDate(createStartDate)
 			.eventEndDate(createEndDate)
 			.participantCount(3)
+			.genderType(GenderType.ALL)
 			.carShareYn(true)
 			.comment("zzzz")
 			.divingPools(Set.of(DivingPool.PARADIVE))
@@ -190,6 +193,7 @@ class CreateBuddyEventServiceTest {
 			.participantCount(participantCount)
 			.freedivingLevel(0)
 			.status(BuddyEventStatus.RECRUITING)
+			.genderType(GenderType.ALL)
 			.carShareYn(Boolean.FALSE)
 			.comment(comment)
 			.build();

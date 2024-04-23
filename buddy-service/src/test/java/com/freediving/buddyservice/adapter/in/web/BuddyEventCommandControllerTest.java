@@ -24,6 +24,7 @@ import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEv
 import com.freediving.buddyservice.application.port.in.web.command.like.BuddyEventLikeToggleUseCase;
 import com.freediving.buddyservice.common.ControllerDefendenciesConfig;
 import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
+import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 
 @WebMvcTest(controllers = BuddyEventCommandController.class)
@@ -68,6 +69,7 @@ class BuddyEventCommandControllerTest extends ControllerDefendenciesConfig {
 			.eventStartDate(LocalDateTime.now().plusHours(2))
 			.eventEndDate(LocalDateTime.now().plusHours(8))
 			.participantCount(5)
+			.genderType(GenderType.ALL)
 			.carShareYn(false)
 			.comment("ㅋㅋㅋㅋ")
 			.build();
@@ -89,6 +91,7 @@ class BuddyEventCommandControllerTest extends ControllerDefendenciesConfig {
 			.eventEndDate(LocalDateTime.now().plusHours(8))
 			.participantCount(11)
 			.carShareYn(false)
+			.genderType(GenderType.ALL)
 			.comment("ㅋㅋㅋㅋ")
 			.build();
 
