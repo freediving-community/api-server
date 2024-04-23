@@ -112,6 +112,7 @@ class BuddyEventCommandControllerTest extends ControllerDefendenciesConfig {
 		final CreateBuddyEventRequest request = CreateBuddyEventRequest.builder()
 			.eventStartDate(LocalDateTime.now().plusHours(8))
 			.participantCount(11)
+			.genderType(GenderType.ALL)
 			.carShareYn(false)
 			.comment("ㅋㅋㅋㅋ")
 			.build();
