@@ -31,6 +31,9 @@ public class BuddyEventConceptJpaEntity extends AuditableEntity {
 	@Column(name = "concept_name", nullable = false)
 	private String conceptName;
 
+	@Column(name = "concept_desc", nullable = false)
+	private String conceptDesc;
+
 	@Column(name = "enabled", nullable = false)
 	private Boolean enabled;
 

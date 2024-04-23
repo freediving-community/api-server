@@ -29,7 +29,7 @@ public class GetBuddyEventConceptListService implements GetBuddyEventConceptList
 		for (BuddyEventConceptJpaEntity entity : eventConceptList)
 			result.add(
 				BuddyEventConceptListResponse.EventConcept.builder().conceptId(entity.getConceptId()).conceptName(
-					entity.getConceptName()).build());
+					entity.getConceptName()).conceptDesc(entity.getConceptDesc()).build());
 
 		return result;
 	}

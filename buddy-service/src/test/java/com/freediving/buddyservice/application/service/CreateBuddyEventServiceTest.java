@@ -184,7 +184,7 @@ class CreateBuddyEventServiceTest {
 	private BuddyEventJpaEntity generateBuddyEventJpa(Long userId, LocalDateTime eventStartDate,
 		LocalDateTime eventEndDate, Integer participantCount, String comment) {
 
-		List<BuddyEventConcept> buddyEventConcepts = List.of(BuddyEventConcept.LEVEL_UP, BuddyEventConcept.PRACTICE);
+		List<BuddyEventConcept> buddyEventConcepts = List.of(BuddyEventConcept.FUN, BuddyEventConcept.PRACTICE);
 
 		return BuddyEventJpaEntity.builder()
 			.userId(userId)

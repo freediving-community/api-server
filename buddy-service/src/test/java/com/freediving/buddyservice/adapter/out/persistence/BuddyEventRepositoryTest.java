@@ -31,13 +31,13 @@ import com.freediving.buddyservice.config.enumerate.GenderType;
 class BuddyEventRepositoryTest {
 
 	@Autowired
-	private BuddyEventRepository buddyEventRepository;
-	@Autowired
 	BuddyEventConceptMappingRepository buddyEventConceptMappingRepository;
 	@Autowired
 	BuddyEventDivingPoolMappingRepository buddyEventDivingPoolMappingRepository;
 	@Autowired
 	BuddyEventJoinRequestRepository buddyEventJoinRequestRepository;
+	@Autowired
+	private BuddyEventRepository buddyEventRepository;
 
 	@AfterEach
 	void tearDown() {
@@ -230,7 +230,7 @@ class BuddyEventRepositoryTest {
 	private BuddyEventJpaEntity generateBuddyEventJpa(Long userId, LocalDateTime eventStartDate,
 		LocalDateTime eventEndDate, Integer participantCount, String comment, BuddyEventStatus status) {
 
-		List<BuddyEventConcept> buddyEventConcepts = List.of(BuddyEventConcept.LEVEL_UP, BuddyEventConcept.PRACTICE);
+		List<BuddyEventConcept> buddyEventConcepts = List.of(BuddyEventConcept.PHOTO, BuddyEventConcept.PRACTICE);
 
 		return BuddyEventJpaEntity.builder()
 			.userId(userId)

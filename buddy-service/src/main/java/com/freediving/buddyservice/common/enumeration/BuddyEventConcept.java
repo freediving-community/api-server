@@ -10,8 +10,7 @@ public enum BuddyEventConcept {
 	FUN("펀다이빙"),
 	PRACTICE("연습"),
 	PHOTO("사진촬영"),
-	TRAINING("강습"),
-	LEVEL_UP("레벨업");
+	TRAINING("강습");
 
 	private final String displayValue;
 
