@@ -69,14 +69,7 @@ VALUES ('DAEBU_WELFARE_POOL', '대부동 복지체육센터', '경기도 안산�
         '2', '5.3m', '032-880-9768', '매주 월요일/공휴일', true, 8, '2024-04-23 02:52:36.773593', '2024-04-23 02:52:36.773593');
 
 
-insert into buddy_event_concept (concept_id,
-                                 concept_name,
-                                 concept_desc,
-                                 enabled,
-                                 display_order,
-                                 updated_date,
-                                 created_date)
-values ('FUN', '펀다이빙','가볍게 즐기면서 하고 싶어요', TRUE, 0, now(), now()),
-       ('PRACTICE', '연습','덕다이빙 / DTY / CNF / CYN 등 기술을 연습하고 싶어요', TRUE, 1, now(), now()),
-       ('PHOTO', '사진촬영','멋있는 사진을 남기고 싶어요', TRUE, 2, now(), now()),
-       ('TRAINING', '강습','전문적으로 배우고 싶어요', TRUE, 3, now(), now());
+INSERT INTO public.buddy_event_concept (concept_id, concept_name, concept_desc, enabled, display_order, created_date, updated_date) VALUES ('FUN', '펀다이빙', '가볍게 즐기면서 하고 싶어요', true, 0, '2024-04-23 12:45:03.510781', '2024-04-23 12:45:03.510781');
+INSERT INTO public.buddy_event_concept (concept_id, concept_name, concept_desc, enabled, display_order, created_date, updated_date) VALUES ('PRACTICE', '연습', '덕다이빙 / DTY / CNF / CYN 등 기술을 연습하고 싶어요', true, 1, '2024-04-23 12:45:03.510781', '2024-04-23 12:45:03.510781');
+INSERT INTO public.buddy_event_concept (concept_id, concept_name, concept_desc, enabled, display_order, created_date, updated_date) VALUES ('PHOTO', '사진촬영', '멋있는 사진을 남기고 싶어요', true, 2, '2024-04-23 12:45:03.510781', '2024-04-23 12:45:03.510781');
+INSERT INTO public.buddy_event_concept (concept_id, concept_name, concept_desc, enabled, display_order, created_date, updated_date) VALUES ('TRAINING', '강습', '전문적으로 배우고 싶어요', true, 3, '2024-04-23 12:45:03.510781', '2024-04-23 12:45:03.510781');
