@@ -10,5 +10,9 @@ import org.springframework.data.repository.query.Param;
 public interface CommentRepository extends JpaRepository<CommentJpaEntity, Long> {
 	@Modifying
 	@Query(value = "UPDATE COMMENT SET DELETED_AT = :deletedAt WHERE ARTICLE_ID = :articleId", nativeQuery = true)
-	int markDeleted(@Param("articleId") Long articleId, @Param("deletedAt")LocalDateTime deletedAt);
+	int markDeletedByArticleId(@Param("articleId") Long articleId, @Param("deletedAt") LocalDateTime deletedAt);
+
+	@Modifying
+	@Query(value = "UPDATE COMMENT SET DELETED_AT = :deletedAt WHERE COMMENT_ID = :commentId OR PARENT_ID = :commentId", nativeQuery = true)
+	int markDeletedByParentId(@Param("commentId") Long commentId, @Param("deletedAt") LocalDateTime deletedAt);
 }
