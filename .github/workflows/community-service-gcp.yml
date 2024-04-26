@@ -25,7 +25,7 @@ jobs:
       - name: Create application-dev.yml
         run: |
           touch ./community-service/src/main/resources/application-dev.yml
-          echo "COMMUNITY_APPLICATION_DEV_GCP_YML" > ./community-service/src/main/resources/application-dev.yml
+          echo "$COMMUNITY_APPLICATION_DEV_GCP_YML" > ./community-service/src/main/resources/application-dev.yml
       - name: Build with Gradle
         run: ./gradlew community-service:build
       - name: Docker build and push
