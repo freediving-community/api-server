@@ -12,7 +12,7 @@
 // import lombok.RequiredArgsConstructor;
 //
 // @RequiredArgsConstructor
-// @RequestMapping("/api/v1/image")
+// @RequestMapping("/v1/image")
 // @RestController
 // public class ImageCommandController {
 //

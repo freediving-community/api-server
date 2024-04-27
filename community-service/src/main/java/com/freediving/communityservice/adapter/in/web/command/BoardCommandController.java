@@ -18,7 +18,7 @@
 // import lombok.RequiredArgsConstructor;
 //
 // @RequiredArgsConstructor
-// @RequestMapping("/api/v1")
+// @RequestMapping("/v1")
 // @RestController
 // public class BoardCommandController {
 //
