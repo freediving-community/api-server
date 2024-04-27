@@ -23,7 +23,8 @@ dependencies {
     // FeignClient
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
 
-//    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    // Eureka Discovery
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
     // QueryDSL
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
@@ -36,7 +37,7 @@ dependencies {
 
     // Apache Commons Text 1.11.0
     implementation 'org.apache.commons:commons-text:1.11.0'
-    
+
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'
 
