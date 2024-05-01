@@ -1,6 +1,5 @@
 package com.freediving.memberservice.adapter.out.persistence;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -70,8 +69,7 @@ public class CreateUserPersistenceAdapter implements CreateUserPort {
 		}
 
 		// 기존 가입자인 경우
-		List<UserLicenseJpaEntity> userLicenceJpaList = userLicenseJpaRepository.findAllById(
-			Collections.singleton(userJpaEntity.getUserId()));
+		List<UserLicenseJpaEntity> userLicenceJpaList = userLicenseJpaRepository.findAllByUserJpaEntity(userJpaEntity);
 		User user = User.fromJpaEntityList(userJpaEntity, userLicenceJpaList);
 		return CreateUserResponse.from(user, false);
 	}

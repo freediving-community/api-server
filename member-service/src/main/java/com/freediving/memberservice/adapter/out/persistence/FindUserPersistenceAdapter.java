@@ -1,6 +1,5 @@
 package com.freediving.memberservice.adapter.out.persistence;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,8 +33,8 @@ public class FindUserPersistenceAdapter implements FindUserPort {
 	public User findUserDetailById(Long userId) {
 		UserJpaEntity userJpaEntity = userJpaRepository.findUserDetailById(userId)
 			.orElseThrow(() -> new MemberServiceException(ErrorCode.NOT_FOUND_USER));
-		List<UserLicenseJpaEntity> userLicenseJpaEntityList = userLicenseJpaRepository.findAllById(
-			Collections.singleton(userJpaEntity.getUserId()));
+		List<UserLicenseJpaEntity> userLicenseJpaEntityList = userLicenseJpaRepository.findAllByUserJpaEntity(
+			userJpaEntity);
 		return User.fromJpaEntityList(userJpaEntity, userLicenseJpaEntityList);
 	}
 
@@ -48,7 +47,7 @@ public class FindUserPersistenceAdapter implements FindUserPort {
 				if (e.getUserStatus().equals(UserStatus.WITHDRAWN)) {
 					e.updateUserNickname(UserStatus.WITHDRAWN.getCode());
 				}
-				return User.fromJpaEntityList(e, userLicenseJpaRepository.findAllByUserId(e));
+				return User.fromJpaEntityList(e, userLicenseJpaRepository.findAllByUserJpaEntity(e));
 			})
 			.collect(Collectors.toList());
 	}
