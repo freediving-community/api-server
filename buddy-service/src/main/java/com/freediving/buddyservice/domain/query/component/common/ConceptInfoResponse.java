@@ -1,6 +1,6 @@
 package com.freediving.buddyservice.domain.query.component.common;
 
-import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

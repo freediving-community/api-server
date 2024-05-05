@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "get/v1/service/users", url = "${feign.external-service.member-service}")
 public interface GetMemberInfoFeignClient {
 	@GetMapping("/v1/service/users")
-	Object getMemberInfo(@RequestParam List<Long> userIds,
-		@RequestParam Boolean profileImg);
+	Object getMemberInfo(@RequestParam(name = "userIds") List<Long> userIds,
+		@RequestParam(name = "profileImg") Boolean profileImg);
 }

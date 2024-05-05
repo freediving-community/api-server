@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.common.enumeration;
+package com.freediving.buddyservice.domain.enumeration;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

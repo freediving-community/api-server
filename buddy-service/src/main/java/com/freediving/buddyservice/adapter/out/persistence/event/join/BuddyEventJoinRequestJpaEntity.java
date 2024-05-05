@@ -1,7 +1,7 @@
 package com.freediving.buddyservice.adapter.out.persistence.event.join;
 
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
-import com.freediving.buddyservice.common.enumeration.ParticipationStatus;
+import com.freediving.buddyservice.domain.enumeration.ParticipationStatus;
 import com.freediving.common.persistence.AuditableEntity;
 
 import jakarta.persistence.Column;

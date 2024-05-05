@@ -43,6 +43,11 @@ dependencies {
     // FeignClient
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
 
+    // QueryDSL
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
     // test
     testImplementation platform('org.junit:junit-bom:5.9.1')
@@ -55,6 +60,18 @@ jar {
     enabled = false
 
 }
+// QueryDSL
+def querydslSrcDir = 'src/main/generated'
+clean {
+    delete file(querydslSrcDir)
+}
+tasks.withType(JavaCompile) {
+    options.generatedSourceOutputDirectory = file(querydslSrcDir)
+}
+sourceSets {
+    main.java.srcDirs += [querydslSrcDir]
+}
+
 test {
     useJUnitPlatform()
 }

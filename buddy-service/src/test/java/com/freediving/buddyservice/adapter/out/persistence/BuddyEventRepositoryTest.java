@@ -20,8 +20,8 @@ import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventRepos
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestRepository;
-import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
-import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.config.CommonModuleScan;
 import com.freediving.buddyservice.config.enumerate.GenderType;
 

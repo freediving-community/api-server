@@ -37,7 +37,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/event")
-@Tag(name = "Buddy Event", description = "버디 이벤트 관련 API")
+@Tag(name = "Buddy Event Command", description = "버디 이벤트 Command 관련 API")
 public class BuddyEventCommandController {
 
 	private final CreateBuddyEventUseCase createBuddyEventUseCase;

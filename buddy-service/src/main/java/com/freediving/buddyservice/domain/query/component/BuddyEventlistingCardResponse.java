@@ -3,7 +3,7 @@ package com.freediving.buddyservice.domain.query.component;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.domain.query.component.common.ConceptInfoResponse;
 import com.freediving.buddyservice.domain.query.component.common.DivingPoolInfoResponse;
 import com.freediving.buddyservice.domain.query.component.common.ParticipantInfoResponse;

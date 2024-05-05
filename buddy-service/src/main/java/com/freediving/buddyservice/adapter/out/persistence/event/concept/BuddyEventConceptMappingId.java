@@ -2,7 +2,7 @@ package com.freediving.buddyservice.adapter.out.persistence.event.concept;
 
 import java.io.Serializable;
 
-import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -3,7 +3,7 @@ package com.freediving.buddyservice.application.port.out.web.query;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,8 @@
 package com.freediving.buddyservice.adapter.out.persistence.event;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -8,10 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.GetBuddyEventListingRepoDSL;
 import com.freediving.buddyservice.application.port.out.web.CreateBuddyEventPort;
-import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
-import com.freediving.buddyservice.common.enumeration.ParticipationStatus;
+import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventListingPort;
+import com.freediving.buddyservice.config.enumerate.SortType;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
+import com.freediving.buddyservice.domain.enumeration.ParticipationStatus;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
+import com.freediving.buddyservice.domain.query.QueryComponentListResponse;
 import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.common.enumerate.DivingPool;
 
@@ -27,9 +33,11 @@ import lombok.RequiredArgsConstructor;
  **/
 @RequiredArgsConstructor
 @PersistenceAdapter
-public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort {
+public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBuddyEventListingPort {
 
 	private final BuddyEventRepository buddyEventRepository;
+
+	private final GetBuddyEventListingRepoDSL getBuddyEventListingRepoDSL;
 
 	@Override
 	@Transactional
@@ -80,4 +88,14 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort {
 		return createdEventJpaEntity;
 	}
 
+	@Override
+	public List<QueryComponentListResponse> getBuddyEventListing(Long userId, LocalDateTime eventStartDate,
+		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
+		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType) {
+
+
+		getBuddyEventListingRepoDSL.getBuddyEventListing(userId,eventStartDate,eventEndDate,buddyEventConcepts,carShareYn,freedivingLevel,divingPools,sortType);
+
+		return null;
+	}
 }
