@@ -92,7 +92,7 @@ class FindUserControllerUnitTest {
 		List<FindUserServiceResponse> findUserList = createFindUserList(userIdList);
 
 		when(findUserUseCase.findUserListByQuery(any())).thenReturn(findUserList);
-		mockMvc.perform(get("/v1/service/users").param("userIds", param))
+		mockMvc.perform(get("/v1/internal/users").param("userIds", param))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data[0].userId").value(1))
 			.andExpect(jsonPath("$.data[1].userId").value(2))
@@ -108,7 +108,7 @@ class FindUserControllerUnitTest {
 
 		String param = createUserIdParam(userIdList);
 
-		mockMvc.perform(get("/v1/service/users").param("userIds", param))
+		mockMvc.perform(get("/v1/internal/users").param("userIds", param))
 			.andExpect(status().isBadRequest())
 			.andDo(print());
 	}
@@ -117,7 +117,7 @@ class FindUserControllerUnitTest {
 	@DisplayName("유저 조회 인터페이스 실패 테스트 - 파라미터가 없는 경우 400 에러 반환")
 	@WithMockCustomUser(roleLevel = RoleLevel.UNREGISTER)
 	void findUserServiceByNoParamFail() throws Exception {
-		mockMvc.perform(get("/v1/service/users"))
+		mockMvc.perform(get("/v1/internal/users"))
 			.andExpect(status().isBadRequest())
 			.andDo(print());
 	}
@@ -132,7 +132,7 @@ class FindUserControllerUnitTest {
 		List<FindUserServiceResponse> findUserList = createFindUserList(userIdList);
 
 		when(findUserUseCase.findUserListByQuery(any())).thenReturn(findUserList);
-		mockMvc.perform(get("/v1/service/users").param("userIds", param))
+		mockMvc.perform(get("/v1/internal/users").param("userIds", param))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data[0].userId").value(2))
 			.andExpect(jsonPath("$.data[1].userId").value(3))
@@ -151,7 +151,7 @@ class FindUserControllerUnitTest {
 		List<FindUserServiceResponse> findUserList = createFindUserList(uniqueUserIdList);
 
 		when(findUserUseCase.findUserListByQuery(any())).thenReturn(findUserList);
-		mockMvc.perform(get("/v1/service/users").param("userIds", param))
+		mockMvc.perform(get("/v1/internal/users").param("userIds", param))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.data[0].userId").value(2))
 			.andExpect(jsonPath("$.data[1].userId").value(3))
