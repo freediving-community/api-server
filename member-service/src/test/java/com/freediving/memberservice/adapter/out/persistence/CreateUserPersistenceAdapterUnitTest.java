@@ -44,9 +44,9 @@ class CreateUserPersistenceAdapterUnitTest {
 	@Test
 	@DisplayName("유저 생성 성공 테스트")
 	void createUserSuccess() {
-		CreateUserCommand command = createCommand(VALID_OAUTH_TYPE, VALID_EMAIL, OPTIONAL_PROFILE_IMG_URL);
+		CreateUserCommand command = createCommand(VALID_OAUTH_TYPE, VALID_EMAIL, OPTIONAL_PROFILE_IMG_URL, PROVIDER_ID);
 
-		when(userJpaRepository.findByOauthTypeAndEmail(any(OauthType.class), anyString())).thenReturn(
+		when(userJpaRepository.findByOauthTypeAndProviderId(any(OauthType.class), anyString())).thenReturn(
 			Optional.empty());
 
 		UserJpaEntity mockedUserJpaEntity = UserEntityFixture.createMockUser(1L, command.getEmail(),
@@ -66,11 +66,11 @@ class CreateUserPersistenceAdapterUnitTest {
 	@Test
 	@DisplayName("유저 조회 성공 테스트")
 	void getUserSuccess() {
-		CreateUserCommand command = createCommand(VALID_OAUTH_TYPE, VALID_EMAIL, OPTIONAL_PROFILE_IMG_URL);
+		CreateUserCommand command = createCommand(VALID_OAUTH_TYPE, VALID_EMAIL, OPTIONAL_PROFILE_IMG_URL, PROVIDER_ID);
 		UserJpaEntity existingUser = UserJpaEntity.createSimpleUser(VALID_OAUTH_TYPE, VALID_EMAIL,
-			OPTIONAL_PROFILE_IMG_URL);
+			OPTIONAL_PROFILE_IMG_URL, PROVIDER_ID);
 
-		when(userJpaRepository.findByOauthTypeAndEmail(any(OauthType.class), anyString())).thenReturn(
+		when(userJpaRepository.findByOauthTypeAndProviderId(any(OauthType.class), anyString())).thenReturn(
 			Optional.of(existingUser));
 
 		CreateUserResponse user = createUserPersistenceAdapter.createOrGetUser(command);

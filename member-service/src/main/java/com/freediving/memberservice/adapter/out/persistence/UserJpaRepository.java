@@ -25,10 +25,10 @@ public interface UserJpaRepository extends JpaRepository<UserJpaEntity, Long> {
 		"SELECT u " +
 			"FROM UserJpaEntity u " +
 			"WHERE u.oauthType = :oauthType " +
-			"AND u.email = :email"
+			"AND u.providerId = :providerId"
 	)
-	Optional<UserJpaEntity> findByOauthTypeAndEmail(@Param("oauthType") OauthType oauthType,
-		@Param("email") String email);
+	Optional<UserJpaEntity> findByOauthTypeAndProviderId(@Param("oauthType") OauthType oauthType,
+		@Param("providerId") String providerId);
 
 	@Query(
 		"SELECT u " +

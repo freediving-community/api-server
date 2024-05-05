@@ -24,13 +24,13 @@ class CreateUserCommandUnitTest {
 	@DisplayName("Command 전환 실패 테스트 - 이메일 정보가 올바르지 않은 경우")
 	void commandConvertFailByEmail() {
 		Assertions.assertThrows(ConstraintViolationException.class,
-			() -> createCommand(VALID_OAUTH_TYPE, INVALID_EMAIL, OPTIONAL_PROFILE_IMG_URL));
+			() -> createCommand(VALID_OAUTH_TYPE, INVALID_EMAIL, OPTIONAL_PROFILE_IMG_URL, PROVIDER_ID));
 	}
 
 	@Test
 	@DisplayName("Command 전환 실패 테스트 - Oauth 정보가 올바르지 않은 경우")
 	void commandConvertFailByOauth() {
 		Assertions.assertThrows(ConstraintViolationException.class,
-			() -> createCommand(INVALID_OAUTH_TYPE, VALID_EMAIL, OPTIONAL_PROFILE_IMG_URL));
+			() -> createCommand(INVALID_OAUTH_TYPE, VALID_EMAIL, OPTIONAL_PROFILE_IMG_URL, PROVIDER_ID));
 	}
 }

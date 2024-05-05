@@ -66,7 +66,7 @@ public class GoogleOauthExternalAdapter implements OauthFeignPort {
 		log.info("GOOGLE INFO : {}", googleInfoResponse);
 
 		OauthResponse oauthResponse = OauthResponse.of(getOauthType(), googleInfoResponse.email(),
-			googleInfoResponse.picture());
+			googleInfoResponse.picture(), googleInfoResponse.id());
 
 		OauthUser oauthUser = OauthUser.from(oauthResponse);
 		return oauthUser;
