@@ -56,6 +56,7 @@ class CreateUserControllerUnitTest {
 		CreateUserRequest request = CreateUserRequest.builder()
 			.email(VALID_EMAIL)
 			.oauthType(VALID_OAUTH_TYPE)
+			.providerId(PROVIDER_ID)
 			.build();
 
 		// Mocking

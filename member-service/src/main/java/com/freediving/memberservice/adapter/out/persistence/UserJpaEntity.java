@@ -67,6 +67,9 @@ public class UserJpaEntity extends AuditableEntity {
 	@Column(name = "user_status", nullable = false, length = 20)
 	private UserStatus userStatus;
 
+	@Column(name = "provider_id")
+	private String providerId;
+
 	public void updateUserNickname(String nickname) {
 		this.nickname = nickname;
 	}
@@ -83,15 +86,17 @@ public class UserJpaEntity extends AuditableEntity {
 		this.userStatus = userStatus;
 	}
 
-	public static UserJpaEntity createSimpleUser(OauthType oauthType, String email, String profileImgUrl) {
-		return new UserJpaEntity(oauthType, email, profileImgUrl);
+	public static UserJpaEntity createSimpleUser(OauthType oauthType, String email, String profileImgUrl,
+		String providerId) {
+		return new UserJpaEntity(oauthType, email, profileImgUrl, providerId);
 	}
 
-	private UserJpaEntity(OauthType oauthType, String email, String profileImgUrl) {
+	private UserJpaEntity(OauthType oauthType, String email, String profileImgUrl, String providerId) {
 		this.email = email;
 		this.profileImgUrl = profileImgUrl;
 		this.oauthType = oauthType;
 		this.userStatus = UserStatus.ACTIVE;
+		this.providerId = providerId;
 	}
 
 	@Builder(builderMethodName = "createMockUser")

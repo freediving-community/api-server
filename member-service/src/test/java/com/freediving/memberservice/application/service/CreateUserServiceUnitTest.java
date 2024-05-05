@@ -42,7 +42,7 @@ class CreateUserServiceUnitTest {
 	@Test
 	@DisplayName("유저 회원가입 정상 동작 테스트")
 	void createOrGetUserSuccess() {
-		CreateUserCommand command = createCommand(VALID_OAUTH_TYPE, VALID_EMAIL, OPTIONAL_PROFILE_IMG_URL);
+		CreateUserCommand command = createCommand(VALID_OAUTH_TYPE, VALID_EMAIL, OPTIONAL_PROFILE_IMG_URL, PROVIDER_ID);
 
 		CreateUserResponse expectedUser = CreateUserResponseFixture.createUserResponseFromCommand(command);
 

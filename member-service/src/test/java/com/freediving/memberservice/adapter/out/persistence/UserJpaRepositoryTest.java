@@ -36,7 +36,8 @@ class UserJpaRepositoryTest {
 
 	@BeforeEach
 	public void setUp() {
-		UserJpaEntity user = UserJpaEntity.createSimpleUser(VALID_OAUTH_TYPE, VALID_EMAIL, OPTIONAL_PROFILE_IMG_URL);
+		UserJpaEntity user = UserJpaEntity.createSimpleUser(VALID_OAUTH_TYPE, VALID_EMAIL, OPTIONAL_PROFILE_IMG_URL,
+			PROVIDER_ID);
 		entityManager.persistAndFlush(user);
 	}
 
@@ -46,11 +47,12 @@ class UserJpaRepositoryTest {
 	}
 
 	@Test
-	@DisplayName("유저 조회 성공 테스트 - OauthType과 Email로 유저 조회")
+	@DisplayName("유저 조회 성공 테스트 - OauthType과 ProviderId로 유저 조회")
 	void findUserByOauthTypeAndEmailSuccess() {
-		Optional<UserJpaEntity> findUser = userJpaRepository.findByOauthTypeAndEmail(VALID_OAUTH_TYPE, VALID_EMAIL);
+		Optional<UserJpaEntity> findUser = userJpaRepository.findByOauthTypeAndProviderId(VALID_OAUTH_TYPE,
+			PROVIDER_ID);
 		assertThat(findUser).isPresent();
-		assertThat(findUser.get().getEmail()).isEqualTo(VALID_EMAIL);
+		assertThat(findUser.get().getProviderId()).isEqualTo(PROVIDER_ID);
 		assertThat(findUser.get().getOauthType()).isEqualTo(VALID_OAUTH_TYPE);
 	}
 }

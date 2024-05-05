@@ -21,6 +21,7 @@ public class UserFixture {
 	public static final String VALID_EMAIL = "sasca37@naver.com";
 	public static final String INVALID_EMAIL = "sasca37/naver.com";
 	public static final OauthType VALID_OAUTH_TYPE = OauthType.KAKAO;
+	public static final String PROVIDER_ID = "1";
 	public static final OauthType INVALID_OAUTH_TYPE = OauthType.from("KEKAO");
 
 	public static final String OPTIONAL_PROFILE_IMG_URL = null;

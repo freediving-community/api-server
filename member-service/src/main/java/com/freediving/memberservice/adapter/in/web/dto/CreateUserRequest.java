@@ -4,6 +4,7 @@ import com.freediving.memberservice.domain.OauthType;
 import com.freediving.memberservice.valid.EnumValid;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,4 +34,7 @@ public class CreateUserRequest {
 	private String email;
 
 	private String profileImgUrl;
+
+	@NotNull
+	private String providerId;
 }

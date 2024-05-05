@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record GoogleInfoResponse(
-	Long sub,
+	String id,
 	String name,
 	String givenName,
 	String familyName,

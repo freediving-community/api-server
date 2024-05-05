@@ -39,18 +39,22 @@ public class CreateUserPersistenceAdapter implements CreateUserPort {
 	 * @Param            : CreateUserCommand
 	 * @Return           : User 도메인
 	 * @Description      : 최초 로그인인 경우 회원가입 / 기존 가입자인 경우 사용자 정보 반환
+	 *                     소셜 로그인 시 이메일 2차 이메일 정보 이슈로 PK 값 변경 (providerId)
 	 */
 	@Override
 	public CreateUserResponse createOrGetUser(CreateUserCommand createUserCommand) {
 		final OauthType oauthType = createUserCommand.getOauthType();
 		final String email = createUserCommand.getEmail();
+		final String providerId = createUserCommand.getProviderId();
 		final String profileImgUrl = createUserCommand.getProfileImgUrl();
 
-		UserJpaEntity userJpaEntity = userJpaRepository.findByOauthTypeAndEmail(oauthType, email).orElse(null);
+		UserJpaEntity userJpaEntity = userJpaRepository.findByOauthTypeAndProviderId(oauthType, providerId)
+			.orElse(null);
 
 		// 최초 로그인인 경우
 		if (ObjectUtils.isEmpty(userJpaEntity)) {
-			UserJpaEntity createUserJpaEntity = UserJpaEntity.createSimpleUser(oauthType, email, profileImgUrl);
+			UserJpaEntity createUserJpaEntity = UserJpaEntity.createSimpleUser(oauthType, email, profileImgUrl,
+				providerId);
 			UserJpaEntity savedUserJpaEntity = userJpaRepository.save(createUserJpaEntity);
 			String randomNickname = NicknameGenerator.generateNickname(savedUserJpaEntity.getUserId());
 			savedUserJpaEntity.updateUserNickname(randomNickname);

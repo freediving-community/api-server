@@ -65,7 +65,7 @@ public class KakaoOauthExternalAdapter implements OauthFeignPort {
 		log.info("KAKAO INFO RESPONSE : {}", kakaoInfoResponse);
 
 		OauthResponse oauthResponse = OauthResponse.of(getOauthType(), kakaoInfoResponse.kakaoAccount().email(),
-			kakaoInfoResponse.kakaoAccount().profile().profileImageUrl());
+			kakaoInfoResponse.kakaoAccount().profile().profileImageUrl(), String.valueOf(kakaoInfoResponse.id()));
 		OauthUser oauthUser = OauthUser.from(oauthResponse);
 		return oauthUser;
 	}
