@@ -11,9 +11,9 @@ import com.freediving.authservice.domain.OauthType;
  * ===========================================================
  * 2024/01/18        sasca37       최초 생성
  */
-public record OauthResponse(OauthType oauthType, String email, String profileImgUrl) {
+public record OauthResponse(OauthType oauthType, String email, String profileImgUrl, String providerId) {
 
-	public static OauthResponse of(OauthType oauthType, String email, String profileImgUrl) {
-		return new OauthResponse(oauthType, email, profileImgUrl);
+	public static OauthResponse of(OauthType oauthType, String email, String profileImgUrl, String providerId) {
+		return new OauthResponse(oauthType, email, profileImgUrl, providerId);
 	}
 }

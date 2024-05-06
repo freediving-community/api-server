@@ -280,7 +280,7 @@ public class ArticleService implements ArticleUseCase {
 		article.checkHasOwnership(command.getUserProvider().getRequestUserId());
 
 		articleDeletePort.markDeleted(command);
-		commentDeletePort.markDeleted(article.getId());
+		commentDeletePort.markDeletedByArticleId(article.getId());
 		imageDeletePort.deleteAllByArticleId(article.getId());
 		//TODO: Member로 AWS Image삭제 요청
 

@@ -1,5 +1,10 @@
 package com.freediving.communityservice.application.port.out;
 
 public interface CommentDeletePort {
-	void markDeleted(Long id);
+
+	void markDeletedByArticleId(Long articleId);
+
+	void markDeletedWithReply(Long commentId);
+
+	void markDeleted(Long commentId);
 }

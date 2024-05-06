@@ -18,8 +18,13 @@ import com.freediving.communityservice.application.port.in.ArticleIndexListComma
 import com.freediving.communityservice.application.port.in.ArticleReadCommand;
 import com.freediving.communityservice.application.port.in.ArticleUseCase;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Article 게시글", description = "게시글 API")
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 @RestController
@@ -27,9 +32,20 @@ public class ArticleQueryController {
 
 	private final ArticleUseCase articleUseCase;
 
+	@Operation(
+		summary = "게시글 목록 조회",
+		description = "게시글 목록과 각 게시글의 첫 번째 사진을 조회",
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "게시글 목록 조회됨",
+				useReturnTypeSchema = true
+			)
+		}
+	)
 	@GetMapping("/boards/{boardType}/articles")
 	public ResponseEntity<ResponseJsonObject<Page<ArticleBriefDto>>> getArticleList(
-		UserProvider userProvider,
+		@Parameter(hidden = true) UserProvider userProvider,
 		@PathVariable("boardType") BoardType boardType,
 		@RequestParam(value = "page", required = false, defaultValue = "1") int page,
 		@RequestParam(value = "offset", required = false, defaultValue = "20") int offset,
@@ -48,22 +64,27 @@ public class ArticleQueryController {
 				.cursor(cursor)
 				.build()
 		);
-
 		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, articleIndexList));
 	}
 
+	@Operation(
+		summary = "게시글 상세 조회",
+		description = "게시글과 이미지, 댓글 [,로그인 사용자의 좋아요 여부]등을 상세 조회",
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "게시글 상세 조회됨",
+				useReturnTypeSchema = true
+			)
+		}
+	)
 	@GetMapping("/boards/{boardType}/articles/{articleId}")
 	public ResponseEntity<ResponseJsonObject<ArticleContent>> getArticleContent(
-		UserProvider userProvider,
+		@Parameter(hidden = true) UserProvider userProvider,
 		@PathVariable("boardType") BoardType boardType,
 		@PathVariable("articleId") Long articleId,
 		@RequestParam(value = "showAll", required = false, defaultValue = "false") boolean showAll,
 		@RequestParam(value = "articleOnly", required = false, defaultValue = "false") boolean withoutComment) {
-		//TODO Cursor Based Query 적용 https://velog.io/@znftm97/%EC%BB%A4%EC%84%9C-%EA%B8%B0%EB%B0%98-%ED%8E%98%EC%9D%B4%EC%A7%80%EB%84%A4%EC%9D%B4%EC%85%98Cursor-based-Pagination%EC%9D%B4%EB%9E%80-Querydsl%EB%A1%9C-%EA%B5%AC%ED%98%84%EA%B9%8C%EC%A7%80-so3v8mi2
-
-		// if (showAll) {
-		// 	userProvider.checkAdmin();
-		// }
 
 		ArticleContent articleContentDetail = articleUseCase.getArticleWithComment(
 			ArticleReadCommand.builder()
@@ -73,7 +94,6 @@ public class ArticleQueryController {
 				.isShowAll(showAll)
 				.withoutComment(withoutComment)
 				.build());
-		// return ResponseEntity.ok(articleContent);
 		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, articleContentDetail));
 	}
 

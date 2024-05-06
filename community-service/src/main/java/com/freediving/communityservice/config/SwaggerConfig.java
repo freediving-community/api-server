@@ -43,7 +43,9 @@ public class SwaggerConfig {
 	}
 
 	private Components initComponents() {
-		return new Components().addSecuritySchemes(TOKEN_NAME, initSecurityScheme());
+		return new Components()
+			.addSecuritySchemes(TOKEN_NAME, initSecurityScheme())
+			.addSecuritySchemes("User-Id", userIdHeaderScheme());
 	}
 
 	private SecurityScheme initSecurityScheme() {
@@ -54,8 +56,20 @@ public class SwaggerConfig {
 			.name("Authorization");
 	}
 
+	private SecurityScheme userIdHeaderScheme() {
+		return new SecurityScheme()
+			.type(SecurityScheme.Type.APIKEY)
+			.in(SecurityScheme.In.HEADER)
+			.name("User-Id")
+			.description("User-Id long type gateway 없이 버디로 바로 요청시 사용");
+	}
+
 	private List<SecurityRequirement> initSecurityRequirements() {
-		return List.of(new SecurityRequirement().addList(TOKEN_NAME));
+		return List.of(
+			new SecurityRequirement()
+				.addList(TOKEN_NAME)
+				.addList("User-Id")
+		);
 	}
 
 	private Info initInfo() {

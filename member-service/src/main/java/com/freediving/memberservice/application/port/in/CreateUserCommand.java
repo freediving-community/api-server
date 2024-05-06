@@ -33,10 +33,13 @@ public class CreateUserCommand extends SelfValidating<CreateUserCommand> {
 
 	private String profileImgUrl;
 
-	public CreateUserCommand(OauthType oauthType, String email, String profileImgUrl) {
+	private String providerId;
+
+	public CreateUserCommand(OauthType oauthType, String email, String profileImgUrl, String providerId) {
 		this.oauthType = oauthType;
 		this.email = email;
 		this.profileImgUrl = profileImgUrl;
+		this.providerId = providerId;
 		this.validateSelf();
 	}
 }

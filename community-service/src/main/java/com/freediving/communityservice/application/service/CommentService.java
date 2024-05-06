@@ -3,12 +3,15 @@ package com.freediving.communityservice.application.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
+import com.freediving.communityservice.application.port.in.CommentDeleteCommand;
 import com.freediving.communityservice.application.port.in.CommentEditCommand;
 import com.freediving.communityservice.application.port.in.CommentReadCommand;
 import com.freediving.communityservice.application.port.in.CommentUseCase;
 import com.freediving.communityservice.application.port.in.CommentWriteCommand;
 import com.freediving.communityservice.application.port.out.ArticleReadPort;
+import com.freediving.communityservice.application.port.out.CommentDeletePort;
 import com.freediving.communityservice.application.port.out.CommentEditPort;
 import com.freediving.communityservice.application.port.out.CommentReadPort;
 import com.freediving.communityservice.application.port.out.CommentWritePort;
@@ -27,10 +30,12 @@ public class CommentService implements CommentUseCase {
 	private final CommentReadPort commentReadPort;
 	private final CommentWritePort commentWritePort;
 	private final CommentEditPort commentEditPort;
+	private final CommentDeletePort commentDeletePort;
 
 	@Override
 	public Comment writeComment(CommentWriteCommand command) {
 		Article article = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), true);
+		article.checkCommentEnabled();
 
 		if (command.hasParentComment()) {
 			/*
@@ -41,7 +46,7 @@ public class CommentService implements CommentUseCase {
 			Comment firstParentComment = commentReadPort.findById(CommentReadCommand.builder()
 				.commentId(command.getParentId())
 				.build());
-			firstParentComment.isParentComment();
+			firstParentComment.checkParentComment();
 			firstParentComment.checkCommentVisible(command.getRequestUser(), firstParentComment.getCreatedBy(),
 				article.getCreatedBy());
 
@@ -54,6 +59,7 @@ public class CommentService implements CommentUseCase {
 		return commentWritePort.writeComment(command);
 	}
 
+	// TODO: 더보기.. 기능 구현 필요시 작성
 	@Override
 	public Comment readComments(CommentReadCommand command) {
 /*		Article article = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), true);
@@ -65,10 +71,13 @@ public class CommentService implements CommentUseCase {
 
 	@Override
 	public Comment editComment(CommentEditCommand command) {
+
+		// TODO: 숨김 상태는 수정 불가
 		Comment comment = commentReadPort.findById(CommentReadCommand.builder()
 			.commentId(command.getCommentId())
 			.build());
 		comment.checkCommentOwner(command.getRequestUser().getRequestUserId());
+
 		return commentEditPort.editComment(command);
 	}
 
@@ -92,6 +101,25 @@ public class CommentService implements CommentUseCase {
 				targetArticle.getCreatedBy(),
 				command.getRequestUser().getRequestUserId()
 			)).toList();
+	}
+
+	@Override
+	public Long removeComment(CommentDeleteCommand command) {
+		Comment comment = commentReadPort.findById(CommentReadCommand.builder()
+			.commentId(command.getCommentId())
+			.build());
+
+		comment.checkCommentOwner(command.getRequestUser().getRequestUserId());
+
+		if (ObjectUtils.isEmpty(comment.getParentId())) {
+			// 댓글을 삭제하는 경우 (parent_id가 해당 댓글을 보고 있는) 하위 답글까지 삭제
+			commentDeletePort.markDeletedWithReply(comment.getCommentId());
+		} else {
+			// 답글인 경우 단건 삭제
+			commentDeletePort.markDeleted(comment.getCommentId());
+		}
+
+		return command.getCommentId();
 	}
 
 }

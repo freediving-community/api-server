@@ -26,7 +26,7 @@ public interface UserLicenseJpaRepository extends JpaRepository<UserLicenseJpaEn
 			"FROM UserLicenseJpaEntity u " +
 			"WHERE u.userJpaEntity = :userJpaEntity"
 	)
-	List<UserLicenseJpaEntity> findAllByUserId(@Param("userJpaEntity") UserJpaEntity userJpaEntity);
+	List<UserLicenseJpaEntity> findAllByUserJpaEntity(@Param("userJpaEntity") UserJpaEntity userJpaEntity);
 
 	@Query(
 		"SELECT u " +
