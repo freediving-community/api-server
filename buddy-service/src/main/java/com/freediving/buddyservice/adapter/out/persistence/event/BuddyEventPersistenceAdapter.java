@@ -4,19 +4,23 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.transaction.annotation.Transactional;
 
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.GetBuddyEventListingQueryProjectionDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.GetBuddyEventListingRepoDSL;
 import com.freediving.buddyservice.application.port.out.web.CreateBuddyEventPort;
 import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventListingPort;
 import com.freediving.buddyservice.config.enumerate.SortType;
+import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.domain.enumeration.ParticipationStatus;
-import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.buddyservice.domain.query.QueryComponentListResponse;
 import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.common.enumerate.DivingPool;
@@ -36,7 +40,8 @@ import lombok.RequiredArgsConstructor;
 public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBuddyEventListingPort {
 
 	private final BuddyEventRepository buddyEventRepository;
-
+	private final BuddyEventDivingPoolMappingRepository buddyEventDivingPoolMappingRepository;
+	private final BuddyEventConceptMappingRepository buddyEventConceptMappingRepository;
 	private final GetBuddyEventListingRepoDSL getBuddyEventListingRepoDSL;
 
 	@Override
@@ -93,8 +98,34 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBu
 		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
 		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType) {
 
+		//eventId = {Long@15333} 1
+		// eventStartDate = {LocalDateTime@15837} "2024-05-07T10:00"
+		// eventEndDate = {LocalDateTime@15838} "2024-05-07T13:00"
+		// isLiked = true
+		// likedCount = {Integer@15635} 1
+		// comment = "이번 모임은 캐주얼하게 진행합니다."
+		// freedivingLevel = {Integer@15337} 0
+		// status = {BuddyEventStatus@15637} "RECRUITING"
+		// participantCount = {Integer@15645} 3
+		// currentParticipantCount = {Long@15333} 1
+		List<GetBuddyEventListingQueryProjectionDto> buddyEventListing = getBuddyEventListingRepoDSL.getBuddyEventListing(
+			userId, eventStartDate, eventEndDate, buddyEventConcepts, carShareYn, freedivingLevel, divingPools,
+			sortType);
 
-		getBuddyEventListingRepoDSL.getBuddyEventListing(userId,eventStartDate,eventEndDate,buddyEventConcepts,carShareYn,freedivingLevel,divingPools,sortType);
+		final List<Long> ids = buddyEventListing.stream()
+			.map(e -> e.getEventId())
+			.collect(Collectors.toList());
+
+		// 1.해당 이벤트 다이빙 풀 조회하기
+
+		List<BuddyEventDivingPoolMappingJpaEntity> allByEventId = getBuddyEventListingRepoDSL.findDivingPoolMappingAllByEventIds(
+			ids);
+
+		// 2.해당 이벤트 컨셉 조회하기
+		List<BuddyEventConceptMappingJpaEntity> allByEventId1 = getBuddyEventListingRepoDSL.findConceptMappingAllByEventIds(
+			ids);
+
+		// 3. 참여자 User 정보 조회하기
 
 		return null;
 	}

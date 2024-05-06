@@ -16,21 +16,23 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
-* 버디 이벤트를 리스팅 카드 형태로 조회 하기 위한 요청 객체
+ * 버디 이벤트를 리스팅 카드 형태로 조회 하기 위한 요청 객체
  * 버디미 서비스에서 버디 매칭 메뉴에서 사용된다.
  * 검색 조건으로는 아래와 같다.
  *   - 정렬 타입 : 인기순, 마감 임박순, 최신순
  *   - 날짜 1일 선택, 다이빙 시간 ( from-to or 무관 ), 다이빙 풀 최대 2개 ( OR 조건 ), 컨셉 여러개 ( IN 조건 모두 포함 )
  *   -  버디 레벨 ( 누구나, 레벨 숫자 ), 차량 여부 ( 상관 없음, 차량 없음, 동승 가능 )
-*
-* @author pus__
-* @version 1.0.0
-* 작성일 2024-05-05
-**/
+ *
+ * @author pus__
+ * @version 1.0.0
+ * 작성일 2024-05-05
+ **/
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
@@ -61,6 +63,6 @@ public class GetBuddyEventListingRequest {
 		schema = @Schema(implementation = DivingPool.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED))
 	private Set<DivingPool> divingPools;
 
-	@Schema(description = "정렬 타입", example = "POPULARITY" , implementation = SortType.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+	@Schema(description = "정렬 타입", example = "POPULARITY", implementation = SortType.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 	private SortType sortType;
 }

@@ -4,16 +4,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.stereotype.Repository;
-
+import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingJpaEntity;
 import com.freediving.buddyservice.config.enumerate.SortType;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.common.enumerate.DivingPool;
 
-
-@Repository
 public interface GetBuddyEventListingRepoDSL {
-
 
 	/**
 	 * 버디 매칭 리스팅 조회 한다.
@@ -28,5 +25,9 @@ public interface GetBuddyEventListingRepoDSL {
 	List<GetBuddyEventListingQueryProjectionDto> getBuddyEventListing(Long userId, LocalDateTime eventStartDate,
 		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
 		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType);
+
+	List<BuddyEventConceptMappingJpaEntity> findConceptMappingAllByEventIds(List<Long> ids);
+
+	List<BuddyEventDivingPoolMappingJpaEntity> findDivingPoolMappingAllByEventIds(List<Long> ids);
 
 }

@@ -8,8 +8,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestJpaEntity;
-import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.config.enumerate.GenderType;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
 import com.freediving.common.persistence.AuditableEntity;
 
 import jakarta.persistence.CascadeType;
@@ -81,13 +81,13 @@ public class BuddyEventJpaEntity extends AuditableEntity {
 
 	// 연관 관계 매핑
 
-	@OneToMany(mappedBy = "buddyEvent", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+	@OneToMany(mappedBy = "buddyEvent", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
 	private Set<BuddyEventConceptMappingJpaEntity> eventConcepts;
 
-	@OneToMany(mappedBy = "buddyEvent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "buddyEvent", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private Set<BuddyEventDivingPoolMappingJpaEntity> buddyEventDivingPoolMappingJpaEntity;
 
-	@OneToMany(mappedBy = "buddyEvent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "buddyEvent", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private Set<BuddyEventJoinRequestJpaEntity> buddyEventJoinRequests;
 
 	public BuddyEventJpaEntity changeBuddyEventConceptMapping(Set<BuddyEventConceptMappingJpaEntity> target) {

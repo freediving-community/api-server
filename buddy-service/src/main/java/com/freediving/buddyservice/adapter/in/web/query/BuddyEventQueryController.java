@@ -2,15 +2,13 @@ package com.freediving.buddyservice.adapter.in.web.query;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.buddyservice.adapter.in.web.query.dto.GetBuddyEventListingRequest;
-import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.web.query.listing.GetBuddyEventListingCommand;
 import com.freediving.buddyservice.application.port.in.web.query.listing.GetBuddyEventListingUseCase;
-import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.buddyservice.domain.query.QueryComponentListResponse;
 import com.freediving.common.config.annotation.WebAdapter;
 import com.freediving.common.handler.exception.BuddyMeException;
@@ -31,18 +29,16 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "Buddy Event Query", description = "버디 이벤트 Query 관련 API")
 public class BuddyEventQueryController {
 
-	private GetBuddyEventListingUseCase getBuddyEventListingUseCase;
+	private final GetBuddyEventListingUseCase getBuddyEventListingUseCase;
 
 	/* API  캐로셀 카드 조회 하기.
-	*   - 메인 홈 N명의 다이버가 버디를 찾고 있어요.
-	*   - 메인 홈 이번주에 프리다이빙 어때요?
-	*   - 메인 홈 [DivingPool Name]에 같이 갈래요?
-	*   -
-	*/
-
+	 *   - 메인 홈 N명의 다이버가 버디를 찾고 있어요.
+	 *   - 메인 홈 이번주에 프리다이빙 어때요?
+	 *   - 메인 홈 [DivingPool Name]에 같이 갈래요?
+	 *   -
+	 */
 
 	// API 캐로셀 심플 카드 조회 하기.
-
 
 	// API 리스팅 카드 조회 하기.
 
@@ -61,8 +57,8 @@ public class BuddyEventQueryController {
 		}
 	)
 	@GetMapping("/listing")
-	public ResponseEntity<ResponseJsonObject<QueryComponentListResponse>> getBuddyEventListing(@Valid @RequestBody
-	GetBuddyEventListingRequest request, HttpServletRequest httpServletRequest){
+	public ResponseEntity<ResponseJsonObject<QueryComponentListResponse>> getBuddyEventListing(@Valid @ModelAttribute
+	GetBuddyEventListingRequest request, HttpServletRequest httpServletRequest) {
 		try {
 			// 1. UserID 추출하기
 			Long userId = Long.parseLong(httpServletRequest.getAttribute("User-Id").toString());
@@ -91,6 +87,5 @@ public class BuddyEventQueryController {
 			throw e;
 		}
 	}
-
 
 }
