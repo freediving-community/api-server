@@ -77,11 +77,14 @@ public class ArticleService implements ArticleUseCase {
 	@Override
 	public ArticleContent getArticleWithComment(ArticleReadCommand command) {
 
-		Article article = articleReadPort.readArticle(
+		Article foundArticle = articleReadPort.readArticle(
 			command.getBoardType(),
 			command.getArticleId(),
 			command.isShowAll()
 		);
+		Article article = foundArticle.increaseViewCount();
+		articleReadPort.increaseViewCount(article.getBoardType(), article.getId());
+
 		List<ImageResponse> images = imageReadPort.getImageListByArticle(article.getId());
 
 		if (command.isWithoutComment()) { // 본문 내용 수정 등

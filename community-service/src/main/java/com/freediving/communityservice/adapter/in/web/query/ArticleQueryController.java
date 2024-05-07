@@ -69,7 +69,7 @@ public class ArticleQueryController {
 
 	@Operation(
 		summary = "게시글 상세 조회",
-		description = "게시글과 이미지, 댓글 [,로그인 사용자의 좋아요 여부]등을 상세 조회",
+		description = "게시글과 이미지, 댓글 [,로그인 사용자의 좋아요 여부]등을 상세 조회 * Header에 User-Id가 있는 경우 로그인 사용자의 댓글(비밀댓글)을 먼저 가져오며 좋아요 여부를 응답한다.",
 		responses = {
 			@ApiResponse(
 				responseCode = "200",
