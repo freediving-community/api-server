@@ -2,14 +2,15 @@ package com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listi
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
+import com.freediving.buddyservice.adapter.out.persistence.concept.QBuddyEventConceptJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.QBuddyEventJpaEntity;
-import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.QBuddyEventConceptMappingJpaEntity;
-import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.QBuddyEventDivingPoolMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.QBuddyEventJoinRequestJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.likecount.QBuddyEventLikeCountJpaEntity;
@@ -17,6 +18,7 @@ import com.freediving.buddyservice.adapter.out.persistence.event.likecount.QBudd
 import com.freediving.buddyservice.config.enumerate.SortType;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.common.enumerate.DivingPool;
+import com.freediving.divingpool.data.dao.QDivingPoolJpaEntity;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.JPQLQueryFactory;
@@ -58,7 +60,7 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 				event.freedivingLevel,    //레벨 조건
 				event.status,            //상태
 				event.participantCount, // 모집 인원
-				join.userId.count()
+				join.userId.count().intValue()
 			)
 		).from(event);
 
@@ -109,28 +111,64 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 	}
 
 	@Override
-	public List<BuddyEventConceptMappingJpaEntity> findConceptMappingAllByEventIds(List<Long> ids) {
+	public Map<Long, List<BuddyEventConceptMappingProjectDto>> findConceptMappingAllByEventIds(List<Long> ids) {
 		QBuddyEventConceptMappingJpaEntity qConceptMapping = QBuddyEventConceptMappingJpaEntity.buddyEventConceptMappingJpaEntity;
+		QBuddyEventConceptJpaEntity qBuddyEventConcept = QBuddyEventConceptJpaEntity.buddyEventConceptJpaEntity;
+
 		JPQLQueryFactory jpqlQueryFactory = new JPAQueryFactory(entityManager);
 
-		List<BuddyEventConceptMappingJpaEntity> results = jpqlQueryFactory
-			.selectFrom(qConceptMapping)
+		List<BuddyEventConceptMappingProjectDto> results = jpqlQueryFactory
+			.select(new QBuddyEventConceptMappingProjectDto(
+				qConceptMapping.buddyEvent.eventId,
+				qConceptMapping.conceptId,
+				qBuddyEventConcept.conceptName
+			))
+			.from(qConceptMapping)
+			.innerJoin(qBuddyEventConcept)
+			.on(qConceptMapping.conceptId.eq(qBuddyEventConcept.conceptId))
 			.where(qConceptMapping.buddyEvent.eventId.in(ids))
 			.fetch();
 
-		return results;
+		return results.stream()
+			.collect(Collectors.groupingBy(BuddyEventConceptMappingProjectDto::getEventId));
 	}
 
 	@Override
-	public List<BuddyEventDivingPoolMappingJpaEntity> findDivingPoolMappingAllByEventIds(List<Long> ids) {
+	public Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> findDivingPoolMappingAllByEventIds(List<Long> ids) {
 		QBuddyEventDivingPoolMappingJpaEntity qDivingPoolMapping = QBuddyEventDivingPoolMappingJpaEntity.buddyEventDivingPoolMappingJpaEntity;
+		QDivingPoolJpaEntity qDivingPool = QDivingPoolJpaEntity.divingPoolJpaEntity;
 		JPQLQueryFactory jpqlQueryFactory = new JPAQueryFactory(entityManager);
 
-		List<BuddyEventDivingPoolMappingJpaEntity> results = jpqlQueryFactory
-			.selectFrom(qDivingPoolMapping)
+		List<BuddyEventDivingPoolMappingProjectDto> results = jpqlQueryFactory
+			.select(new QBuddyEventDivingPoolMappingProjectDto(qDivingPoolMapping.buddyEvent.eventId,
+				qDivingPool.divingPoolId,
+				qDivingPool.divingPoolName
+			))
+			.from(qDivingPoolMapping)
+			.innerJoin(qDivingPool)
+			.on(qDivingPoolMapping.divingPoolId.eq(qDivingPool.divingPoolId))
 			.where(qDivingPoolMapping.buddyEvent.eventId.in(ids))
 			.fetch();
 
-		return results;
+		return results.stream()
+			.collect(Collectors.groupingBy(BuddyEventDivingPoolMappingProjectDto::getEventId));
+	}
+
+	@Override
+	public Map<Long, List<BuddyEventJoinMappingProjectDto>> findJoinMappingAllByEventIds(List<Long> ids) {
+		QBuddyEventJoinRequestJpaEntity qBuddyEventJoin = QBuddyEventJoinRequestJpaEntity.buddyEventJoinRequestJpaEntity;
+		JPQLQueryFactory jpqlQueryFactory = new JPAQueryFactory(entityManager);
+
+		List<BuddyEventJoinMappingProjectDto> results = jpqlQueryFactory
+			.select(new QBuddyEventJoinMappingProjectDto(qBuddyEventJoin.buddyEvent.eventId,
+				qBuddyEventJoin.userId,
+				qBuddyEventJoin.status
+			))
+			.from(qBuddyEventJoin)
+			.where(qBuddyEventJoin.buddyEvent.eventId.in(ids))
+			.fetch();
+
+		return results.stream()
+			.collect(Collectors.groupingBy(BuddyEventJoinMappingProjectDto::getEventId));
 	}
 }

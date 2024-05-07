@@ -19,7 +19,16 @@ public class MemberServiceAdapter implements RequestMemberPort {
 	@Override
 	public MemberStatus getMemberStatus(Long userId) {
 
-		getMemberInfoFeignClient.getMemberInfo(List.of(userId), false);
+		try {
+			Object obj = getMemberInfoFeignClient.getMemberInfo(List.of(userId), false);
+
+			System.out.println(obj);
+		} catch (Exception e) {
+
+			//todo 임시로 연결안되면 랜덤 사용자로 리턴
+
+			return MemberStatus.builder().userid(userId).isValid(true).build();
+		}
 		return MemberStatus.builder().userid(userId).isValid(true).build();
 	}
 }

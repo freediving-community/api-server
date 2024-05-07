@@ -1,7 +1,6 @@
 package com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
 import com.querydsl.core.annotations.QueryProjection;
@@ -24,14 +23,14 @@ public class GetBuddyEventListingQueryProjectionDto {
 	private Integer freedivingLevel;
 	private BuddyEventStatus status;
 	private Integer participantCount;
-	private Long currentParticipantCount;
+	private Integer currentParticipantCount;
 
 	@Builder
 	@QueryProjection
 	public GetBuddyEventListingQueryProjectionDto(Long eventId, LocalDateTime eventStartDate,
 		LocalDateTime eventEndDate,
 		boolean isLiked, Integer likedCount, String comment, Integer freedivingLevel, BuddyEventStatus status,
-		Integer participantCount, Long currentParticipantCount) {
+		Integer participantCount, Integer currentParticipantCount) {
 		this.eventId = eventId;
 		this.eventStartDate = eventStartDate;
 		this.eventEndDate = eventEndDate;

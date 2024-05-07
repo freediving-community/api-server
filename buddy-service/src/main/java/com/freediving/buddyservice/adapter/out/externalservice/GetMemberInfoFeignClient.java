@@ -6,9 +6,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "get/v1/service/users", url = "${feign.external-service.member-service}")
+@FeignClient(name = "member-service")
 public interface GetMemberInfoFeignClient {
-	@GetMapping("/v1/service/users")
+	@GetMapping("/v1/internal/users")
 	Object getMemberInfo(@RequestParam(name = "userIds") List<Long> userIds,
 		@RequestParam(name = "profileImg") Boolean profileImg);
 }

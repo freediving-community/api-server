@@ -10,12 +10,14 @@ import com.freediving.buddyservice.domain.query.component.common.ParticipantInfo
 import com.freediving.buddyservice.domain.query.component.common.UserInfoResponse;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Builder
 public class BuddyEventlistingCardResponse implements QueryComponent {
 	private UserInfoResponse user;
 	private boolean isLiked;
