@@ -21,6 +21,8 @@
             <a href="https://code.tutsplus.com/tutorials/how-to-create-a-simple-web-based-chat-application--net-5931">
                 Simple Web-Based Chat Application</a></li>
     </ul>
+    <input id="serverUrlPort" type="text" placeholder="localhost:8080">
+    <button onclick="initStompTest()">시작하기</button>
     <div id="menu">
         <p class="welcome">Welcome, <input title="username" name="username" id="username" type="text" value="Change Me">
         </p>
@@ -39,7 +41,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0-beta2/bundles/stomp.umd.min.js"></script>
 
 <script type="application/javascript">
-    $(function () {
+    function initStompTest() {
       let stompClient;
 
       const stompConfig = {
@@ -51,7 +53,7 @@
         },
 
         // Broker URL, should start with ws:// or wss:// - adjust for your broker setup
-        brokerURL: "ws://localhost:8080/ws",
+        brokerURL: "ws://"+ document.getElementById("serverUrlPort").value +"/ws",
 
         // Keep it off for production, it can be quit verbose
         // Skip this key to disable
@@ -114,7 +116,7 @@
         msgDiv.html('<span class="user">[' + user + ']: </span><span class="message">' + message + '</span>');
         $("#chatbox").append(msgDiv);
       }
-    })
+    }
 </script>
 </body>
 </html>
