@@ -47,7 +47,7 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 		List<GetBuddyEventListingQueryProjectionDto> buddyEventListing = getBuddyEventListingPort.getBuddyEventListing(
 			1L, command.getEventStartDate(), command.getEventEndDate(),
 			command.getBuddyEventConcepts(), command.getCarShareYn(), command.getFreedivingLevel(),
-			command.getDivingPools(), command.getSortType());
+			command.getDivingPools(), command.getSortType(), command.getPageNumber(), command.getPageSize());
 
 		final List<Long> ids = buddyEventListing.stream()
 			.map(e -> e.getEventId())

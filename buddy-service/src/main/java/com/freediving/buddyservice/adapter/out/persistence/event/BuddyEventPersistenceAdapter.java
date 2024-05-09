@@ -94,7 +94,7 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBu
 	@Override
 	public List<GetBuddyEventListingQueryProjectionDto> getBuddyEventListing(Long userId, LocalDateTime eventStartDate,
 		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
-		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType) {
+		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType, int pageNumber, int pageSize) {
 		// todo 고도화 필요.
 
 		//eventId = {Long@15333} 1
@@ -109,7 +109,7 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBu
 		// currentParticipantCount = {Long@15333} 1
 		List<GetBuddyEventListingQueryProjectionDto> buddyEventListing = getBuddyEventListingRepoDSL.getBuddyEventListing(
 			userId, eventStartDate, eventEndDate, buddyEventConcepts, carShareYn, freedivingLevel, divingPools,
-			sortType);
+			sortType, pageNumber, pageSize);
 
 		return buddyEventListing;
 	}
