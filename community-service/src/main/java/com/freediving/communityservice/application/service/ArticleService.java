@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import com.freediving.common.response.dto.member.MemberFindUserResponse;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
@@ -43,13 +44,16 @@ import com.freediving.communityservice.application.port.out.ImageEditPort;
 import com.freediving.communityservice.application.port.out.ImageReadPort;
 import com.freediving.communityservice.application.port.out.ImageWritePort;
 import com.freediving.communityservice.application.port.out.UserReactionPort;
+import com.freediving.communityservice.application.port.out.external.MemberFeignPort;
 import com.freediving.communityservice.domain.Article;
 import com.freediving.communityservice.domain.Board;
 import com.freediving.communityservice.domain.Comment;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -67,6 +71,7 @@ public class ArticleService implements ArticleUseCase {
 	private final ImageReadPort imageReadPort;
 	private final ImageEditPort imageEditPort;
 	private final ImageDeletePort imageDeletePort;
+	private final MemberFeignPort memberClient;
 
 	//Query
 	// @Override
@@ -162,6 +167,8 @@ public class ArticleService implements ArticleUseCase {
 			.map(ArticleBriefDto::getCreatedBy)
 			.toList();
 
+		List<MemberFindUserResponse> memberInfoList = memberClient.findUserListByUserIds(articleOwnerIds, true);
+		log.info("MemberInfo: {}", memberInfoList);
 		/*
 		 * memberClient.getMemberInfo( articleOwnerIds );
 		 *

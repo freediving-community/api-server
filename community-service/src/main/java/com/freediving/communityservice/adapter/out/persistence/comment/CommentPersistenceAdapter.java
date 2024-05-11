@@ -69,7 +69,7 @@ public class CommentPersistenceAdapter
 
 		sql.append(""" 
 			 ORDER BY CREATED_AT DESC
-			) as subquery1 LIMIT 2 
+			) as subquery1 LIMIT 10
 			""");
 
 		return jdbcClient
@@ -95,7 +95,6 @@ public class CommentPersistenceAdapter
 			}
 		}
 
-		//TODO 리팩토링 및 쿼리 개선 - H2와 JdbcClient에서 WITH절 포함시 동작 이상
 		StringBuffer sql = new StringBuffer();
 
 		if (userPriorityComments) {

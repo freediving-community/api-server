@@ -32,7 +32,6 @@ import lombok.ToString;
 @Table(name = "comment", indexes = {@Index(name = "idx_comment_articleId", columnList = "articleId")})
 @Entity
 public class CommentJpaEntity {
-	//TODO articleId가 필수임. 게시물처럼 커서 방식을 적용. hasChild와 parentId를 기반으로 답글 기능 포함.
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long commentId;
