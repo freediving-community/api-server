@@ -14,8 +14,9 @@ import com.freediving.memberservice.domain.OauthType;
  */
 public class CreateUserCommandFixture {
 
-	public static CreateUserCommand createCommand(OauthType oauthType, String email, String profileImgUrl) {
-		return new CreateUserCommand(oauthType, email, profileImgUrl);
+	public static CreateUserCommand createCommand(OauthType oauthType, String email, String profileImgUrl,
+		String providerId) {
+		return new CreateUserCommand(oauthType, email, profileImgUrl, providerId);
 	}
 
 }

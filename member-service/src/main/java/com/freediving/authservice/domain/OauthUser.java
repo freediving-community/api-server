@@ -39,14 +39,18 @@ public class OauthUser {
 	private String accessToken;
 	private String refreshToken;
 
+	private String providerId;
+
 	public static OauthUser from(OauthResponse oauthResponse) {
-		return new OauthUser(oauthResponse.oauthType(), oauthResponse.email(), oauthResponse.profileImgUrl());
+		return new OauthUser(oauthResponse.oauthType(), oauthResponse.email(), oauthResponse.profileImgUrl(),
+			oauthResponse.providerId());
 	}
 
-	private OauthUser(OauthType oauthType, String email, String profileImgUrl) {
+	private OauthUser(OauthType oauthType, String email, String profileImgUrl, String providerId) {
 		this.oauthType = oauthType;
 		this.email = email;
 		this.profileImgUrl = profileImgUrl;
+		this.providerId = providerId;
 	}
 
 	public void updateTokens(String accessToken, String refreshToken) {

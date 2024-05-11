@@ -45,7 +45,7 @@ public class DeleteImgController {
 			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
 			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
-	@DeleteMapping("/service/imgs")
+	@DeleteMapping("/internal/imgs")
 	public ResponseEntity<Void> deletePreSignedUrl(@RequestBody DeleteImgRequest request) {
 		DeleteImgCommand command = DeleteImgCommand.builder()
 			.imgUrlList(request.imgUrlList())

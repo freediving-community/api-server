@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.freediving.authservice.adapter.in.web.dto.CreateImgResponse;
 import com.freediving.authservice.adapter.in.web.dto.UpdateTokenResponse;
 import com.freediving.authservice.application.port.in.TokenUseCase;
 import com.freediving.common.config.annotation.WebAdapter;
@@ -49,7 +48,7 @@ public class TokenController {
 			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
 	@PatchMapping("/tokens")
-	public ResponseEntity<ResponseJsonObject<CreateImgResponse>> updateTokens(@AuthenticationPrincipal User user) {
+	public ResponseEntity<ResponseJsonObject<UpdateTokenResponse>> updateTokens(@AuthenticationPrincipal User user) {
 		String accessToken = tokenUseCase.updateTokens(user.userId(), user.oauthType().name());
 		UpdateTokenResponse response = new UpdateTokenResponse(accessToken);
 		ResponseJsonObject responseJsonObject = new ResponseJsonObject(ServiceStatusCode.OK, response);

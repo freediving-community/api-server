@@ -70,7 +70,7 @@ public class NaverOauthExternalAdapter implements OauthFeignPort {
 		log.info("NAVER INFO {}", naverInfoResponse);
 
 		OauthResponse oauthResponse = OauthResponse.of(getOauthType(), naverInfoResponse.response().email(),
-			naverInfoResponse.response().profileImage());
+			naverInfoResponse.response().profileImage(), naverInfoResponse.response().id());
 		OauthUser oauthUser = OauthUser.from(oauthResponse);
 		return oauthUser;
 	}

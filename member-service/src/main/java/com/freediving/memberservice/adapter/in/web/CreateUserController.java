@@ -7,7 +7,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -44,7 +43,6 @@ import lombok.extern.slf4j.Slf4j;
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1")
 @Tag(name = "User")
 @Slf4j
 public class CreateUserController {
@@ -60,13 +58,14 @@ public class CreateUserController {
 	 * @Description      : Oauth 정보를 바탕으로 가입여부 확인 및 JWT 토큰 업데이트
 	 */
 
-	@PostMapping("/service/users/register")
+	@PostMapping("/v1/service/users/register")
 	@Hidden
 	public CreateUserResponse createUser(@Valid @RequestBody CreateUserRequest request) {
 		CreateUserCommand command = CreateUserCommand.builder()
 			.oauthType(request.getOauthType())
 			.email(request.getEmail())
 			.profileImgUrl(request.getProfileImgUrl())
+			.providerId(request.getProviderId())
 			.build();
 		return createUserUseCase.createOrGetUser(command);
 	}
@@ -79,7 +78,7 @@ public class CreateUserController {
 			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
 			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
-	@PostMapping("/users/info")
+	@PostMapping("/v1/users/info")
 	public ResponseEntity<?> createUserInfo(@Valid @RequestBody CreateUserInfoRequest request,
 		@AuthenticationPrincipal User user) {
 		CreateUserInfoCommand command = CreateUserInfoCommand.builder()
@@ -107,7 +106,8 @@ public class CreateUserController {
 			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
 			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
-	@GetMapping("/pools")
+	@GetMapping("/v1/pools")
+	@Hidden
 	public ResponseEntity<ResponseJsonObject<?>> getDivingPools() {
 		return buddyUseCase.getDivingPools();
 	}
