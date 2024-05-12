@@ -90,7 +90,7 @@ public class BuddyEventCommandController {
 
 			return ResponseEntity.ok(response);
 		} catch (Exception e) {
-			throw e;
+			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, e.getMessage());
 		}
 	}
 
@@ -133,7 +133,7 @@ public class BuddyEventCommandController {
 
 			return ResponseEntity.ok(response);
 		} catch (Exception e) {
-			throw e;
+			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, e.getMessage());
 		}
 	}
 }

@@ -52,7 +52,7 @@ public class GetBuddyEventListingCommand extends SelfValidating<GetBuddyEventLis
 	@Min(1)
 	private Integer pageNumber;
 
-	@Schema(description = "페이지당 사이즈", example = "POPULARITY", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(description = "페이지당 사이즈", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
 	@Min(1)
 	private Integer pageSize;
 
@@ -71,6 +71,7 @@ public class GetBuddyEventListingCommand extends SelfValidating<GetBuddyEventLis
 		this.divingPools = divingPools;
 		this.sortType = sortType;
 		this.pageNumber = pageNumber;
+		this.pageSize = pageSize;
 
 		this.validateSelf();
 	}

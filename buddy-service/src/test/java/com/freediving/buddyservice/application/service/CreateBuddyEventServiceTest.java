@@ -3,6 +3,7 @@ package com.freediving.buddyservice.application.service;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -16,6 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.freediving.buddyservice.adapter.out.externalservice.FindUser;
+import com.freediving.buddyservice.adapter.out.externalservice.LicenseInfo;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingRepository;
@@ -25,12 +28,13 @@ import com.freediving.buddyservice.adapter.out.persistence.event.likecount.Buddy
 import com.freediving.buddyservice.adapter.out.persistence.event.viewcount.BuddyEventViewCountRepository;
 import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventUseCase;
-import com.freediving.buddyservice.application.port.out.externalservice.query.MemberStatus;
 import com.freediving.buddyservice.application.port.out.externalservice.query.RequestMemberPort;
-import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
-import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
+import com.freediving.common.domain.member.FreeDiving;
+import com.freediving.common.domain.member.RoleLevel;
 import com.freediving.common.enumerate.DivingPool;
 
 @SpringBootTest
@@ -85,8 +89,14 @@ class CreateBuddyEventServiceTest {
 			.build();
 
 		// 2. RequestMemberPort의 MemberStauts 상태 조회 결과를 실패로 만든다.
-		Mockito.when(requestMemberPort.getMemberStatus(Mockito.any(Long.class)))
-			.thenReturn(MemberStatus.builder().userid(11111L).isValid(false).build());
+		HashMap<Long, FindUser> dump = new HashMap<>();
+		dump.put(1L, FindUser.builder().userId(1L).nickname("임시 사용자-" + 1L).licenseInfo(LicenseInfo.builder()
+			.freeDiving(
+				new FreeDiving(RoleLevel.UNREGISTER.getLevel(), RoleLevel.UNREGISTER.name(), null, "",
+					false))
+			.build()).build());
+		Mockito.when(requestMemberPort.getMemberStatus(Mockito.any(List.class)))
+			.thenReturn(dump);
 
 		// when, then
 		assertThatThrownBy(() -> createBuddyEventUseCase.createBuddyEvent(command))
@@ -123,8 +133,14 @@ class CreateBuddyEventServiceTest {
 			.build();
 
 		// 2. RequestMemberPort의 MemberStauts 상태 조회 결과를 성공으로 만든다.
-		Mockito.when(requestMemberPort.getMemberStatus(Mockito.any(Long.class)))
-			.thenReturn(MemberStatus.builder().userid(11111L).isValid(true).build());
+		HashMap<Long, FindUser> dump = new HashMap<>();
+		dump.put(1L, FindUser.builder().userId(1L).nickname("임시 사용자-" + 1L).licenseInfo(LicenseInfo.builder()
+			.freeDiving(
+				new FreeDiving(RoleLevel.UNREGISTER.getLevel(), RoleLevel.UNREGISTER.name(), null, "",
+					false))
+			.build()).build());
+		Mockito.when(requestMemberPort.getMemberStatus(Mockito.any(List.class)))
+			.thenReturn(dump);
 
 		//when, then
 		assertThatThrownBy(() -> createBuddyEventUseCase.createBuddyEvent(command))
@@ -164,8 +180,14 @@ class CreateBuddyEventServiceTest {
 			.build();
 
 		//  RequestMemberPort의 MemberStauts 상태 조회 결과를 성공으로 만든다.
-		Mockito.when(requestMemberPort.getMemberStatus(Mockito.any(Long.class)))
-			.thenReturn(MemberStatus.builder().userid(userId).isValid(true).build());
+		HashMap<Long, FindUser> dump = new HashMap<>();
+		dump.put(1L, FindUser.builder().userId(1L).nickname("임시 사용자-" + 1L).licenseInfo(LicenseInfo.builder()
+			.freeDiving(
+				new FreeDiving(RoleLevel.UNREGISTER.getLevel(), RoleLevel.UNREGISTER.name(), null, "",
+					false))
+			.build()).build());
+		Mockito.when(requestMemberPort.getMemberStatus(Mockito.any(List.class)))
+			.thenReturn(dump);
 
 		// when
 		CreatedBuddyEventResponse createdBuddyEventResponse = createBuddyEventUseCase.createBuddyEvent(command);

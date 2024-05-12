@@ -21,7 +21,8 @@ public class ResponseJsonObject<T> {
 	@Builder.Default
 	private ServiceStatusCode code = ServiceStatusCode.OK;
 	@Builder.Default
-	private String expandMsg = null;
+	private String expandMsg = null; //todo 추후 삭제 필드  msg 필드 사용해주세요.
+	private String msg = null;
 	private T data;
 
 	public ResponseJsonObject(ServiceStatusCode serviceStatusCode, T data) {
@@ -29,10 +30,11 @@ public class ResponseJsonObject<T> {
 		this.data = data;
 	}
 
-	public ResponseJsonObject(ServiceStatusCode serviceStatusCode, T data, String expandMsg) {
+	public ResponseJsonObject(ServiceStatusCode serviceStatusCode, T data, String msg) {
 		this.code = serviceStatusCode;
 		this.data = data;
-		this.expandMsg = expandMsg;
+		this.expandMsg = msg;
+		this.msg = msg;
 	}
 
 	// --------------- JSON 필드 --------------------

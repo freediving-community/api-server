@@ -10,6 +10,7 @@ import com.freediving.common.enumerate.DivingPool;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -65,4 +66,12 @@ public class GetBuddyEventListingRequest {
 
 	@Schema(description = "정렬 타입", example = "POPULARITY", implementation = SortType.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 	private SortType sortType;
+
+	@Schema(description = "페이지 번호", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Min(1)
+	private Integer pageNumber;
+
+	@Schema(description = "페이지당 사이즈", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Min(1)
+	private Integer pageSize;
 }

@@ -1,20 +1,26 @@
 package com.freediving.buddyservice.application.service.web;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.freediving.buddyservice.adapter.out.externalservice.FindUser;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.BuddyEventConceptMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.BuddyEventDivingPoolMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.BuddyEventJoinMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.GetBuddyEventListingQueryProjectionDto;
 import com.freediving.buddyservice.application.port.in.web.query.listing.GetBuddyEventListingCommand;
 import com.freediving.buddyservice.application.port.in.web.query.listing.GetBuddyEventListingUseCase;
+import com.freediving.buddyservice.application.port.out.externalservice.query.RequestMemberPort;
 import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventListingPort;
 import com.freediving.buddyservice.domain.enumeration.ParticipationStatus;
 import com.freediving.buddyservice.domain.query.QueryComponentListResponse;
@@ -32,10 +38,11 @@ import lombok.RequiredArgsConstructor;
 public class GetBuddyEventListingService implements GetBuddyEventListingUseCase {
 
 	private final GetBuddyEventListingPort getBuddyEventListingPort;
+	private final RequestMemberPort requestMemberPort;
 
 	@Override
 	@Transactional(isolation = Isolation.READ_UNCOMMITTED)
-	public QueryComponentListResponse getBuddyEventListing(GetBuddyEventListingCommand command) {
+	public QueryComponentListResponse getBuddyEventListing(Long userId, GetBuddyEventListingCommand command) {
 
 		//dsl 쿼리 조회
 
@@ -44,10 +51,16 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 		 * */
 
 		// 멤버 서비스로 사용자 정보 요청.
+
 		List<GetBuddyEventListingQueryProjectionDto> buddyEventListing = getBuddyEventListingPort.getBuddyEventListing(
-			1L, command.getEventStartDate(), command.getEventEndDate(),
+			userId, command.getEventStartDate(), command.getEventEndDate(),
 			command.getBuddyEventConcepts(), command.getCarShareYn(), command.getFreedivingLevel(),
 			command.getDivingPools(), command.getSortType(), command.getPageNumber(), command.getPageSize());
+
+		Long totalCount = getBuddyEventListingPort.countOfGetBuddyEventListing(userId, command.getEventStartDate(),
+			command.getEventEndDate(),
+			command.getBuddyEventConcepts(), command.getCarShareYn(), command.getFreedivingLevel(),
+			command.getDivingPools(), command.getSortType());
 
 		final List<Long> ids = buddyEventListing.stream()
 			.map(e -> e.getEventId())
@@ -62,7 +75,27 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 		Map<Long, List<BuddyEventJoinMappingProjectDto>> allJoinMappingByEventId = getBuddyEventListingPort.getAllJoinMapping(
 			ids);
 
-		QueryComponentListResponse response = new QueryComponentListResponse();
+		Set<Long> userIds = new HashSet<>();
+		// 사용자 정보 요청할 사용자 ID 수집
+		for (GetBuddyEventListingQueryProjectionDto event : buddyEventListing) {
+			List<BuddyEventJoinMappingProjectDto> joinMappings = allJoinMappingByEventId.get(event.getEventId());
+
+			// 사용자 정보 요청할 사용자 ID 수집
+			joinMappings.stream()
+				.filter(e -> (e.getStatus().equals(ParticipationStatus.OWNER) || e.getStatus()
+					.equals(ParticipationStatus.PARTICIPATING)))
+				.forEach(e -> userIds.add(e.getUserId()));
+		}
+
+		HashMap<Long, FindUser> userHashMap = requestMemberPort.getMemberStatus(userIds.stream().toList());
+
+		QueryComponentListResponse response = QueryComponentListResponse.builder()
+			.components(new ArrayList<>())
+			.totalCount(totalCount)
+			.pageSize(
+				command.getPageSize())
+			.page(command.getPageNumber())
+			.build();
 
 		for (GetBuddyEventListingQueryProjectionDto event : buddyEventListing) {
 			List<BuddyEventConceptMappingProjectDto> conceptMappings = allConceptMappingByEventId.get(
@@ -73,7 +106,13 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 
 			BuddyEventlistingCardResponse cardResponse = BuddyEventlistingCardResponse.builder()
 				.user(joinMappings.stream().filter(e -> e.getStatus().equals(ParticipationStatus.OWNER))
-					.map(e -> UserInfoResponse.builder().userId(e.getUserId()).build()).findFirst().get())
+					.map(e -> UserInfoResponse.builder()
+						.userId(e.getUserId())
+						.nickname(userHashMap.get(e.getUserId()).getNickname())
+						.profileUrl(userHashMap.get(e.getUserId()).getProfileImgUrl())
+						.freedivingLevel(
+							userHashMap.get(e.getUserId()).getLicenseInfo().getFreeDiving().getLicenseLevel())
+						.build()).findFirst().get())
 				.isLiked(event.isLiked())
 				.likedCount(event.getLikedCount())
 				.eventId(event.getEventId())
@@ -102,7 +141,8 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 				.currentParticipantCount(event.getCurrentParticipantCount() - 1)
 				.participantInfos(joinMappings.stream()
 					.filter(e -> e.getStatus().equals(ParticipationStatus.PARTICIPATING))
-					.map(e -> ParticipantInfoResponse.builder().userId(e.getUserId()).build())
+					.map(e -> ParticipantInfoResponse.builder().userId(e.getUserId())
+						.profileUrl(userHashMap.get(e.getUserId()).getProfileImgUrl()).build())
 					.collect(
 						Collectors.toSet()))
 				.build();

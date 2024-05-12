@@ -27,7 +27,7 @@ public class QueryComponentListResponse {
 
 	private List<QueryComponent> components = new ArrayList<>();
 	// 컴포넌트 총 개수.
-	private Integer totalCount;
+	private Long totalCount;
 	private Integer page; // 요청한 카운트의 페이지 넘버
-	private Integer currentCount; // 요청한 카운트
+	private Integer pageSize; // 요청한 카운트
 }

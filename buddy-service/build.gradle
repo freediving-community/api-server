@@ -42,6 +42,7 @@ dependencies {
 
     // FeignClient
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+    implementation 'io.github.openfeign:feign-jackson:12.1' // Make sure to replace this with the desired version
 
     // QueryDSL
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'

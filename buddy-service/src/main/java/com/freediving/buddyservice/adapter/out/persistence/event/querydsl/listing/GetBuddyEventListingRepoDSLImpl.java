@@ -60,7 +60,7 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 				event.freedivingLevel,    //레벨 조건
 				event.status,            //상태
 				event.participantCount, // 모집 인원
-				join.userId.count().intValue()
+				join.userId.countDistinct().intValue()
 			)
 		).from(event);
 
@@ -105,15 +105,34 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 		if (buddyEventConcepts != null && buddyEventConcepts.isEmpty() == false) {
 			query.having(conceptMapping.conceptId.count().eq((long)conceptCount));
 		}
-		List<GetBuddyEventListingQueryProjectionDto> response = query.fetch();
-		// 페이징 적용
 		query.offset((pageNumber - 1) * pageSize).limit(pageSize);
+
+		List<GetBuddyEventListingQueryProjectionDto> response = query.fetch();
+
+		return response;
+	}
+
+	@Override
+	public Long countOfGetBuddyEventListing(Long userId,
+		LocalDateTime eventStartDate,
+		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
+		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType) {
+
+		JPQLQueryFactory jpqlQueryFactory = new JPAQueryFactory(entityManager);
+		BooleanBuilder whereClause = new BooleanBuilder();
+
+		QBuddyEventJpaEntity event = QBuddyEventJpaEntity.buddyEventJpaEntity;
+		QBuddyEventLikeCountJpaEntity likeCount = QBuddyEventLikeCountJpaEntity.buddyEventLikeCountJpaEntity;
+		QBuddyEventConceptMappingJpaEntity conceptMapping = QBuddyEventConceptMappingJpaEntity.buddyEventConceptMappingJpaEntity;
+		QBuddyEventDivingPoolMappingJpaEntity divingPoolMapping = QBuddyEventDivingPoolMappingJpaEntity.buddyEventDivingPoolMappingJpaEntity;
+
+		int conceptCount = 0;
 
 		// 2. 카운팅 쿼리.
 
 		// 날짜 조건 필터링 -> 컨셉
 		JPQLQuery countQuery = jpqlQueryFactory.select(
-			event.count()
+			event.eventId
 		).from(event);
 
 		// 다이빙 풀 조건이 존재할 경우  하나만 해당되어도 리턴한다.
@@ -122,20 +141,23 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 				.on(event.eventId.eq(divingPoolMapping.buddyEvent.eventId)
 					.and(divingPoolMapping.divingPoolId.in(divingPools)));
 
-		// 로그인 된 사용자라면.
-		if (userId != null)
-			countQuery.leftJoin(likeMapping)
-				.on(event.eventId.eq(likeMapping.buddyEvent.eventId)
-					.and(likeMapping.userId.eq(userId))
-					.and(likeMapping.isDeleted.eq(false)));
-
 		countQuery.leftJoin(conceptMapping)
 			.on(event.eventId.eq(conceptMapping.buddyEvent.eventId));
 
 		// 컨셉이 null이 아니고 빈 값이 아닌 경우
 
 		countQuery.leftJoin(likeCount).on(event.eventId.eq(likeCount.eventId));
-		countQuery.leftJoin(join).on(event.eventId.eq(join.buddyEvent.eventId));
+
+		if (carShareYn != null)
+			whereClause.and(event.carShareYn.eq(carShareYn));
+
+		if (freedivingLevel != null)
+			whereClause.and(event.freedivingLevel.eq(freedivingLevel));
+
+		if (buddyEventConcepts != null && buddyEventConcepts.isEmpty() == false) {
+			conceptCount = buddyEventConcepts.size();
+			whereClause.and(conceptMapping.conceptId.in(buddyEventConcepts));
+		}
 
 		countQuery.where(whereClause.and(event.eventStartDate.between(eventStartDate, eventEndDate)));
 
@@ -145,9 +167,9 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 			countQuery.having(conceptMapping.conceptId.count().eq((long)conceptCount));
 		}
 
-		long totalCount = (long)countQuery.fetchOne();
+		long totalCount = countQuery.fetchCount();
 
-		return response;
+		return totalCount;
 	}
 
 	@Override

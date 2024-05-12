@@ -19,6 +19,10 @@ public interface GetBuddyEventListingPort {
 		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
 		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType, int pageNumber, int pageSize);
 
+	Long countOfGetBuddyEventListing(Long userId, LocalDateTime eventStartDate,
+		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
+		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType);
+
 	Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> getAllDivingPoolMapping(List<Long> ids);
 
 	Map<Long, List<BuddyEventConceptMappingProjectDto>> getAllConceptMapping(List<Long> ids);

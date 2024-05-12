@@ -6,9 +6,12 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "member-service")
+import com.freediving.buddyservice.config.FeignClientConfiguration;
+import com.freediving.common.response.ResponseJsonObject;
+
+@FeignClient(name = "member-service", configuration = FeignClientConfiguration.class)
 public interface GetMemberInfoFeignClient {
 	@GetMapping("/v1/internal/users")
-	Object getMemberInfo(@RequestParam(name = "userIds") List<Long> userIds,
+	ResponseJsonObject<List<FindUser>> getMemberInfo(@RequestParam(name = "userIds") List<Long> userIds,
 		@RequestParam(name = "profileImg") Boolean profileImg);
 }

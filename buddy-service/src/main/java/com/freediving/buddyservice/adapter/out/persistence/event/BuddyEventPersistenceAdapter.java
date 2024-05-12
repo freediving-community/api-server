@@ -114,6 +114,29 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBu
 		return buddyEventListing;
 	}
 
+	@Override
+	public Long countOfGetBuddyEventListing(Long userId, LocalDateTime eventStartDate,
+		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
+		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType) {
+		// todo 고도화 필요.
+
+		//eventId = {Long@15333} 1
+		// eventStartDate = {LocalDateTime@15837} "2024-05-07T10:00"
+		// eventEndDate = {LocalDateTime@15838} "2024-05-07T13:00"
+		// isLiked = true
+		// likedCount = {Integer@15635} 1
+		// comment = "이번 모임은 캐주얼하게 진행합니다."
+		// freedivingLevel = {Integer@15337} 0
+		// status = {BuddyEventStatus@15637} "RECRUITING"
+		// participantCount = {Integer@15645} 3
+		// currentParticipantCount = {Long@15333} 1
+		Long count = getBuddyEventListingRepoDSL.countOfGetBuddyEventListing(
+			userId, eventStartDate, eventEndDate, buddyEventConcepts, carShareYn, freedivingLevel, divingPools,
+			sortType);
+
+		return count;
+	}
+
 	public Map<Long, List<BuddyEventJoinMappingProjectDto>> getAllJoinMapping(List<Long> ids) {
 		// 3. 참여자 User 정보 조회하기
 		Map<Long, List<BuddyEventJoinMappingProjectDto>> allJoinMappingByEventId = getBuddyEventListingRepoDSL.findJoinMappingAllByEventIds(

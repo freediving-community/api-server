@@ -11,7 +11,6 @@ import com.freediving.buddyservice.application.port.in.web.query.listing.GetBudd
 import com.freediving.buddyservice.application.port.in.web.query.listing.GetBuddyEventListingUseCase;
 import com.freediving.buddyservice.domain.query.QueryComponentListResponse;
 import com.freediving.common.config.annotation.WebAdapter;
-import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 
@@ -61,12 +60,12 @@ public class BuddyEventQueryController {
 	GetBuddyEventListingRequest request, HttpServletRequest httpServletRequest) {
 		try {
 			// 1. UserID 추출하기
-			Long userId = Long.parseLong(httpServletRequest.getAttribute("User-Id").toString());
-
-			if (userId == null)
-				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
+			Object attribute = httpServletRequest.getAttribute("User-Id");
+			Long userId =
+				(attribute == null) ? null : Long.parseLong(httpServletRequest.getAttribute("User-Id").toString());
 
 			QueryComponentListResponse buddyEventListingResponse = getBuddyEventListingUseCase.getBuddyEventListing(
+				userId,
 				GetBuddyEventListingCommand.builder()
 					.eventStartDate(request.getEventStartDate())
 					.eventEndDate(request.getEventEndDate())
@@ -75,6 +74,8 @@ public class BuddyEventQueryController {
 					.freedivingLevel(request.getFreedivingLevel())
 					.divingPools(request.getDivingPools())
 					.sortType(request.getSortType())
+					.pageNumber(request.getPageNumber())
+					.pageSize(request.getPageSize())
 					.build()
 			);
 
