@@ -100,7 +100,7 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 		query.where(whereClause.and(event.eventStartDate.between(eventStartDate, eventEndDate)));
 
 		query.groupBy(event.eventId, event.eventId, event.eventStartDate, event.eventEndDate, event.comment,
-			event.freedivingLevel, event.status, event.participantCount);
+			event.freedivingLevel, event.status, event.participantCount, likeMapping.buddyEvent.eventId);
 
 		if (buddyEventConcepts != null && buddyEventConcepts.isEmpty() == false) {
 			query.having(conceptMapping.conceptId.count().eq((long)conceptCount));
