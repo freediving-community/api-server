@@ -4,13 +4,13 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import feign.Client;
+import feign.Logger;
 
 @Configuration
-@EnableFeignClients(basePackages = "com.freediving.communityservice")
+@EnableFeignClients(basePackages = "com.freediving")
 public class CommunityFeignConfig {
 	@Bean
-	public Client feignClient() {
-		return new Client.Default(null, null);
+	Logger.Level feignLoggerLevel() {
+		return Logger.Level.BASIC;
 	}
 }
