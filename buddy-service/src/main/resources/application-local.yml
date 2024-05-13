@@ -69,7 +69,11 @@ feign:
     community-service: http://35.199.188.230:53221/community-service #community-service
     member-service: http://member-service #member-service
 
-
+openapi:
+  api:
+    url:
+      base: http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getHoliDeInfo
+    key: hO9t1IPHjHc%2Bbw3ZpIwhNbh%2BLv8%2FbKul2MOo0zLDESO8R9w7bJTsp8FuU3tRU%2Frp8W4ec8MnagTg4uAijn1blQ%3D%3D
 #kafka:
 #  clusters:
 #    bootstrapservers: 35.199.188.230:19993
