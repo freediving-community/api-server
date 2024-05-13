@@ -53,7 +53,7 @@ public class CreateBuddyEventService implements CreateBuddyEventUseCase {
 		// 3. 버디 일정 이벤트 생성하기.
 		final BuddyEventJpaEntity createdBuddyEventInfo = createBuddyEventPort.createBuddyEvent(
 			CreatedBuddyEventResponse.builder()
-				.userId(1L)
+				.userId(command.getUserId())
 				.eventStartDate(command.getEventStartDate())
 				.eventEndDate(command.getEventEndDate())
 				.participantCount(command.getParticipantCount())
