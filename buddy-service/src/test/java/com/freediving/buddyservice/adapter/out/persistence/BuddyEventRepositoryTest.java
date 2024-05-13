@@ -20,10 +20,13 @@ import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventRepos
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestRepository;
-import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
-import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
+import com.freediving.buddyservice.adapter.out.persistence.event.likecount.BuddyEventLikeCountRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.likecount.BuddyEventLikeMappingRepository;
+import com.freediving.buddyservice.adapter.out.persistence.event.viewcount.BuddyEventViewCountRepository;
 import com.freediving.buddyservice.config.CommonModuleScan;
 import com.freediving.buddyservice.config.enumerate.GenderType;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
 
 @ActiveProfiles("local")
 @DataJpaTest // JPA관련된 Bean만 주입받아 테스트 가능.
@@ -37,13 +40,22 @@ class BuddyEventRepositoryTest {
 	@Autowired
 	BuddyEventJoinRequestRepository buddyEventJoinRequestRepository;
 	@Autowired
+	BuddyEventLikeCountRepository buddyEventLikeCountRepository;
+	@Autowired
+	BuddyEventViewCountRepository buddyEventViewCountRepository;
+	@Autowired
 	private BuddyEventRepository buddyEventRepository;
+	@Autowired
+	BuddyEventLikeMappingRepository buddyEventLikeMappingRepository;
 
 	@AfterEach
 	void tearDown() {
 		buddyEventConceptMappingRepository.deleteAllInBatch();
 		buddyEventDivingPoolMappingRepository.deleteAllInBatch();
 		buddyEventJoinRequestRepository.deleteAllInBatch();
+		buddyEventLikeCountRepository.deleteAllInBatch();
+		buddyEventViewCountRepository.deleteAllInBatch();
+		buddyEventLikeMappingRepository.deleteAllInBatch();
 		buddyEventRepository.deleteAllInBatch();
 	}
 

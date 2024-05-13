@@ -3,8 +3,8 @@ package com.freediving.buddyservice.application.port.in.web.command;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
-import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.common.SelfValidating;
 import com.freediving.common.enumerate.DivingPool;

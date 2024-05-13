@@ -23,9 +23,9 @@ import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEv
 import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.application.port.in.web.command.like.BuddyEventLikeToggleUseCase;
 import com.freediving.buddyservice.common.ControllerDefendenciesConfig;
-import com.freediving.buddyservice.common.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
 
 @WebMvcTest(controllers = BuddyEventCommandController.class)
 @ActiveProfiles("local")
@@ -76,10 +76,11 @@ class BuddyEventCommandControllerTest extends ControllerDefendenciesConfig {
 
 		//when then
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1/event")
+				.header("User-Id", 1L)
 				.content(objectMapper.writeValueAsString(request))
 				.contentType(MediaType.APPLICATION_JSON))
 			.andDo(MockMvcResultHandlers.print())
-			.andExpect(MockMvcResultMatchers.status().isInternalServerError()); // todo 임시
+			.andExpect(MockMvcResultMatchers.status().isOk()); // todo 임시
 
 	}
 
@@ -97,6 +98,7 @@ class BuddyEventCommandControllerTest extends ControllerDefendenciesConfig {
 
 		//when then
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1/event")
+				.header("User-Id", 1L)
 				.content(objectMapper.writeValueAsString(request))
 				.contentType(MediaType.APPLICATION_JSON))
 			.andDo(MockMvcResultHandlers.print())
@@ -119,6 +121,7 @@ class BuddyEventCommandControllerTest extends ControllerDefendenciesConfig {
 
 		//when then
 		mockMvc.perform(MockMvcRequestBuilders.post("/v1/event")
+				.header("User-Id", 1L)
 				.content(objectMapper.writeValueAsString(request))
 				.contentType(MediaType.APPLICATION_JSON))
 			.andDo(MockMvcResultHandlers.print())

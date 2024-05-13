@@ -37,7 +37,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/event")
-@Tag(name = "Buddy Event", description = "버디 이벤트 관련 API")
+@Tag(name = "Buddy Event Command", description = "버디 이벤트 Command 관련 API")
 public class BuddyEventCommandController {
 
 	private final CreateBuddyEventUseCase createBuddyEventUseCase;
@@ -90,7 +90,7 @@ public class BuddyEventCommandController {
 
 			return ResponseEntity.ok(response);
 		} catch (Exception e) {
-			throw e;
+			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, e.getMessage());
 		}
 	}
 
@@ -133,7 +133,7 @@ public class BuddyEventCommandController {
 
 			return ResponseEntity.ok(response);
 		} catch (Exception e) {
-			throw e;
+			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, e.getMessage());
 		}
 	}
 }
