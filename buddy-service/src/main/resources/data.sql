@@ -82,7 +82,9 @@ VALUES ('PHOTO', '사진촬영', '멋있는 사진을 남기고 싶어요', true
 INSERT INTO public.buddy_event_concept (concept_id, concept_name, concept_desc, enabled, display_order, created_date,
                                         updated_date)
 VALUES ('TRAINING', '강습', '전문적으로 배우고 싶어요', true, 3, '2024-04-23 12:45:03.510781', '2024-04-23 12:45:03.510781');
-
+INSERT INTO public.buddy_event_concept (concept_id, concept_name, concept_desc, enabled, display_order, created_date,
+                                        updated_date)
+VALUES ('MERMAID', '머메이드', '인어가 되어 보실래요?', true, 4, '2024-04-23 12:45:03.510781', '2024-04-23 12:45:03.510781');
 
 
 -- 버디 이벤트 테스트 데이터
