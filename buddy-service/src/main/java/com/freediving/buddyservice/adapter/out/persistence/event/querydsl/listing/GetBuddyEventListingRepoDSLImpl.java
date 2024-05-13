@@ -164,7 +164,7 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 		countQuery.groupBy(event.eventId);
 
 		if (buddyEventConcepts != null && buddyEventConcepts.isEmpty() == false) {
-			countQuery.having(conceptMapping.conceptId.count().eq((long)conceptCount));
+			countQuery.having(conceptMapping.conceptId.countDistinct().eq((long)conceptCount));
 		}
 
 		long totalCount = countQuery.fetchCount();
