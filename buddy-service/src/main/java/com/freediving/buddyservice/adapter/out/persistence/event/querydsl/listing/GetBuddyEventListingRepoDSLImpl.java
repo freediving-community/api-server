@@ -55,7 +55,7 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 				event.eventStartDate,        // 이벤트 시작 시간
 				event.eventEndDate,            // 이벤트 종료 시간
 				likeMapping.buddyEvent.eventId.isNotNull(),    // 사용자 like여부
-				likeCount.likeCount,    // like 수
+				likeCount.likeCount.max(),    // like 수
 				event.comment,            // 코멘트
 				event.freedivingLevel,    //레벨 조건
 				event.status,            //상태
@@ -100,7 +100,7 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 		query.where(whereClause.and(event.eventStartDate.between(eventStartDate, eventEndDate)));
 
 		query.groupBy(event.eventId, event.eventId, event.eventStartDate, event.eventEndDate, event.comment,
-			event.freedivingLevel, event.status, event.participantCount);
+			event.freedivingLevel, event.status, event.participantCount, likeMapping.buddyEvent.eventId);
 
 		if (buddyEventConcepts != null && buddyEventConcepts.isEmpty() == false) {
 			query.having(conceptMapping.conceptId.count().eq((long)conceptCount));
