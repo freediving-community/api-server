@@ -103,7 +103,7 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 			event.freedivingLevel, event.status, event.participantCount, likeMapping.buddyEvent.eventId);
 
 		if (buddyEventConcepts != null && buddyEventConcepts.isEmpty() == false) {
-			query.having(conceptMapping.conceptId.count().eq((long)conceptCount));
+			query.having(conceptMapping.conceptId.countDistinct().eq((long)conceptCount));
 		}
 		query.offset((pageNumber - 1) * pageSize).limit(pageSize);
 
