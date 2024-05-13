@@ -1,7 +1,7 @@
 package com.freediving.buddyservice.adapter.out.persistence.event.concept;
 
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
-import com.freediving.buddyservice.common.enumeration.BuddyEventConcept;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.common.persistence.AuditableEntity;
 
 import jakarta.persistence.Entity;

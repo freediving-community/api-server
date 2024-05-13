@@ -1,5 +1,7 @@
 package com.freediving.common.response.enumerate;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import lombok.Getter;
 
 /**
@@ -46,5 +48,10 @@ public enum ServiceStatusCode {
 		this.code = code;
 		this.message = message;
 		this.isErrorType = isErrorType;
+	}
+
+	@JsonValue
+	public int getCode() {
+		return code;
 	}
 }

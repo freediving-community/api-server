@@ -34,9 +34,9 @@ eureka:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
   client:
     # Eureka 서버 등록
-    register-with-eureka: false
+    register-with-eureka: true
     # Eureka 서버로부터 인스턴스 정보를 주기적으로 가져오는 기능
-    fetch-registry: false
+    fetch-registry: true
     # Eureka 서버 위치 등록
     service-url:
       # endpoint 지정
@@ -57,6 +57,18 @@ swagger:
     #url: http://localhost:8000/${spring.application.name}
     url: http://localhost:40000
     description: Local Gateway Server
+
+# OpenFeign 설정
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+  external-service:
+    community-service: http://35.199.188.230:53221/community-service #community-service
+    member-service: http://member-service #member-service
+
 
 #kafka:
 #  clusters:

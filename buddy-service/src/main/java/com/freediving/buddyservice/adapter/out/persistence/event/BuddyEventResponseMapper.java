@@ -5,8 +5,10 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
+import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingJpaEntity;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.common.enumerate.DivingPool;
 
 @Component
@@ -21,11 +23,17 @@ public class BuddyEventResponseMapper {
 	public CreatedBuddyEventResponse mapToDomainEntity(BuddyEventJpaEntity buddyEventJpaEntity) {
 
 		Set<DivingPool> divingPools = new HashSet<>();
+		Set<BuddyEventConcept> concepts = new HashSet<>();
 
 		if (buddyEventJpaEntity.getBuddyEventDivingPoolMappingJpaEntity() != null &&
 			buddyEventJpaEntity.getBuddyEventDivingPoolMappingJpaEntity().isEmpty() == false)
 			for (BuddyEventDivingPoolMappingJpaEntity row : buddyEventJpaEntity.getBuddyEventDivingPoolMappingJpaEntity())
 				divingPools.add(row.getDivingPoolId());
+
+		if (buddyEventJpaEntity.getEventConcepts() != null &&
+			buddyEventJpaEntity.getEventConcepts().isEmpty() == false)
+			for (BuddyEventConceptMappingJpaEntity row : buddyEventJpaEntity.getEventConcepts())
+				concepts.add(row.getConceptId());
 
 		return CreatedBuddyEventResponse.builder()
 			.eventId(buddyEventJpaEntity.getEventId())
@@ -41,6 +49,7 @@ public class BuddyEventResponseMapper {
 			.kakaoRoomCode(buddyEventJpaEntity.getKakaoRoomCode())
 			.divingPools(divingPools)
 			.freedivingLevel(buddyEventJpaEntity.getFreedivingLevel())
+			.buddyEventConcepts(concepts)
 			.updatedDate(buddyEventJpaEntity.getUpdatedDate())
 			.createdDate(buddyEventJpaEntity.getCreatedDate())
 			.build();

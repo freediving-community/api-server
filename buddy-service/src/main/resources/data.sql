@@ -69,14 +69,93 @@ VALUES ('DAEBU_WELFARE_POOL', '대부동 복지체육센터', '경기도 안산�
         '2', '5.3m', '032-880-9768', '매주 월요일/공휴일', true, 8, '2024-04-23 02:52:36.773593', '2024-04-23 02:52:36.773593');
 
 
-insert into buddy_event_concept (concept_id,
-                                 concept_name,
-                                 concept_desc,
-                                 enabled,
-                                 display_order,
-                                 updated_date,
-                                 created_date)
-values ('FUN', '펀다이빙','가볍게 즐기면서 하고 싶어요', TRUE, 0, now(), now()),
-       ('PRACTICE', '연습','덕다이빙 / DTY / CNF / CYN 등 기술을 연습하고 싶어요', TRUE, 1, now(), now()),
-       ('PHOTO', '사진촬영','멋있는 사진을 남기고 싶어요', TRUE, 2, now(), now()),
-       ('TRAINING', '강습','전문적으로 배우고 싶어요', TRUE, 3, now(), now());
+INSERT INTO public.buddy_event_concept (concept_id, concept_name, concept_desc, enabled, display_order, created_date,
+                                        updated_date)
+VALUES ('FUN', '펀다이빙', '가볍게 즐기면서 하고 싶어요', true, 0, '2024-04-23 12:45:03.510781', '2024-04-23 12:45:03.510781');
+INSERT INTO public.buddy_event_concept (concept_id, concept_name, concept_desc, enabled, display_order, created_date,
+                                        updated_date)
+VALUES ('PRACTICE', '연습', '덕다이빙 / DTY / CNF / CYN 등 기술을 연습하고 싶어요', true, 1, '2024-04-23 12:45:03.510781',
+        '2024-04-23 12:45:03.510781');
+INSERT INTO public.buddy_event_concept (concept_id, concept_name, concept_desc, enabled, display_order, created_date,
+                                        updated_date)
+VALUES ('PHOTO', '사진촬영', '멋있는 사진을 남기고 싶어요', true, 2, '2024-04-23 12:45:03.510781', '2024-04-23 12:45:03.510781');
+INSERT INTO public.buddy_event_concept (concept_id, concept_name, concept_desc, enabled, display_order, created_date,
+                                        updated_date)
+VALUES ('TRAINING', '강습', '전문적으로 배우고 싶어요', true, 3, '2024-04-23 12:45:03.510781', '2024-04-23 12:45:03.510781');
+
+
+
+-- 버디 이벤트 테스트 데이터
+
+-- H2 데이터베이스용 SQL 쿼리 수정
+INSERT INTO public.buddy_event (user_id, event_start_date, event_end_date, participant_count,
+                                car_share_yn, status, kakao_room_code, freediving_level, comment,
+                                updated_date, created_date, gender_type)
+VALUES (1,
+        DATEADD('HOUR', 34, CAST(CURRENT_DATE AS TIMESTAMP)),
+        DATEADD('HOUR', 37, CAST(CURRENT_DATE AS TIMESTAMP)),
+        3, true, 'RECRUITING', 'gQWkq2Uf', 0, '이번 모임은 캐주얼하게 진행합니다.',
+        NOW(), NOW(), 'ALL');
+
+INSERT INTO public.buddy_event (user_id, event_start_date, event_end_date, participant_count,
+                                car_share_yn, status, kakao_room_code, freediving_level, comment,
+                                updated_date, created_date, gender_type)
+VALUES (2,
+        DATEADD('HOUR', 39, CAST(CURRENT_DATE AS TIMESTAMP)),
+        DATEADD('HOUR', 42, CAST(CURRENT_DATE AS TIMESTAMP)),
+        2, false, 'RECRUITING', 'gQWkq2Uf', 2, '테스트!!',
+        NOW(), NOW(), 'ALL');
+
+INSERT INTO public.buddy_event (user_id, event_start_date, event_end_date, participant_count,
+                                car_share_yn, status, kakao_room_code, freediving_level, comment,
+                                updated_date, created_date, gender_type)
+VALUES (3,
+        DATEADD('HOUR', 43, CAST(CURRENT_DATE AS TIMESTAMP)),
+        DATEADD('HOUR', 46, CAST(CURRENT_DATE AS TIMESTAMP)),
+        5, true, 'RECRUITING', 'gQWkq2Uf', 0, '테스트 2!!',
+        NOW(), NOW(), 'ALL');
+
+INSERT INTO public.buddy_event_concept_mapping (event_id, concept_id, created_date, updated_date)
+VALUES (1, 'FUN', now(), now());
+INSERT INTO public.buddy_event_concept_mapping (event_id, concept_id, created_date, updated_date)
+VALUES (3, 'PHOTO', now(), now());
+INSERT INTO public.buddy_event_concept_mapping (event_id, concept_id, created_date, updated_date)
+VALUES (3, 'PRACTICE', now(), now());
+
+INSERT INTO public.buddy_event_diving_pool_mapping (diving_pool_id, event_id, updated_date, created_date)
+VALUES ('DEEPSTATION', 1, now(), now());
+INSERT INTO public.buddy_event_diving_pool_mapping (diving_pool_id, event_id, updated_date, created_date)
+VALUES ('THEME_SCUBA_POOL', 2, now(), now());
+INSERT INTO public.buddy_event_diving_pool_mapping (diving_pool_id, event_id, updated_date, created_date)
+VALUES ('SONGDO_SPORTS_PARK_POOL', 2, now(), now());
+INSERT INTO public.buddy_event_diving_pool_mapping (diving_pool_id, event_id, updated_date, created_date)
+VALUES ('PARADIVE', 3, now(), now());
+INSERT INTO public.buddy_event_diving_pool_mapping (diving_pool_id, event_id, updated_date, created_date)
+VALUES ('THEME_SCUBA_POOL', 3, now(), now());
+
+INSERT INTO public.buddy_event_join_requests (user_id, event_id, status, created_date, updated_date)
+VALUES (1, 1, 'OWNER', now(), now());
+INSERT INTO public.buddy_event_join_requests (user_id, event_id, status, created_date, updated_date)
+VALUES (1, 2, 'OWNER', now(), now());
+INSERT INTO public.buddy_event_join_requests (user_id, event_id, status, created_date, updated_date)
+VALUES (1, 3, 'OWNER', now(), now());
+
+INSERT INTO public.buddy_event_like_count (event_id, like_count, created_date)
+VALUES (1, 1, now());
+INSERT INTO public.buddy_event_like_count (event_id, like_count, created_date)
+VALUES (2, 1, now());
+INSERT INTO public.buddy_event_like_count (event_id, like_count, created_date)
+VALUES (3, 1, now());
+
+
+INSERT INTO public.buddy_event_like_mapping (user_id, event_id, is_deleted, created_date, updated_date)
+VALUES (1, 1, false, '2024-04-18 17:39:57.769088', '2024-04-18 17:39:57.769088');
+INSERT INTO public.buddy_event_like_mapping (user_id, event_id, is_deleted, created_date, updated_date)
+VALUES (1, 2, false, '2024-04-18 17:39:57.769088', '2024-04-18 17:39:57.769088');
+INSERT INTO public.buddy_event_like_mapping (user_id, event_id, is_deleted, created_date, updated_date)
+VALUES (1, 3, false, '2024-04-18 17:39:57.769088', '2024-04-18 17:39:57.769088');
+
+
+-- INSERT INTO public.users (created_date, updated_date, user_id, sex_type, nickname, oauth_type, user_status, email, phone_number, content, oauth_interlock, profile_img_url, provider_id) VALUES ('2024-05-05 13:42:08.431082', '2024-05-05 13:42:08.448992', 1, null, '행복다이버_00004', 'GOOGLE', 'ACTIVE', 'djw9126@gmail.com', null, null, null, 'https://lh3.googleusercontent.com/a/ACg8ocL-oH6fR7L309Vfi8NItCgvYdvCYjRcWVIuloFxviM__sVuEw=s96-c', '106610519602513940118');
+-- INSERT INTO public.user_license (confirm_tf, license_level, confirm_admin_id, created_date, license_id, updated_date, user_id, license_status, role, dive_type, license_img_url, org_name) VALUES (true, 2, 1, '2024-05-05 14:20:24.258353', 11, '2024-05-06 23:38:58.336691', 1, 'APPROVED', 'WAIT_LICENSE_APPROVAL', 'FREE_DIVE', 'https://d1pjflw6c3jt4r.cloudfront.net/images/license/6-3a6f31c5dd1040dd9fd3a1c85681f35b.png', null);
+
