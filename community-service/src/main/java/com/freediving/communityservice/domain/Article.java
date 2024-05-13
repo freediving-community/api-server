@@ -68,4 +68,22 @@ public class Article {
 			.build();
 	}
 
+	public Article increaseViewCount() {
+		return Article.builder()
+			.id(this.id)
+			.boardType(this.boardType)
+			.title(this.title)
+			.content(this.content)
+			.authorName(this.authorName)
+			.viewCount(this.viewCount + 1)
+			.likeCount(this.likeCount)
+			.enableComment(this.enableComment)
+			.deletedAt(this.deletedAt)
+			.createdAt(this.createdAt)
+			.createdBy(this.createdBy)
+			.modifiedAt(this.modifiedAt)
+			.modifiedBy(this.modifiedBy)
+			.build();
+	}
+
 }

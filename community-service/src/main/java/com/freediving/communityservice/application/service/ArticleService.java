@@ -18,10 +18,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import com.freediving.common.response.ResponseJsonObject;
+import com.freediving.common.response.dto.member.MemberFindUserResponse;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
 import com.freediving.communityservice.adapter.out.dto.image.ImageResponse;
+import com.freediving.communityservice.adapter.out.dto.user.UserInfo;
 import com.freediving.communityservice.adapter.out.persistence.constant.UserReactionType;
 import com.freediving.communityservice.adapter.out.persistence.userreact.UserReactionId;
 import com.freediving.communityservice.application.port.in.ArticleEditCommand;
@@ -43,13 +47,16 @@ import com.freediving.communityservice.application.port.out.ImageEditPort;
 import com.freediving.communityservice.application.port.out.ImageReadPort;
 import com.freediving.communityservice.application.port.out.ImageWritePort;
 import com.freediving.communityservice.application.port.out.UserReactionPort;
+import com.freediving.communityservice.application.port.out.external.MemberFeignPort;
 import com.freediving.communityservice.domain.Article;
 import com.freediving.communityservice.domain.Board;
 import com.freediving.communityservice.domain.Comment;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -67,6 +74,7 @@ public class ArticleService implements ArticleUseCase {
 	private final ImageReadPort imageReadPort;
 	private final ImageEditPort imageEditPort;
 	private final ImageDeletePort imageDeletePort;
+	private final MemberFeignPort memberFeignPort;
 
 	//Query
 	// @Override
@@ -77,11 +85,14 @@ public class ArticleService implements ArticleUseCase {
 	@Override
 	public ArticleContent getArticleWithComment(ArticleReadCommand command) {
 
-		Article article = articleReadPort.readArticle(
+		Article foundArticle = articleReadPort.readArticle(
 			command.getBoardType(),
 			command.getArticleId(),
 			command.isShowAll()
 		);
+		Article article = foundArticle.increaseViewCount();
+		articleReadPort.increaseViewCount(article.getBoardType(), article.getId());
+
 		List<ImageResponse> images = imageReadPort.getImageListByArticle(article.getId());
 
 		if (command.isWithoutComment()) { // 본문 내용 수정 등
@@ -152,18 +163,36 @@ public class ArticleService implements ArticleUseCase {
 			pageable
 		);
 
-		//TODO ArticleBriefDto pagingArticleList.getContent() 멤버 서비스 : 사용자 상태 및 profileImg 요청
 		//TODO "pageable"-"pageNumber": 1 등의 값만 사용. 응답값 재구성
 
 		List<Long> articleOwnerIds = pagingArticleList.getContent().stream()
 			.map(ArticleBriefDto::getCreatedBy)
+			.distinct()
 			.toList();
 
-		/*
-		 * memberClient.getMemberInfo( articleOwnerIds );
-		 *
-		 * */
+		ResponseJsonObject<List<MemberFindUserResponse>> memberInfoList = memberFeignPort.findUserListByUserIds(
+			articleOwnerIds, true);
 
+		if (ServiceStatusCode.OK.getCode() == memberInfoList.getCode()) {
+			Map<Long, MemberFindUserResponse> userDict = memberInfoList.getData().stream()
+				.collect(Collectors.toUnmodifiableMap(
+					MemberFindUserResponse::getUserId, m -> m
+				));
+
+			for (ArticleBriefDto articleBriefDto : pagingArticleList.getContent()) {
+				if (userDict.containsKey(articleBriefDto.getCreatedBy())) {
+					MemberFindUserResponse user = userDict.get(articleBriefDto.getCreatedBy());
+
+					articleBriefDto.setUserInfo(
+						UserInfo.builder()
+							.nickname(user.getNickname())
+							.profileImgUrl(user.getProfileImgUrl())
+							.licenseInfo(user.getLicenseInfo())
+							.build()
+					);
+				}
+			}
+		}
 		return pagingArticleList;
 
 	}

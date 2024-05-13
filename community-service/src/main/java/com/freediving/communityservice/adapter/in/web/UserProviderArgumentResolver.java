@@ -1,5 +1,6 @@
 package com.freediving.communityservice.adapter.in.web;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
@@ -8,6 +9,9 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 
 @Component
 public class UserProviderArgumentResolver implements HandlerMethodArgumentResolver {
@@ -31,11 +35,14 @@ public class UserProviderArgumentResolver implements HandlerMethodArgumentResolv
 		// String roleLevel = webRequest.getHeader("RoleLevel");
 		UserProvider currentUserProvider = userProvider.getObject();
 
-		if (userId == null/* || roleLevel == null*/) {
+		if (userId == null || userId.isEmpty() /* || roleLevel == null*/) {
 			currentUserProvider.setRequestUserId(-1L);
 			// currentUserProvider.setRoleLevel(RoleLevel.ANONYMOUS);
 		} else {
 			// RoleLevel rl = RoleLevel.valueOf(Integer.parseInt(roleLevel));
+			if (!NumberUtils.isCreatable(userId)) {
+				throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "User-Id 값은 숫자형식만 허용됩니다 >>" + userId);
+			}
 			currentUserProvider.setRequestUserId(Long.valueOf(userId));
 			// currentUserProvider.setRoleLevel(rl);
 		}

@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Board 게시판", description = "게시판 조회 API")
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/v1")
 @RestController
 public class BoardQueryController {
 

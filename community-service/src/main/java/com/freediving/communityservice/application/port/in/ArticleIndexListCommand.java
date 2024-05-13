@@ -41,7 +41,7 @@ public class ArticleIndexListCommand extends SelfValidating<ArticleIndexListComm
 		this.offset = Math.min(offset, 100);
 		this.onlyPicture = onlyPicture;
 		this.orderBy = orderBy;
-		this.cursor = cursor; //TODO cursor 구현( articleId 그대로 노출? ) 및 유효값 검사
+		this.cursor = cursor;
 		this.validateSelf();
 	}
 }

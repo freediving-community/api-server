@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,18 +35,21 @@ import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Article 게시글", description = "게시글 API")
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/v1")
 @RestController
 public class ArticleCommandController {
 
 	private final ArticleUseCase articleUseCase;
+
+	@Value("${community.gateway.fqdn}")
+	private String GATEWAY_DOMAIN;
 
 	@Operation(
 		summary = "게시글 등록",
 		description = "게시글 (이미지 포함)을 등록",
 		responses = {
 			@ApiResponse(
-				responseCode = "200",
+				responseCode = "201",
 				description = "게시글 등록됨",
 				useReturnTypeSchema = true
 			)
@@ -76,9 +80,9 @@ public class ArticleCommandController {
 				.build());
 
 		URI location = ServletUriComponentsBuilder
-			.fromCurrentRequest()
-			.path("/{id}")
-			.buildAndExpand(articleId)
+			.fromHttpUrl(GATEWAY_DOMAIN)
+			.path("v1/boards/{boardType}/articles/{id}")
+			.buildAndExpand(boardType, articleId)
 			.toUri();
 
 		return ResponseEntity

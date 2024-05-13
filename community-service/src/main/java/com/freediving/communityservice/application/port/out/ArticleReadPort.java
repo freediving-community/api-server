@@ -11,6 +11,7 @@ public interface ArticleReadPort {
 	Article readArticle(BoardType boardType, Long articleId, boolean isShowAll);
 
 	// ArticleContentWithComment readArticleWithComment(BoardType boardType, Long articleId, boolean isShowAll, UserProvider requestUser);
+	int increaseViewCount(BoardType boardType, Long articleId);
 
 	Page<ArticleBriefDto> retrieveArticleIndexList(BoardType boardType, Long cursor, boolean onlyPicture,
 		Pageable pageable);

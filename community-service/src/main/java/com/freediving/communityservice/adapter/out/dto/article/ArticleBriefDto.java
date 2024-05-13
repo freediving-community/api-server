@@ -3,6 +3,7 @@ package com.freediving.communityservice.adapter.out.dto.article;
 import java.time.LocalDateTime;
 
 import com.freediving.communityservice.adapter.out.dto.image.ImageBriefResponse;
+import com.freediving.communityservice.adapter.out.dto.user.UserInfo;
 
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,8 @@ public class ArticleBriefDto {
 	private LocalDateTime createdAt;
 
 	private Long createdBy;
+
+	private UserInfo userInfo;
 
 	private int viewCount;
 

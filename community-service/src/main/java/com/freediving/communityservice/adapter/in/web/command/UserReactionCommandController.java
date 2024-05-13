@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 
 @Tag(name = "UserReaction 좋아요", description = "유저 상호작용(좋아요) API")
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/v1")
 @RestController
 public class UserReactionCommandController {
 
