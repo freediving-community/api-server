@@ -24,7 +24,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-@Schema(description = "유저 정보 조회 요청 DTO")
+@Schema(description = "유저 정보 조회 응답 DTO")
 public class FindUserResponse {
 
 	@Schema(description = "유저 식별 키", example = "1")

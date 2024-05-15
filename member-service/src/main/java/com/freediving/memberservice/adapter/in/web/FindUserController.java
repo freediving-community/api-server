@@ -21,10 +21,13 @@ import com.freediving.memberservice.adapter.in.web.dto.FindUserResponse;
 import com.freediving.memberservice.application.port.in.FindUserListQuery;
 import com.freediving.memberservice.application.port.in.FindUserQuery;
 import com.freediving.memberservice.application.port.in.FindUserUseCase;
+import com.freediving.memberservice.config.SwaggerResponse;
 import com.freediving.memberservice.domain.User;
 import com.freediving.memberservice.mapper.internal.FindUserMapper;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Pattern;
@@ -91,13 +94,13 @@ public class FindUserController {
 		, description = "userId 정보를 기반으로 사용자 정보를 조회하여 반환한다. <br/>"
 		+ "탈퇴 등으로 조회되지 않은 유저에 대해서도 기본 값을 생성하여 반환",
 		responses = {
-			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+			@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = SwaggerResponse.RespMemberFindUserResponse.class))),
 			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),
 			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
 			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
 	@GetMapping("/internal/users")
-	public ResponseEntity<ResponseJsonObject<List<MemberFindUserResponse>>> findUserListByUserIds(
+	public ResponseEntity<ResponseJsonObject<MemberFindUserResponse>> findUserListByUserIds(
 		@RequestParam(value = "userIds") List<Long> userIdList,
 		@RequestParam(value = "profileImg", required = false, defaultValue = "false") Boolean profileImgTF) {
 
