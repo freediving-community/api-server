@@ -100,7 +100,7 @@ public class FindUserController {
 			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
 	@GetMapping("/internal/users")
-	public ResponseEntity<ResponseJsonObject<MemberFindUserResponse>> findUserListByUserIds(
+	public ResponseEntity<ResponseJsonObject<List<MemberFindUserResponse>>> findUserListByUserIds(
 		@RequestParam(value = "userIds") List<Long> userIdList,
 		@RequestParam(value = "profileImg", required = false, defaultValue = "false") Boolean profileImgTF) {
 
