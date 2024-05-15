@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "다이빙 라이센스 정보")
 public class Diving {
 	@Schema(description = "유저 권한", example = "0")
 	protected Integer roleLevel = RoleLevel.UNREGISTER.getLevel();
