@@ -63,7 +63,11 @@ public class BuddyEventCommandController {
 		@Valid @RequestBody CreateBuddyEventRequest request, HttpServletRequest httpServletRequest) {
 		try {
 			// 1. UserID 추출하기
-			Long userId = Long.parseLong(httpServletRequest.getAttribute("User-Id").toString());
+			Object userIdObj = httpServletRequest.getAttribute("User-Id");
+			if (userIdObj == null)
+				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
+
+			Long userId = Long.parseLong(userIdObj.toString());
 
 			if (userId == null)
 				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
@@ -89,6 +93,8 @@ public class BuddyEventCommandController {
 				createdBuddyEventResponse);
 
 			return ResponseEntity.ok(response);
+		} catch (BuddyMeException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, e.getMessage());
 		}
@@ -115,7 +121,11 @@ public class BuddyEventCommandController {
 		@Valid @RequestBody BuddyEventLikeToggleRequest request, HttpServletRequest httpServletRequest) {
 		try {
 			// 1. UserID 추출하기
-			Long userId = Long.parseLong(httpServletRequest.getAttribute("User-Id").toString());
+			Object userIdObj = httpServletRequest.getAttribute("User-Id");
+			if (userIdObj == null)
+				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
+
+			Long userId = Long.parseLong(userIdObj.toString());
 
 			if (userId == null)
 				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
@@ -132,6 +142,8 @@ public class BuddyEventCommandController {
 			ResponseJsonObject response = new ResponseJsonObject(ServiceStatusCode.OK, null);
 
 			return ResponseEntity.ok(response);
+		} catch (BuddyMeException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, e.getMessage());
 		}

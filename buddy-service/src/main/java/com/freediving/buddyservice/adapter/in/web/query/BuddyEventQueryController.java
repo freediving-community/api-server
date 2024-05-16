@@ -1,5 +1,6 @@
 package com.freediving.buddyservice.adapter.in.web.query;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -11,6 +12,7 @@ import com.freediving.buddyservice.application.port.in.web.query.listing.GetBudd
 import com.freediving.buddyservice.application.port.in.web.query.listing.GetBuddyEventListingUseCase;
 import com.freediving.buddyservice.domain.query.QueryComponentListResponse;
 import com.freediving.common.config.annotation.WebAdapter;
+import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 
@@ -56,8 +58,8 @@ public class BuddyEventQueryController {
 		}
 	)
 	@GetMapping("/listing")
-	public ResponseEntity<ResponseJsonObject<QueryComponentListResponse>> getBuddyEventListing(@Valid @ModelAttribute
-	GetBuddyEventListingRequest request, HttpServletRequest httpServletRequest) {
+	public ResponseEntity<ResponseJsonObject<QueryComponentListResponse>> getBuddyEventListing(@Valid @ParameterObject
+	@ModelAttribute GetBuddyEventListingRequest request, HttpServletRequest httpServletRequest) {
 		try {
 			// 1. UserID 추출하기
 			Object attribute = httpServletRequest.getAttribute("User-Id");
@@ -84,8 +86,10 @@ public class BuddyEventQueryController {
 				buddyEventListingResponse);
 
 			return ResponseEntity.ok(response);
-		} catch (Exception e) {
+		} catch (BuddyMeException e) {
 			throw e;
+		} catch (Exception e) {
+			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, e.getMessage());
 		}
 	}
 
