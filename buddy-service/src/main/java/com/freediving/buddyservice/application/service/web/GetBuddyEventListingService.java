@@ -41,7 +41,8 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 
 	@Override
 	@Transactional(isolation = Isolation.READ_UNCOMMITTED)
-	public QueryComponentListResponse getBuddyEventListing(Long userId, GetBuddyEventListingCommand command) {
+	public QueryComponentListResponse getBuddyEventListing(Long userId,
+		GetBuddyEventListingCommand command) {
 
 		//dsl 쿼리 조회
 

@@ -11,12 +11,15 @@ import com.freediving.buddyservice.adapter.in.web.query.dto.GetBuddyEventListing
 import com.freediving.buddyservice.application.port.in.web.query.listing.GetBuddyEventListingCommand;
 import com.freediving.buddyservice.application.port.in.web.query.listing.GetBuddyEventListingUseCase;
 import com.freediving.buddyservice.domain.query.QueryComponentListResponse;
+import com.freediving.buddyservice.domain.query.component.BuddyEventlistingCardResponse;
 import com.freediving.common.config.annotation.WebAdapter;
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,7 +53,8 @@ public class BuddyEventQueryController {
 			@ApiResponse(
 				responseCode = "200",
 				description = "버디 매칭 조회 성공",
-				useReturnTypeSchema = true
+				content = @Content(mediaType = "application/json",
+					schema = @Schema(implementation = BuddyEventlistingCardResponse.class))
 			),
 			@ApiResponse(responseCode = "204", ref = "#/components/responses/204"),
 			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
@@ -58,8 +62,9 @@ public class BuddyEventQueryController {
 		}
 	)
 	@GetMapping("/listing")
-	public ResponseEntity<ResponseJsonObject<QueryComponentListResponse>> getBuddyEventListing(@Valid @ParameterObject
-	@ModelAttribute GetBuddyEventListingRequest request, HttpServletRequest httpServletRequest) {
+	public ResponseEntity<ResponseJsonObject<QueryComponentListResponse>> getBuddyEventListing(
+		@Valid @ParameterObject
+		@ModelAttribute GetBuddyEventListingRequest request, HttpServletRequest httpServletRequest) {
 		try {
 			// 1. UserID 추출하기
 			Object userIdObj = httpServletRequest.getAttribute("User-Id");
@@ -89,7 +94,8 @@ public class BuddyEventQueryController {
 			);
 
 			// 3. Command 요청 및 응답 리턴.
-			ResponseJsonObject<QueryComponentListResponse> response = new ResponseJsonObject<>(ServiceStatusCode.OK,
+			ResponseJsonObject<QueryComponentListResponse> response = new ResponseJsonObject<>(
+				ServiceStatusCode.OK,
 				buddyEventListingResponse);
 
 			return ResponseEntity.ok(response);

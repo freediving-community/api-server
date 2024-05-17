@@ -20,7 +20,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Getter
-@Schema(title = "버디 이벤트 생성 결과 ( CreatedBuddyEventResponse )", description = "POST /v1/event 버디 이벤트 생성 결과", hidden = true)
+@Schema(title = "버디 이벤트 생성 결과 ( CreatedBuddyEventResponse )", description = "POST /v1/event 버디 이벤트 생성 결과")
 public class CreatedBuddyEventResponse {
 
 	@Schema(description = "이벤트 ID", example = "12345", requiredMode = Schema.RequiredMode.REQUIRED)

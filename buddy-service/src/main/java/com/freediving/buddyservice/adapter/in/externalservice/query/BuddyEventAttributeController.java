@@ -15,7 +15,6 @@ import com.freediving.common.response.enumerate.ServiceStatusCode;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,9 +41,8 @@ public class BuddyEventAttributeController {
 				description = "조회 성공",
 				content = @Content(
 					mediaType = "application/xml",
-					examples = @ExampleObject(
-						name = "Example",
-						value = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
+					schema = @Schema(implementation = String.class, example =
+						"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
 							+ "<response>\n"
 							+ "  <body>\n"
 							+ "    <items>\n"
@@ -57,9 +55,7 @@ public class BuddyEventAttributeController {
 							+ "      </item>\n"
 							+ "    </items>\n"
 							+ "  </body>\n"
-							+ "</response>\n"
-					),
-					schema = @Schema(implementation = String.class)
+							+ "</response>\n")
 				)
 			),
 			@ApiResponse(responseCode = "500", ref = "#/components/responses/500")
@@ -71,13 +67,14 @@ public class BuddyEventAttributeController {
 	}
 
 	@Operation(
-		summary = "이벤트 콘셉트 조회",
+		summary = "이벤트 콘셉트 조회 ( getEventConcepts )",
 		description = "이벤트에 사용되는 콘셉트를 모두 조회합니다.",
 		responses = {
 			@ApiResponse(
 				responseCode = "200",
 				description = "조회 성공",
-				useReturnTypeSchema = true
+				content = @Content(mediaType = "application/json",
+					schema = @Schema(implementation = BuddyEventConceptListResponse.class))
 			),
 			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
 			@ApiResponse(responseCode = "500", ref = "#/components/responses/500")

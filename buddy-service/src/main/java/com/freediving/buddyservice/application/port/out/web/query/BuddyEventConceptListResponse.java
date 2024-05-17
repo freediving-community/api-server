@@ -24,7 +24,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Schema(title = "이벤트 콘셉트 조회 결과", description = "GET /v1/attribute/concept 이벤트 콘셉트 조회 결과", hidden = true)
 public class BuddyEventConceptListResponse {
-	@Schema(description = "콘셉트 리스트")
 	private List<EventConcept> concepts;
 
 	public void add(EventConcept concept) {
