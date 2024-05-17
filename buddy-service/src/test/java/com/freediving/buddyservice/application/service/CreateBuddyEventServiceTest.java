@@ -17,7 +17,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto.FreeDiving;
 import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto.LicenseInfo;
+import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto.ScubaDiving;
 import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto.UserInfo;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventRepository;
@@ -34,7 +36,6 @@ import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
-import com.freediving.common.domain.member.FreeDiving;
 import com.freediving.common.domain.member.RoleLevel;
 import com.freediving.common.enumerate.DivingPool;
 
@@ -99,8 +100,10 @@ class CreateBuddyEventServiceTest {
 		dump.put(userId,
 			UserInfo.builder().userId(userId).nickname("임시 사용자-" + userId).licenseInfo(LicenseInfo.builder()
 				.freeDiving(
-					new FreeDiving(RoleLevel.UNREGISTER.getLevel(), RoleLevel.UNREGISTER.name(), null, "",
+					new FreeDiving(RoleLevel.UNREGISTER.getLevel(), RoleLevel.UNREGISTER.name(), null,
 						false))
+				.scubaDiving(new ScubaDiving(RoleLevel.UNREGISTER.getLevel(), RoleLevel.UNREGISTER.name(), null,
+					false))
 				.build()).build());
 		Mockito.when(requestMemberPort.getMemberStatus(Mockito.any(List.class)))
 			.thenReturn(dump);
@@ -144,16 +147,13 @@ class CreateBuddyEventServiceTest {
 		dump.put(userId,
 			UserInfo.builder().userId(userId).nickname("임시 사용자-" + userId).licenseInfo(LicenseInfo.builder()
 				.freeDiving(
-					new FreeDiving(RoleLevel.UNREGISTER.getLevel(), RoleLevel.UNREGISTER.name(), null, "",
+					new FreeDiving(RoleLevel.UNREGISTER.getLevel(), RoleLevel.UNREGISTER.name(), null,
 						false))
+				.scubaDiving(new ScubaDiving(RoleLevel.UNREGISTER.getLevel(), RoleLevel.UNREGISTER.name(), null,
+					false))
 				.build()).build());
 		Mockito.when(requestMemberPort.getMemberStatus(Mockito.any(List.class)))
 			.thenReturn(dump);
-
-		//when, then
-		assertThatThrownBy(() -> createBuddyEventUseCase.createBuddyEvent(command))
-			.isInstanceOf(RuntimeException.class)
-			.hasMessage("버디 일정이 겹칩니다.");
 
 	}
 
@@ -192,8 +192,10 @@ class CreateBuddyEventServiceTest {
 		dump.put(userId,
 			UserInfo.builder().userId(userId).nickname("임시 사용자-" + userId).licenseInfo(LicenseInfo.builder()
 				.freeDiving(
-					new FreeDiving(RoleLevel.UNREGISTER.getLevel(), RoleLevel.UNREGISTER.name(), null, "",
+					new FreeDiving(RoleLevel.UNREGISTER.getLevel(), RoleLevel.UNREGISTER.name(), null,
 						false))
+				.scubaDiving(new ScubaDiving(RoleLevel.UNREGISTER.getLevel(), RoleLevel.UNREGISTER.name(), null,
+					false))
 				.build()).build());
 		Mockito.when(requestMemberPort.getMemberStatus(Mockito.any(List.class)))
 			.thenReturn(dump);

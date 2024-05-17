@@ -70,7 +70,7 @@ public class BuddyEventCommandController {
 
 			Long userId = Long.parseLong(userIdObj.toString());
 
-			if (userId == null)
+			if (userId == null || userId.equals(-1L))
 				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
 
 			// 2. Use Case Command 전달.
@@ -128,7 +128,7 @@ public class BuddyEventCommandController {
 
 			Long userId = Long.parseLong(userIdObj.toString());
 
-			if (userId == null)
+			if (userId == null || userId.equals(-1L))
 				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
 
 			// 2. Use Case Command 전달.

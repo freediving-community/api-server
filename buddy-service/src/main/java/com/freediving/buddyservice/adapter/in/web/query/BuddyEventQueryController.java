@@ -62,9 +62,14 @@ public class BuddyEventQueryController {
 	@ModelAttribute GetBuddyEventListingRequest request, HttpServletRequest httpServletRequest) {
 		try {
 			// 1. UserID 추출하기
-			Object attribute = httpServletRequest.getAttribute("User-Id");
-			Long userId =
-				(attribute == null) ? null : Long.parseLong(httpServletRequest.getAttribute("User-Id").toString());
+			Object userIdObj = httpServletRequest.getAttribute("User-Id");
+			if (userIdObj == null)
+				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
+
+			Long userId = Long.parseLong(userIdObj.toString());
+
+			if (userId == null || userId.equals(-1L))
+				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
 
 			QueryComponentListResponse buddyEventListingResponse = getBuddyEventListingUseCase.getBuddyEventListing(
 				userId,
