@@ -19,6 +19,8 @@ import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,7 +52,8 @@ public class BuddyEventCommandController {
 			@ApiResponse(
 				responseCode = "200",
 				description = "버디 이벤트 생성 성공",
-				useReturnTypeSchema = true
+				content = @Content(mediaType = "application/json",
+					schema = @Schema(implementation = CreatedBuddyEventResponse.class))
 			),
 			@ApiResponse(responseCode = "3409", ref = "#/components/responses/3409"),
 			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
@@ -109,7 +112,7 @@ public class BuddyEventCommandController {
 			@ApiResponse(
 				responseCode = "200",
 				description = "버디 이벤트 좋아요 설정/해지 성공",
-				useReturnTypeSchema = true
+				ref = "#/components/responses/200"
 			),
 			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
 			@ApiResponse(responseCode = "401", ref = "#/components/responses/401"),
