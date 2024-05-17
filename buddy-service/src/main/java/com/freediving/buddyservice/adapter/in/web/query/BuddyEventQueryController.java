@@ -68,8 +68,10 @@ public class BuddyEventQueryController {
 
 			Long userId = Long.parseLong(userIdObj.toString());
 
-			if (userId == null || userId.equals(-1L))
+			if (userId == null)
 				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
+			if (userId.equals(-1L))
+				userId = null;
 
 			QueryComponentListResponse buddyEventListingResponse = getBuddyEventListingUseCase.getBuddyEventListing(
 				userId,
