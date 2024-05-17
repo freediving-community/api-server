@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.freediving.buddyservice.adapter.out.externalservice.FindUser;
+import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto.UserInfo;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.BuddyEventConceptMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.BuddyEventDivingPoolMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.BuddyEventJoinMappingProjectDto;
@@ -28,7 +28,6 @@ import com.freediving.buddyservice.domain.query.component.BuddyEventlistingCardR
 import com.freediving.buddyservice.domain.query.component.common.ConceptInfoResponse;
 import com.freediving.buddyservice.domain.query.component.common.DivingPoolInfoResponse;
 import com.freediving.buddyservice.domain.query.component.common.ParticipantInfoResponse;
-import com.freediving.buddyservice.domain.query.component.common.UserInfoResponse;
 import com.freediving.common.config.annotation.UseCase;
 
 import lombok.RequiredArgsConstructor;
@@ -87,7 +86,7 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 				.forEach(e -> userIds.add(e.getUserId()));
 		}
 
-		HashMap<Long, FindUser> userHashMap = requestMemberPort.getMemberStatus(userIds.stream().toList());
+		HashMap<Long, UserInfo> userHashMap = requestMemberPort.getMemberStatus(userIds.stream().toList());
 
 		QueryComponentListResponse response = QueryComponentListResponse.builder()
 			.components(new ArrayList<>())
@@ -105,14 +104,8 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 			List<BuddyEventJoinMappingProjectDto> joinMappings = allJoinMappingByEventId.get(event.getEventId());
 
 			BuddyEventlistingCardResponse cardResponse = BuddyEventlistingCardResponse.builder()
-				.user(joinMappings.stream().filter(e -> e.getStatus().equals(ParticipationStatus.OWNER))
-					.map(e -> UserInfoResponse.builder()
-						.userId(e.getUserId())
-						.nickname(userHashMap.get(e.getUserId()).getNickname())
-						.profileUrl(userHashMap.get(e.getUserId()).getProfileImgUrl())
-						.freedivingLevel(
-							userHashMap.get(e.getUserId()).getLicenseInfo().getFreeDiving().getLicenseLevel())
-						.build()).findFirst().get())
+				.userInfo(joinMappings.stream().filter(e -> e.getStatus().equals(ParticipationStatus.OWNER))
+					.map(e -> userHashMap.get(e.getUserId())).findFirst().orElse(null))
 				.isLiked(event.isLiked())
 				.likedCount(event.getLikedCount())
 				.eventId(event.getEventId())
@@ -142,7 +135,7 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 				.participantInfos(joinMappings.stream()
 					.filter(e -> e.getStatus().equals(ParticipationStatus.PARTICIPATING))
 					.map(e -> ParticipantInfoResponse.builder().userId(e.getUserId())
-						.profileUrl(userHashMap.get(e.getUserId()).getProfileImgUrl()).build())
+						.profileImgUrl(userHashMap.get(e.getUserId()).getProfileImgUrl()).build())
 					.collect(
 						Collectors.toSet()))
 				.build();

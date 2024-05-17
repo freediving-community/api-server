@@ -16,6 +16,7 @@ import com.freediving.buddyservice.adapter.out.persistence.event.join.QBuddyEven
 import com.freediving.buddyservice.config.enumerate.SortType;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
+import com.freediving.buddyservice.domain.enumeration.ParticipationStatus;
 import com.freediving.common.enumerate.DivingPool;
 import com.freediving.divingpool.data.dao.QDivingPoolJpaEntity;
 import com.querydsl.jpa.JPQLQueryFactory;
@@ -42,7 +43,7 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 		sql.append("events.event_end_date AS eventEndDate, ");
 		sql.append("CASE WHEN likeMapping.event_id IS NOT NULL THEN TRUE ELSE FALSE END AS isLiked, ");
 		sql.append("like_count.like_count AS likeCount, ");
-		sql.append("events.comment AS comment, ");
+		sql.append("SUBSTRING(events.comment,1,100) AS comment, ");
 		sql.append("events.freediving_level AS freedivingLevel, ");
 		sql.append("events.status AS status, ");
 		sql.append("events.participant_count AS participantCount, ");
@@ -53,7 +54,9 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 		sql.append("LEFT JOIN buddy_event_like_count AS like_count ON events.event_id = like_count.event_id ");
 		sql.append(
 			"LEFT JOIN buddy_event_like_mapping AS likeMapping ON events.event_id = likeMapping.event_id AND likeMapping.user_id = :userId AND likeMapping.is_deleted = false ");
-		sql.append("LEFT JOIN buddy_event_join_requests AS requests ON events.event_id = requests.event_id ");
+		sql.append(
+			"LEFT JOIN buddy_event_join_requests AS requests ON events.event_id = requests.event_id  AND requests.status in (");
+		sql.append("'" + ParticipationStatus.OWNER.name() + "','" + ParticipationStatus.PARTICIPATING.name() + "') ");
 		sql.append("WHERE events.event_start_date BETWEEN :startDate AND :endDate ");
 		sql.append("AND events.status = 'RECRUITING' ");
 
@@ -74,10 +77,8 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 			sql.append("   SELECT 1 FROM buddy_event_concept_mapping becm ");
 			sql.append("   WHERE becm.event_id = events.event_id ");
 			sql.append("   GROUP BY becm.event_id ");
-			sql.append("   HAVING COUNT(DISTINCT becm.concept_id) = :conceptCount ");
 			sql.append(
-				"   AND SUM(CASE WHEN becm.concept_id = ANY(:buddyEventConcepts) THEN 1 ELSE 0 END) = :conceptCount ");
-			sql.append(") ");
+				"   HAVING SUM(CASE WHEN becm.concept_id = ANY(:buddyEventConcepts) THEN 1 ELSE 0 END) = :conceptCount ) ");
 		}
 
 		sql.append(
@@ -128,16 +129,17 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 
 		List<GetBuddyEventListingQueryProjectionDto> events = resultList.stream()
 			.map(product -> new GetBuddyEventListingQueryProjectionDto(
-				((Number)product[0]).longValue(),
-				convertToLocalDateTime((Timestamp)product[1]),
-				convertToLocalDateTime((Timestamp)product[2]),
-				(Boolean)product[3],
-				((Number)product[4]).longValue(),
-				(String)product[5],
-				((Number)product[6]).longValue(),
-				BuddyEventStatus.valueOf((String)product[7]),
-				((Number)product[8]).longValue(),
-				((Number)product[9]).longValue()))
+				product[0] != null ? ((Number)product[0]).longValue() : null, // eventId
+				convertToLocalDateTime((Timestamp)product[1]), // eventStartDate
+				convertToLocalDateTime((Timestamp)product[2]), // eventEndDate
+				product[3] != null ? (Boolean)product[3] : false, // isLiked
+				product[4] != null ? ((Number)product[4]).longValue() : 0, // likedCount
+				product[5] != null ? (String)product[5] : "", // comment
+				product[6] != null ? ((Number)product[6]).longValue() : null, // freedivingLevel
+				product[7] != null ? BuddyEventStatus.valueOf((String)product[7]) : BuddyEventStatus.RECRUITMENT_CLOSED,
+				// status
+				product[8] != null ? ((Number)product[8]).longValue() : 0, // participantCount
+				product[9] != null ? ((Number)product[9]).longValue() : 0))// currentParticipantCount
 			.collect(Collectors.toList());
 
 		return events;
@@ -154,10 +156,8 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType) {
 
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT COUNT(events.event_id) ");
+		sql.append("SELECT COUNT(DISTINCT events.event_id) ");
 		sql.append("FROM buddy_event AS events ");
-		sql.append("LEFT JOIN buddy_event_diving_pool_mapping AS pool ON events.event_id = pool.event_id ");
-		sql.append("LEFT JOIN buddy_event_concept_mapping AS concept ON events.event_id = concept.event_id ");
 		sql.append("WHERE events.event_start_date BETWEEN :startDate AND :endDate ");
 		sql.append("AND events.status = 'RECRUITING' ");
 
@@ -170,17 +170,20 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 		}
 
 		if (divingPools != null && !divingPools.isEmpty()) {
-			sql.append("AND pool.diving_pool_id = ANY(:divingPools) ");
+			sql.append("AND EXISTS ( ");
+			sql.append("    SELECT 1 FROM buddy_event_diving_pool_mapping pool ");
+			sql.append("    WHERE pool.event_id = events.event_id ");
+			sql.append("    AND pool.diving_pool_id = ANY(:divingPools) ");
+			sql.append(") ");
 		}
 
 		if (buddyEventConcepts != null && !buddyEventConcepts.isEmpty()) {
 			sql.append("AND EXISTS ( ");
-			sql.append("   SELECT 1 FROM buddy_event_concept_mapping becm ");
-			sql.append("   WHERE becm.event_id = events.event_id ");
-			sql.append("   GROUP BY becm.event_id ");
-			sql.append("   HAVING COUNT(DISTINCT becm.concept_id) = :conceptCount ");
+			sql.append("    SELECT 1 FROM buddy_event_concept_mapping becm ");
+			sql.append("    WHERE becm.event_id = events.event_id ");
+			sql.append("    GROUP BY becm.event_id ");
 			sql.append(
-				"   AND SUM(CASE WHEN becm.concept_id = ANY(:buddyEventConcepts) THEN 1 ELSE 0 END) = :conceptCount ");
+				"    HAVING SUM(CASE WHEN becm.concept_id = ANY(:buddyEventConcepts) THEN 1 ELSE 0 END) = :conceptCount ");
 			sql.append(") ");
 		}
 

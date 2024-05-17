@@ -52,10 +52,11 @@ public class BuddyEventCommandController {
 				description = "버디 이벤트 생성 성공",
 				useReturnTypeSchema = true
 			),
+			@ApiResponse(responseCode = "3409", ref = "#/components/responses/3409"),
 			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
 			@ApiResponse(responseCode = "401", ref = "#/components/responses/401"),
 			@ApiResponse(responseCode = "403", ref = "#/components/responses/403"),
-			@ApiResponse(responseCode = "500", ref = "#/components/responses/500")
+			@ApiResponse(responseCode = "500", ref = "#/components/responses/500"),
 		}
 	)
 	@PostMapping("")

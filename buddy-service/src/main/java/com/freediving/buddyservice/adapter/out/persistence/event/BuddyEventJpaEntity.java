@@ -76,7 +76,7 @@ public class BuddyEventJpaEntity extends AuditableEntity {
 	@Column(name = "comment", length = 1000, nullable = true)
 	private String comment;
 
-	@Column(name = "freediving_level", nullable = false)
+	@Column(name = "freediving_level", nullable = true)
 	private Integer freedivingLevel;
 
 	// 연관 관계 매핑

@@ -39,10 +39,10 @@ public class GetBuddyEventListingCommand extends SelfValidating<GetBuddyEventLis
 
 	@Size(max = 2)
 	private final Set<BuddyEventConcept> buddyEventConcepts;
-	
+
 	private final Boolean carShareYn;
 
-	@Min(value = 0, message = "레벨 조건의 최소는 0(누구나) 입니다.")
+	@Min(value = 1, message = "레벨 조건의 최소는 1레벨 입니다.")
 	@Max(value = 4, message = "레벨 조건의 최대는 4레벨 입니다.")
 	private Integer freedivingLevel;
 

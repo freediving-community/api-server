@@ -64,7 +64,7 @@ public class CreateBuddyEventRequest {
 	@NotNull
 	private Boolean carShareYn;
 
-	@Schema(description = "프리다이빙 레벨 제한", example = "0~3", minimum = "0", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(description = "프리다이빙 레벨 제한(누구나 null, 1~4 )", example = "", minimum = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 	private Integer freedivingLevel;
 
 	@ArraySchema(arraySchema = @Schema(description = "다이빙 풀"),

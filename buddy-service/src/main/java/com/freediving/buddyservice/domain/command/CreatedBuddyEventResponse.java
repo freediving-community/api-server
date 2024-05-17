@@ -67,7 +67,7 @@ public class CreatedBuddyEventResponse {
 	@Schema(description = "성별 여부", implementation = GenderType.class, requiredMode = Schema.RequiredMode.REQUIRED)
 	private GenderType genderType;
 
-	@Schema(description = "프리다이빙 레벨제한", example = "0~3", minimum = "0", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(description = "프리다이빙 레벨제한(null:누구나)", example = "1~4", minimum = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 	private Integer freedivingLevel;
 
 	@ArraySchema(arraySchema = @Schema(description = "다이빙 풀"),

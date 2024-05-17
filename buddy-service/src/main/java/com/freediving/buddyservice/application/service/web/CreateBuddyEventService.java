@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.freediving.buddyservice.adapter.out.externalservice.FindUser;
+import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto.UserInfo;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventResponseMapper;
 import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventCommand;
@@ -20,6 +20,8 @@ import com.freediving.buddyservice.application.port.out.web.command.like.BuddyEv
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
 import com.freediving.common.config.annotation.UseCase;
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,15 +41,15 @@ public class CreateBuddyEventService implements CreateBuddyEventUseCase {
 	public CreatedBuddyEventResponse createBuddyEvent(CreateBuddyEventCommand command) {
 
 		// 1. Member Service로 정상적인 사용자 인지 확인 ( 버디 일정 생성 가능한 사용자? 제재 리스트 사용자? 등. 정상적인 사용자 체크)
-		HashMap<Long, FindUser> status = requestMemberPort.getMemberStatus(List.of(command.getUserId()));
+		HashMap<Long, UserInfo> status = requestMemberPort.getMemberStatus(List.of(command.getUserId()));
 		if (status.get(command.getUserId()).getLicenseInfo().getFreeDiving().getRoleLevel() < 0) {
-			throw new RuntimeException("비정상적인 사용자."); // TODO 예외 처리
+			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, "비정상적인 사용자."); // TODO 예외 처리
 		}
 
 		// 2. 생성한 버디 일정 중에 시간이 겹치는 일정이 있는지 확인.
 		if (isValidBuddyEventOverlap(command.getUserId(), command.getEventStartDate(), command.getEventEndDate())
 			== false) {
-			throw new RuntimeException("버디 일정이 겹칩니다."); // TODO 예외 처리
+			throw new BuddyMeException(ServiceStatusCode.EVENT_TIME_CONFLICT); // TODO 예외 처리
 		}
 
 		// 3. 버디 일정 이벤트 생성하기.

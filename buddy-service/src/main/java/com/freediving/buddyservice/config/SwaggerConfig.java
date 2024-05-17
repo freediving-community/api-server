@@ -1,5 +1,6 @@
 package com.freediving.buddyservice.config;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -49,27 +50,60 @@ public class SwaggerConfig {
 		SecurityRequirement securityRequirement = new SecurityRequirement()
 			.addList("Access Token").addList("User-Id");
 
-		return new OpenAPI().addServersItem(new Server().url(url).description(description))
-			.components(
-				new Components().addSecuritySchemes("Access Token", securityScheme)
-					.addSecuritySchemes("User-Id", userIdHeaderScheme)
-					.addResponses("400", new ApiResponse().description("Bad Request").content(new Content()
-						.addMediaType("application/json", new MediaType()
-								.example(
-									ResponseJsonObject.builder()
-										.code(ServiceStatusCode.BAD_REQUEST)
-										.expandMsg("expandMsg")
-										.build())
-							// 예시 값
-						)))
-					.addResponses("204", new ApiResponse().description("No Content"))
-					.addResponses("401", new ApiResponse().description("Unauthorized"))
-					.addResponses("403", new ApiResponse().description("Forbidden"))
-					.addResponses("500", new ApiResponse().description("Internal Server Error"))
-			)
-			.security(List.of(securityRequirement))
+		// 기본 응답 추가
+		Components components = new Components()
+			.addSecuritySchemes("Access Token", createSecurityScheme())
+			.addSecuritySchemes("User-Id", createUserIdHeaderScheme());
+		addBuddyServiceResponses(components);
+
+		return new OpenAPI()
+			.addServersItem(new Server().url(url).description(description))
+			.components(components)
+			.security(List.of(createSecurityRequirement()))
 			.info(new Info().title(title).version(version));
 
+	}
+
+	private SecurityRequirement createSecurityRequirement() {
+		// SecurityRequirement 설정
+		return new SecurityRequirement().addList("Access Token").addList("User-Id");
+	}
+
+	private SecurityScheme createSecurityScheme() {
+		// SecurityScheme 설정
+		return new SecurityScheme()
+			.name("Access Token")
+			.type(SecurityScheme.Type.HTTP)
+			.scheme("bearer")
+			.bearerFormat("JWT");
+	}
+
+	private SecurityScheme createUserIdHeaderScheme() {
+		// User-Id 헤더 설정
+		return new SecurityScheme()
+			.name("User-Id")
+			.type(SecurityScheme.Type.APIKEY)
+			.in(SecurityScheme.In.HEADER)
+			.name("User-Id");
+	}
+
+	private void addBuddyServiceResponses(Components components) {
+		// 3000 이상 코드의 ServiceStatusCode 응답 추가
+		Arrays.stream(ServiceStatusCode.values())
+			.filter(code -> (code.getCode() >= 3000 || code.getCode() < 1000))
+			.forEach(code -> components.addResponses(String.valueOf(code.getCode()), createApiResponse(code)));
+	}
+
+	private ApiResponse createApiResponse(ServiceStatusCode statusCode) {
+		// ApiResponse 생성
+		return new ApiResponse()
+			.description(statusCode.getMessage())
+			.content(new Content()
+				.addMediaType("application/json", new MediaType()
+					.example(ResponseJsonObject.builder()
+						.code(statusCode)
+						.expandMsg("Example message")
+						.build())));
 	}
 
 }

@@ -66,7 +66,7 @@ public class GetBuddyEventListingRequest {
 	private Boolean carShareYn;
 
 	@Parameter(description = "프리다이빙 레벨 제한 ( 상관 없음 null )",
-		schema = @Schema(example = "0~3", minimum = "0", requiredMode = Schema.RequiredMode.NOT_REQUIRED))
+		schema = @Schema(example = "1", minimum = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED))
 	private Integer freedivingLevel;
 
 	@Parameter(description = "다이빙 풀",
@@ -74,9 +74,9 @@ public class GetBuddyEventListingRequest {
 			schema = @Schema(implementation = DivingPool.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED)))
 	private Set<DivingPool> divingPools;
 
-	@Parameter(description = "정렬 타입",
+	@Parameter(description = "정렬 타입 ( null인 경우 최신순)",
 		schema = @Schema(example = "NEWEST", implementation = SortType.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED))
-	private SortType sortType;
+	private SortType sortType = SortType.NEWEST;
 
 	@Parameter(description = "페이지 번호",
 		schema = @Schema(example = "1", requiredMode = Schema.RequiredMode.REQUIRED))

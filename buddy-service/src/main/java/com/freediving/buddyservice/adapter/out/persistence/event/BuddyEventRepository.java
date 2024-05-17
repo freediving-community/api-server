@@ -21,9 +21,16 @@ public interface BuddyEventRepository extends JpaRepository<BuddyEventJpaEntity,
 	 * @return 이미 생성한 이벤트 존재 여부
 	 */
 	@Query(value =
-		"SELECT EXISTS (SELECT 1 FROM buddy_event e WHERE (( e.event_start_date < :eventStartTime AND "
-			+ " :eventStartTime < e.event_end_date) OR ( e.event_start_date < :eventEndTime AND "
-			+ " :eventEndTime < e.event_end_date )) AND e.user_id = :userId AND e.status in (:statuses) ) ", nativeQuery = true)
+		"SELECT EXISTS (\n"
+			+ "    SELECT 1 \n"
+			+ "    FROM buddy_event e \n"
+			+ "    WHERE (\n"
+			+ "        (e.event_start_date < :eventEndTime AND :eventStartTime < e.event_end_date)\n"
+			+ "        AND NOT (e.event_end_date = :eventStartTime OR e.event_start_date = :eventEndTime)\n"
+			+ "    )\n"
+			+ "    AND e.user_id = :userId \n"
+			+ "    AND e.status IN (:statuses)\n"
+			+ ")", nativeQuery = true)
 	boolean existsBuddyEventByEventTime(@Param("userId") Long userId,
 		@Param("eventStartTime") LocalDateTime eventStartTime,
 		@Param("eventEndTime") LocalDateTime eventEndTime,
