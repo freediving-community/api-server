@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
 import com.querydsl.core.annotations.QueryProjection;
 
+import jakarta.persistence.ColumnResult;
+import jakarta.persistence.ConstructorResult;
+import jakarta.persistence.SqlResultSetMapping;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,24 +16,47 @@ import lombok.NoArgsConstructor;
 @Getter
 @EqualsAndHashCode
 @NoArgsConstructor
+@SqlResultSetMapping(
+	name = "GetBuddyEventListingQueryProjectionDtoMapping",
+	classes = @ConstructorResult(
+		targetClass = GetBuddyEventListingQueryProjectionDto.class,
+		columns = {
+			@ColumnResult(name = "eventId", type = Long.class),
+			@ColumnResult(name = "eventStartDate", type = LocalDateTime.class),
+			@ColumnResult(name = "eventEndDate", type = LocalDateTime.class),
+			@ColumnResult(name = "isLiked", type = Boolean.class),
+			@ColumnResult(name = "likeCount", type = Integer.class),
+			@ColumnResult(name = "comment", type = String.class),
+			@ColumnResult(name = "freedivingLevel", type = Integer.class),
+			@ColumnResult(name = "status", type = String.class),
+			@ColumnResult(name = "participantCount", type = Integer.class),
+			@ColumnResult(name = "currentParticipantCount", type = Integer.class)
+		}
+	)
+)
 public class GetBuddyEventListingQueryProjectionDto {
 	private Long eventId;
 	private LocalDateTime eventStartDate;
 	private LocalDateTime eventEndDate;
 	private boolean isLiked;
-	private Integer likedCount;
+	private Long likedCount;
 	private String comment;
-	private Integer freedivingLevel;
+	private Long freedivingLevel;
 	private BuddyEventStatus status;
-	private Integer participantCount;
-	private Integer currentParticipantCount;
+	private Long participantCount;
+	private Long currentParticipantCount;
 
 	@Builder
 	@QueryProjection
-	public GetBuddyEventListingQueryProjectionDto(Long eventId, LocalDateTime eventStartDate,
+	public GetBuddyEventListingQueryProjectionDto(Long eventId,
+		LocalDateTime eventStartDate,
 		LocalDateTime eventEndDate,
-		boolean isLiked, Integer likedCount, String comment, Integer freedivingLevel, BuddyEventStatus status,
-		Integer participantCount, Integer currentParticipantCount) {
+		boolean isLiked, Long likedCount
+		, String comment
+		, Long freedivingLevel
+		, BuddyEventStatus status,
+		Long participantCount,
+		Long currentParticipantCount) {
 		this.eventId = eventId;
 		this.eventStartDate = eventStartDate;
 		this.eventEndDate = eventEndDate;

@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -36,13 +37,16 @@ public class GetBuddyEventListingCommand extends SelfValidating<GetBuddyEventLis
 	@FutureOrPresent(message = "일정 종료 시간은 현재 시간 이후여야 합니다.")
 	private final LocalDateTime eventEndDate;
 
+	@Size(max = 2)
 	private final Set<BuddyEventConcept> buddyEventConcepts;
+	
 	private final Boolean carShareYn;
 
 	@Min(value = 0, message = "레벨 조건의 최소는 0(누구나) 입니다.")
 	@Max(value = 4, message = "레벨 조건의 최대는 4레벨 입니다.")
 	private Integer freedivingLevel;
 
+	@Size(max = 2)
 	private Set<DivingPool> divingPools;
 
 	@Schema(description = "정렬 타입", example = "POPULARITY", implementation = SortType.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED)

@@ -21,17 +21,17 @@ import lombok.NoArgsConstructor;
 public class BuddyEventlistingCardResponse implements QueryComponent {
 	private UserInfoResponse user;
 	private boolean isLiked;
-	private Integer likedCount;
+	private Long likedCount;
 	private Long eventId;
 	private Set<DivingPoolInfoResponse> divingPools;
 	private String comment;
 	private Set<ConceptInfoResponse> concepts;
 	private LocalDateTime eventStartDate;
 	private LocalDateTime eventEndDate;
-	private Integer freedivingLevel;
+	private Long freedivingLevel;
 	private BuddyEventStatus status;
-	private Integer participantCount;
-	private Integer currentParticipantCount;
+	private Long participantCount;
+	private Long currentParticipantCount;
 	private Set<ParticipantInfoResponse> participantInfos;
 
 }

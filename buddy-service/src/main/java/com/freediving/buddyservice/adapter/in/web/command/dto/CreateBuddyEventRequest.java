@@ -3,9 +3,10 @@ package com.freediving.buddyservice.adapter.in.web.command.dto;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.freediving.buddyservice.config.enumerate.GenderType;
+import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.common.enumerate.DivingPool;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -36,14 +37,14 @@ import lombok.NoArgsConstructor;
 @Schema(title = "버디 이벤트 생성 요청 ( CreateBuddyEventRequest )", name = "CreateBuddyEventRequest", description = "POST /v1/event 버디 이벤트 생성에 요청 Schema")
 public class CreateBuddyEventRequest {
 
-	@Schema(description = "일정 시작 시간", type = "string", example = "2024-05-17 15:30:00", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(description = "일정 시작 시간", type = "string", example = "2024-05-23T11:59:59", requiredMode = Schema.RequiredMode.REQUIRED)
 	@NotNull(message = "일정 시작 시간은 필수입니다.")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime eventStartDate;
 
-	@Schema(description = "일정 종료 시간", type = "string", example = "2024-05-17 17:30:00", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(description = "일정 종료 시간", type = "string", example = "2024-05-23T11:59:59", requiredMode = Schema.RequiredMode.REQUIRED)
 	@NotNull(message = "일정 종료 시간은 필수입니다.")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime eventEndDate;
 
 	@Schema(description = "참여자 수", example = "5", requiredMode = Schema.RequiredMode.REQUIRED, minimum = "1", maximum = "5")
