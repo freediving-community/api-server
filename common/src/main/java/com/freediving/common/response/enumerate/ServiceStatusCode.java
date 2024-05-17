@@ -21,9 +21,9 @@ import lombok.Getter;
 @Getter
 public enum ServiceStatusCode {
 
-	OK(200, null, false),
-	CREATED(201, null, false),
-	NO_CONTENT(204, null, false),
+	OK(200, "OK", false),
+	CREATED(201, "CREATED", false),
+	NO_CONTENT(204, "NO_CONTENT", false),
 	BAD_REQUEST(400, "BAD_REQUEST", true),
 	UNAUTHORIZED(401, "UNAUTHORIZED", true),
 	FORBIDDEN(403, "FORBIDDEN", true),
@@ -31,13 +31,13 @@ public enum ServiceStatusCode {
 	INTERVAL_SERVER_ERROR(500, "INTERVAL_SERVER_ERROR", true)
 
 	// member-service
-	, MEMBER_SERVICE(0, "멤버 서비스 응답 메시지.", false)
+	, MEMBER_SERVICE(1000, "멤버 서비스 응답 메시지.", false)
 
 	// community-service
-	, COMMUNITY_SERVICE(0, "커뮤니티 서비스 응답 메시지.", false)
+	, COMMUNITY_SERVICE(2000, "커뮤니티 서비스 응답 메시지.", false)
 
 	// buddy-service
-	, BUDDY_SERVICE(0, "버디 서비스 응답 메시지.", false);
+	, EVENT_TIME_CONFLICT(3409, "이벤트 시간 중복", false);
 
 	//Enum 필드
 	private int code;

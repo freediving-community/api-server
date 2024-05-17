@@ -3,11 +3,13 @@ package com.freediving.buddyservice.adapter.in.web.query.dto;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.freediving.buddyservice.config.enumerate.SortType;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.common.enumerate.DivingPool;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
@@ -37,41 +39,52 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-@Schema(title = "버디 이벤트 조회 요청 (리스팅)", name = "GetBuddyEventListingRequest", description = "GET /v1/event/listing 버디 이벤트 조회 요청 Schema")
+@Schema(title = "버디 이벤트 조회 요청 (리스팅)", name = "GetBuddyEventListingRequest", description = "GET /v1/event/listing 버디 이벤트 조회 요청 Schema", hidden = true)
 public class GetBuddyEventListingRequest {
 
-	@Schema(description = "일정 시작 시간", type = "string", example = "2024-05-17 15:30:00", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Parameter(description = "일정 시작 시간", example = "2024-05-23T11:59:59",
+		schema = @Schema(requiredMode = Schema.RequiredMode.REQUIRED))
 	@NotNull(message = "일정 시작 시간은 필수입니다.")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime eventStartDate;
 
-	@Schema(description = "일정 종료 시간", type = "string", example = "2024-05-17 17:30:00", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Parameter(description = "일정 종료 시간", example = "2024-05-23T11:59:59",
+		schema = @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+	)
 	@NotNull(message = "일정 종료 시간은 필수입니다.")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime eventEndDate;
 
-	@ArraySchema(arraySchema = @Schema(description = "버디 이벤트 컨셉"),
-		schema = @Schema(implementation = BuddyEventConcept.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED))
+	@Parameter(description = "버디 이벤트 컨셉 ( 상관 없음 null )",
+		array = @ArraySchema(
+			schema = @Schema(implementation = BuddyEventConcept.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED)))
 	private Set<BuddyEventConcept> buddyEventConcepts;
 
-	@Schema(description = "카셰어링 여부 ( 상관 없음 null )", example = "true", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+	@Parameter(description = "카셰어링 여부 ( 상관 없음 null )",
+		schema = @Schema(example = "true", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+	)
 	private Boolean carShareYn;
 
-	@Schema(description = "프리다이빙 레벨 제한", example = "0~3", minimum = "0", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+	@Parameter(description = "프리다이빙 레벨 제한 ( 상관 없음 null )",
+		schema = @Schema(example = "1", minimum = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED))
 	private Integer freedivingLevel;
 
-	@ArraySchema(arraySchema = @Schema(description = "다이빙 풀"),
-		schema = @Schema(implementation = DivingPool.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED))
+	@Parameter(description = "다이빙 풀",
+		array = @ArraySchema(
+			schema = @Schema(implementation = DivingPool.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED)))
 	private Set<DivingPool> divingPools;
 
-	@Schema(description = "정렬 타입", example = "POPULARITY", implementation = SortType.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-	private SortType sortType;
+	@Parameter(description = "정렬 타입 ( null인 경우 최신순)",
+		schema = @Schema(example = "NEWEST", implementation = SortType.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED))
+	private SortType sortType = SortType.NEWEST;
 
-	@Schema(description = "페이지 번호", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Parameter(description = "페이지 번호",
+		schema = @Schema(example = "1", requiredMode = Schema.RequiredMode.REQUIRED))
 	@Min(1)
 	private Integer pageNumber;
 
-	@Schema(description = "페이지당 사이즈", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Parameter(description = "페이지당 사이즈",
+		schema = @Schema(example = "10", requiredMode = Schema.RequiredMode.REQUIRED))
 	@Min(1)
 	private Integer pageSize;
 }

@@ -1,4 +1,6 @@
-package com.freediving.buddyservice.adapter.out.externalservice;
+package com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FindUser {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class UserInfo {
 
 	private Long userId;
 

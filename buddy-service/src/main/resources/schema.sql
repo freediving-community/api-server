@@ -106,7 +106,7 @@ CREATE TABLE buddy_event
     gender_type       varchar(30)   NOT NULL,
     status            varchar(30)   NOT NULL,
     kakao_room_code   varchar(10)   NULL,
-    freediving_level  integer       NOT NULL,
+    freediving_level  integer       NULL,
     comment           varchar(1000) NULL,
     updated_date      timestamp     NOT NULL,
     created_date      timestamp     NOT NULL
@@ -143,13 +143,13 @@ ALTER TABLE buddy_event_like_mapping
 drop table if exists buddy_event_concept;
 CREATE TABLE buddy_event_concept
 (
-    concept_id    varchar(30) NOT NULL,
-    concept_name  varchar(20) NOT NULL,
+    concept_id    varchar(30)  NOT NULL,
+    concept_name  varchar(20)  NOT NULL,
     concept_desc  varchar(100) NOT NULL,
-    enabled       boolean     NOT NULL DEFAULT false,
-    display_order int         NOT NULL,
-    created_date  timestamp   NOT NULL,
-    updated_date  timestamp   NOT NULL
+    enabled       boolean      NOT NULL DEFAULT false,
+    display_order int          NOT NULL,
+    created_date  timestamp    NOT NULL,
+    updated_date  timestamp    NOT NULL
 );
 ALTER TABLE buddy_event_concept
     ADD CONSTRAINT PK_BUDDY_EVENT_CONCEPT PRIMARY KEY (concept_id);

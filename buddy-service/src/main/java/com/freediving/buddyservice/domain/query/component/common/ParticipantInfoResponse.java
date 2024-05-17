@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ParticipantInfoResponse {
 	private Long userId;
-	private String profileUrl;
+	private String profileImgUrl;
 }

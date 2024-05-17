@@ -52,10 +52,11 @@ public class BuddyEventCommandController {
 				description = "버디 이벤트 생성 성공",
 				useReturnTypeSchema = true
 			),
+			@ApiResponse(responseCode = "3409", ref = "#/components/responses/3409"),
 			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
 			@ApiResponse(responseCode = "401", ref = "#/components/responses/401"),
 			@ApiResponse(responseCode = "403", ref = "#/components/responses/403"),
-			@ApiResponse(responseCode = "500", ref = "#/components/responses/500")
+			@ApiResponse(responseCode = "500", ref = "#/components/responses/500"),
 		}
 	)
 	@PostMapping("")
@@ -63,9 +64,13 @@ public class BuddyEventCommandController {
 		@Valid @RequestBody CreateBuddyEventRequest request, HttpServletRequest httpServletRequest) {
 		try {
 			// 1. UserID 추출하기
-			Long userId = Long.parseLong(httpServletRequest.getAttribute("User-Id").toString());
+			Object userIdObj = httpServletRequest.getAttribute("User-Id");
+			if (userIdObj == null)
+				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
 
-			if (userId == null)
+			Long userId = Long.parseLong(userIdObj.toString());
+
+			if (userId == null || userId.equals(-1L))
 				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
 
 			// 2. Use Case Command 전달.
@@ -89,6 +94,8 @@ public class BuddyEventCommandController {
 				createdBuddyEventResponse);
 
 			return ResponseEntity.ok(response);
+		} catch (BuddyMeException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, e.getMessage());
 		}
@@ -115,9 +122,13 @@ public class BuddyEventCommandController {
 		@Valid @RequestBody BuddyEventLikeToggleRequest request, HttpServletRequest httpServletRequest) {
 		try {
 			// 1. UserID 추출하기
-			Long userId = Long.parseLong(httpServletRequest.getAttribute("User-Id").toString());
+			Object userIdObj = httpServletRequest.getAttribute("User-Id");
+			if (userIdObj == null)
+				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
 
-			if (userId == null)
+			Long userId = Long.parseLong(userIdObj.toString());
+
+			if (userId == null || userId.equals(-1L))
 				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
 
 			// 2. Use Case Command 전달.
@@ -132,6 +143,8 @@ public class BuddyEventCommandController {
 			ResponseJsonObject response = new ResponseJsonObject(ServiceStatusCode.OK, null);
 
 			return ResponseEntity.ok(response);
+		} catch (BuddyMeException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, e.getMessage());
 		}

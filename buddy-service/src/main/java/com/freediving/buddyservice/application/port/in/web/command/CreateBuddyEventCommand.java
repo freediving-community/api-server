@@ -3,9 +3,9 @@ package com.freediving.buddyservice.application.port.in.web.command;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
-import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.common.SelfValidating;
 import com.freediving.common.enumerate.DivingPool;
 import com.freediving.common.handler.exception.BuddyMeException;
@@ -61,7 +61,7 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 	@Size(min = 0, max = 500, message = "코멘트는 최대 500자까지 입력 가능합니다.")
 	private final String comment;
 
-	@Min(value = 0, message = "레벨 조건의 최소는 0(누구나) 입니다.")
+	@Min(value = 1, message = "레벨 조건의 최소는 1레벨 입니다.")
 	@Max(value = 4, message = "레벨 조건의 최대는 4레벨 입니다.")
 	private Integer freedivingLevel;
 

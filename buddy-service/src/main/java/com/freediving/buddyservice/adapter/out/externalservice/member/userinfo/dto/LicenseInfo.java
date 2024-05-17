@@ -1,6 +1,4 @@
-package com.freediving.buddyservice.adapter.out.externalservice;
-
-import com.freediving.common.domain.member.FreeDiving;
+package com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class LicenseInfo {
 
 	private FreeDiving freeDiving;
+	private ScubaDiving scubaDiving;
 }
