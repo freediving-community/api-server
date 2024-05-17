@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Schema(description = "참가자 정보 응답")
+@Schema(name = "참가자 정보 응답", description = "버디 조회하기의 참가자 정보 응답")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
