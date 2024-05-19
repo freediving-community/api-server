@@ -46,8 +46,16 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
 
 			log.info("request id: {}, request uri: {}", request.getId(), request.getURI());
 
+			// JWT 정보가 없는 경우 비로그인으로 간주하고 헤더에 User-Id 를 -1로 담아서 보낸다.
 			if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-				return handleUnAuthorized(exchange, NOT_FOUND_JWT_TOKEN, HttpStatus.UNAUTHORIZED);
+				// return handleUnAuthorized(exchange, NOT_FOUND_JWT_TOKEN, HttpStatus.UNAUTHORIZED);
+				ServerHttpRequest modifiedRequest = request.mutate()
+					.header("User-Id", "-1")
+					.build();
+
+				return chain.filter(exchange.mutate().request(modifiedRequest).build()).then(Mono.fromRunnable(
+					() -> log.info("response status code: {}", response.getStatusCode()))
+				);
 			}
 
 			String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
