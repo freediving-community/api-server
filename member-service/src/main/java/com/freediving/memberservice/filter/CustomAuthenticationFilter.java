@@ -81,6 +81,12 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 			return;
 		}
+		// 비로그인으로 접속한 경우 차단
+		if (userId == -1) {
+			log.error("비로그인으로 접속한 유저,  url : {} , header : {}", requestUrl, header.get());
+			filterChain.doFilter(request, response);
+			return;
+		}
 
 		FindUserQuery findUserQuery = FindUserQuery.builder().userId(userId).build();
 		User user = findUserService.findUserDetailByQuery(findUserQuery);
