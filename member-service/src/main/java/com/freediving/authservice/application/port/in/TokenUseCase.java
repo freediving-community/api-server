@@ -16,4 +16,6 @@ import com.freediving.common.config.annotation.UseCase;
 public interface TokenUseCase {
 
 	String updateTokens(Long userId, String oauthTypeName);
+
+	String findRefreshTokenByUserId(Long userId);
 }

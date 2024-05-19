@@ -2,8 +2,9 @@ package com.freediving.authservice.adapter.in.web;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.authservice.adapter.in.web.dto.UpdateTokenResponse;
@@ -32,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 @WebAdapter
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1")
 @Slf4j
 @Tag(name = "Token", description = "JWT 토큰 관리 API")
 public class TokenController {
@@ -47,11 +47,17 @@ public class TokenController {
 			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
 			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
 		})
-	@PatchMapping("/tokens")
+	@PatchMapping("/v1/tokens")
 	public ResponseEntity<ResponseJsonObject<UpdateTokenResponse>> updateTokens(@AuthenticationPrincipal User user) {
 		String accessToken = tokenUseCase.updateTokens(user.userId(), user.oauthType().name());
 		UpdateTokenResponse response = new UpdateTokenResponse(accessToken);
 		ResponseJsonObject responseJsonObject = new ResponseJsonObject(ServiceStatusCode.OK, response);
 		return ResponseEntity.ok(responseJsonObject);
+	}
+
+	@GetMapping("/sample/token/{userId}")
+	@Tag(name = "Ping")
+	public String getRefreshToken(@PathVariable("userId") Long userId) {
+		return tokenUseCase.findRefreshTokenByUserId(userId);
 	}
 }
