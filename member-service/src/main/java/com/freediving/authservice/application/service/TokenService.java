@@ -4,6 +4,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.freediving.authservice.application.port.in.TokenUseCase;
 import com.freediving.authservice.application.port.out.CreateTokenPort;
+import com.freediving.authservice.application.port.out.FindTokenPort;
 import com.freediving.common.config.annotation.UseCase;
 
 import lombok.RequiredArgsConstructor;
@@ -26,9 +27,15 @@ import lombok.extern.slf4j.Slf4j;
 public class TokenService implements TokenUseCase {
 
 	private final CreateTokenPort createTokenPort;
+	private final FindTokenPort findTokenPort;
 
 	@Override
 	public String updateTokens(Long userId, String oauthTypeName) {
 		return createTokenPort.updateTokens(String.valueOf(userId), oauthTypeName);
+	}
+
+	@Override
+	public String findRefreshTokenByUserId(Long userId) {
+		return findTokenPort.findRefreshTokenByUserId(userId);
 	}
 }

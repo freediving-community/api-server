@@ -12,6 +12,7 @@ import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.in.CreateUserUseCase;
 import com.freediving.memberservice.domain.OauthType;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +32,7 @@ public class HelloController {
 	}
 
 	@PostMapping("/token")
+	@Hidden
 	public String generateSampleUser() {
 		CreateUserCommand command = CreateUserCommand.builder()
 			.oauthType(OauthType.KAKAO)

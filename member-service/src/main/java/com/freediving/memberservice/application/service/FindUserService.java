@@ -67,4 +67,9 @@ public class FindUserService implements FindUserUseCase {
 		return findUserPort.findNickname(trimSafeNickname);
 	}
 
+	@Override
+	public User findUserByUserId(FindUserQuery findUserQuery) {
+		return findUserPort.findUserDetailById(findUserQuery.userId());
+	}
+
 }
