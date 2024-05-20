@@ -3,6 +3,7 @@ package com.freediving.memberservice.application.port.out;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.in.CreateUserInfoCommand;
+import com.freediving.memberservice.application.port.in.CreateUserProfileCommand;
 
 /**
  * @Author         : sasca37
@@ -19,4 +20,6 @@ public interface CreateUserPort {
 	CreateUserResponse createOrGetUser(CreateUserCommand createUserCommand);
 
 	void createUserInfo(CreateUserInfoCommand command);
+
+	void createUserProfile(CreateUserProfileCommand command);
 }

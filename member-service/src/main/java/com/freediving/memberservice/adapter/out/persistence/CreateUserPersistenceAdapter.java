@@ -6,13 +6,19 @@ import org.apache.commons.lang3.ObjectUtils;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.common.domain.member.RoleLevel;
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.in.CreateUserInfoCommand;
+import com.freediving.memberservice.application.port.in.CreateUserInfoCommandV2;
+import com.freediving.memberservice.application.port.in.CreateUserProfileCommand;
 import com.freediving.memberservice.application.port.out.CreateUserPort;
+import com.freediving.memberservice.application.port.out.CreateUserPortV2;
 import com.freediving.memberservice.domain.DiveType;
 import com.freediving.memberservice.domain.OauthType;
 import com.freediving.memberservice.domain.User;
+import com.freediving.memberservice.exception.ErrorCode;
 import com.freediving.memberservice.util.NicknameGenerator;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class CreateUserPersistenceAdapter implements CreateUserPort {
+public class CreateUserPersistenceAdapter implements CreateUserPort, CreateUserPortV2 {
 	private final UserJpaRepository userJpaRepository;
 	private final UserLicenseJpaRepository userLicenseJpaRepository;
 
@@ -100,4 +106,38 @@ public class CreateUserPersistenceAdapter implements CreateUserPort {
 		// TODO : 다이빙 풀 정보, 컨셉 정보 버디서비스 전달
 	}
 
+	@Override
+	public void createUserProfile(CreateUserProfileCommand command) {
+		UserJpaEntity userJpaEntity = userJpaRepository.findById(command.getUserId()).orElseThrow(
+			() -> new BuddyMeException(ServiceStatusCode.BAD_REQUEST, ErrorCode.NOT_FOUND_USER.getMessage()));
+		userJpaEntity.updateProfileImgUrl(command.getProfileImgUrl());
+		userJpaEntity.updateUserNickname(command.getNickname());
+		userJpaEntity.updateUserContent(command.getContent());
+	}
+
+	@Override
+	public void createUserInfoV2(CreateUserInfoCommandV2 command) {
+		final Long userId = command.getUserId();
+		final DiveType diveType = command.getDiveType();
+		final Integer licenseLevel = command.getLicenseLevel();
+		final String licenseImgUrl = command.getLicenseImgUrl();
+
+		if (!ObjectUtils.isEmpty(diveType)) {
+			UserLicenseJpaEntity userLicenseJpaEntity = userLicenseJpaRepository.findByUserIdAndDiveType(userId,
+				diveType);
+
+			if (!ObjectUtils.isEmpty(licenseLevel)) {
+				userLicenseJpaEntity.updateLicenseLevel(licenseLevel);
+				// 0레벨인 경우 심사 없이 바로 승인 나머지는 심사중 상태로 변경
+				if (!ObjectUtils.isEmpty(licenseImgUrl)) {
+					userLicenseJpaEntity.updateLicenseImgUrl(licenseImgUrl);
+					if (licenseLevel == 0) {
+						userLicenseJpaEntity.updateRoleLevel(RoleLevel.NO_LEVEL);
+					} else {
+						userLicenseJpaEntity.updateRoleLevel(RoleLevel.WAIT_LICENSE_APPROVAL);
+					}
+				}
+			}
+		}
+	}
 }

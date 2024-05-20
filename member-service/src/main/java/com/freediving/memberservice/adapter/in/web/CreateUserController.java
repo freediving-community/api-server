@@ -14,10 +14,12 @@ import com.freediving.common.config.annotation.WebAdapter;
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserInfoRequest;
+import com.freediving.memberservice.adapter.in.web.dto.CreateUserProfileRequest;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserRequest;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.in.CreateUserInfoCommand;
+import com.freediving.memberservice.application.port.in.CreateUserProfileCommand;
 import com.freediving.memberservice.application.port.in.CreateUserUseCase;
 import com.freediving.memberservice.application.port.out.service.buddy.BuddyUseCase;
 import com.freediving.memberservice.domain.User;
@@ -68,6 +70,29 @@ public class CreateUserController {
 			.providerId(request.getProviderId())
 			.build();
 		return createUserUseCase.createOrGetUser(command);
+	}
+
+	@Operation(summary = "유저 프로필 정보 등록 API"
+		, description = "회원가입 시 유저 프로필 정보 등록한 적이 없는 경우 등록",
+		responses = {
+			@ApiResponse(responseCode = "201", description = "성공", ref = "#/components/responses/201"),
+			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
+		})
+	@PostMapping("/v1/users/profile")
+	public ResponseEntity<?> createUserProfile(@Valid @RequestBody CreateUserProfileRequest request,
+		@AuthenticationPrincipal User user) {
+		CreateUserProfileCommand command = CreateUserProfileCommand.builder()
+			.userId(user.userId())
+			.profileImgUrl(request.getProfileImgUrl())
+			.nickname(request.getNickname())
+			.content(request.getContent())
+			.build();
+		createUserUseCase.createUserProfile(command);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
+		ResponseJsonObject<?> response = new ResponseJsonObject<>(ServiceStatusCode.CREATED, location);
+		return ResponseEntity.created(location).body(response);
 	}
 
 	@Operation(summary = "유저 정보 등록 API"

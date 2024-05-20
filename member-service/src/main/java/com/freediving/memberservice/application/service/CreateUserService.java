@@ -9,8 +9,12 @@ import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.in.CreateUserInfoCommand;
+import com.freediving.memberservice.application.port.in.CreateUserInfoCommandV2;
+import com.freediving.memberservice.application.port.in.CreateUserProfileCommand;
 import com.freediving.memberservice.application.port.in.CreateUserUseCase;
+import com.freediving.memberservice.application.port.in.CreateUserUseCaseV2;
 import com.freediving.memberservice.application.port.out.CreateUserPort;
+import com.freediving.memberservice.application.port.out.CreateUserPortV2;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,9 +31,10 @@ import lombok.RequiredArgsConstructor;
 @UseCase
 @RequiredArgsConstructor
 @Transactional
-public class CreateUserService implements CreateUserUseCase {
+public class CreateUserService implements CreateUserUseCase, CreateUserUseCaseV2 {
 
 	private final CreateUserPort createUserPort;
+	private final CreateUserPortV2 createUserPortV2;
 
 	@Override
 	public CreateUserResponse createOrGetUser(CreateUserCommand command) {
@@ -44,5 +49,15 @@ public class CreateUserService implements CreateUserUseCase {
 			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "자격증 이미지 정보는 필수입니다.");
 		}
 		createUserPort.createUserInfo(command);
+	}
+
+	@Override
+	public void createUserProfile(CreateUserProfileCommand command) {
+		createUserPort.createUserProfile(command);
+	}
+
+	@Override
+	public void createUserInfoV2(CreateUserInfoCommandV2 command) {
+		createUserPortV2.createUserInfoV2(command);
 	}
 }
