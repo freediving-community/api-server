@@ -4,7 +4,6 @@ import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEn
 import com.freediving.buddyservice.adapter.out.persistence.event.likecount.BuddyEventLikeMappingJpaEntity;
 
 public interface BuddyEventLikeTogglePort {
-	void buddyEventLikeToggle(final Long userId, final Long eventId, final boolean likeStatus);
 
 	/**
 	 * 사용자가 특정 이벤트에 대해서 좋아요(관심)을 하고있는지 체크한다.
@@ -16,10 +15,10 @@ public interface BuddyEventLikeTogglePort {
 	BuddyEventLikeMappingJpaEntity existBuddyEventLikeMapping(final BuddyEventJpaEntity buddyEventJpaEntity,
 		final Long userId);
 
-	void buddyEventLikeToggleOn(final BuddyEventJpaEntity buddyEventJpaEntity,
+	Integer buddyEventLikeToggleOn(final BuddyEventJpaEntity buddyEventJpaEntity,
 		final Long userId, final BuddyEventLikeMappingJpaEntity existBuddyEventLikeMapping);
 
-	void buddyEventLikeToggleOff(final BuddyEventJpaEntity buddyEventJpaEntity,
+	Integer buddyEventLikeToggleOff(final BuddyEventJpaEntity buddyEventJpaEntity,
 		final Long userId, final BuddyEventLikeMappingJpaEntity existBuddyEventLikeMapping);
 
 	void buddyEventLikeToggleSet(final BuddyEventJpaEntity buddyEventJpaEntity);

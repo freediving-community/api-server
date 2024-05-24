@@ -16,6 +16,6 @@ public interface BuddyEventLikeToggleUseCase {
 	 * @param command 버디 이벤트 좋아요 설정/해지 명령 객체
 	 * @return desc
 	 */
-	void buddyEventLikeToggle(BuddyEventLikeToggleCommand command);
+	Integer buddyEventLikeToggle(BuddyEventLikeToggleCommand command);
 
 }
