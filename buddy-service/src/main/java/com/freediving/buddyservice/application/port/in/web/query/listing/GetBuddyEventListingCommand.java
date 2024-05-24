@@ -63,6 +63,10 @@ public class GetBuddyEventListingCommand extends SelfValidating<GetBuddyEventLis
 		Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn, Integer freedivingLevel,
 		Set<DivingPool> divingPools,
 		SortType sortType, GenderType genderType, int pageNumber, int pageSize) {
+
+		if (eventStartDate.isAfter(LocalDateTime.now()) == false)
+			eventStartDate = LocalDateTime.now();
+
 		this.eventStartDate = eventStartDate;
 		this.eventEndDate = eventEndDate;
 		if (eventEndDate.isAfter(eventStartDate) == false)
