@@ -13,6 +13,7 @@ import com.freediving.buddyservice.adapter.out.persistence.concept.QBuddyEventCo
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.QBuddyEventConceptMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.QBuddyEventDivingPoolMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.QBuddyEventJoinRequestJpaEntity;
+import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.config.enumerate.SortType;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
@@ -35,7 +36,8 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 	@Override
 	public List<GetBuddyEventListingQueryProjectionDto> getBuddyEventListing(Long userId, LocalDateTime eventStartDate,
 		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
-		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType, int pageNumber, int offset) {
+		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType, GenderType genderType, int pageNumber,
+		int offset) {
 
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT events.event_id AS eventId, ");
@@ -47,7 +49,8 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 		sql.append("events.freediving_level AS freedivingLevel, ");
 		sql.append("events.status AS status, ");
 		sql.append("events.participant_count AS participantCount, ");
-		sql.append("COUNT(DISTINCT requests.user_id) AS participantCountDistinct ");
+		sql.append("COUNT(DISTINCT requests.user_id) AS participantCountDistinct, ");
+		sql.append("events.gender_type AS gender_type ");
 		sql.append("FROM buddy_event AS events ");
 		sql.append("LEFT JOIN buddy_event_diving_pool_mapping AS pool ON events.event_id = pool.event_id ");
 		sql.append("LEFT JOIN buddy_event_concept_mapping AS concept ON events.event_id = concept.event_id ");
@@ -58,7 +61,7 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 			"LEFT JOIN buddy_event_join_requests AS requests ON events.event_id = requests.event_id  AND requests.status in (");
 		sql.append("'" + ParticipationStatus.OWNER.name() + "','" + ParticipationStatus.PARTICIPATING.name() + "') ");
 		sql.append("WHERE events.event_start_date BETWEEN :startDate AND :endDate ");
-		sql.append("AND events.status = 'RECRUITING' ");
+		sql.append("AND events.status = 'RECRUITING' AND events.gender_type = :genderType ");
 
 		if (carShareYn != null) {
 			sql.append("AND events.car_share_yn = :carShareYn ");
@@ -124,6 +127,7 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 
 		query.setParameter("limit", offset);
 		query.setParameter("offset", (pageNumber - 1) * offset);
+		query.setParameter("genderType", genderType.name());
 
 		List<Object[]> resultList = query.getResultList();
 
@@ -139,7 +143,8 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 				product[7] != null ? BuddyEventStatus.valueOf((String)product[7]) : BuddyEventStatus.RECRUITMENT_CLOSED,
 				// status
 				product[8] != null ? ((Number)product[8]).longValue() : 0, // participantCount
-				product[9] != null ? ((Number)product[9]).longValue() : 0))// currentParticipantCount
+				product[9] != null ? ((Number)product[9]).longValue() : 0,// currentParticipantCount
+				product[10] != null ? GenderType.valueOf((String)product[10]) : GenderType.ALL))// genderType
 			.collect(Collectors.toList());
 
 		return events;
@@ -153,13 +158,13 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 	public Long countOfGetBuddyEventListing(Long userId,
 		LocalDateTime eventStartDate,
 		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
-		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType) {
+		Integer freedivingLevel, Set<DivingPool> divingPools, GenderType genderType) {
 
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT COUNT(DISTINCT events.event_id) ");
 		sql.append("FROM buddy_event AS events ");
 		sql.append("WHERE events.event_start_date BETWEEN :startDate AND :endDate ");
-		sql.append("AND events.status = 'RECRUITING' ");
+		sql.append("AND events.status = 'RECRUITING' AND events.gender_type = :genderType ");
 
 		if (carShareYn != null) {
 			sql.append("AND events.car_share_yn = :carShareYn ");
@@ -190,6 +195,7 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 		Query query = entityManager.createNativeQuery(sql.toString());
 		query.setParameter("startDate", eventStartDate);
 		query.setParameter("endDate", eventEndDate);
+		query.setParameter("genderType", genderType.name());
 
 		if (carShareYn != null) {
 			query.setParameter("carShareYn", carShareYn);

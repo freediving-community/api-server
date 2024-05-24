@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.config.enumerate.SortType;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.common.enumerate.DivingPool;
@@ -78,13 +79,19 @@ public class GetBuddyEventListingRequest {
 		schema = @Schema(example = "NEWEST", implementation = SortType.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED))
 	private SortType sortType = SortType.NEWEST;
 
+	@Parameter(description = "성별 타입 ( null인 경우 ALL )",
+		schema = @Schema(example = "ALL", implementation = GenderType.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED))
+	private GenderType genderType = GenderType.ALL;
+
 	@Parameter(description = "페이지 번호",
 		schema = @Schema(example = "1", requiredMode = Schema.RequiredMode.REQUIRED))
+	@NotNull(message = "pageNumber is null")
 	@Min(1)
 	private Integer pageNumber;
 
 	@Parameter(description = "페이지당 사이즈",
 		schema = @Schema(example = "10", requiredMode = Schema.RequiredMode.REQUIRED))
+	@NotNull(message = "pageSize is null")
 	@Min(1)
 	private Integer pageSize;
 }

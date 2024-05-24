@@ -2,6 +2,7 @@ package com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listi
 
 import java.time.LocalDateTime;
 
+import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
 import com.querydsl.core.annotations.QueryProjection;
 
@@ -30,7 +31,8 @@ import lombok.NoArgsConstructor;
 			@ColumnResult(name = "freedivingLevel", type = Integer.class),
 			@ColumnResult(name = "status", type = String.class),
 			@ColumnResult(name = "participantCount", type = Integer.class),
-			@ColumnResult(name = "currentParticipantCount", type = Integer.class)
+			@ColumnResult(name = "currentParticipantCount", type = Integer.class),
+			@ColumnResult(name = "genderType", type = String.class)
 		}
 	)
 )
@@ -45,6 +47,7 @@ public class GetBuddyEventListingQueryProjectionDto {
 	private BuddyEventStatus status;
 	private Long participantCount;
 	private Long currentParticipantCount;
+	private GenderType genderType;
 
 	@Builder
 	@QueryProjection
@@ -56,7 +59,8 @@ public class GetBuddyEventListingQueryProjectionDto {
 		, Long freedivingLevel
 		, BuddyEventStatus status,
 		Long participantCount,
-		Long currentParticipantCount) {
+		Long currentParticipantCount,
+		GenderType genderType) {
 		this.eventId = eventId;
 		this.eventStartDate = eventStartDate;
 		this.eventEndDate = eventEndDate;
@@ -67,5 +71,6 @@ public class GetBuddyEventListingQueryProjectionDto {
 		this.status = status;
 		this.participantCount = participantCount;
 		this.currentParticipantCount = currentParticipantCount;
+		this.genderType = genderType;
 	}
 }

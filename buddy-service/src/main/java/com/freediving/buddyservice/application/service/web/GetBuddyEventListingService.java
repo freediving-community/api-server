@@ -55,12 +55,13 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 		List<GetBuddyEventListingQueryProjectionDto> buddyEventListing = getBuddyEventListingPort.getBuddyEventListing(
 			userId, command.getEventStartDate(), command.getEventEndDate(),
 			command.getBuddyEventConcepts(), command.getCarShareYn(), command.getFreedivingLevel(),
-			command.getDivingPools(), command.getSortType(), command.getPageNumber(), command.getPageSize());
+			command.getDivingPools(), command.getSortType(), command.getGenderType(), command.getPageNumber(),
+			command.getPageSize());
 
 		Long totalCount = getBuddyEventListingPort.countOfGetBuddyEventListing(userId, command.getEventStartDate(),
 			command.getEventEndDate(),
 			command.getBuddyEventConcepts(), command.getCarShareYn(), command.getFreedivingLevel(),
-			command.getDivingPools(), command.getSortType());
+			command.getDivingPools(), command.getGenderType());
 
 		final List<Long> ids = buddyEventListing.stream()
 			.map(e -> e.getEventId())
@@ -139,6 +140,7 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 						.profileImgUrl(userHashMap.get(e.getUserId()).getProfileImgUrl()).build())
 					.collect(
 						Collectors.toSet()))
+				.genderType(event.getGenderType())
 				.build();
 
 			response.getComponents().add(cardResponse);

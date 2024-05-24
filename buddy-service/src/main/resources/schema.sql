@@ -153,3 +153,22 @@ CREATE TABLE buddy_event_concept
 );
 ALTER TABLE buddy_event_concept
     ADD CONSTRAINT PK_BUDDY_EVENT_CONCEPT PRIMARY KEY (concept_id);
+
+
+-- 관심사 선호 테이블
+
+DROP TABLE IF EXISTS user_diving_pool;
+CREATE TABLE user_diving_pool
+(
+    user_id        BIGINT      NOT NULL,
+    diving_pool_id VARCHAR(30) NOT NULL,
+    PRIMARY KEY (user_id, diving_pool_id)
+);
+
+DROP TABLE IF EXISTS user_buddy_event_concept;
+CREATE TABLE user_buddy_event_concept
+(
+    user_id    BIGINT      NOT NULL,
+    concept_id VARCHAR(30) NOT NULL,
+    PRIMARY KEY (user_id, concept_id)
+);

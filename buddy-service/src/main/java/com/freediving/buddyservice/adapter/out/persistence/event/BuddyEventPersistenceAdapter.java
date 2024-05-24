@@ -18,6 +18,7 @@ import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listin
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.GetBuddyEventListingRepoDSL;
 import com.freediving.buddyservice.application.port.out.web.CreateBuddyEventPort;
 import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventListingPort;
+import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.config.enumerate.SortType;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
@@ -94,7 +95,8 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBu
 	@Override
 	public List<GetBuddyEventListingQueryProjectionDto> getBuddyEventListing(Long userId, LocalDateTime eventStartDate,
 		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
-		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType, int pageNumber, int pageSize) {
+		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType, GenderType genderType, int pageNumber,
+		int pageSize) {
 		// todo 고도화 필요.
 
 		//eventId = {Long@15333} 1
@@ -109,7 +111,7 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBu
 		// currentParticipantCount = {Long@15333} 1
 		List<GetBuddyEventListingQueryProjectionDto> buddyEventListing = getBuddyEventListingRepoDSL.getBuddyEventListing(
 			userId, eventStartDate, eventEndDate, buddyEventConcepts, carShareYn, freedivingLevel, divingPools,
-			sortType, pageNumber, pageSize);
+			sortType, genderType, pageNumber, pageSize);
 
 		return buddyEventListing;
 	}
@@ -117,7 +119,7 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBu
 	@Override
 	public Long countOfGetBuddyEventListing(Long userId, LocalDateTime eventStartDate,
 		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
-		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType) {
+		Integer freedivingLevel, Set<DivingPool> divingPools, GenderType genderType) {
 		// todo 고도화 필요.
 
 		//eventId = {Long@15333} 1
@@ -132,7 +134,7 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBu
 		// currentParticipantCount = {Long@15333} 1
 		Long count = getBuddyEventListingRepoDSL.countOfGetBuddyEventListing(
 			userId, eventStartDate, eventEndDate, buddyEventConcepts, carShareYn, freedivingLevel, divingPools,
-			sortType);
+			genderType);
 
 		return count;
 	}

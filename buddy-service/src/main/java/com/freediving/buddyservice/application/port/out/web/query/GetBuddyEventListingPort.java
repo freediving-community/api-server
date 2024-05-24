@@ -9,6 +9,7 @@ import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listin
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.BuddyEventDivingPoolMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.BuddyEventJoinMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.GetBuddyEventListingQueryProjectionDto;
+import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.config.enumerate.SortType;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.common.enumerate.DivingPool;
@@ -17,11 +18,12 @@ public interface GetBuddyEventListingPort {
 
 	List<GetBuddyEventListingQueryProjectionDto> getBuddyEventListing(Long userId, LocalDateTime eventStartDate,
 		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
-		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType, int pageNumber, int pageSize);
+		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType, GenderType genderType, int pageNumber,
+		int pageSize);
 
 	Long countOfGetBuddyEventListing(Long userId, LocalDateTime eventStartDate,
 		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
-		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType);
+		Integer freedivingLevel, Set<DivingPool> divingPools, GenderType genderType);
 
 	Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> getAllDivingPoolMapping(List<Long> ids);
 

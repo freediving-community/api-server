@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.config.enumerate.SortType;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.common.enumerate.DivingPool;
@@ -23,11 +24,12 @@ public interface GetBuddyEventListingRepoDSL {
 
 	List<GetBuddyEventListingQueryProjectionDto> getBuddyEventListing(Long userId, LocalDateTime eventStartDate,
 		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
-		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType, int pageNumber, int offset);
+		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType, GenderType genderType, int pageNumber,
+		int offset);
 
 	Long countOfGetBuddyEventListing(Long userId, LocalDateTime eventStartDate,
 		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
-		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType);
+		Integer freedivingLevel, Set<DivingPool> divingPools, GenderType genderType);
 
 	Map<Long, List<BuddyEventConceptMappingProjectDto>> findConceptMappingAllByEventIds(List<Long> ids);
 
