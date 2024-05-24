@@ -31,7 +31,6 @@ import lombok.Getter;
 @Getter
 public class GetBuddyEventListingCommand extends SelfValidating<GetBuddyEventListingCommand> {
 
-	@FutureOrPresent(message = "일정 시작 시간은 현재 시간 이후여야 합니다.")
 	private final LocalDateTime eventStartDate;
 
 	@FutureOrPresent(message = "일정 종료 시간은 현재 시간 이후여야 합니다.")
