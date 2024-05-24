@@ -128,9 +128,11 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 			query.setParameter("conceptCount", buddyEventConcepts.size());
 		}
 
+		if (genderType.equals(GenderType.ALL) == false)
+			query.setParameter("genderType", genderType.name());
+
 		query.setParameter("limit", offset);
 		query.setParameter("offset", (pageNumber - 1) * offset);
-		query.setParameter("genderType", genderType.name());
 
 		List<Object[]> resultList = query.getResultList();
 
@@ -167,7 +169,7 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 		sql.append("SELECT COUNT(DISTINCT events.event_id) ");
 		sql.append("FROM buddy_event AS events ");
 		sql.append("WHERE events.event_start_date BETWEEN :startDate AND :endDate ");
-		sql.append("AND events.status = 'RECRUITING' AND events.gender_type = :genderType ");
+		sql.append("AND events.status = 'RECRUITING' ");
 
 		if (carShareYn != null) {
 			sql.append("AND events.car_share_yn = :carShareYn ");
@@ -201,7 +203,9 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 		Query query = entityManager.createNativeQuery(sql.toString());
 		query.setParameter("startDate", eventStartDate);
 		query.setParameter("endDate", eventEndDate);
-		query.setParameter("genderType", genderType.name());
+
+		if (genderType.equals(GenderType.ALL) == false)
+			query.setParameter("genderType", genderType.name());
 
 		if (carShareYn != null) {
 			query.setParameter("carShareYn", carShareYn);
