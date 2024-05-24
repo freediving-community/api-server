@@ -18,11 +18,6 @@ public class BuddyEventLikePersistenceAdapter implements BuddyEventLikeTogglePor
 	private final BuddyEventLikeMappingRepository buddyEventLikeMappingRepository;
 
 	@Override
-	public void buddyEventLikeToggle(final Long userId, final Long eventId, final boolean likeStatus) {
-
-	}
-
-	@Override
 	public BuddyEventLikeMappingJpaEntity existBuddyEventLikeMapping(BuddyEventJpaEntity buddyEventJpaEntity,
 		Long userId) {
 
@@ -39,7 +34,7 @@ public class BuddyEventLikePersistenceAdapter implements BuddyEventLikeTogglePor
 	 * @param  userId 좋아요를 한 사용자 식별 ID
 	 */
 	@Override
-	public void buddyEventLikeToggleOn(final BuddyEventJpaEntity buddyEventJpaEntity,
+	public Integer buddyEventLikeToggleOn(final BuddyEventJpaEntity buddyEventJpaEntity,
 		final Long userId, final BuddyEventLikeMappingJpaEntity existBuddyEventLikeMapping) {
 
 		Optional<BuddyEventLikeCountJpaEntity> buddyEventLikeCountJpaEntity = buddyEventLikeCountRepository.findById(
@@ -61,10 +56,11 @@ public class BuddyEventLikePersistenceAdapter implements BuddyEventLikeTogglePor
 		}
 
 		buddyEventLikeCountRepository.save(buddyEventLikeCountJpaEntity.get());
+		return buddyEventLikeCountJpaEntity.get().getLikeCount();
 	}
 
 	@Override
-	public void buddyEventLikeToggleOff(final BuddyEventJpaEntity buddyEventJpaEntity,
+	public Integer buddyEventLikeToggleOff(final BuddyEventJpaEntity buddyEventJpaEntity,
 		final Long userId, final BuddyEventLikeMappingJpaEntity existBuddyEventLikeMapping) {
 
 		Optional<BuddyEventLikeCountJpaEntity> buddyEventLikeCountJpaEntity = buddyEventLikeCountRepository.findById(
@@ -73,6 +69,7 @@ public class BuddyEventLikePersistenceAdapter implements BuddyEventLikeTogglePor
 		if (buddyEventLikeCountJpaEntity.isPresent() == false)
 			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, "BuddyEvent like Mapping is null");
 
+		//todo 동시성 문제 해결 필요함.
 		buddyEventLikeCountJpaEntity.get().likeCountDown();
 
 		// 좋아요 매핑이 존재 하면
@@ -82,6 +79,7 @@ public class BuddyEventLikePersistenceAdapter implements BuddyEventLikeTogglePor
 		}
 
 		buddyEventLikeCountRepository.save(buddyEventLikeCountJpaEntity.get());
+		return buddyEventLikeCountJpaEntity.get().getLikeCount();
 	}
 
 	@Override

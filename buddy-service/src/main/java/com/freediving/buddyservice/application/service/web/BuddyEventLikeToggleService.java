@@ -24,7 +24,7 @@ public class BuddyEventLikeToggleService implements BuddyEventLikeToggleUseCase 
 
 	@Override
 	@Transactional(isolation = Isolation.READ_UNCOMMITTED)
-	public void buddyEventLikeToggle(BuddyEventLikeToggleCommand command) {
+	public Integer buddyEventLikeToggle(BuddyEventLikeToggleCommand command) {
 
 		// 1.  버디 이벤트가 어떻게 노출될지 하나하나 판단하기가 힘듬. 이벤트가 실제 존재하는지만 판단한다.
 		// todo 버디 이벤트가 존재 하는 이벤트인지 확인
@@ -42,25 +42,24 @@ public class BuddyEventLikeToggleService implements BuddyEventLikeToggleUseCase 
 		// 3-1 좋아요 설정 and 좋아요 설정이 되어있는 경우
 		if (command.isLikeStatus() == true && (buddyEventLikeMappingJpaEntity != null
 			&& buddyEventLikeMappingJpaEntity.getIsDeleted() == false))
-			return;
+			return -1;
 
 		// 3-2 좋아요 해지 and 좋아요 없는 상태
 		if (command.isLikeStatus() == false && (buddyEventLikeMappingJpaEntity == null
 			|| buddyEventLikeMappingJpaEntity.getIsDeleted() == true))
-			return;
+			return -1;
 
 		// 3-3 좋아요 설정
 		if (command.isLikeStatus() == true) {
-			buddyEventLikeTogglePort.buddyEventLikeToggleOn(buddyEvent, command.getUserId(),
+			return buddyEventLikeTogglePort.buddyEventLikeToggleOn(buddyEvent, command.getUserId(),
 				buddyEventLikeMappingJpaEntity);
-			return;
 		}
 		// 3-4 좋아요 해지.
 		if (command.isLikeStatus() == false) {
-			buddyEventLikeTogglePort.buddyEventLikeToggleOff(buddyEvent, command.getUserId(),
+			return buddyEventLikeTogglePort.buddyEventLikeToggleOff(buddyEvent, command.getUserId(),
 				buddyEventLikeMappingJpaEntity);
-			return;
 		}
+		return -1;
 
 	}
 

@@ -1,5 +1,8 @@
 package com.freediving.buddyservice.adapter.in.web.command;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -106,13 +109,15 @@ public class BuddyEventCommandController {
 
 	@Operation(
 		summary = "버디 이벤트 좋아요 설정/해지",
-		description = "버디 이벤트 좋아요 설정/해지를 한다.  좋아요 설정이 되어있는 버디 이벤트에 좋아요를 하거나, 좋아요 해지 상태의 "
-			+ "버디이벤트에 해지를 요청해도 아무런 로직이 실행되지는 않는다. 결과는 200 리턴이 된다.",
+		description = "버디 이벤트 좋아요 설정/해지를 처리하고 버디 이벤트의 최종 좋아요 수치를 반환한다.  좋아요 설정이 되어있는 버디 이벤트에 좋아요를 하거나, 좋아요 해지 상태의 "
+			+ "버디이벤트에 해지를 요청하면 좋아요 숫자가 -1이 리턴된다.(아무런 로직이 실행되지는 않는다.) 결과는 200 리턴이 된다.",
 		responses = {
 			@ApiResponse(
 				responseCode = "200",
 				description = "버디 이벤트 좋아요 설정/해지 성공",
-				ref = "#/components/responses/200"
+				content = @Content(mediaType = "application/json",
+					schema = @Schema(example = "{ \"likeCount\" : 14 }"))
+
 			),
 			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
 			@ApiResponse(responseCode = "401", ref = "#/components/responses/401"),
@@ -135,7 +140,7 @@ public class BuddyEventCommandController {
 				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
 
 			// 2. Use Case Command 전달.
-			buddyEventLikeActionUseCase.buddyEventLikeToggle(
+			Integer count = buddyEventLikeActionUseCase.buddyEventLikeToggle(
 				BuddyEventLikeToggleCommand.builder()
 					.userId(userId)
 					.eventId(request.getEventId())
@@ -143,7 +148,9 @@ public class BuddyEventCommandController {
 					.build());
 
 			// 3. Command 요청 및 응답 리턴.
-			ResponseJsonObject response = new ResponseJsonObject(ServiceStatusCode.OK, null);
+			Map<String, Integer> resMap = new HashMap<>();
+			resMap.put("likeCount", count);
+			ResponseJsonObject response = new ResponseJsonObject(ServiceStatusCode.OK, resMap);
 
 			return ResponseEntity.ok(response);
 		} catch (BuddyMeException e) {
