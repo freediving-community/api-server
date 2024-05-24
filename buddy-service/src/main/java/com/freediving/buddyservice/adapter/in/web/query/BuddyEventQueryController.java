@@ -45,7 +45,6 @@ public class BuddyEventQueryController {
 	// API 캐로셀 심플 카드 조회 하기.
 
 	// API 리스팅 카드 조회 하기.
-
 	@Operation(
 		summary = "버디 이벤트 버디 매칭 조회 하기 ",
 		description = "버디 매칭을 조회합니다.",
@@ -88,6 +87,7 @@ public class BuddyEventQueryController {
 					.freedivingLevel(request.getFreedivingLevel())
 					.divingPools(request.getDivingPools())
 					.sortType(request.getSortType())
+					.genderType(request.getGenderType())
 					.pageNumber(request.getPageNumber())
 					.pageSize(request.getPageSize())
 					.build()

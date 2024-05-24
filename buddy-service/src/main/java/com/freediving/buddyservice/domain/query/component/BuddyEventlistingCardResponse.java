@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto.UserInfo;
+import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.domain.query.component.common.ConceptInfoResponse;
@@ -66,5 +67,8 @@ public class BuddyEventlistingCardResponse implements QueryComponent {
 	private Long currentParticipantCount;
 
 	private Set<ParticipantInfoResponse> participantInfos;
+
+	@Schema(description = "성별 타입", example = "ALL", implementation = GenderType.class, requiredMode = Schema.RequiredMode.REQUIRED)
+	private GenderType genderType;
 
 }
