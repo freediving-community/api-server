@@ -61,7 +61,10 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 			"LEFT JOIN buddy_event_join_requests AS requests ON events.event_id = requests.event_id  AND requests.status in (");
 		sql.append("'" + ParticipationStatus.OWNER.name() + "','" + ParticipationStatus.PARTICIPATING.name() + "') ");
 		sql.append("WHERE events.event_start_date BETWEEN :startDate AND :endDate ");
-		sql.append("AND events.status = 'RECRUITING' AND events.gender_type = :genderType ");
+		sql.append("AND events.status = 'RECRUITING' ");
+
+		if (genderType.equals(GenderType.ALL) == false)
+			sql.append(" AND events.gender_type = :genderType ");
 
 		if (carShareYn != null) {
 			sql.append("AND events.car_share_yn = :carShareYn ");
@@ -169,6 +172,9 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 		if (carShareYn != null) {
 			sql.append("AND events.car_share_yn = :carShareYn ");
 		}
+
+		if (genderType.equals(GenderType.ALL) == false)
+			sql.append(" AND events.gender_type = :genderType ");
 
 		if (freedivingLevel != null) {
 			sql.append("AND events.freediving_level = :freedivingLevel ");
