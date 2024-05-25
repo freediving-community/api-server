@@ -1,6 +1,5 @@
 package com.freediving.communityservice.adapter.in.web.command;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,15 +12,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.in.dto.ArticleEditRequest;
 import com.freediving.communityservice.adapter.in.dto.ArticleWriteRequest;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
+import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.ArticleEditCommand;
+import com.freediving.communityservice.application.port.in.ArticleReadCommand;
 import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleUseCase;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
@@ -56,7 +56,7 @@ public class ArticleCommandController {
 		}
 	)
 	@PostMapping("/boards/{boardType}/articles")
-	public ResponseEntity<ResponseJsonObject<Long>> writeArticleContent(
+	public ResponseEntity<ResponseJsonObject<ArticleContent>> writeArticleContent(
 		@Parameter(hidden = true) UserProvider userProvider,
 		@PathVariable("boardType") BoardType boardType,
 		@RequestBody ArticleWriteRequest articleWriteRequest) {
@@ -79,16 +79,15 @@ public class ArticleCommandController {
 				.images(uploadedImages)
 				.build());
 
-		URI location = ServletUriComponentsBuilder
-			.fromHttpUrl(GATEWAY_DOMAIN)
-			.path("v1/boards/{boardType}/articles/{id}")
-			.buildAndExpand(boardType, articleId)
-			.toUri();
-
-		return ResponseEntity
-			.ok(new ResponseJsonObject(ServiceStatusCode.OK, location))
-			.created(location)
-			.build();
+		ArticleContent articleContentDetail = articleUseCase.getArticleWithComment(
+			ArticleReadCommand.builder()
+				.userProvider(userProvider)
+				.boardType(boardType)
+				.articleId(articleId)
+				.isShowAll(false)
+				.withoutComment(true)
+				.build());
+		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, articleContentDetail));
 	}
 
 	@Operation(
