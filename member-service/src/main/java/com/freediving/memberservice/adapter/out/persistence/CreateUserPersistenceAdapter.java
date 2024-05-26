@@ -3,12 +3,16 @@ package com.freediving.memberservice.adapter.out.persistence;
 import java.util.List;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.util.CollectionUtils;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.common.domain.member.RoleLevel;
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.memberservice.adapter.in.web.dto.CreateUserResponse;
+import com.freediving.memberservice.adapter.out.dto.UserConceptRequest;
+import com.freediving.memberservice.adapter.out.dto.UserPoolRequest;
+import com.freediving.memberservice.adapter.out.kafka.UserPreferencesProducer;
 import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.application.port.in.CreateUserInfoCommand;
 import com.freediving.memberservice.application.port.in.CreateUserInfoCommandV2;
@@ -38,6 +42,7 @@ import lombok.RequiredArgsConstructor;
 public class CreateUserPersistenceAdapter implements CreateUserPort, CreateUserPortV2 {
 	private final UserJpaRepository userJpaRepository;
 	private final UserLicenseJpaRepository userLicenseJpaRepository;
+	private final UserPreferencesProducer preferencesProducer;
 
 	/**
 	 * @Author           : sasca37
@@ -103,7 +108,6 @@ public class CreateUserPersistenceAdapter implements CreateUserPort, CreateUserP
 		userJpaEntity.updateUserNickname(command.getNickname());
 		userJpaEntity.updateUserContent(command.getContent());
 
-		// TODO : 다이빙 풀 정보, 컨셉 정보 버디서비스 전달
 	}
 
 	@Override
@@ -121,6 +125,8 @@ public class CreateUserPersistenceAdapter implements CreateUserPort, CreateUserP
 		final DiveType diveType = command.getDiveType();
 		final Integer licenseLevel = command.getLicenseLevel();
 		final String licenseImgUrl = command.getLicenseImgUrl();
+		List<String> poolList = command.getPoolList();
+		List<String> conceptList = command.getConceptList();
 
 		if (!ObjectUtils.isEmpty(diveType)) {
 			UserLicenseJpaEntity userLicenseJpaEntity = userLicenseJpaRepository.findByUserIdAndDiveType(userId,
@@ -138,6 +144,21 @@ public class CreateUserPersistenceAdapter implements CreateUserPort, CreateUserP
 					}
 				}
 			}
+		}
+
+		if (!CollectionUtils.isEmpty(conceptList)) {
+			UserConceptRequest userConceptRequest = UserConceptRequest.builder()
+				.userId(userId)
+				.preferredConcepts(conceptList)
+				.build();
+			preferencesProducer.sendUserConcept(userConceptRequest);
+		}
+		if (!CollectionUtils.isEmpty(poolList)) {
+			UserPoolRequest userPoolRequest = UserPoolRequest.builder()
+				.userId(userId)
+				.preferredPools(poolList)
+				.build();
+			preferencesProducer.sendUserPool(userPoolRequest);
 		}
 	}
 }
