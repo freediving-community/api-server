@@ -16,7 +16,22 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-
+  kafka:
+    bootstrap-servers: 35.199.188.230:19993
+    consumer:
+      group-id: member-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        max.partition.fetch.bytes: 1048588 # 10MB
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        max.request.size: 1048588 # 10MB
+    listener:
+      missing-topics-fatal: false
 eureka:
   instance:
     hostname: localhost
@@ -91,3 +106,7 @@ cloud:
     region:
       static: ap-northeast-2
       info: ap-northeast-2
+task:
+  topic:
+    user-pool-preferences: buddyservice.task.user-pool-preferences-local
+    user-concept-preferences: buddyservice.task.user-concept-preferences-local
