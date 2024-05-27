@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.application.port.out.web.query;
+package com.freediving.buddyservice.domain.query;
 
 import java.util.ArrayList;
 import java.util.List;

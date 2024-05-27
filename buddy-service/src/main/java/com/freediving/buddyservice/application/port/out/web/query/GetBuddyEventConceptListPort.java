@@ -7,4 +7,6 @@ import com.freediving.buddyservice.adapter.out.persistence.concept.BuddyEventCon
 public interface GetBuddyEventConceptListPort {
 
 	List<BuddyEventConceptJpaEntity> getEventConceptList();
+
+	List<BuddyEventConceptJpaEntity> getEventConceptListForInternal();
 }

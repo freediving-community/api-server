@@ -1,5 +1,8 @@
 package com.freediving.common.enumerate;
 
+import lombok.Getter;
+
+@Getter
 public enum DivingPool {
 
 	DEEPSTATION("딥스테이션"),

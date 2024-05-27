@@ -11,12 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestJpaEntity;
-import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.BuddyEventConceptMappingProjectDto;
-import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.BuddyEventDivingPoolMappingProjectDto;
+import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventConceptMappingProjectDto;
+import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventDivingPoolMappingProjectDto;
+import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.carousel.GetBuddyEventCarouselQueryProjectionDto;
+import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.carousel.GetBuddyEventCarouselRepoDSL;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.BuddyEventJoinMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.GetBuddyEventListingQueryProjectionDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.GetBuddyEventListingRepoDSL;
 import com.freediving.buddyservice.application.port.out.web.CreateBuddyEventPort;
+import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventCarouselPort;
 import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventListingPort;
 import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.config.enumerate.SortType;
@@ -38,10 +41,12 @@ import lombok.RequiredArgsConstructor;
  **/
 @RequiredArgsConstructor
 @PersistenceAdapter
-public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBuddyEventListingPort {
+public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBuddyEventListingPort,
+	GetBuddyEventCarouselPort {
 
 	private final BuddyEventRepository buddyEventRepository;
 	private final GetBuddyEventListingRepoDSL getBuddyEventListingRepoDSL;
+	private final GetBuddyEventCarouselRepoDSL getBuddyEventCarouselRepoDSL;
 
 	@Override
 	@Transactional
@@ -139,6 +144,53 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBu
 		return count;
 	}
 
+	@Override
+	public List<GetBuddyEventCarouselQueryProjectionDto> getBuddyEventWeekly(Long userId, LocalDateTime eventStartDate,
+		int pageNumber, int pageSize) {
+
+		List<GetBuddyEventCarouselQueryProjectionDto> buddyEventListing = getBuddyEventCarouselRepoDSL.getBuddyEventCarousel(
+			userId, eventStartDate, pageNumber, pageSize);
+
+		return buddyEventListing;
+	}
+
+	@Override
+	public Long countOfGetBuddyEventWeekly(Long userId, LocalDateTime eventStartDate) {
+
+		//eventId = {Long@15333} 1
+		// eventStartDate = {LocalDateTime@15837} "2024-05-07T10:00"
+		// eventEndDate = {LocalDateTime@15838} "2024-05-07T13:00"
+		// isLiked = true
+		// likedCount = {Integer@15635} 1
+		// comment = "이번 모임은 캐주얼하게 진행합니다."
+		// freedivingLevel = {Integer@15337} 0
+		// status = {BuddyEventStatus@15637} "RECRUITING"
+		// participantCount = {Integer@15645} 3
+		// currentParticipantCount = {Long@15333} 1
+		Long count = getBuddyEventCarouselRepoDSL.countOfGetBuddyEventCarousel(
+			userId, eventStartDate);
+
+		return count;
+	}
+
+	@Override
+	public List<GetBuddyEventCarouselQueryProjectionDto> getBuddyEventCarouselByDivingPool(Long userId,
+		LocalDateTime eventStartDate, DivingPool divingPool) {
+
+		List<GetBuddyEventCarouselQueryProjectionDto> buddyEventListing = getBuddyEventCarouselRepoDSL.getBuddyEventCarouselByDivingPool(
+			userId, eventStartDate, divingPool);
+
+		return buddyEventListing;
+	}
+
+	public Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> getAllDivingPoolMapping(List<Long> ids) {
+		// 1.해당 이벤트 다이빙 풀 조회하기
+
+		Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> allDivingPoolMappingByEventId = getBuddyEventListingRepoDSL.findDivingPoolMappingAllByEventIds(
+			ids);
+		return allDivingPoolMappingByEventId;
+	}
+
 	public Map<Long, List<BuddyEventJoinMappingProjectDto>> getAllJoinMapping(List<Long> ids) {
 		// 3. 참여자 User 정보 조회하기
 		Map<Long, List<BuddyEventJoinMappingProjectDto>> allJoinMappingByEventId = getBuddyEventListingRepoDSL.findJoinMappingAllByEventIds(
@@ -153,11 +205,4 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBu
 		return allConceptMappingByEventId;
 	}
 
-	public Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> getAllDivingPoolMapping(List<Long> ids) {
-		// 1.해당 이벤트 다이빙 풀 조회하기
-
-		Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> allDivingPoolMappingByEventId = getBuddyEventListingRepoDSL.findDivingPoolMappingAllByEventIds(
-			ids);
-		return allDivingPoolMappingByEventId;
-	}
 }

@@ -13,6 +13,10 @@ import com.freediving.buddyservice.adapter.out.persistence.concept.QBuddyEventCo
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.QBuddyEventConceptMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.QBuddyEventDivingPoolMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.QBuddyEventJoinRequestJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventConceptMappingProjectDto;
+import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventDivingPoolMappingProjectDto;
+import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.QBuddyEventConceptMappingProjectDto;
+import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.QBuddyEventDivingPoolMappingProjectDto;
 import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.config.enumerate.SortType;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
@@ -95,7 +99,7 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 				sql.append("ORDER BY like_count.like_count DESC ");
 				break;
 			case DEADLINE:
-				sql.append("ORDER BY events.event_end_date ASC ");
+				sql.append("ORDER BY events.event_start_date ASC ");
 				break;
 			case NEWEST:
 			default:
