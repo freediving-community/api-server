@@ -19,7 +19,7 @@ import lombok.Getter;
  **/
 @EqualsAndHashCode(callSuper = false)
 @Getter
-public class GetBuddyEventCarouselCommand extends SelfValidating<GetBuddyEventCarouselCommand> {
+public class GetHomeWeeklyBuddyEventCommand extends SelfValidating<GetHomeWeeklyBuddyEventCommand> {
 
 	private final LocalDateTime eventStartDate;
 
@@ -30,7 +30,7 @@ public class GetBuddyEventCarouselCommand extends SelfValidating<GetBuddyEventCa
 	private Integer pageSize;
 
 	@Builder
-	public GetBuddyEventCarouselCommand(LocalDateTime eventStartDate, int pageNumber, int pageSize) {
+	public GetHomeWeeklyBuddyEventCommand(LocalDateTime eventStartDate, int pageNumber, int pageSize) {
 
 		if (eventStartDate.isAfter(LocalDateTime.now()) == false)
 			eventStartDate = LocalDateTime.now();

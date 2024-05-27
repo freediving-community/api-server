@@ -29,6 +29,8 @@ import com.freediving.buddyservice.domain.query.component.common.ConceptInfoResp
 import com.freediving.buddyservice.domain.query.component.common.DivingPoolInfoResponse;
 import com.freediving.buddyservice.domain.query.component.common.ParticipantInfoResponse;
 import com.freediving.common.config.annotation.UseCase;
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,19 +46,14 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 	public QueryComponentListResponse getBuddyEventListing(Long userId,
 		GetBuddyEventListingCommand command) {
 
-		//dsl 쿼리 조회
-
-		/* Query DSL 조회
-		 *
-		 * */
-
-		// 멤버 서비스로 사용자 정보 요청.
-
 		List<GetBuddyEventListingQueryProjectionDto> buddyEventListing = getBuddyEventListingPort.getBuddyEventListing(
 			userId, command.getEventStartDate(), command.getEventEndDate(),
 			command.getBuddyEventConcepts(), command.getCarShareYn(), command.getFreedivingLevel(),
 			command.getDivingPools(), command.getSortType(), command.getGenderType(), command.getPageNumber(),
 			command.getPageSize());
+
+		if (buddyEventListing == null || buddyEventListing.isEmpty())
+			throw new BuddyMeException(ServiceStatusCode.NO_CONTENT);
 
 		Long totalCount = getBuddyEventListingPort.countOfGetBuddyEventListing(userId, command.getEventStartDate(),
 			command.getEventEndDate(),

@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.buddyservice.adapter.in.web.query.dto.GetBuddyEventListingRequest;
-import com.freediving.buddyservice.application.port.in.web.query.home.GetBuddyEventCarouselCommand;
 import com.freediving.buddyservice.application.port.in.web.query.home.GetBuddyEventCarouselUseCase;
+import com.freediving.buddyservice.application.port.in.web.query.home.GetHomeRecommendPoolBuddyEventCommand;
+import com.freediving.buddyservice.application.port.in.web.query.home.GetHomeWeeklyBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.web.query.listing.GetBuddyEventListingCommand;
 import com.freediving.buddyservice.application.port.in.web.query.listing.GetBuddyEventListingUseCase;
 import com.freediving.buddyservice.domain.query.QueryComponentListResponse;
+import com.freediving.buddyservice.domain.query.QueryPreferencePoolCarouselResponse;
 import com.freediving.buddyservice.domain.query.component.BuddyEventCarouselCardResponse;
 import com.freediving.buddyservice.domain.query.component.BuddyEventlistingCardResponse;
 import com.freediving.common.config.annotation.WebAdapter;
@@ -76,16 +78,7 @@ public class BuddyEventQueryController {
 		@ModelAttribute GetBuddyEventListingRequest request, HttpServletRequest httpServletRequest) {
 		try {
 			// 1. UserID 추출하기
-			Object userIdObj = httpServletRequest.getAttribute("User-Id");
-			if (userIdObj == null)
-				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
-
-			Long userId = Long.parseLong(userIdObj.toString());
-
-			if (userId == null)
-				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
-			if (userId.equals(-1L))
-				userId = null;
+			Long userId = getUserId(httpServletRequest);
 
 			QueryComponentListResponse buddyEventListingResponse = getBuddyEventListingUseCase.getBuddyEventListing(
 				userId,
@@ -122,7 +115,7 @@ public class BuddyEventQueryController {
 		responses = {
 			@ApiResponse(
 				responseCode = "200",
-				description = "버디 매칭 조회 성공",
+				description = "조회 성공",
 				content = @Content(mediaType = "application/json",
 					schema = @Schema(implementation = BuddyEventCarouselCardResponse.class))),
 			@ApiResponse(responseCode = "204", ref = "#/components/responses/204"),
@@ -135,22 +128,13 @@ public class BuddyEventQueryController {
 		HttpServletRequest httpServletRequest,
 		@RequestParam(value = "eventStartDate") @NotNull @Schema(example = "2024-06-01T00:00:00") LocalDateTime eventStartDate,
 		@RequestParam("pageNumber") @NotNull @Positive @Schema(example = "1") Integer pageNumber,
-		@RequestParam("pageSize") @NotNull @Positive @Schema(example = "1") Integer pageSize) {
+		@RequestParam("pageSize") @NotNull @Positive @Schema(example = "10") Integer pageSize) {
 		try {
 			// 1. UserID 추출하기
-			Object userIdObj = httpServletRequest.getAttribute("User-Id");
-			if (userIdObj == null)
-				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
-
-			Long userId = Long.parseLong(userIdObj.toString());
-
-			if (userId == null)
-				throw new BuddyMeException(ServiceStatusCode.UNAUTHORIZED);
-			if (userId.equals(-1L))
-				userId = null;
+			Long userId = getUserId(httpServletRequest);
 
 			QueryComponentListResponse homeWeekly = getBuddyEventCarouselUseCase.getHomeWeekly(userId,
-				GetBuddyEventCarouselCommand.builder()
+				GetHomeWeeklyBuddyEventCommand.builder()
 					.eventStartDate(eventStartDate)
 					.pageNumber(pageNumber)
 					.pageSize(pageSize)
@@ -169,6 +153,71 @@ public class BuddyEventQueryController {
 			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, e.getMessage());
 		}
 
+	}
+
+	@Operation(
+		summary = "메인 홈 사용자 선호 풀장 버디 모임 조회 ",
+		description = "메인 홈 사용자 선호 풀장 버디 모임 조회 ",
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "조회 성공",
+				content = @Content(mediaType = "application/json",
+					schema = @Schema(implementation = QueryPreferencePoolCarouselResponse.class))),
+			@ApiResponse(responseCode = "204", ref = "#/components/responses/204"),
+			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "500", ref = "#/components/responses/500")
+		}
+	)
+	@GetMapping("/home/recommend")
+	public ResponseEntity<ResponseJsonObject<QueryPreferencePoolCarouselResponse>> getHomeRecommendPoolBuddyEvent(
+		HttpServletRequest httpServletRequest,
+		@RequestParam(value = "eventStartDate") @NotNull @Schema(example = "2024-06-01T00:00:00") LocalDateTime eventStartDate) {
+		try {
+			// 1. UserID 추출하기
+			Long userId = getUserId(httpServletRequest);
+
+			if (userId == null)
+				throw new BuddyMeException(ServiceStatusCode.NO_CONTENT);
+
+			QueryPreferencePoolCarouselResponse homeWeekly = getBuddyEventCarouselUseCase.getHomeRecommendPoolBuddyEvent(
+				userId,
+				GetHomeRecommendPoolBuddyEventCommand.builder()
+					.eventStartDate(eventStartDate)
+					.build()
+			);
+
+			// 3. Command 요청 및 응답 리턴.
+			ResponseJsonObject<QueryPreferencePoolCarouselResponse> response = new ResponseJsonObject<>(
+				ServiceStatusCode.OK, homeWeekly);
+
+			return ResponseEntity.ok(response);
+
+		} catch (BuddyMeException be) {
+			throw be;
+		} catch (Exception e) {
+			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, e.getMessage());
+		}
+
+	}
+
+	public static Long getUserId(HttpServletRequest httpServletRequest) {
+		Object userIdObj = httpServletRequest.getAttribute("User-Id");
+		Long userId = null;
+
+		if (userIdObj != null) {
+			try {
+				userId = Long.parseLong(userIdObj.toString());
+				if (userId.equals(-1L)) {
+					userId = null;
+				}
+			} catch (NumberFormatException e) {
+				// 예외 발생 시 userId를 null로 설정
+				userId = null;
+			}
+		}
+
+		return userId;
 	}
 
 }

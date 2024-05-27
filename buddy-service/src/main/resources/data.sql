@@ -190,3 +190,12 @@ INSERT INTO public.user_license (confirm_tf, license_level, confirm_admin_id, cr
 INSERT INTO public.users (created_date, updated_date, user_id, sex_type, nickname, oauth_type, user_status, email, phone_number, content, oauth_interlock, profile_img_url, provider_id) VALUES ('2024-05-05 13:42:08.431082', '2024-05-05 13:42:08.448992', 3, null, '펭귄다이버_00004', 'GOOGLE', 'ACTIVE', 'hmj0977@gmail.com', null, null, null, 'https://lh3.googleusercontent.com/a/ACg8ocL-oH6fR7L309Vfi8NItCgvYdvCYjRcWVIuloFxviM__sVuEw=s96-c', '106610519602513940118');
 INSERT INTO public.user_license (confirm_tf, license_level, confirm_admin_id, created_date, license_id, updated_date, user_id, license_status, role, dive_type, license_img_url, org_name) VALUES (true, 2, 1, '2024-05-05 14:20:24.258353', 13, '2024-05-06 23:38:58.336691', 3, 'APPROVED', 'WAIT_LICENSE_APPROVAL', 'FREE_DIVE', 'https://d1pjflw6c3jt4r.cloudfront.net/images/license/6-3a6f31c5dd1040dd9fd3a1c85681f35b.png', null);
 */
+
+INSERT INTO user_diving_pool
+VALUES (1, 'DEEPSTATION');
+
+INSERT INTO user_diving_pool
+VALUES (1, 'PARADIVE');
+
+INSERT INTO user_diving_pool
+VALUES (2, 'PARADIVE');

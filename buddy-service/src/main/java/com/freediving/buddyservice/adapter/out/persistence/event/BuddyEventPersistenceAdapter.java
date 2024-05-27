@@ -174,6 +174,15 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBu
 	}
 
 	@Override
+	public List<GetBuddyEventCarouselQueryProjectionDto> getBuddyEventCarouselByDivingPool(Long userId,
+		LocalDateTime eventStartDate, DivingPool divingPool) {
+
+		List<GetBuddyEventCarouselQueryProjectionDto> buddyEventListing = getBuddyEventCarouselRepoDSL.getBuddyEventCarouselByDivingPool(
+			userId, eventStartDate, divingPool);
+
+		return buddyEventListing;
+	}
+
 	public Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> getAllDivingPoolMapping(List<Long> ids) {
 		// 1.해당 이벤트 다이빙 풀 조회하기
 
@@ -182,7 +191,6 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBu
 		return allDivingPoolMappingByEventId;
 	}
 
-	@Override
 	public Map<Long, List<BuddyEventJoinMappingProjectDto>> getAllJoinMapping(List<Long> ids) {
 		// 3. 참여자 User 정보 조회하기
 		Map<Long, List<BuddyEventJoinMappingProjectDto>> allJoinMappingByEventId = getBuddyEventListingRepoDSL.findJoinMappingAllByEventIds(
@@ -190,7 +198,6 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBu
 		return allJoinMappingByEventId;
 	}
 
-	@Override
 	public Map<Long, List<BuddyEventConceptMappingProjectDto>> getAllConceptMapping(List<Long> ids) {
 		// 2.해당 이벤트 컨셉 조회하기
 		Map<Long, List<BuddyEventConceptMappingProjectDto>> allConceptMappingByEventId = getBuddyEventListingRepoDSL.findConceptMappingAllByEventIds(

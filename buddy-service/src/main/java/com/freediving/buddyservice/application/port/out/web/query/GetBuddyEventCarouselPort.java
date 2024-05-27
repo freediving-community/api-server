@@ -7,7 +7,7 @@ import java.util.Map;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventConceptMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventDivingPoolMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.carousel.GetBuddyEventCarouselQueryProjectionDto;
-import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.BuddyEventJoinMappingProjectDto;
+import com.freediving.common.enumerate.DivingPool;
 
 public interface GetBuddyEventCarouselPort {
 
@@ -17,9 +17,12 @@ public interface GetBuddyEventCarouselPort {
 
 	Long countOfGetBuddyEventWeekly(Long userId, LocalDateTime eventStartDate);
 
+	List<GetBuddyEventCarouselQueryProjectionDto> getBuddyEventCarouselByDivingPool(Long userId,
+		LocalDateTime eventStartDate,
+		DivingPool divingPool);
+
 	Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> getAllDivingPoolMapping(List<Long> ids);
 
 	Map<Long, List<BuddyEventConceptMappingProjectDto>> getAllConceptMapping(List<Long> ids);
 
-	Map<Long, List<BuddyEventJoinMappingProjectDto>> getAllJoinMapping(List<Long> ids);
 }
