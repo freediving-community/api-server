@@ -48,4 +48,24 @@ public class DivingPoolService {
 
 	}
 
+	public DivingPoolListResponse findByAllDivingPoolForInternal(DetailLevel detail) throws BuddyMeException {
+
+		List<DivingPoolJpaEntity> divingPoolsJpaEntity = divingPoolRepository.findAllByIsVisibleTrueOrderByDisplayOrderAsc();
+
+		// No Content
+		if (divingPoolsJpaEntity == null || divingPoolsJpaEntity.size() == 0)
+			throw new BuddyMeException(ServiceStatusCode.NO_CONTENT);
+
+		List<Object> divingPoolResponseList = divingPoolsJpaEntity.stream().map(e -> {
+				if (detail.equals(DetailLevel.HIGH))
+					return DivingPoolResponse.of(e);
+				else
+					return DivingPoolSimpleResponse.of(e);
+			})
+			.collect(Collectors.toList());
+
+		return DivingPoolListResponse.builder().divingPools(divingPoolResponseList).build();
+
+	}
+
 }

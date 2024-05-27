@@ -1,10 +1,9 @@
-package com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing;
+package com.freediving.buddyservice.adapter.out.persistence.event.querydsl.carousel;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
@@ -17,12 +16,11 @@ import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyE
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventDivingPoolMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.QBuddyEventConceptMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.QBuddyEventDivingPoolMappingProjectDto;
+import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.BuddyEventJoinMappingProjectDto;
+import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.QBuddyEventJoinMappingProjectDto;
 import com.freediving.buddyservice.config.enumerate.GenderType;
-import com.freediving.buddyservice.config.enumerate.SortType;
-import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.domain.enumeration.ParticipationStatus;
-import com.freediving.common.enumerate.DivingPool;
 import com.freediving.divingpool.data.dao.QDivingPoolJpaEntity;
 import com.querydsl.jpa.JPQLQueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -33,14 +31,14 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Repository
-public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepoDSL {
+public class GetBuddyEventCarouselRepoDSLImpl implements GetBuddyEventCarouselRepoDSL {
 
 	private final EntityManager entityManager;
 
 	@Override
-	public List<GetBuddyEventListingQueryProjectionDto> getBuddyEventListing(Long userId, LocalDateTime eventStartDate,
-		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
-		Integer freedivingLevel, Set<DivingPool> divingPools, SortType sortType, GenderType genderType, int pageNumber,
+	public List<GetBuddyEventCarouselQueryProjectionDto> getBuddyEventCarousel(Long userId,
+		LocalDateTime eventStartDate,
+		int pageNumber,
 		int offset) {
 
 		StringBuilder sql = new StringBuilder();
@@ -54,7 +52,8 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 		sql.append("events.status AS status, ");
 		sql.append("events.participant_count AS participantCount, ");
 		sql.append("COUNT(DISTINCT requests.user_id) AS participantCountDistinct, ");
-		sql.append("events.gender_type AS gender_type ");
+		sql.append("events.gender_type AS gender_type, ");
+		sql.append("events.user_id AS userId ");
 		sql.append("FROM buddy_event AS events ");
 		sql.append("LEFT JOIN buddy_event_diving_pool_mapping AS pool ON events.event_id = pool.event_id ");
 		sql.append("LEFT JOIN buddy_event_concept_mapping AS concept ON events.event_id = concept.event_id ");
@@ -64,84 +63,25 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 		sql.append(
 			"LEFT JOIN buddy_event_join_requests AS requests ON events.event_id = requests.event_id  AND requests.status in (");
 		sql.append("'" + ParticipationStatus.OWNER.name() + "','" + ParticipationStatus.PARTICIPATING.name() + "') ");
-		sql.append("WHERE events.event_start_date BETWEEN :startDate AND :endDate ");
+		sql.append("WHERE events.event_start_date >= :startDate ");
 		sql.append("AND events.status = 'RECRUITING' ");
-
-		if (genderType.equals(GenderType.ALL) == false)
-			sql.append(" AND events.gender_type = :genderType ");
-
-		if (carShareYn != null) {
-			sql.append("AND events.car_share_yn = :carShareYn ");
-		}
-
-		if (freedivingLevel != null) {
-			sql.append("AND events.freediving_level = :freedivingLevel ");
-		}
-
-		if (divingPools != null && !divingPools.isEmpty()) {
-			sql.append("AND pool.diving_pool_id = ANY(:divingPools) ");
-		}
-
-		if (buddyEventConcepts != null && !buddyEventConcepts.isEmpty()) {
-			sql.append("AND EXISTS ( ");
-			sql.append("   SELECT 1 FROM buddy_event_concept_mapping becm ");
-			sql.append("   WHERE becm.event_id = events.event_id ");
-			sql.append("   GROUP BY becm.event_id ");
-			sql.append(
-				"   HAVING SUM(CASE WHEN becm.concept_id = ANY(:buddyEventConcepts) THEN 1 ELSE 0 END) = :conceptCount ) ");
-		}
 
 		sql.append(
 			"GROUP BY events.event_id, events.event_start_date, events.event_end_date, likeMapping.event_id, like_count.like_count, events.comment, events.freediving_level, events.status, events.participant_count ");
 
-		switch (sortType) {
-			case POPULARITY:
-				sql.append("ORDER BY like_count.like_count DESC ");
-				break;
-			case DEADLINE:
-				sql.append("ORDER BY events.event_start_date ASC ");
-				break;
-			case NEWEST:
-			default:
-				sql.append("ORDER BY events.event_start_date DESC ");
-				break;
-		}
-
+		sql.append("ORDER BY events.event_start_date ASC ");
 		sql.append("LIMIT :limit OFFSET :offset");
 
 		Query query = entityManager.createNativeQuery(sql.toString());
 		query.setParameter("userId", userId);
 		query.setParameter("startDate", eventStartDate);
-		query.setParameter("endDate", eventEndDate);
-
-		if (carShareYn != null) {
-			query.setParameter("carShareYn", carShareYn);
-		}
-
-		if (freedivingLevel != null) {
-			query.setParameter("freedivingLevel", freedivingLevel);
-		}
-
-		if (divingPools != null && !divingPools.isEmpty()) {
-			query.setParameter("divingPools", divingPools.stream().map(Enum::name).toArray(String[]::new));
-		}
-
-		if (buddyEventConcepts != null && !buddyEventConcepts.isEmpty()) {
-			query.setParameter("buddyEventConcepts",
-				buddyEventConcepts.stream().map(Enum::name).toArray(String[]::new));
-			query.setParameter("conceptCount", buddyEventConcepts.size());
-		}
-
-		if (genderType.equals(GenderType.ALL) == false)
-			query.setParameter("genderType", genderType.name());
-
 		query.setParameter("limit", offset);
 		query.setParameter("offset", (pageNumber - 1) * offset);
 
 		List<Object[]> resultList = query.getResultList();
 
-		List<GetBuddyEventListingQueryProjectionDto> events = resultList.stream()
-			.map(product -> new GetBuddyEventListingQueryProjectionDto(
+		List<GetBuddyEventCarouselQueryProjectionDto> events = resultList.stream()
+			.map(product -> new GetBuddyEventCarouselQueryProjectionDto(
 				product[0] != null ? ((Number)product[0]).longValue() : null, // eventId
 				convertToLocalDateTime((Timestamp)product[1]), // eventStartDate
 				convertToLocalDateTime((Timestamp)product[2]), // eventEndDate
@@ -153,7 +93,8 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 				// status
 				product[8] != null ? ((Number)product[8]).longValue() : 0, // participantCount
 				product[9] != null ? ((Number)product[9]).longValue() : 0,// currentParticipantCount
-				product[10] != null ? GenderType.valueOf((String)product[10]) : GenderType.ALL))// genderType
+				product[10] != null ? GenderType.valueOf((String)product[10]) : GenderType.ALL,
+				product[11] != null ? ((Number)product[11]).longValue() : -1))// userId
 			.collect(Collectors.toList());
 
 		return events;
@@ -164,70 +105,17 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 	}
 
 	@Override
-	public Long countOfGetBuddyEventListing(Long userId,
-		LocalDateTime eventStartDate,
-		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
-		Integer freedivingLevel, Set<DivingPool> divingPools, GenderType genderType) {
+	public Long countOfGetBuddyEventCarousel(Long userId,
+		LocalDateTime eventStartDate) {
 
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT COUNT(DISTINCT events.event_id) ");
 		sql.append("FROM buddy_event AS events ");
-		sql.append("WHERE events.event_start_date BETWEEN :startDate AND :endDate ");
+		sql.append("WHERE events.event_start_date >= :startDate  ");
 		sql.append("AND events.status = 'RECRUITING' ");
-
-		if (carShareYn != null) {
-			sql.append("AND events.car_share_yn = :carShareYn ");
-		}
-
-		if (genderType.equals(GenderType.ALL) == false)
-			sql.append(" AND events.gender_type = :genderType ");
-
-		if (freedivingLevel != null) {
-			sql.append("AND events.freediving_level = :freedivingLevel ");
-		}
-
-		if (divingPools != null && !divingPools.isEmpty()) {
-			sql.append("AND EXISTS ( ");
-			sql.append("    SELECT 1 FROM buddy_event_diving_pool_mapping pool ");
-			sql.append("    WHERE pool.event_id = events.event_id ");
-			sql.append("    AND pool.diving_pool_id = ANY(:divingPools) ");
-			sql.append(") ");
-		}
-
-		if (buddyEventConcepts != null && !buddyEventConcepts.isEmpty()) {
-			sql.append("AND EXISTS ( ");
-			sql.append("    SELECT 1 FROM buddy_event_concept_mapping becm ");
-			sql.append("    WHERE becm.event_id = events.event_id ");
-			sql.append("    GROUP BY becm.event_id ");
-			sql.append(
-				"    HAVING SUM(CASE WHEN becm.concept_id = ANY(:buddyEventConcepts) THEN 1 ELSE 0 END) = :conceptCount ");
-			sql.append(") ");
-		}
 
 		Query query = entityManager.createNativeQuery(sql.toString());
 		query.setParameter("startDate", eventStartDate);
-		query.setParameter("endDate", eventEndDate);
-
-		if (genderType.equals(GenderType.ALL) == false)
-			query.setParameter("genderType", genderType.name());
-
-		if (carShareYn != null) {
-			query.setParameter("carShareYn", carShareYn);
-		}
-
-		if (freedivingLevel != null) {
-			query.setParameter("freedivingLevel", freedivingLevel);
-		}
-
-		if (divingPools != null && !divingPools.isEmpty()) {
-			query.setParameter("divingPools", divingPools.stream().map(Enum::name).toArray(String[]::new));
-		}
-
-		if (buddyEventConcepts != null && !buddyEventConcepts.isEmpty()) {
-			query.setParameter("buddyEventConcepts",
-				buddyEventConcepts.stream().map(Enum::name).toArray(String[]::new));
-			query.setParameter("conceptCount", buddyEventConcepts.size());
-		}
 
 		return ((Number)query.getSingleResult()).longValue();
 	}

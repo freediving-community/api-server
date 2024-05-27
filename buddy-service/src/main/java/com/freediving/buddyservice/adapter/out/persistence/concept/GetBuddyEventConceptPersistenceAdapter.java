@@ -18,4 +18,9 @@ public class GetBuddyEventConceptPersistenceAdapter implements GetBuddyEventConc
 		return buddyEventConceptRepository.findByEnabledIsTrueOrderByDisplayOrderAsc();
 	}
 
+	public List<BuddyEventConceptJpaEntity> getEventConceptListForInternal() {
+
+		return buddyEventConceptRepository.findByEnabledIsTrueOrderByDisplayOrderAsc();
+	}
+
 }

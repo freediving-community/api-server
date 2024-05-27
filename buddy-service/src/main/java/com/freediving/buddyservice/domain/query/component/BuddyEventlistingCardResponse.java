@@ -66,9 +66,9 @@ public class BuddyEventlistingCardResponse implements QueryComponent {
 	@Schema(description = "현재 참가자 수", example = "2", requiredMode = Schema.RequiredMode.REQUIRED)
 	private Long currentParticipantCount;
 
-	private Set<ParticipantInfoResponse> participantInfos;
-
 	@Schema(description = "성별 타입", example = "ALL", implementation = GenderType.class, requiredMode = Schema.RequiredMode.REQUIRED)
 	private GenderType genderType;
+
+	private Set<ParticipantInfoResponse> participantInfos;
 
 }
