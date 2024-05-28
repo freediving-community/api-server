@@ -21,7 +21,8 @@ import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.carous
 import com.freediving.buddyservice.adapter.out.persistence.preference.UserDivingPoolEntity;
 import com.freediving.buddyservice.adapter.out.persistence.preference.UserDivingPoolRepository;
 import com.freediving.buddyservice.application.port.in.web.query.home.GetBuddyEventCarouselUseCase;
-import com.freediving.buddyservice.application.port.in.web.query.home.GetHomeRecommendPoolBuddyEventCommand;
+import com.freediving.buddyservice.application.port.in.web.query.home.GetHomeActiveBuddyEventCommand;
+import com.freediving.buddyservice.application.port.in.web.query.home.GetHomePreferencePoolBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.web.query.home.GetHomeWeeklyBuddyEventCommand;
 import com.freediving.buddyservice.application.port.out.externalservice.query.RequestMemberPort;
 import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventCarouselPort;
@@ -127,8 +128,8 @@ public class GetBuddyEventCarouselService implements GetBuddyEventCarouselUseCas
 	}
 
 	@Override
-	public QueryPreferencePoolCarouselResponse getHomeRecommendPoolBuddyEvent(Long userId,
-		GetHomeRecommendPoolBuddyEventCommand command) {
+	public QueryPreferencePoolCarouselResponse getHomePreferencePoolBuddyEvent(Long userId,
+		GetHomePreferencePoolBuddyEventCommand command) {
 
 		// 사용자 선호 다이빙 풀 조회.
 		List<UserDivingPoolEntity> userDivingPools = userDivingPoolRepository.findAllByUserId(userId);
@@ -145,7 +146,7 @@ public class GetBuddyEventCarouselService implements GetBuddyEventCarouselUseCas
 			targetPool = userDivingPools.get(randomIndex).getDivingPoolId();
 		}
 
-		List<GetBuddyEventCarouselQueryProjectionDto> buddyEventListing = getBuddyEventCarouselPort.getBuddyEventCarouselByDivingPool(
+		List<GetBuddyEventCarouselQueryProjectionDto> buddyEventListing = getBuddyEventCarouselPort.getHomePreferencePoolBuddyEvent(
 			userId, command.getEventStartDate(), targetPool);
 
 		final List<Long> ids = buddyEventListing.stream()
@@ -171,6 +172,87 @@ public class GetBuddyEventCarouselService implements GetBuddyEventCarouselUseCas
 			.components(new ArrayList<>())
 			.title(targetPool.getDivingPoolName() + "에 같이 갈래요?")
 			.divingPoolId(targetPool)
+			.build();
+
+		for (GetBuddyEventCarouselQueryProjectionDto event : buddyEventListing) {
+			List<BuddyEventConceptMappingProjectDto> conceptMappings = allConceptMappingByEventId.get(
+				event.getEventId());
+			List<BuddyEventDivingPoolMappingProjectDto> divingPoolMappings = allDivingPoolMappingByEventId.get(
+				event.getEventId());
+
+			BuddyEventCarouselCardResponse cardResponse = BuddyEventCarouselCardResponse.builder()
+				.userInfo(userHashMap.get(event.getUserId()))
+				.isLiked(event.isLiked())
+				.likedCount(event.getLikedCount())
+				.eventId(event.getEventId())
+				.divingPools(Optional.ofNullable(divingPoolMappings)
+					.orElse(Collections.emptyList()).stream()
+					.map(e -> DivingPoolInfoResponse.builder()
+						.divingPoolId(e.getDivingPoolId())
+						.divingPoolName(e.getDivingPoolName())
+						.build())
+					.collect(
+						Collectors.toSet()))
+				.comment(event.getComment())
+				.concepts(Optional.ofNullable(conceptMappings)
+					.orElse(Collections.emptyList()).stream()
+					.map(e -> ConceptInfoResponse.builder()
+						.conceptId(e.getConceptId())
+						.conceptName(e.getConceptName())
+						.build())
+					.collect(
+						Collectors.toSet()))
+				.eventStartDate(event.getEventStartDate())
+				.eventEndDate(event.getEventEndDate())
+				.freedivingLevel(event.getFreedivingLevel())
+				.status(event.getStatus())
+				.participantCount(event.getParticipantCount())
+				.currentParticipantCount(event.getCurrentParticipantCount() - 1)
+				.genderType(event.getGenderType())
+				.build();
+
+			response.getComponents().add(cardResponse);
+		}
+
+		return response;
+	}
+
+	@Override
+	public QueryComponentListResponse getHomeActiveBuddyEvent(Long userId, GetHomeActiveBuddyEventCommand command) {
+
+		List<GetBuddyEventCarouselQueryProjectionDto> buddyEventListing = getBuddyEventCarouselPort.getHomeActiveBuddyEvent(
+			userId, command.getEventStartDate(), command.getPageNumber(), command.getPageSize());
+
+		if (buddyEventListing == null || buddyEventListing.isEmpty())
+			throw new BuddyMeException(ServiceStatusCode.NO_CONTENT);
+
+		Long totalCount = getBuddyEventCarouselPort.countOfGetHomeActiveBuddyEvent(userId, command.getEventStartDate());
+
+		final List<Long> ids = buddyEventListing.stream()
+			.map(e -> e.getEventId())
+			.collect(Collectors.toList());
+
+		Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> allDivingPoolMappingByEventId = getBuddyEventCarouselPort.getAllDivingPoolMapping(
+			ids);
+
+		Map<Long, List<BuddyEventConceptMappingProjectDto>> allConceptMappingByEventId = getBuddyEventCarouselPort.getAllConceptMapping(
+			ids);
+
+		Set<Long> userIds = new HashSet<>();
+		// 사용자 정보 요청할 사용자 ID 수집
+		for (GetBuddyEventCarouselQueryProjectionDto event : buddyEventListing) {
+			// 사용자 정보 요청할 사용자 ID 수집
+			userIds.add(event.getUserId());
+		}
+
+		HashMap<Long, UserInfo> userHashMap = requestMemberPort.getMemberStatus(userIds.stream().toList());
+
+		QueryComponentListResponse response = QueryComponentListResponse.builder()
+			.components(new ArrayList<>())
+			.totalCount(totalCount)
+			.pageSize(
+				command.getPageSize())
+			.page(command.getPageNumber())
 			.build();
 
 		for (GetBuddyEventCarouselQueryProjectionDto event : buddyEventListing) {

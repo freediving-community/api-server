@@ -17,9 +17,14 @@ public interface GetBuddyEventCarouselPort {
 
 	Long countOfGetBuddyEventWeekly(Long userId, LocalDateTime eventStartDate);
 
-	List<GetBuddyEventCarouselQueryProjectionDto> getBuddyEventCarouselByDivingPool(Long userId,
+	List<GetBuddyEventCarouselQueryProjectionDto> getHomePreferencePoolBuddyEvent(Long userId,
 		LocalDateTime eventStartDate,
 		DivingPool divingPool);
+
+	List<GetBuddyEventCarouselQueryProjectionDto> getHomeActiveBuddyEvent(Long userId, LocalDateTime eventStartDate,
+		int pageNumber, int pageSize);
+
+	Long countOfGetHomeActiveBuddyEvent(Long userId, LocalDateTime eventStartDate);
 
 	Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> getAllDivingPoolMapping(List<Long> ids);
 
