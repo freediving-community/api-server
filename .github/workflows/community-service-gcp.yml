@@ -4,7 +4,7 @@ on:
   push:
     #paths:
     #- 'community-service/**'
-    branches: [ "feat/#138" ]
+    branches: [ "feat/#163" ]
 
 env:
   COMMUNITY_APPLICATION_DEV_GCP_YML: ${{ secrets.COMMUNITY_APPLICATION_DEV_GCP_YML }}
