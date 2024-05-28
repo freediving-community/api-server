@@ -174,13 +174,41 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBu
 	}
 
 	@Override
-	public List<GetBuddyEventCarouselQueryProjectionDto> getBuddyEventCarouselByDivingPool(Long userId,
+	public List<GetBuddyEventCarouselQueryProjectionDto> getHomePreferencePoolBuddyEvent(Long userId,
 		LocalDateTime eventStartDate, DivingPool divingPool) {
 
-		List<GetBuddyEventCarouselQueryProjectionDto> buddyEventListing = getBuddyEventCarouselRepoDSL.getBuddyEventCarouselByDivingPool(
+		List<GetBuddyEventCarouselQueryProjectionDto> buddyEventListing = getBuddyEventCarouselRepoDSL.getHomePreferencePoolBuddyEvent(
 			userId, eventStartDate, divingPool);
 
 		return buddyEventListing;
+	}
+
+	@Override
+	public List<GetBuddyEventCarouselQueryProjectionDto> getHomeActiveBuddyEvent(Long userId,
+		LocalDateTime eventStartDate, int pageNumber,
+		int pageSize) {
+		List<GetBuddyEventCarouselQueryProjectionDto> buddyEventListing = getBuddyEventCarouselRepoDSL.getHomeActiveBuddyEvent(
+			userId, eventStartDate, pageNumber, pageSize);
+
+		return buddyEventListing;
+	}
+
+	@Override
+	public Long countOfGetHomeActiveBuddyEvent(Long userId, LocalDateTime eventStartDate) {
+		//eventId = {Long@15333} 1
+		// eventStartDate = {LocalDateTime@15837} "2024-05-07T10:00"
+		// eventEndDate = {LocalDateTime@15838} "2024-05-07T13:00"
+		// isLiked = true
+		// likedCount = {Integer@15635} 1
+		// comment = "이번 모임은 캐주얼하게 진행합니다."
+		// freedivingLevel = {Integer@15337} 0
+		// status = {BuddyEventStatus@15637} "RECRUITING"
+		// participantCount = {Integer@15645} 3
+		// currentParticipantCount = {Long@15333} 1
+		Long count = getBuddyEventCarouselRepoDSL.countOfGetHomeActiveBuddyEvent(
+			userId, eventStartDate);
+
+		return count;
 	}
 
 	public Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> getAllDivingPoolMapping(List<Long> ids) {

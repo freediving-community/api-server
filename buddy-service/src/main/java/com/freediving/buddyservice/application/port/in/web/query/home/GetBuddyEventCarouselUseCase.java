@@ -6,6 +6,8 @@ import com.freediving.buddyservice.domain.query.QueryPreferencePoolCarouselRespo
 public interface GetBuddyEventCarouselUseCase {
 	QueryComponentListResponse getHomeWeekly(Long userId, GetHomeWeeklyBuddyEventCommand command);
 
-	QueryPreferencePoolCarouselResponse getHomeRecommendPoolBuddyEvent(Long userId,
-		GetHomeRecommendPoolBuddyEventCommand command);
+	QueryPreferencePoolCarouselResponse getHomePreferencePoolBuddyEvent(Long userId,
+		GetHomePreferencePoolBuddyEventCommand command);
+
+	QueryComponentListResponse getHomeActiveBuddyEvent(Long userId, GetHomeActiveBuddyEventCommand command);
 }

@@ -19,8 +19,13 @@ public interface GetBuddyEventCarouselRepoDSL {
 
 	Long countOfGetBuddyEventCarousel(Long userId, LocalDateTime eventStartDate);
 
-	List<GetBuddyEventCarouselQueryProjectionDto> getBuddyEventCarouselByDivingPool(Long userId,
+	Long countOfGetHomeActiveBuddyEvent(Long userId, LocalDateTime eventStartDate);
+
+	List<GetBuddyEventCarouselQueryProjectionDto> getHomePreferencePoolBuddyEvent(Long userId,
 		LocalDateTime eventStartDate,
 		DivingPool divingPool);
 
+	List<GetBuddyEventCarouselQueryProjectionDto> getHomeActiveBuddyEvent(Long userId, LocalDateTime eventStartDate,
+		int pageNumber,
+		int offset);
 }

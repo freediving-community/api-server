@@ -15,12 +15,12 @@ import lombok.Getter;
  **/
 @EqualsAndHashCode(callSuper = false)
 @Getter
-public class GetHomeRecommendPoolBuddyEventCommand extends SelfValidating<GetHomeRecommendPoolBuddyEventCommand> {
+public class GetHomePreferencePoolBuddyEventCommand extends SelfValidating<GetHomePreferencePoolBuddyEventCommand> {
 
 	private final LocalDateTime eventStartDate;
 
 	@Builder
-	public GetHomeRecommendPoolBuddyEventCommand(LocalDateTime eventStartDate) {
+	public GetHomePreferencePoolBuddyEventCommand(LocalDateTime eventStartDate) {
 
 		if (eventStartDate.isAfter(LocalDateTime.now()) == false)
 			eventStartDate = LocalDateTime.now();
