@@ -46,7 +46,6 @@ public class ArticlePersistenceAdapter
 				articleWriteCommand.getTitle(),
 				articleWriteCommand.getContent(),
 				articleWriteCommand.getBoardType(),
-				articleWriteCommand.getAuthorName(),
 				articleWriteCommand.isEnableComment()
 			)
 		);
@@ -149,7 +148,6 @@ public class ArticlePersistenceAdapter
 				.articleId(rs.getLong("article_id"))
 				.title(rs.getString("title"))
 				.content(rs.getString("content"))
-				.authorName(rs.getString("author_name"))
 				.createdAt(
 					rs.getTimestamp("created_at") == null ? null : rs.getTimestamp("created_at").toLocalDateTime())
 				.createdBy(rs.getLong("created_by"))

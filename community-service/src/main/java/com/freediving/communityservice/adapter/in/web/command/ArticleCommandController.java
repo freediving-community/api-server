@@ -18,10 +18,8 @@ import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.in.dto.ArticleEditRequest;
 import com.freediving.communityservice.adapter.in.dto.ArticleWriteRequest;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
-import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.ArticleEditCommand;
-import com.freediving.communityservice.application.port.in.ArticleReadCommand;
 import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleUseCase;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
@@ -44,6 +42,7 @@ public class ArticleCommandController {
 	@Value("${community.gateway.fqdn}")
 	private String GATEWAY_DOMAIN;
 
+	// TODO: 게시글 생성 시 GET 요청하여 UUID 발급 후, 서버 인메모리 저장. => 게시글 중복생성 방지 , 등록 취소시 업로드 이미지 삭제.
 	@Operation(
 		summary = "게시글 등록",
 		description = "게시글 (이미지 포함)을 등록",
@@ -56,7 +55,7 @@ public class ArticleCommandController {
 		}
 	)
 	@PostMapping("/boards/{boardType}/articles")
-	public ResponseEntity<ResponseJsonObject<ArticleContent>> writeArticleContent(
+	public ResponseEntity<ResponseJsonObject<Long>> writeArticleContent(
 		@Parameter(hidden = true) UserProvider userProvider,
 		@PathVariable("boardType") BoardType boardType,
 		@RequestBody ArticleWriteRequest articleWriteRequest) {
@@ -74,20 +73,11 @@ public class ArticleCommandController {
 				.boardType(boardType)
 				.title(articleWriteRequest.getTitle())
 				.content(articleWriteRequest.getContent())
-				.authorName(articleWriteRequest.getAuthorName())
 				.enableComment(articleWriteRequest.isEnableComment())
 				.images(uploadedImages)
 				.build());
 
-		ArticleContent articleContentDetail = articleUseCase.getArticleWithComment(
-			ArticleReadCommand.builder()
-				.userProvider(userProvider)
-				.boardType(boardType)
-				.articleId(articleId)
-				.isShowAll(false)
-				.withoutComment(true)
-				.build());
-		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, articleContentDetail));
+		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, articleId));
 	}
 
 	@Operation(

@@ -20,8 +20,6 @@ public class Article {
 
 	private final String content;
 
-	private final String authorName;
-
 	private final int viewCount;
 
 	private final int likeCount;
@@ -57,7 +55,6 @@ public class Article {
 			.boardType(originalArticle.getBoardType())
 			.title(title)
 			.content(content)
-			.authorName(originalArticle.getAuthorName())
 			.viewCount(originalArticle.getViewCount())
 			.likeCount(originalArticle.getLikeCount())
 			.enableComment(enableComment)
@@ -74,7 +71,6 @@ public class Article {
 			.boardType(this.boardType)
 			.title(this.title)
 			.content(this.content)
-			.authorName(this.authorName)
 			.viewCount(this.viewCount + 1)
 			.likeCount(this.likeCount)
 			.enableComment(this.enableComment)

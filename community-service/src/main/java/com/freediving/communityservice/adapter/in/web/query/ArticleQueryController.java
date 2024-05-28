@@ -47,7 +47,7 @@ public class ArticleQueryController {
 	public ResponseEntity<ResponseJsonObject<Page<ArticleBriefDto>>> getArticleList(
 		@Parameter(hidden = true) UserProvider userProvider,
 		@PathVariable("boardType") BoardType boardType,
-		@RequestParam(value = "page", required = false, defaultValue = "1") int page,
+		// @RequestParam(value = "page", required = false, defaultValue = "1") int page,
 		@RequestParam(value = "offset", required = false, defaultValue = "20") int offset,
 		@RequestParam(value = "orderBy", required = false, defaultValue = "createdAt") String orderBy,
 		@RequestParam(value = "c", required = false, defaultValue = "") Long cursor,
@@ -57,7 +57,7 @@ public class ArticleQueryController {
 			ArticleIndexListCommand.builder()
 				.userProvider(userProvider)
 				.boardType(boardType)
-				.page(page)
+				.page(1)
 				.offset(offset)
 				.onlyPicture(onlyPicture)
 				.orderBy(orderBy)

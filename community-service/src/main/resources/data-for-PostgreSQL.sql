@@ -10,8 +10,8 @@ VALUES ('TIP', 'tip공유', 'tip과 노하우를 공유합니다', 3, TRUE, CURR
 INSERT INTO board (board_type, board_name, description, sort_order, enabled, created_at, modified_at, created_by, modified_by)
 VALUES ('BUDDY_QNA', '모집장 한마디', '버디모집 소개글', 4, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 1111, 1111);
 
-INSERT INTO article (comment_count, enable_comment, like_count, view_count, created_at, created_by, deleted_at, modified_at, modified_by, author_name, title, board_type, content)
-VALUES (15, TRUE, 20, 300, CURRENT_TIMESTAMP, 1111, NULL, NULL, NULL, '유저1', '테스트 제목', 'GENERAL', '게시글 본문내용 1');
+INSERT INTO article (comment_count, enable_comment, like_count, view_count, created_at, created_by, deleted_at, modified_at, modified_by, title, board_type, content)
+VALUES (15, TRUE, 20, 300, CURRENT_TIMESTAMP, 1111, NULL, NULL, NULL, '테스트 제목', 'GENERAL', '게시글 본문내용 1');
 
 INSERT INTO comment (visible, article_id, created_at, created_by, content)
 VALUES (TRUE, 1, CURRENT_TIMESTAMP, 1111, '게시글 작성자의 첫 번째 댓글입니다.');
