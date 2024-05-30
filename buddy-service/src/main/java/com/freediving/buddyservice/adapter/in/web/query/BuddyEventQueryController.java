@@ -57,6 +57,25 @@ public class BuddyEventQueryController {
 
 	// API 캐로셀 심플 카드 조회 하기.
 
+	public static Long getUserId(HttpServletRequest httpServletRequest) {
+		Object userIdObj = httpServletRequest.getAttribute("User-Id");
+		Long userId = null;
+
+		if (userIdObj != null) {
+			try {
+				userId = Long.parseLong(userIdObj.toString());
+				if (userId.equals(-1L)) {
+					userId = null;
+				}
+			} catch (NumberFormatException e) {
+				// 예외 발생 시 userId를 null로 설정
+				userId = null;
+			}
+		}
+
+		return userId;
+	}
+
 	// API 리스팅 카드 조회 하기.
 	@Operation(
 		summary = "버디 이벤트 버디 매칭 조회 하기 ",
@@ -178,9 +197,6 @@ public class BuddyEventQueryController {
 			// 1. UserID 추출하기
 			Long userId = getUserId(httpServletRequest);
 
-			if (userId == null)
-				throw new BuddyMeException(ServiceStatusCode.NO_CONTENT);
-
 			QueryPreferencePoolCarouselResponse homeWeekly = getBuddyEventCarouselUseCase.getHomePreferencePoolBuddyEvent(
 				userId,
 				GetHomePreferencePoolBuddyEventCommand.builder()
@@ -247,25 +263,6 @@ public class BuddyEventQueryController {
 			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, e.getMessage());
 		}
 
-	}
-
-	public static Long getUserId(HttpServletRequest httpServletRequest) {
-		Object userIdObj = httpServletRequest.getAttribute("User-Id");
-		Long userId = null;
-
-		if (userIdObj != null) {
-			try {
-				userId = Long.parseLong(userIdObj.toString());
-				if (userId.equals(-1L)) {
-					userId = null;
-				}
-			} catch (NumberFormatException e) {
-				// 예외 발생 시 userId를 null로 설정
-				userId = null;
-			}
-		}
-
-		return userId;
 	}
 
 }

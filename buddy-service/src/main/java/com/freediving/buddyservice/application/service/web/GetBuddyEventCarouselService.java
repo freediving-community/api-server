@@ -131,19 +131,30 @@ public class GetBuddyEventCarouselService implements GetBuddyEventCarouselUseCas
 	public QueryPreferencePoolCarouselResponse getHomePreferencePoolBuddyEvent(Long userId,
 		GetHomePreferencePoolBuddyEventCommand command) {
 
-		// 사용자 선호 다이빙 풀 조회.
-		List<UserDivingPoolEntity> userDivingPools = userDivingPoolRepository.findAllByUserId(userId);
+		List<UserDivingPoolEntity> userDivingPools = null;
 		DivingPool targetPool;
-		if (userDivingPools == null || userDivingPools.isEmpty())
-			throw new BuddyMeException(ServiceStatusCode.NO_CONTENT);
 
-		// 타겟 풀장 선정.
-		if (userDivingPools.size() == 1) {
-			targetPool = userDivingPools.get(0).getDivingPoolId();
+		if (userId == null) {
+			Random random = new Random();
+			DivingPool[] pools = DivingPool.values();
+			int randomIndex = random.nextInt(pools.length);
+			targetPool = pools[randomIndex];
 		} else {
-			Random RANDOM = new Random();
-			int randomIndex = RANDOM.nextInt(userDivingPools.size());
-			targetPool = userDivingPools.get(randomIndex).getDivingPoolId();
+			userDivingPools = userDivingPoolRepository.findAllByUserId(userId);
+
+			if (userDivingPools == null || userDivingPools.isEmpty()) {
+				Random random = new Random();
+				DivingPool[] pools = DivingPool.values();
+				int randomIndex = random.nextInt(pools.length);
+				targetPool = pools[randomIndex];
+			} else if (userDivingPools.size() == 1) {
+				targetPool = userDivingPools.get(0).getDivingPoolId();
+			} else {
+				Random RANDOM = new Random();
+				int randomIndex = RANDOM.nextInt(userDivingPools.size());
+				targetPool = userDivingPools.get(randomIndex).getDivingPoolId();
+			}
+
 		}
 
 		List<GetBuddyEventCarouselQueryProjectionDto> buddyEventListing = getBuddyEventCarouselPort.getHomePreferencePoolBuddyEvent(
