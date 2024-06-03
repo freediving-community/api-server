@@ -2,12 +2,10 @@ package com.freediving.buddyservice.adapter.out.persistence.event.join;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.freediving.buddyservice.adapter.out.persistence.event.join.querydsl.BuddyEventJoinRepoDSL;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.BuddyEventJoinMappingProjectDto;
 import com.freediving.buddyservice.application.port.out.web.query.BuddyEventJoinPort;
-import com.freediving.buddyservice.domain.enumeration.ParticipationStatus;
 import com.freediving.common.config.annotation.PersistenceAdapter;
 
 import lombok.RequiredArgsConstructor;
@@ -34,16 +32,11 @@ public class BuddyEventJoinPersistenceAdapter implements BuddyEventJoinPort {
 	}
 
 	@Override
-	public List<Long> getParticipantsOfEvent(Long eventId) {
+	public Map<Long, List<BuddyEventJoinMappingProjectDto>> getParticipantsOfEvent(Long eventId) {
 		Map<Long, List<BuddyEventJoinMappingProjectDto>> allJoinMappingByEventId = buddyEventJoinRepoDSL.findJoinMappingAllByEventIds(
 			List.of(eventId));
 
-		return allJoinMappingByEventId.get(eventId)
-			.stream()
-			.filter(e -> e.getStatus().equals(ParticipationStatus.PARTICIPATING))
-			.map(e -> e.getUserId())
-			.collect(
-				Collectors.toList());
+		return allJoinMappingByEventId;
 
 	}
 }
