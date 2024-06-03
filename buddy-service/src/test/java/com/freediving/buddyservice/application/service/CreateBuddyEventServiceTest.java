@@ -31,7 +31,7 @@ import com.freediving.buddyservice.adapter.out.persistence.event.likecount.Buddy
 import com.freediving.buddyservice.adapter.out.persistence.event.viewcount.BuddyEventViewCountRepository;
 import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventUseCase;
-import com.freediving.buddyservice.application.port.out.externalservice.query.RequestMemberPort;
+import com.freediving.buddyservice.application.port.out.Internalservice.query.RequestMemberPort;
 import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;

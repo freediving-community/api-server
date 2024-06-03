@@ -20,7 +20,10 @@ import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listin
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.GetBuddyEventListingQueryProjectionDto;
 import com.freediving.buddyservice.application.port.in.web.query.listing.GetBuddyEventListingCommand;
 import com.freediving.buddyservice.application.port.in.web.query.listing.GetBuddyEventListingUseCase;
-import com.freediving.buddyservice.application.port.out.externalservice.query.RequestMemberPort;
+import com.freediving.buddyservice.application.port.out.Internalservice.query.RequestMemberPort;
+import com.freediving.buddyservice.application.port.out.web.query.BuddyEventConceptMappingPort;
+import com.freediving.buddyservice.application.port.out.web.query.BuddyEventDivingPoolMappingPort;
+import com.freediving.buddyservice.application.port.out.web.query.BuddyEventJoinPort;
 import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventListingPort;
 import com.freediving.buddyservice.domain.enumeration.ParticipationStatus;
 import com.freediving.buddyservice.domain.query.QueryComponentListResponse;
@@ -40,6 +43,9 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 
 	private final GetBuddyEventListingPort getBuddyEventListingPort;
 	private final RequestMemberPort requestMemberPort;
+	private final BuddyEventJoinPort buddyEventJoinPort;
+	private final BuddyEventConceptMappingPort buddyEventConceptMappingPort;
+	private final BuddyEventDivingPoolMappingPort buddyEventDivingPoolMappingPort;
 
 	@Override
 	@Transactional(isolation = Isolation.READ_UNCOMMITTED)
@@ -64,13 +70,13 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 			.map(e -> e.getEventId())
 			.collect(Collectors.toList());
 
-		Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> allDivingPoolMappingByEventId = getBuddyEventListingPort.getAllDivingPoolMapping(
+		Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> allDivingPoolMappingByEventId = buddyEventDivingPoolMappingPort.getAllDivingPoolMapping(
 			ids);
 
-		Map<Long, List<BuddyEventConceptMappingProjectDto>> allConceptMappingByEventId = getBuddyEventListingPort.getAllConceptMapping(
+		Map<Long, List<BuddyEventConceptMappingProjectDto>> allConceptMappingByEventId = buddyEventConceptMappingPort.getAllConceptMapping(
 			ids);
 
-		Map<Long, List<BuddyEventJoinMappingProjectDto>> allJoinMappingByEventId = getBuddyEventListingPort.getAllJoinMapping(
+		Map<Long, List<BuddyEventJoinMappingProjectDto>> allJoinMappingByEventId = buddyEventJoinPort.getAllJoinMapping(
 			ids);
 
 		Set<Long> userIds = new HashSet<>();

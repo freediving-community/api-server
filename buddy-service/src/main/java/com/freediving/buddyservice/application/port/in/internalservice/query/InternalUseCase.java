@@ -1,4 +1,6 @@
-package com.freediving.buddyservice.application.port.in.externalservice.query;
+package com.freediving.buddyservice.application.port.in.internalservice.query;
+
+import java.util.List;
 
 import com.freediving.buddyservice.domain.query.BuddyEventConceptListResponse;
 import com.freediving.buddyservice.domain.query.UserConceptListResponse;
@@ -13,7 +15,7 @@ import com.freediving.common.config.annotation.UseCase;
  **/
 
 @UseCase
-public interface GetBuddyEventConceptListUseCase {
+public interface InternalUseCase {
 
 	/**
 	 * 버디 이벤트 컨셉 조회
@@ -23,4 +25,6 @@ public interface GetBuddyEventConceptListUseCase {
 	BuddyEventConceptListResponse getEventConcepts();
 
 	UserConceptListResponse getEventConceptsForInternal(Long userId);
+
+	List<Long> getParticipantsOfEvent(Long eventId);
 }

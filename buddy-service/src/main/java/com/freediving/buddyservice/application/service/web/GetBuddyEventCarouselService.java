@@ -22,7 +22,9 @@ import com.freediving.buddyservice.application.port.in.web.query.home.GetBuddyEv
 import com.freediving.buddyservice.application.port.in.web.query.home.GetHomeActiveBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.web.query.home.GetHomePreferencePoolBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.web.query.home.GetHomeWeeklyBuddyEventCommand;
-import com.freediving.buddyservice.application.port.out.externalservice.query.RequestMemberPort;
+import com.freediving.buddyservice.application.port.out.Internalservice.query.RequestMemberPort;
+import com.freediving.buddyservice.application.port.out.web.query.BuddyEventConceptMappingPort;
+import com.freediving.buddyservice.application.port.out.web.query.BuddyEventDivingPoolMappingPort;
 import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventCarouselPort;
 import com.freediving.buddyservice.domain.query.QueryComponentListResponse;
 import com.freediving.buddyservice.domain.query.QueryPreferencePoolCarouselResponse;
@@ -45,6 +47,8 @@ public class GetBuddyEventCarouselService implements GetBuddyEventCarouselUseCas
 	private final GetBuddyEventCarouselPort getBuddyEventCarouselPort;
 	private final UserDivingPoolRepository userDivingPoolRepository;
 	private final RequestMemberPort requestMemberPort;
+	private final BuddyEventConceptMappingPort buddyEventConceptMappingPort;
+	private final BuddyEventDivingPoolMappingPort buddyEventDivingPoolMappingPort;
 
 	@Transactional(isolation = Isolation.READ_UNCOMMITTED)
 	public QueryComponentListResponse getHomeWeekly(Long userId, GetHomeWeeklyBuddyEventCommand command) {
@@ -61,10 +65,10 @@ public class GetBuddyEventCarouselService implements GetBuddyEventCarouselUseCas
 			.map(e -> e.getEventId())
 			.collect(Collectors.toList());
 
-		Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> allDivingPoolMappingByEventId = getBuddyEventCarouselPort.getAllDivingPoolMapping(
+		Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> allDivingPoolMappingByEventId = buddyEventDivingPoolMappingPort.getAllDivingPoolMapping(
 			ids);
 
-		Map<Long, List<BuddyEventConceptMappingProjectDto>> allConceptMappingByEventId = getBuddyEventCarouselPort.getAllConceptMapping(
+		Map<Long, List<BuddyEventConceptMappingProjectDto>> allConceptMappingByEventId = buddyEventConceptMappingPort.getAllConceptMapping(
 			ids);
 
 		Set<Long> userIds = new HashSet<>();
@@ -153,10 +157,10 @@ public class GetBuddyEventCarouselService implements GetBuddyEventCarouselUseCas
 			.map(e -> e.getEventId())
 			.collect(Collectors.toList());
 
-		Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> allDivingPoolMappingByEventId = getBuddyEventCarouselPort.getAllDivingPoolMapping(
+		Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> allDivingPoolMappingByEventId = buddyEventDivingPoolMappingPort.getAllDivingPoolMapping(
 			ids);
 
-		Map<Long, List<BuddyEventConceptMappingProjectDto>> allConceptMappingByEventId = getBuddyEventCarouselPort.getAllConceptMapping(
+		Map<Long, List<BuddyEventConceptMappingProjectDto>> allConceptMappingByEventId = buddyEventConceptMappingPort.getAllConceptMapping(
 			ids);
 
 		Set<Long> userIds = new HashSet<>();
@@ -232,10 +236,10 @@ public class GetBuddyEventCarouselService implements GetBuddyEventCarouselUseCas
 			.map(e -> e.getEventId())
 			.collect(Collectors.toList());
 
-		Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> allDivingPoolMappingByEventId = getBuddyEventCarouselPort.getAllDivingPoolMapping(
+		Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> allDivingPoolMappingByEventId = buddyEventDivingPoolMappingPort.getAllDivingPoolMapping(
 			ids);
 
-		Map<Long, List<BuddyEventConceptMappingProjectDto>> allConceptMappingByEventId = getBuddyEventCarouselPort.getAllConceptMapping(
+		Map<Long, List<BuddyEventConceptMappingProjectDto>> allConceptMappingByEventId = buddyEventConceptMappingPort.getAllConceptMapping(
 			ids);
 
 		Set<Long> userIds = new HashSet<>();
