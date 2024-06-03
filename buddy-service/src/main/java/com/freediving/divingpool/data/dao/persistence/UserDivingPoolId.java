@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.adapter.out.persistence.preference;
+package com.freediving.divingpool.data.dao.persistence;
 
 import java.io.Serializable;
 import java.util.Objects;

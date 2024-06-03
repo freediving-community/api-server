@@ -5,10 +5,14 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.freediving.buddyservice.adapter.out.persistence.concept.BuddyEventConceptJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.preference.UserBuddyEventConceptEntity;
 import com.freediving.buddyservice.application.port.in.externalservice.query.GetBuddyEventConceptListUseCase;
 import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventConceptListPort;
 import com.freediving.buddyservice.domain.query.BuddyEventConceptListResponse;
+import com.freediving.buddyservice.domain.query.UserConceptListResponse;
 import com.freediving.common.config.annotation.UseCase;
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,16 +39,18 @@ public class GetBuddyEventConceptListService implements GetBuddyEventConceptList
 	}
 
 	@Override
-	public BuddyEventConceptListResponse getEventConceptsForInternal() {
+	public UserConceptListResponse getEventConceptsForInternal(Long userId) throws BuddyMeException {
 
-		List<BuddyEventConceptJpaEntity> eventConceptList = getBuddyEventConceptListPort.getEventConceptListForInternal();
+		List<UserBuddyEventConceptEntity> eventConceptList = getBuddyEventConceptListPort.getEventConceptListForInternal(
+			userId);
 
-		BuddyEventConceptListResponse result = BuddyEventConceptListResponse.builder().build();
+		if (eventConceptList == null || eventConceptList.isEmpty())
+			throw new BuddyMeException(ServiceStatusCode.NO_CONTENT);
 
-		for (BuddyEventConceptJpaEntity entity : eventConceptList)
-			result.add(
-				BuddyEventConceptListResponse.EventConcept.builder().conceptId(entity.getConceptId()).conceptName(
-					entity.getConceptName()).conceptDesc(entity.getConceptDesc()).build());
+		UserConceptListResponse result = UserConceptListResponse.builder().build();
+
+		for (UserBuddyEventConceptEntity entity : eventConceptList)
+			result.add(entity.getConceptId());
 
 		return result;
 	}

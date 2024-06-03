@@ -197,6 +197,9 @@ public class BuddyEventQueryController {
 			// 1. UserID 추출하기
 			Long userId = getUserId(httpServletRequest);
 
+			if (userId == null)
+				throw new BuddyMeException(ServiceStatusCode.NO_CONTENT);
+
 			QueryPreferencePoolCarouselResponse homeWeekly = getBuddyEventCarouselUseCase.getHomePreferencePoolBuddyEvent(
 				userId,
 				GetHomePreferencePoolBuddyEventCommand.builder()

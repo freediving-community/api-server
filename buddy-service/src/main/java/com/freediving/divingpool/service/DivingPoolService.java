@@ -9,10 +9,13 @@ import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.divingpool.config.enumerate.DetailLevel;
 import com.freediving.divingpool.data.dao.DivingPoolJpaEntity;
+import com.freediving.divingpool.data.dao.persistence.UserDivingPoolEntity;
 import com.freediving.divingpool.data.dto.DivingPoolListResponse;
 import com.freediving.divingpool.data.dto.DivingPoolResponse;
 import com.freediving.divingpool.data.dto.DivingPoolSimpleResponse;
+import com.freediving.divingpool.data.dto.UserDivingPoolListResponse;
 import com.freediving.divingpool.repository.DivingPoolRepository;
+import com.freediving.divingpool.repository.UserDivingPoolRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class DivingPoolService {
 
 	private final DivingPoolRepository divingPoolRepository;
+	private final UserDivingPoolRepository userDivingPoolRepository;
 
 	/**
 	 * 노출 중인 모든 다이빙 풀을 조회한다.
@@ -48,23 +52,20 @@ public class DivingPoolService {
 
 	}
 
-	public DivingPoolListResponse findByAllDivingPoolForInternal(DetailLevel detail) throws BuddyMeException {
+	public UserDivingPoolListResponse findByAllDivingPoolForInternal(Long userId) throws BuddyMeException {
 
-		List<DivingPoolJpaEntity> divingPoolsJpaEntity = divingPoolRepository.findAllByIsVisibleTrueOrderByDisplayOrderAsc();
+		List<UserDivingPoolEntity> divingPoolsJpaEntity = userDivingPoolRepository.findAllByUserId(userId);
 
 		// No Content
 		if (divingPoolsJpaEntity == null || divingPoolsJpaEntity.size() == 0)
 			throw new BuddyMeException(ServiceStatusCode.NO_CONTENT);
 
-		List<Object> divingPoolResponseList = divingPoolsJpaEntity.stream().map(e -> {
-				if (detail.equals(DetailLevel.HIGH))
-					return DivingPoolResponse.of(e);
-				else
-					return DivingPoolSimpleResponse.of(e);
-			})
-			.collect(Collectors.toList());
+		UserDivingPoolListResponse result = UserDivingPoolListResponse.builder().build();
 
-		return DivingPoolListResponse.builder().divingPools(divingPoolResponseList).build();
+		for (UserDivingPoolEntity entity : divingPoolsJpaEntity)
+			result.add(entity.getDivingPoolId());
+
+		return result;
 
 	}
 

@@ -8,10 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
-import com.freediving.divingpool.config.enumerate.DetailLevel;
-import com.freediving.divingpool.data.dto.DivingPoolListResponse;
 import com.freediving.divingpool.data.dto.DivingPoolResponse;
-import com.freediving.divingpool.data.dto.DivingPoolSimpleResponse;
+import com.freediving.divingpool.data.dto.UserDivingPoolListResponse;
 import com.freediving.divingpool.service.DivingPoolService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,26 +31,25 @@ public class DivingPoolInternalController {
 	private final DivingPoolService divingPoolService;
 
 	@Operation(
-		summary = "모든 다이빙 풀 조회",
-		description = "노출 중인 모든 다이빙 풀을 조회합니다."
+		summary = "사용자 선호 다이빙 풀 조회",
+		description = "사용자가 선호하는 다이빙 풀을 조회합니다."
 	)
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
-			description = "노출 중인 모든 다이빙 풀 조회 성공 ",
+			description = " 다이빙 풀 조회 성공 ",
 			content = @Content(mediaType = "application/json",
-				schema = @Schema(oneOf = {DivingPoolResponse.class, DivingPoolSimpleResponse.class})
+				schema = @Schema(oneOf = {DivingPoolResponse.class, UserDivingPoolListResponse.class})
 			)
 		),
 		@ApiResponse(responseCode = "204", ref = "#/components/responses/204"),
 		@ApiResponse(responseCode = "500", ref = "#/components/responses/500")
 	})
 	@GetMapping(value = "/pool")
-	public ResponseEntity<ResponseJsonObject<DivingPoolListResponse>> findByAllDivingPool(
-		@Schema(description = "디테일 강도", implementation = DetailLevel.class)
-		@RequestParam(value = "detail") @Valid @NotNull DetailLevel detail) {
+	public ResponseEntity<ResponseJsonObject<UserDivingPoolListResponse>> findByAllDivingPool(
+		@RequestParam(value = "userId") @Valid @NotNull Long userId) {
 
-		DivingPoolListResponse divingPoolListResponse = divingPoolService.findByAllDivingPoolForInternal(detail);
+		UserDivingPoolListResponse divingPoolListResponse = divingPoolService.findByAllDivingPoolForInternal(userId);
 
 		ResponseJsonObject responseJsonObject = ResponseJsonObject.builder()
 			.code(ServiceStatusCode.OK)

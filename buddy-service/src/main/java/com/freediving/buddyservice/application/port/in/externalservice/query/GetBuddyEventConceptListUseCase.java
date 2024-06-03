@@ -1,6 +1,7 @@
 package com.freediving.buddyservice.application.port.in.externalservice.query;
 
 import com.freediving.buddyservice.domain.query.BuddyEventConceptListResponse;
+import com.freediving.buddyservice.domain.query.UserConceptListResponse;
 import com.freediving.common.config.annotation.UseCase;
 
 /**
@@ -21,5 +22,5 @@ public interface GetBuddyEventConceptListUseCase {
 	 */
 	BuddyEventConceptListResponse getEventConcepts();
 
-	BuddyEventConceptListResponse getEventConceptsForInternal();
+	UserConceptListResponse getEventConceptsForInternal(Long userId);
 }
