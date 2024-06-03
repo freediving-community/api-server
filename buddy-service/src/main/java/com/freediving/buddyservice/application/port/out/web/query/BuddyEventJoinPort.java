@@ -7,7 +7,7 @@ import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listin
 
 public interface BuddyEventJoinPort {
 
-	List<Long> getParticipantsOfEvent(Long eventId);
+	Map<Long, List<BuddyEventJoinMappingProjectDto>> getParticipantsOfEvent(Long eventId);
 
 	Map<Long, List<BuddyEventJoinMappingProjectDto>> getAllJoinMapping(List<Long> ids);
 }
