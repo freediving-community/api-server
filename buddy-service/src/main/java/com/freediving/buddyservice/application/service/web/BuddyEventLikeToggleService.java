@@ -40,13 +40,11 @@ public class BuddyEventLikeToggleService implements BuddyEventLikeToggleUseCase 
 		// 3. 좋아요 설정/해지
 
 		// 3-1 좋아요 설정 and 좋아요 설정이 되어있는 경우
-		if (command.isLikeStatus() == true && (buddyEventLikeMappingJpaEntity != null
-			&& buddyEventLikeMappingJpaEntity.getIsDeleted() == false))
+		if (command.isLikeStatus() == true && (buddyEventLikeMappingJpaEntity != null))
 			return -1;
 
 		// 3-2 좋아요 해지 and 좋아요 없는 상태
-		if (command.isLikeStatus() == false && (buddyEventLikeMappingJpaEntity != null
-			|| buddyEventLikeMappingJpaEntity.getIsDeleted() == true))
+		if (command.isLikeStatus() == false && (buddyEventLikeMappingJpaEntity == null))
 			return -1;
 
 		// 3-3 좋아요 설정
