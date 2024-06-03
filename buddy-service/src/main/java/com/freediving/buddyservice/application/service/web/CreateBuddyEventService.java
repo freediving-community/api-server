@@ -13,7 +13,7 @@ import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEn
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventResponseMapper;
 import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventUseCase;
-import com.freediving.buddyservice.application.port.out.externalservice.query.RequestMemberPort;
+import com.freediving.buddyservice.application.port.out.Internalservice.query.RequestMemberPort;
 import com.freediving.buddyservice.application.port.out.web.CreateBuddyEventPort;
 import com.freediving.buddyservice.application.port.out.web.ValidationBuddyEventPort;
 import com.freediving.buddyservice.application.port.out.web.command.like.BuddyEventLikeTogglePort;

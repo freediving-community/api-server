@@ -2,8 +2,8 @@ package com.freediving.divingpool.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.common.response.ResponseJsonObject;
@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("v1/internal")
-@Tag(name = "Attribute Internal")
+@Tag(name = "Internal API")
 public class DivingPoolInternalController {
 
 	private final DivingPoolService divingPoolService;
@@ -45,9 +45,9 @@ public class DivingPoolInternalController {
 		@ApiResponse(responseCode = "204", ref = "#/components/responses/204"),
 		@ApiResponse(responseCode = "500", ref = "#/components/responses/500")
 	})
-	@GetMapping(value = "/pool")
+	@GetMapping(value = "/{userId}/pool")
 	public ResponseEntity<ResponseJsonObject<UserDivingPoolListResponse>> findByAllDivingPool(
-		@RequestParam(value = "userId") @Valid @NotNull Long userId) {
+		@PathVariable(value = "userId") @Valid @NotNull Long userId) {
 
 		UserDivingPoolListResponse divingPoolListResponse = divingPoolService.findByAllDivingPoolForInternal(userId);
 

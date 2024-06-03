@@ -9,7 +9,7 @@ import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.d
 import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto.LicenseInfo;
 import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto.ScubaDiving;
 import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto.UserInfo;
-import com.freediving.buddyservice.application.port.out.externalservice.query.RequestMemberPort;
+import com.freediving.buddyservice.application.port.out.Internalservice.query.RequestMemberPort;
 import com.freediving.common.domain.member.RoleLevel;
 import com.freediving.common.response.ResponseJsonObject;
 

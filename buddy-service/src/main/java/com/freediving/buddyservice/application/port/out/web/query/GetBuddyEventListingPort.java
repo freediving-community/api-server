@@ -2,12 +2,8 @@ package com.freediving.buddyservice.application.port.out.web.query;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventConceptMappingProjectDto;
-import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventDivingPoolMappingProjectDto;
-import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.BuddyEventJoinMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.GetBuddyEventListingQueryProjectionDto;
 import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.config.enumerate.SortType;
@@ -25,9 +21,4 @@ public interface GetBuddyEventListingPort {
 		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
 		Integer freedivingLevel, Set<DivingPool> divingPools, GenderType genderType);
 
-	Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> getAllDivingPoolMapping(List<Long> ids);
-
-	Map<Long, List<BuddyEventConceptMappingProjectDto>> getAllConceptMapping(List<Long> ids);
-
-	Map<Long, List<BuddyEventJoinMappingProjectDto>> getAllJoinMapping(List<Long> ids);
 }

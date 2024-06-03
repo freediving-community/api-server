@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.application.service.externalservice;
+package com.freediving.buddyservice.application.service.Internalservice;
 
 import java.util.List;
 
@@ -6,7 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.freediving.buddyservice.adapter.out.persistence.concept.BuddyEventConceptJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.preference.UserBuddyEventConceptEntity;
-import com.freediving.buddyservice.application.port.in.externalservice.query.GetBuddyEventConceptListUseCase;
+import com.freediving.buddyservice.application.port.in.internalservice.query.InternalUseCase;
+import com.freediving.buddyservice.application.port.out.web.query.BuddyEventJoinPort;
 import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventConceptListPort;
 import com.freediving.buddyservice.domain.query.BuddyEventConceptListResponse;
 import com.freediving.buddyservice.domain.query.UserConceptListResponse;
@@ -19,9 +20,10 @@ import lombok.RequiredArgsConstructor;
 @UseCase
 @RequiredArgsConstructor
 @Transactional
-public class GetBuddyEventConceptListService implements GetBuddyEventConceptListUseCase {
+public class InternalService implements InternalUseCase {
 
 	private final GetBuddyEventConceptListPort getBuddyEventConceptListPort;
+	private final BuddyEventJoinPort buddyEventJoinPort;
 
 	@Override
 	public BuddyEventConceptListResponse getEventConcepts() {
@@ -53,5 +55,16 @@ public class GetBuddyEventConceptListService implements GetBuddyEventConceptList
 			result.add(entity.getConceptId());
 
 		return result;
+	}
+
+	@Override
+	public List<Long> getParticipantsOfEvent(Long eventId) {
+
+		List<Long> participants = buddyEventJoinPort.getParticipantsOfEvent(eventId);
+
+		if (participants == null || participants.isEmpty())
+			throw new BuddyMeException(ServiceStatusCode.NO_CONTENT);
+
+		return participants;
 	}
 }

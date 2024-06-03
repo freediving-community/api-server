@@ -3,7 +3,6 @@ package com.freediving.buddyservice.adapter.out.persistence.event;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -11,11 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestJpaEntity;
-import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventConceptMappingProjectDto;
-import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventDivingPoolMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.carousel.GetBuddyEventCarouselQueryProjectionDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.carousel.GetBuddyEventCarouselRepoDSL;
-import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.BuddyEventJoinMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.GetBuddyEventListingQueryProjectionDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.GetBuddyEventListingRepoDSL;
 import com.freediving.buddyservice.application.port.out.web.CreateBuddyEventPort;
@@ -209,28 +205,6 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBu
 			userId, eventStartDate);
 
 		return count;
-	}
-
-	public Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> getAllDivingPoolMapping(List<Long> ids) {
-		// 1.해당 이벤트 다이빙 풀 조회하기
-
-		Map<Long, List<BuddyEventDivingPoolMappingProjectDto>> allDivingPoolMappingByEventId = getBuddyEventListingRepoDSL.findDivingPoolMappingAllByEventIds(
-			ids);
-		return allDivingPoolMappingByEventId;
-	}
-
-	public Map<Long, List<BuddyEventJoinMappingProjectDto>> getAllJoinMapping(List<Long> ids) {
-		// 3. 참여자 User 정보 조회하기
-		Map<Long, List<BuddyEventJoinMappingProjectDto>> allJoinMappingByEventId = getBuddyEventListingRepoDSL.findJoinMappingAllByEventIds(
-			ids);
-		return allJoinMappingByEventId;
-	}
-
-	public Map<Long, List<BuddyEventConceptMappingProjectDto>> getAllConceptMapping(List<Long> ids) {
-		// 2.해당 이벤트 컨셉 조회하기
-		Map<Long, List<BuddyEventConceptMappingProjectDto>> allConceptMappingByEventId = getBuddyEventListingRepoDSL.findConceptMappingAllByEventIds(
-			ids);
-		return allConceptMappingByEventId;
 	}
 
 }

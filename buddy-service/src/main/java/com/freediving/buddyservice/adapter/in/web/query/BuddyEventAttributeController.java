@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.buddyservice.adapter.out.externalservice.opendata.HolidayService;
-import com.freediving.buddyservice.application.port.in.externalservice.query.GetBuddyEventConceptListUseCase;
+import com.freediving.buddyservice.application.port.in.internalservice.query.InternalUseCase;
 import com.freediving.buddyservice.domain.query.BuddyEventConceptListResponse;
 import com.freediving.common.config.annotation.WebAdapter;
 import com.freediving.common.response.ResponseJsonObject;
@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "Attribute", description = "버디 이벤트 속성 API")
 public class BuddyEventAttributeController {
 
-	private final GetBuddyEventConceptListUseCase getBuddyEventConceptListUseCase;
+	private final InternalUseCase internalUseCase;
 
 	@Autowired
 	private HolidayService holidayService;
@@ -86,7 +86,7 @@ public class BuddyEventAttributeController {
 		try {
 
 			// 커멘트 생성 후 UseCase 전달
-			BuddyEventConceptListResponse eventConcepts = getBuddyEventConceptListUseCase.getEventConcepts();
+			BuddyEventConceptListResponse eventConcepts = internalUseCase.getEventConcepts();
 
 			// 3. Command 요청 및 응답 리턴.
 			ResponseJsonObject<BuddyEventConceptListResponse> response = new ResponseJsonObject<>(ServiceStatusCode.OK,
