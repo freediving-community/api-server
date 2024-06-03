@@ -8,6 +8,7 @@ import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEvent
 public interface BuddyEventLikeMappingRepository
 	extends JpaRepository<BuddyEventLikeMappingJpaEntity, BuddyEventJoinRequestId> {
 
-	BuddyEventLikeMappingJpaEntity findByBuddyEventAndUserId(BuddyEventJpaEntity buddyEventJpaEntity, Long userId);
+	BuddyEventLikeMappingJpaEntity findByBuddyEventAndUserIdAndIsDeletedIsFalse(BuddyEventJpaEntity buddyEventJpaEntity,
+		Long userId);
 
 }

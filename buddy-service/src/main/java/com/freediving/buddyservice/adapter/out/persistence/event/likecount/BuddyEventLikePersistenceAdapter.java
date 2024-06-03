@@ -21,7 +21,7 @@ public class BuddyEventLikePersistenceAdapter implements BuddyEventLikeTogglePor
 	public BuddyEventLikeMappingJpaEntity existBuddyEventLikeMapping(BuddyEventJpaEntity buddyEventJpaEntity,
 		Long userId) {
 
-		BuddyEventLikeMappingJpaEntity entity = buddyEventLikeMappingRepository.findByBuddyEventAndUserId(
+		BuddyEventLikeMappingJpaEntity entity = buddyEventLikeMappingRepository.findByBuddyEventAndUserIdAndIsDeletedIsFalse(
 			buddyEventJpaEntity, userId);
 
 		return entity;
