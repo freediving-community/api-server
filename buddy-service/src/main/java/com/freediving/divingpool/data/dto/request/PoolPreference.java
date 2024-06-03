@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.adapter.in.kafka.dto;
+package com.freediving.divingpool.data.dto.request;
 
 import java.util.Set;
 

@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.buddyservice.adapter.in.kafka.dto.ConceptPreference;
-import com.freediving.buddyservice.adapter.in.kafka.dto.PoolPreference;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.common.enumerate.DivingPool;
+import com.freediving.divingpool.data.dto.request.PoolPreference;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

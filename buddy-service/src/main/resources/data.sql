@@ -192,10 +192,12 @@ INSERT INTO public.user_license (confirm_tf, license_level, confirm_admin_id, cr
 */
 
 INSERT INTO user_diving_pool
-VALUES (1, 'DEEPSTATION');
+VALUES (1, 'DEEPSTATION'),
+       (1, 'PARADIVE'),
+       (2, 'PARADIVE');
+INSERT INTO user_buddy_event_concept
+VALUES (1, 'FUN'),
+       (1, 'PHOTO'),
+       (2, 'PHOTO')
 
-INSERT INTO user_diving_pool
-VALUES (1, 'PARADIVE');
 
-INSERT INTO user_diving_pool
-VALUES (2, 'PARADIVE');

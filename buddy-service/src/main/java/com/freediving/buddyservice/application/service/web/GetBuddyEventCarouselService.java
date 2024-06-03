@@ -18,8 +18,6 @@ import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.d
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventConceptMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventDivingPoolMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.carousel.GetBuddyEventCarouselQueryProjectionDto;
-import com.freediving.buddyservice.adapter.out.persistence.preference.UserDivingPoolEntity;
-import com.freediving.buddyservice.adapter.out.persistence.preference.UserDivingPoolRepository;
 import com.freediving.buddyservice.application.port.in.web.query.home.GetBuddyEventCarouselUseCase;
 import com.freediving.buddyservice.application.port.in.web.query.home.GetHomeActiveBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.web.query.home.GetHomePreferencePoolBuddyEventCommand;
@@ -35,6 +33,8 @@ import com.freediving.common.config.annotation.UseCase;
 import com.freediving.common.enumerate.DivingPool;
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
+import com.freediving.divingpool.data.dao.persistence.UserDivingPoolEntity;
+import com.freediving.divingpool.repository.UserDivingPoolRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -131,30 +131,19 @@ public class GetBuddyEventCarouselService implements GetBuddyEventCarouselUseCas
 	public QueryPreferencePoolCarouselResponse getHomePreferencePoolBuddyEvent(Long userId,
 		GetHomePreferencePoolBuddyEventCommand command) {
 
-		List<UserDivingPoolEntity> userDivingPools = null;
+		List<UserDivingPoolEntity> userDivingPools = userDivingPoolRepository.findAllByUserId(userId);
+
+		if (userDivingPools == null || userDivingPools.isEmpty())
+			throw new BuddyMeException(ServiceStatusCode.NO_CONTENT);
+
 		DivingPool targetPool;
 
-		if (userId == null) {
-			Random random = new Random();
-			DivingPool[] pools = DivingPool.values();
-			int randomIndex = random.nextInt(pools.length);
-			targetPool = pools[randomIndex];
+		if (userDivingPools.size() == 1) {
+			targetPool = userDivingPools.get(0).getDivingPoolId();
 		} else {
-			userDivingPools = userDivingPoolRepository.findAllByUserId(userId);
-
-			if (userDivingPools == null || userDivingPools.isEmpty()) {
-				Random random = new Random();
-				DivingPool[] pools = DivingPool.values();
-				int randomIndex = random.nextInt(pools.length);
-				targetPool = pools[randomIndex];
-			} else if (userDivingPools.size() == 1) {
-				targetPool = userDivingPools.get(0).getDivingPoolId();
-			} else {
-				Random RANDOM = new Random();
-				int randomIndex = RANDOM.nextInt(userDivingPools.size());
-				targetPool = userDivingPools.get(randomIndex).getDivingPoolId();
-			}
-
+			Random RANDOM = new Random();
+			int randomIndex = RANDOM.nextInt(userDivingPools.size());
+			targetPool = userDivingPools.get(randomIndex).getDivingPoolId();
 		}
 
 		List<GetBuddyEventCarouselQueryProjectionDto> buddyEventListing = getBuddyEventCarouselPort.getHomePreferencePoolBuddyEvent(
