@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.adapter.out.persistence.event.querydsl;
+package com.freediving.buddyservice.adapter.out.persistence.event.divingpool.querydsl;
 
 import com.freediving.common.enumerate.DivingPool;
 import com.querydsl.core.annotations.QueryProjection;

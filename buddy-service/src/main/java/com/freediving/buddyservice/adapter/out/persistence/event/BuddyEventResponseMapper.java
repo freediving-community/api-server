@@ -52,6 +52,7 @@ public class BuddyEventResponseMapper {
 			.buddyEventConcepts(concepts)
 			.updatedDate(buddyEventJpaEntity.getUpdatedDate())
 			.createdDate(buddyEventJpaEntity.getCreatedDate())
+			.imageUrl(buddyEventJpaEntity.getImageUrl())
 			.build();
 	}
 

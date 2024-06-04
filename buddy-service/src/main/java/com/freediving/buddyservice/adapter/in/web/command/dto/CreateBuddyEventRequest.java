@@ -77,4 +77,7 @@ public class CreateBuddyEventRequest {
 	@Schema(description = "추가 코멘트", example = "이번 모임은 캐주얼하게 진행합니다.", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
 	private String comment;
 
+	@Schema(description = "이미지 CDN URL", example = "https://cdn.aws.com:123/asdf/images/123qwe456asd")
+	private String imageUrl;
+
 }

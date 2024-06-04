@@ -14,9 +14,9 @@ import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventRespo
 import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.web.command.CreateBuddyEventUseCase;
 import com.freediving.buddyservice.application.port.out.Internalservice.query.RequestMemberPort;
-import com.freediving.buddyservice.application.port.out.web.CreateBuddyEventPort;
 import com.freediving.buddyservice.application.port.out.web.ValidationBuddyEventPort;
 import com.freediving.buddyservice.application.port.out.web.command.like.BuddyEventLikeTogglePort;
+import com.freediving.buddyservice.application.port.out.web.createBuddyEventPort;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
 import com.freediving.common.config.annotation.UseCase;
@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CreateBuddyEventService implements CreateBuddyEventUseCase {
 
-	private final CreateBuddyEventPort createBuddyEventPort;
+	private final createBuddyEventPort createBuddyEventPort;
 	private final ValidationBuddyEventPort validationBuddyEventPort;
 	private final BuddyEventResponseMapper buddyEventResponseMapper;
 	private final RequestMemberPort requestMemberPort;
@@ -67,6 +67,7 @@ public class CreateBuddyEventService implements CreateBuddyEventUseCase {
 				.freedivingLevel(command.getFreedivingLevel())
 				.divingPools(command.getDivingPools())
 				.genderType(command.getGenderType())
+				.imageUrl(command.getImageUrl())
 				.build());
 
 		// 4. 좋아요 관심 데이터 생성

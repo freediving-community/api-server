@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto.UserInfo;
-import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventConceptMappingProjectDto;
-import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventDivingPoolMappingProjectDto;
+import com.freediving.buddyservice.adapter.out.persistence.event.concept.querydsl.BuddyEventConceptMappingProjectDto;
+import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.querydsl.BuddyEventDivingPoolMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.BuddyEventJoinMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.GetBuddyEventListingQueryProjectionDto;
 import com.freediving.buddyservice.application.port.in.web.query.listing.GetBuddyEventListingCommand;
@@ -27,10 +27,10 @@ import com.freediving.buddyservice.application.port.out.web.query.BuddyEventJoin
 import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventListingPort;
 import com.freediving.buddyservice.domain.enumeration.ParticipationStatus;
 import com.freediving.buddyservice.domain.query.QueryComponentListResponse;
+import com.freediving.buddyservice.domain.query.common.ConceptInfoResponse;
+import com.freediving.buddyservice.domain.query.common.DivingPoolInfoResponse;
+import com.freediving.buddyservice.domain.query.common.ParticipantInfoResponse;
 import com.freediving.buddyservice.domain.query.component.BuddyEventlistingCardResponse;
-import com.freediving.buddyservice.domain.query.component.common.ConceptInfoResponse;
-import com.freediving.buddyservice.domain.query.component.common.DivingPoolInfoResponse;
-import com.freediving.buddyservice.domain.query.component.common.ParticipantInfoResponse;
 import com.freediving.common.config.annotation.UseCase;
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;

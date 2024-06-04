@@ -3,7 +3,7 @@ package com.freediving.buddyservice.application.port.out.web.query;
 import java.util.List;
 import java.util.Map;
 
-import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventDivingPoolMappingProjectDto;
+import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.querydsl.BuddyEventDivingPoolMappingProjectDto;
 
 public interface BuddyEventDivingPoolMappingPort {
 

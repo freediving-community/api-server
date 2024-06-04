@@ -7,8 +7,8 @@ import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.d
 import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
-import com.freediving.buddyservice.domain.query.component.common.ConceptInfoResponse;
-import com.freediving.buddyservice.domain.query.component.common.DivingPoolInfoResponse;
+import com.freediving.buddyservice.domain.query.common.ConceptInfoResponse;
+import com.freediving.buddyservice.domain.query.common.DivingPoolInfoResponse;
 import com.freediving.common.enumerate.DivingPool;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;

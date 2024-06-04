@@ -108,6 +108,7 @@ CREATE TABLE buddy_event
     kakao_room_code   varchar(10)   NULL,
     freediving_level  integer       NULL,
     comment           varchar(1000) NULL,
+    image_url         varchar(200)  NULL,
     updated_date      timestamp     NOT NULL,
     created_date      timestamp     NOT NULL
 );

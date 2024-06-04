@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import com.freediving.buddyservice.adapter.out.persistence.concept.QBuddyEventConceptJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.QBuddyEventConceptMappingJpaEntity;
-import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventConceptMappingProjectDto;
-import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.QBuddyEventConceptMappingProjectDto;
 import com.querydsl.jpa.JPQLQueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 

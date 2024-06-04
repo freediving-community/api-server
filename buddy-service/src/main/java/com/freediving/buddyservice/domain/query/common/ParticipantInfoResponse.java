@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.domain.query.component.common;
+package com.freediving.buddyservice.domain.query.common;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

@@ -6,17 +6,21 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.buddyservice.adapter.in.web.query.dto.GetBuddyEventListingRequest;
+import com.freediving.buddyservice.application.port.in.web.query.BuddyEventDetailCommand;
+import com.freediving.buddyservice.application.port.in.web.query.BuddyEventDetailUseCase;
 import com.freediving.buddyservice.application.port.in.web.query.home.GetBuddyEventCarouselUseCase;
 import com.freediving.buddyservice.application.port.in.web.query.home.GetHomeActiveBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.web.query.home.GetHomePreferencePoolBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.web.query.home.GetHomeWeeklyBuddyEventCommand;
 import com.freediving.buddyservice.application.port.in.web.query.listing.GetBuddyEventListingCommand;
 import com.freediving.buddyservice.application.port.in.web.query.listing.GetBuddyEventListingUseCase;
+import com.freediving.buddyservice.domain.query.QueryBuddyEventDetailResponse;
 import com.freediving.buddyservice.domain.query.QueryComponentListResponse;
 import com.freediving.buddyservice.domain.query.QueryPreferencePoolCarouselResponse;
 import com.freediving.buddyservice.domain.query.component.BuddyEventCarouselCardResponse;
@@ -46,6 +50,7 @@ public class BuddyEventQueryController {
 
 	private final GetBuddyEventListingUseCase getBuddyEventListingUseCase;
 	private final GetBuddyEventCarouselUseCase getBuddyEventCarouselUseCase;
+	private final BuddyEventDetailUseCase buddyEventDetailUseCase;
 
 	/* API  캐로셀 카드 조회 하기.
 	 *   - 메인 홈 N명의 다이버가 버디를 찾고 있어요.
@@ -74,6 +79,45 @@ public class BuddyEventQueryController {
 		}
 
 		return userId;
+	}
+
+	@Operation(
+		summary = "버디 이벤트 상세정보 조회하기. ",
+		description = "버디 매칭 상세정보를 조회합니다.",
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "버디 매칭 조회 성공",
+				content = @Content(mediaType = "application/json",
+					schema = @Schema(implementation = QueryBuddyEventDetailResponse.class))
+			),
+			@ApiResponse(responseCode = "204", ref = "#/components/responses/204"),
+			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "500", ref = "#/components/responses/500")
+		}
+	)
+	@GetMapping("event/{eventId}")
+	public ResponseEntity<ResponseJsonObject<QueryBuddyEventDetailResponse>> getBuddyEventDatail(
+		@Valid @NotNull @PathVariable(name = "eventId") Long eventId, HttpServletRequest httpServletRequest) {
+		try {
+			// 1. UserID 추출하기
+			Long userId = getUserId(httpServletRequest);
+
+			QueryBuddyEventDetailResponse buddyEventDetail = buddyEventDetailUseCase.getBuddyEventDetail(
+				BuddyEventDetailCommand.builder().eventId(eventId).userId(userId).build()
+			);
+
+			// 3. Command 요청 및 응답 리턴.
+			ResponseJsonObject<QueryBuddyEventDetailResponse> response = new ResponseJsonObject<>(
+				ServiceStatusCode.OK,
+				buddyEventDetail);
+
+			return ResponseEntity.ok(response);
+		} catch (BuddyMeException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, e.getMessage());
+		}
 	}
 
 	// API 리스팅 카드 조회 하기.
