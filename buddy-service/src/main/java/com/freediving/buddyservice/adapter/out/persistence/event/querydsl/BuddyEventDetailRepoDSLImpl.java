@@ -35,7 +35,13 @@ public class BuddyEventDetailRepoDSLImpl implements BuddyEventDetailRepoDSL {
 		sql.append("WHERE requests.event_id = events.event_id ");
 		sql.append("AND requests.status IN ('" + ParticipationStatus.OWNER.name() + "','"
 			+ ParticipationStatus.PARTICIPATING.name() + "')) AS participantCountDistinct, ");
-		sql.append("CASE WHEN likeMapping.event_id IS NOT NULL THEN TRUE ELSE FALSE END AS isLiked, ");
+
+		sql.append("(SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END ");
+		sql.append("FROM buddy_event_like_mapping AS likeMapping ");
+		sql.append("WHERE likeMapping.event_id = events.event_id ");
+		sql.append("AND likeMapping.user_id = :userId ");
+		sql.append("AND likeMapping.is_deleted = false) AS isLiked, ");
+		
 		sql.append("like_count.like_count AS likeCount, ");
 		sql.append("view_count.view_count AS viewCount, ");
 		sql.append("events.image_url AS image_url, ");
@@ -45,8 +51,6 @@ public class BuddyEventDetailRepoDSLImpl implements BuddyEventDetailRepoDSL {
 		sql.append("FROM buddy_event AS events ");
 		sql.append("LEFT JOIN buddy_event_like_count AS like_count ON events.event_id = like_count.event_id ");
 		sql.append("LEFT JOIN buddy_event_view_count AS view_count ON events.event_id = view_count.event_id ");
-		sql.append("LEFT JOIN buddy_event_like_mapping AS likeMapping ON events.event_id = likeMapping.event_id ");
-		sql.append("AND likeMapping.user_id = :userId AND likeMapping.is_deleted = false ");
 		sql.append("WHERE events.event_id = :eventId");
 
 		Query query = entityManager.createNativeQuery(sql.toString());
