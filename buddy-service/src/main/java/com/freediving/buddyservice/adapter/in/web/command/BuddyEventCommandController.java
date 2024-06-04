@@ -93,6 +93,7 @@ public class BuddyEventCommandController {
 					.freedivingLevel(request.getFreedivingLevel())
 					.divingPools(request.getDivingPools())
 					.genderType(request.getGenderType())
+					.imageUrl(request.getImageUrl())
 					.build());
 
 			// 3. Command 요청 및 응답 리턴.

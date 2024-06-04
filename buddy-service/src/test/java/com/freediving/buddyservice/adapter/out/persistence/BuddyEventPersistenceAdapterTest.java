@@ -22,7 +22,7 @@ import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEvent
 import com.freediving.buddyservice.adapter.out.persistence.event.likecount.BuddyEventLikeCountRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.likecount.BuddyEventLikeMappingRepository;
 import com.freediving.buddyservice.adapter.out.persistence.event.viewcount.BuddyEventViewCountRepository;
-import com.freediving.buddyservice.application.port.out.web.CreateBuddyEventPort;
+import com.freediving.buddyservice.application.port.out.web.createBuddyEventPort;
 import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
@@ -33,7 +33,7 @@ import com.freediving.common.enumerate.DivingPool;
 class BuddyEventPersistenceAdapterTest {
 
 	@Autowired
-	CreateBuddyEventPort createBuddyEventPort;
+	createBuddyEventPort createBuddyEventPort;
 	@Autowired
 	BuddyEventRepository buddyEventRepository;
 	@Autowired

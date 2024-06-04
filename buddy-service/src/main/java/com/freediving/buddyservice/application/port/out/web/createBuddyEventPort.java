@@ -3,7 +3,7 @@ package com.freediving.buddyservice.application.port.out.web;
 import com.freediving.buddyservice.adapter.out.persistence.event.BuddyEventJpaEntity;
 import com.freediving.buddyservice.domain.command.CreatedBuddyEventResponse;
 
-public interface CreateBuddyEventPort {
+public interface createBuddyEventPort {
 
 	/**
 	 * 버디 일정 이벤트 생성의 port Interface

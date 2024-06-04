@@ -79,6 +79,9 @@ public class BuddyEventJpaEntity extends AuditableEntity {
 	@Column(name = "freediving_level", nullable = true)
 	private Integer freedivingLevel;
 
+	@Column(name = "image_url", nullable = true)
+	private String imageUrl;
+
 	// 연관 관계 매핑
 
 	@OneToMany(mappedBy = "buddyEvent", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})

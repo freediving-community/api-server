@@ -7,8 +7,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.QBuddyEventDivingPoolMappingJpaEntity;
-import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventDivingPoolMappingProjectDto;
-import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.QBuddyEventDivingPoolMappingProjectDto;
 import com.freediving.divingpool.data.dao.QDivingPoolJpaEntity;
 import com.querydsl.jpa.JPQLQueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;

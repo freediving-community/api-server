@@ -3,8 +3,8 @@ package com.freediving.buddyservice.adapter.out.persistence.event.concept;
 import java.util.List;
 import java.util.Map;
 
+import com.freediving.buddyservice.adapter.out.persistence.event.concept.querydsl.BuddyEventConceptMappingProjectDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.querydsl.BuddyEventConceptMappingRepoDSL;
-import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventConceptMappingProjectDto;
 import com.freediving.buddyservice.application.port.out.web.query.BuddyEventConceptMappingPort;
 import com.freediving.common.config.annotation.PersistenceAdapter;
 

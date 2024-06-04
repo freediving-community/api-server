@@ -67,10 +67,12 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 
 	private Set<DivingPool> divingPools;
 
+	private String imageUrl;
+
 	@Builder
 	private CreateBuddyEventCommand(Long userId, LocalDateTime eventStartDate, LocalDateTime eventEndDate,
 		Integer participantCount, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn, String kakaoRoomCode,
-		String comment, Integer freedivingLevel, Set<DivingPool> divingPools, GenderType genderType) {
+		String comment, Integer freedivingLevel, Set<DivingPool> divingPools, GenderType genderType, String imageUrl) {
 		this.userId = userId;
 		this.eventStartDate = eventStartDate;
 
@@ -86,6 +88,7 @@ public class CreateBuddyEventCommand extends SelfValidating<CreateBuddyEventComm
 		this.freedivingLevel = freedivingLevel;
 		this.divingPools = divingPools;
 		this.genderType = genderType;
+		this.imageUrl = imageUrl;
 		this.validateSelf();
 	}
 }

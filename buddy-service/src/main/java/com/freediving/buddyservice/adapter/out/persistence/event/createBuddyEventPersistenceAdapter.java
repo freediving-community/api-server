@@ -10,11 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.freediving.buddyservice.adapter.out.persistence.event.concept.BuddyEventConceptMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.BuddyEventDivingPoolMappingJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestJpaEntity;
+import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventDetailQueryProjectionDto;
+import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventDetailRepoDSL;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.carousel.GetBuddyEventCarouselQueryProjectionDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.carousel.GetBuddyEventCarouselRepoDSL;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.GetBuddyEventListingQueryProjectionDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.GetBuddyEventListingRepoDSL;
-import com.freediving.buddyservice.application.port.out.web.CreateBuddyEventPort;
+import com.freediving.buddyservice.application.port.out.web.createBuddyEventPort;
+import com.freediving.buddyservice.application.port.out.web.query.BuddyEventDetailPort;
 import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventCarouselPort;
 import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventListingPort;
 import com.freediving.buddyservice.config.enumerate.GenderType;
@@ -37,12 +40,13 @@ import lombok.RequiredArgsConstructor;
  **/
 @RequiredArgsConstructor
 @PersistenceAdapter
-public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBuddyEventListingPort,
-	GetBuddyEventCarouselPort {
+public class createBuddyEventPersistenceAdapter implements createBuddyEventPort, GetBuddyEventListingPort,
+	GetBuddyEventCarouselPort, BuddyEventDetailPort {
 
 	private final BuddyEventRepository buddyEventRepository;
 	private final GetBuddyEventListingRepoDSL getBuddyEventListingRepoDSL;
 	private final GetBuddyEventCarouselRepoDSL getBuddyEventCarouselRepoDSL;
+	private final BuddyEventDetailRepoDSL buddyEventDetailRepoDSL;
 
 	@Override
 	@Transactional
@@ -61,6 +65,7 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBu
 				.status(createdBuddyEventResponse.getStatus())
 				.kakaoRoomCode(createdBuddyEventResponse.getKakaoRoomCode())
 				.comment(createdBuddyEventResponse.getComment())
+				.imageUrl(createdBuddyEventResponse.getImageUrl())
 				.build()
 		);
 
@@ -91,6 +96,14 @@ public class BuddyEventPersistenceAdapter implements CreateBuddyEventPort, GetBu
 		createdEventJpaEntity.changeBuddyEventConceptMapping(buddyEventConceptMappingJpaEntity);
 
 		return createdEventJpaEntity;
+	}
+
+	@Override
+	public BuddyEventDetailQueryProjectionDto getBuddyEventDetail(Long userId, Long eventId) {
+
+		BuddyEventDetailQueryProjectionDto detail = buddyEventDetailRepoDSL.getBuddyEventDetail(userId, eventId);
+
+		return detail;
 	}
 
 	@Override

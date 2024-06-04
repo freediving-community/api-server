@@ -5,8 +5,8 @@ import java.util.Set;
 
 import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto.UserInfo;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
-import com.freediving.buddyservice.domain.query.component.common.ConceptInfoResponse;
-import com.freediving.buddyservice.domain.query.component.common.DivingPoolInfoResponse;
+import com.freediving.buddyservice.domain.query.common.ConceptInfoResponse;
+import com.freediving.buddyservice.domain.query.common.DivingPoolInfoResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

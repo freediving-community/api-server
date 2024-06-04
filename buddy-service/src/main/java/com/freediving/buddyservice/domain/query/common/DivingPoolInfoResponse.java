@@ -1,4 +1,4 @@
-package com.freediving.buddyservice.domain.query.component.common;
+package com.freediving.buddyservice.domain.query.common;
 
 import com.freediving.common.enumerate.DivingPool;
 

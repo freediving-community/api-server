@@ -73,4 +73,7 @@ public class CreatedBuddyEventResponse {
 	@ArraySchema(arraySchema = @Schema(description = "다이빙 풀"),
 		schema = @Schema(implementation = DivingPool.class, requiredMode = Schema.RequiredMode.REQUIRED))
 	private Set<DivingPool> divingPools;
+
+	@Schema(description = "이미지 CDN URL", example = "https://cdn.aws.com:123/asdf/images/123qwe456asd")
+	private String imageUrl;
 }
