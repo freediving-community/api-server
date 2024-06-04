@@ -23,14 +23,18 @@ public class BuddyEventDetailRepoDSLImpl implements BuddyEventDetailRepoDSL {
 	@Override
 	public BuddyEventDetailQueryProjectionDto getBuddyEventDetail(Long userId, Long eventId) {
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT  events.user_id AS userId, ");
+		sql.append("SELECT events.user_id AS userId, ");
 		sql.append("events.event_id AS eventId, ");
 		sql.append("events.event_start_date AS eventStartDate, ");
 		sql.append("events.event_end_date AS eventEndDate, ");
 		sql.append("events.gender_type AS gender_type, ");
 		sql.append("events.freediving_level AS freedivingLevel, ");
 		sql.append("events.participant_count AS participantCount, ");
-		sql.append("COUNT(DISTINCT requests.user_id) AS participantCountDistinct, ");
+		sql.append("(SELECT COUNT(DISTINCT requests.user_id) ");
+		sql.append("FROM buddy_event_join_requests AS requests ");
+		sql.append("WHERE requests.event_id = events.event_id ");
+		sql.append("AND requests.status IN ('" + ParticipationStatus.OWNER.name() + "','"
+			+ ParticipationStatus.PARTICIPATING.name() + "')) AS participantCountDistinct, ");
 		sql.append("CASE WHEN likeMapping.event_id IS NOT NULL THEN TRUE ELSE FALSE END AS isLiked, ");
 		sql.append("like_count.like_count AS likeCount, ");
 		sql.append("view_count.view_count AS viewCount, ");
@@ -41,12 +45,9 @@ public class BuddyEventDetailRepoDSLImpl implements BuddyEventDetailRepoDSL {
 		sql.append("FROM buddy_event AS events ");
 		sql.append("LEFT JOIN buddy_event_like_count AS like_count ON events.event_id = like_count.event_id ");
 		sql.append("LEFT JOIN buddy_event_view_count AS view_count ON events.event_id = view_count.event_id ");
-		sql.append(
-			"LEFT JOIN buddy_event_like_mapping AS likeMapping ON events.event_id = likeMapping.event_id AND likeMapping.user_id = :userId AND likeMapping.is_deleted = false ");
-		sql.append(
-			"LEFT JOIN buddy_event_join_requests AS requests ON events.event_id = requests.event_id  AND requests.status in (");
-		sql.append("'" + ParticipationStatus.OWNER.name() + "','" + ParticipationStatus.PARTICIPATING.name() + "') ");
-		sql.append("WHERE events.event_id = :eventId ");
+		sql.append("LEFT JOIN buddy_event_like_mapping AS likeMapping ON events.event_id = likeMapping.event_id ");
+		sql.append("AND likeMapping.user_id = :userId AND likeMapping.is_deleted = false ");
+		sql.append("WHERE events.event_id = :eventId");
 
 		Query query = entityManager.createNativeQuery(sql.toString());
 		query.setParameter("userId", userId);
