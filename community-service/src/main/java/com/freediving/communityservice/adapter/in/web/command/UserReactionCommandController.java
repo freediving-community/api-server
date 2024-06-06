@@ -100,7 +100,7 @@ public class UserReactionCommandController {
 		}
 		ResponseJsonObject<Object> response = ResponseJsonObject.builder()
 			.data(responseMessage)
-			.code(ServiceStatusCode.BAD_REQUEST)
+			.code(ServiceStatusCode.OK)
 			.build();
 		return ResponseEntity.ok(response);
 	}

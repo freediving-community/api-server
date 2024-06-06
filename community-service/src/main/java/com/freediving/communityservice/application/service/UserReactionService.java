@@ -44,11 +44,17 @@ public class UserReactionService implements UserReactionUseCase {
 	@Override
 	public int deleteUserReaction(UserReactionCommand command) {
 		Article targetArticle = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), false);
-		return userReactionPort.deleteUserReaction(
+		int processStatus = userReactionPort.deleteUserReaction(
 			command.getUserReactionType(),
 			targetArticle.getBoardType(),
 			targetArticle.getId(),
 			command.getUserProvider()
 		);
+
+		if (UserReactionType.LIKE.equals(command.getUserReactionType()) && processStatus == 1) {
+			articleEditPort.decreaseLikeCount(command.getBoardType(), command.getArticleId());
+		}
+
+		return processStatus;
 	}
 }
