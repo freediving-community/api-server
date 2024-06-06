@@ -13,6 +13,6 @@ public interface ArticleReadPort {
 	// ArticleContentWithComment readArticleWithComment(BoardType boardType, Long articleId, boolean isShowAll, UserProvider requestUser);
 	int increaseViewCount(BoardType boardType, Long articleId);
 
-	Page<ArticleBriefDto> retrieveArticleIndexList(BoardType boardType, Long cursor, boolean onlyPicture,
+	Page<ArticleBriefDto> retrieveArticleIndexList(BoardType boardType, Long cursor, boolean onlyPicture, Long userId,
 		Pageable pageable);
 }

@@ -32,9 +32,10 @@ public class ArticleIndexListCommand extends SelfValidating<ArticleIndexListComm
 
 	private final Long cursor;
 
+	private final Long userId;
+
 	public ArticleIndexListCommand(UserProvider userProvider, BoardType boardType, int page, int offset,
-		boolean onlyPicture, String orderBy,
-		Long cursor) {
+		boolean onlyPicture, String orderBy, Long cursor, Long userId) {
 		this.userProvider = userProvider;
 		this.boardType = boardType;
 		this.page = page - 1;
@@ -42,6 +43,7 @@ public class ArticleIndexListCommand extends SelfValidating<ArticleIndexListComm
 		this.onlyPicture = onlyPicture;
 		this.orderBy = orderBy;
 		this.cursor = cursor;
+		this.userId = userId;
 		this.validateSelf();
 	}
 }

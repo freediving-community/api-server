@@ -51,7 +51,8 @@ public class ArticleQueryController {
 		@RequestParam(value = "offset", required = false, defaultValue = "20") int offset,
 		@RequestParam(value = "orderBy", required = false, defaultValue = "createdAt") String orderBy,
 		@RequestParam(value = "c", required = false, defaultValue = "") Long cursor,
-		@RequestParam(value = "onlyPicture", required = false) boolean onlyPicture
+		@RequestParam(value = "onlyPicture", required = false) boolean onlyPicture,
+		@RequestParam(value = "userId", required = false) Long userId
 	) {
 		Page<ArticleBriefDto> articleIndexList = articleUseCase.getArticleIndexList(
 			ArticleIndexListCommand.builder()
@@ -62,6 +63,7 @@ public class ArticleQueryController {
 				.onlyPicture(onlyPicture)
 				.orderBy(orderBy)
 				.cursor(cursor)
+				.userId(userId)
 				.build()
 		);
 		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, articleIndexList));

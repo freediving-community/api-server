@@ -159,6 +159,7 @@ public class ArticleService implements ArticleUseCase {
 			command.getBoardType(),
 			command.getCursor(),
 			command.isOnlyPicture(),
+			command.getUserId(),
 			pageable
 		);
 

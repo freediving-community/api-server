@@ -82,7 +82,7 @@ public class ArticlePersistenceAdapter
 
 	@Override
 	public Page<ArticleBriefDto> retrieveArticleIndexList(BoardType boardType, Long cursor, boolean onlyPicture,
-		Pageable pageable) {
+		Long userId, Pageable pageable) {
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("boardType", boardType.name());
@@ -113,6 +113,11 @@ public class ArticlePersistenceAdapter
 		if (!ObjectUtils.isEmpty(cursor)) {
 			articleIndexQuery.append(" AND ARTICLE_ID < :articleId ");
 			paramMap.addValue("articleId", cursor);
+		}
+
+		if (!ObjectUtils.isEmpty(userId)) {
+			articleIndexQuery.append(" AND CREATED_BY = :userId ");
+			paramMap.addValue("userId", userId);
 		}
 
 		articleIndexQuery
