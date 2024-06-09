@@ -32,4 +32,5 @@ public enum RoleLevel {
 	RoleLevel(int level) {
 		this.level = level;
 	}
+	public static final RoleLevel[] LEVEL_ARR = {RoleLevel.NO_LEVEL, RoleLevel.LEVEL1, RoleLevel.LEVEL2, RoleLevel.LEVEL3, RoleLevel.LEVEL4, RoleLevel.INSTRUCTOR};
 }

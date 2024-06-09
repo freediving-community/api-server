@@ -16,8 +16,12 @@ import com.freediving.common.config.annotation.WebAdapter;
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.dto.member.MemberFindUserResponse;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
+import com.freediving.memberservice.adapter.in.web.dto.FindMyPageResponse;
 import com.freediving.memberservice.adapter.in.web.dto.FindNicknameResponse;
+import com.freediving.memberservice.adapter.in.web.dto.FindUserInfoResponse;
 import com.freediving.memberservice.adapter.in.web.dto.FindUserResponse;
+import com.freediving.memberservice.application.port.in.FindMyPageQuery;
+import com.freediving.memberservice.application.port.in.FindUserInfoQuery;
 import com.freediving.memberservice.application.port.in.FindUserListQuery;
 import com.freediving.memberservice.application.port.in.FindUserQuery;
 import com.freediving.memberservice.application.port.in.FindUserUseCase;
@@ -51,7 +55,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/v1")
 @Slf4j
 @Validated
-@Tag(name = "User", description = "유저 관련 API")
 public class FindUserController {
 
 	private final FindUserUseCase findUserUseCase;
@@ -61,10 +64,11 @@ public class FindUserController {
 	 * @Date             : 2024/02/06
 	 * @Param            : Security Authentication
 	 * @Return           : User 조회 응답 DTO
-	 * @Description      : 사용자 정보에 조회에 대한 응답 (자격증, 소셜 정보 등)
+	 * @Description      : 내 정보에 조회에 대한 응답 (자격증, 소셜 정보 등)
 	 */
 
-	@Operation(summary = "사용자 정보 조회 API"
+	@Tag(name = "User", description = "유저 관련 API")
+	@Operation(summary = "내 정보 조회 API (사용자 로그인 시 최초로 호출될 API)"
 		, description = "JWT 정보를 기반으로 사용자 정보를 조회하여 반환한다. <br/>"
 		+ "응답 정보에는 사용자 ID, 이메일, 프로필 이미지, 닉네임, 소셜 정보, 라이센스 정보 등이 들어있다.",
 		responses = {
@@ -90,9 +94,11 @@ public class FindUserController {
 	 * @Description      : 탈퇴 등으로 조회되지 않은 유저에 대해서도 기본 값을 생성하여 반환
 	 */
 
-	@Operation(summary = "사용자 정보 조회 API (Service 간 통신)"
+	@Tag(name = "Internal", description = "내부 통신 API")
+	@Operation(summary = "유저 조회 내부 통신 API"
 		, description = "userId 정보를 기반으로 사용자 정보를 조회하여 반환한다. <br/>"
-		+ "탈퇴 등으로 조회되지 않은 유저에 대해서도 기본 값을 생성하여 반환",
+		+ "탈퇴 등으로 조회되지 않은 유저에 대해서도 기본 값을 생성하여 반환 <br/>"
+		+ "userStatus 응답 필드 추가 (2024.06.09) - ACTIVE (정상 사용자), SUSPENDED (정지된 사용자), WITHDRAWN (탈퇴한 사용자), UNKNOWN(존재하지 않는 사용자)",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = SwaggerResponse.RespMemberFindUserResponse.class))),
 			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),
@@ -112,11 +118,12 @@ public class FindUserController {
 			.build();
 		// List<FindUserServiceResponse> findUserList = findUserUseCase.findUserListByQuery(findUserListQuery);
 		List<MemberFindUserResponse> resp = findUserUseCase.findUserListByQuery(findUserListQuery).stream()
-			.map(r -> FindUserMapper.INSTANCE.toCommonFindUserResponse(r)).collect(Collectors.toList());
+			.map(FindUserMapper.INSTANCE::toCommonFindUserResponse).collect(Collectors.toList());
 		return ResponseEntity.ok(new ResponseJsonObject(ServiceStatusCode.OK, resp));
 	}
 
-	@Operation(summary = "사용자 닉네임 중복 조회 API"
+	@Tag(name = "User", description = "유저 관련 API")
+	@Operation(summary = "닉네임 중복 조회 API (T/F)"
 		, description = "요청한 nickname의 중복여부를 확인하여 반환한다. <br/>"
 		+ "닉네임은 한글, 영어, 숫자, 언더바(_)만 사용 가능하고 16자리까지 생성이 가능합니다.",
 		responses = {
@@ -136,5 +143,47 @@ public class FindUserController {
 		FindNicknameResponse response = new FindNicknameResponse(!isExistNickname);
 
 		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, response));
+	}
+
+	@Tag(name = "User", description = "유저 관련 API")
+	@Operation(summary = "사용자 정보 조회 API (본인 또는 다른 사용자 조회)"
+		, description = "요청한 userId를 바탕으로 사용자 정보를 반환한다. <br/>"
+		+ "본인 여부는 클라이언트가 userId 정보를 토대로 판단한다. <br/>"
+		+ "story, review 데이터는 임시 데이터 반환",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
+		})
+	@GetMapping("/users/{userId}/info")
+	public ResponseEntity<ResponseJsonObject<FindUserInfoResponse>> findUserInfoByUserId(
+		@PathVariable(name = "userId") Long userId) {
+		FindUserInfoQuery query = FindUserInfoQuery.builder()
+			.userId(userId)
+			.build();
+		FindUserInfoResponse resp = findUserUseCase.findUserInfoByQuery(query);
+		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, resp));
+	}
+
+	@Tag(name = "User", description = "유저 관련 API")
+	@Operation(summary = "마이페이지 조회 API (관심 목록, 내가 쓴 댓글 등)"
+		, description = "JWT 정보를 바탕으로 사용자 마이페이지 정보를 반환한다. <br/>"
+		+ "likeCnt (10), commentCnt(5) 모두 임시 샘플 데이터 반환 <br/>"
+		+ "연결된 SNS 계정은 MVP 이후 개발 예정",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
+		})
+	@GetMapping("/users/my-page")
+	public ResponseEntity<ResponseJsonObject<FindMyPageResponse>> findMyPageByUserId(
+		@AuthenticationPrincipal User user) {
+		FindMyPageQuery query = FindMyPageQuery.builder()
+			.userId(user.userId())
+			.build();
+		FindMyPageResponse resp = findUserUseCase.findMyPageByUserId(query);
+		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, resp));
 	}
 }

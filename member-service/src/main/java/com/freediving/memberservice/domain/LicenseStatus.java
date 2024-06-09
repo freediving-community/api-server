@@ -11,7 +11,7 @@ import lombok.Getter;
 /**
  * @Author         : sasca37
  * @Date           : 2024/03/31
- * @Description    : 라이센스 상태값 정보 (심사중, 승인, 탈퇴)
+ * @Description    : 라이센스 상태값 정보 (미등록, 심사중, 승인, 탈퇴)
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * ===========================================================
@@ -21,6 +21,7 @@ import lombok.Getter;
 @Getter
 public enum LicenseStatus {
 
+	UNREGISTER("-1"),	  // 미등록
 	EVALUATION("0"),    // 심사중
 	APPROVED("1"),    // 승인
 	REJECTED("2");    // 탈퇴

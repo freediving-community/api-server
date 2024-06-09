@@ -82,7 +82,7 @@ public class UserJpaEntity extends AuditableEntity {
 		this.profileImgUrl = profileImgUrl;
 	}
 
-	public void updateStatue(UserStatus userStatus) {
+	public void updateStatus(UserStatus userStatus) {
 		this.userStatus = userStatus;
 	}
 
@@ -102,6 +102,7 @@ public class UserJpaEntity extends AuditableEntity {
 	@Builder(builderMethodName = "createMockUser")
 	public UserJpaEntity(Long userId, String email, String profileImgUrl, OauthType oauthType) {
 		this.userId = userId;
+		this.userStatus = UserStatus.ACTIVE;
 		this.email = email;
 		this.profileImgUrl = profileImgUrl;
 		this.oauthType = oauthType;

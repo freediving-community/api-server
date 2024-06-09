@@ -39,10 +39,10 @@ public class LicenseInfo {
 
 		for (UserLicense userLicense : userLicenseList) {
 			if (DiveType.FREE_DIVE.equals(userLicense.diveType())) {
-				freeDiving = new FreeDiving(userLicense.roleLevel().getLevel(), userLicense.roleLevel().name(),
+				freeDiving = new FreeDiving(userLicense.orgName(), userLicense.roleLevel().getLevel(), userLicense.roleLevel().name(),
 					userLicense.licenseLevel(), userLicense.licenseImgUrl(), userLicense.confirmTF());
 			} else if (DiveType.SCUBA_DIVE.equals(userLicense.diveType())) {
-				scubaDiving = new ScubaDiving(userLicense.roleLevel().getLevel(), userLicense.roleLevel().name(),
+				scubaDiving = new ScubaDiving(userLicense.orgName(), userLicense.roleLevel().getLevel(), userLicense.roleLevel().name(),
 					userLicense.licenseLevel(), userLicense.licenseImgUrl(), userLicense.confirmTF());
 			}
 		}

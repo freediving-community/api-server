@@ -45,13 +45,4 @@ public class CreateUserInfoRequestV2 {
 	@ArraySchema(schema = @Schema(type = "array", example = "FUN"))
 	private List<String> conceptList;
 
-	@Schema(description = "유저 프로필 이미지 URL", example = "https://d1pjflw6c3jt4r.cloudfront.net")
-	private String profileImgUrl;
-
-	@Schema(description = "유저 닉네임", example = "SASCA37")
-	private String nickname;
-
-	@Schema(description = "유저 자기소개 글", example = "안녕하세요.")
-	private String content;
-
 }

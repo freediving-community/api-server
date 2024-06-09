@@ -75,7 +75,7 @@ public class UserLicenseJpaEntity extends AuditableEntity {
 	@PrePersist
 	void prePersist() {
 		this.confirmTF = false;
-		this.licenseStatus = LicenseStatus.EVALUATION;
+		this.licenseStatus = LicenseStatus.UNREGISTER;
 	}
 
 	public static UserLicenseJpaEntity createUserLicenseJpaEntity(UserJpaEntity userJpaEntity, DiveType diveType) {
@@ -98,5 +98,20 @@ public class UserLicenseJpaEntity extends AuditableEntity {
 
 	public void updateLicenseLevel(Integer licenseLevel) {
 		this.licenseLevel = licenseLevel;
+	}
+
+	public void updateLicenseStatus(LicenseStatus licenseStatus) {
+		this.licenseStatus = licenseStatus;
+	}
+
+	public void updateLicenseStatusInfo(String orgName, Integer licenseLevel, Boolean confirmTF, Long adminUserId) {
+		this.orgName = orgName;
+		this.licenseLevel = licenseLevel;
+		this.confirmTF = confirmTF;
+		this.licenseStatus = confirmTF ? LicenseStatus.APPROVED : LicenseStatus.REJECTED;
+		if (confirmTF) {
+			this.role = RoleLevel.LEVEL_ARR[licenseLevel];
+		}
+		this.confirmAdminId = adminUserId;
 	}
 }

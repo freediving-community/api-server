@@ -4,6 +4,8 @@ import org.springframework.http.ResponseEntity;
 
 import com.freediving.common.config.annotation.ExternalSystemAdapter;
 import com.freediving.common.response.ResponseJsonObject;
+import com.freediving.memberservice.adapter.out.dto.UserConceptResponse;
+import com.freediving.memberservice.adapter.out.dto.UserPoolResponse;
 import com.freediving.memberservice.application.port.out.service.buddy.BuddyFeignPort;
 import com.freediving.memberservice.application.port.out.service.buddy.BuddyServiceFeignClient;
 
@@ -28,7 +30,12 @@ public class BuddyExternalAdapter implements BuddyFeignPort {
 	private final BuddyServiceFeignClient buddyServiceFeignClient;
 
 	@Override
-	public ResponseEntity<ResponseJsonObject<?>> getDivingPools() {
-		return buddyServiceFeignClient.getDivingPools();
+	public ResponseEntity<ResponseJsonObject<UserPoolResponse>> userDivingPoolListByUserId(Long userId) {
+		return buddyServiceFeignClient.userDivingPoolListByUserId(userId);
+	}
+
+	@Override
+	public ResponseEntity<ResponseJsonObject<UserConceptResponse>> userConceptListByUserId(Long userId) {
+		return buddyServiceFeignClient.userConceptListByUserId(userId);
 	}
 }

@@ -5,6 +5,7 @@ import com.freediving.memberservice.application.port.in.CreateUserCommand;
 import com.freediving.memberservice.domain.OauthType;
 import com.freediving.memberservice.domain.User;
 import com.freediving.memberservice.domain.UserLicense;
+import com.freediving.memberservice.domain.UserStatus;
 
 /**
  * @Author         : sasca37
@@ -31,7 +32,7 @@ public class UserFixture {
 	public static final UserLicense DEFAULT_USER_LICENSE = null;
 
 	public static User createUserFromCommand(CreateUserCommand command) {
-		return new User(DEFAULT_ID, command.getEmail(), command.getProfileImgUrl(), null, null,
-			command.getOauthType(), null);
+		return new User(DEFAULT_ID, UserStatus.ACTIVE.name(), command.getEmail(), command.getProfileImgUrl(), null, null,
+			command.getOauthType(), null, null, null);
 	}
 }

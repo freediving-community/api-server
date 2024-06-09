@@ -34,13 +34,13 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "Token", description = "JWT 토큰 관리 API")
 public class TokenController {
 
 	private final TokenUseCase tokenUseCase;
 
+	@Tag(name = "Token", description = "JWT 토큰 관리 API")
 	@Operation(summary = "JWT 액세스 토큰 업데이트 API"
-		, description = "JWT 액세스 토큰을 재생성하여 반환한다.",
+		, description = "리프레시 토큰 정보가 사용 가능한 경우 JWT 액세스 토큰을 재생성하여 반환한다.",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
 			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),
