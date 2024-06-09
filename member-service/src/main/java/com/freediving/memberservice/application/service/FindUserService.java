@@ -10,8 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.freediving.common.config.annotation.UseCase;
 import com.freediving.common.domain.member.FreeDiving;
 import com.freediving.common.domain.member.ScubaDiving;
+import com.freediving.memberservice.adapter.in.web.dto.FindUserInfoResponse;
 import com.freediving.memberservice.adapter.in.web.dto.FindUserServiceResponse;
 import com.freediving.memberservice.adapter.in.web.dto.LicenseInfo;
+import com.freediving.memberservice.application.port.in.FindUserInfoQuery;
 import com.freediving.memberservice.application.port.in.FindUserListQuery;
 import com.freediving.memberservice.application.port.in.FindUserQuery;
 import com.freediving.memberservice.application.port.in.FindUserUseCase;
@@ -70,6 +72,11 @@ public class FindUserService implements FindUserUseCase {
 	@Override
 	public User findUserByUserId(FindUserQuery findUserQuery) {
 		return findUserPort.findUserDetailById(findUserQuery.userId());
+	}
+
+	@Override
+	public FindUserInfoResponse findUserInfoByQuery(FindUserInfoQuery query) {
+		return findUserPort.findUserInfoByQuery(query.userId());
 	}
 
 }

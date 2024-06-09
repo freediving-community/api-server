@@ -17,7 +17,9 @@ import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.dto.member.MemberFindUserResponse;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.memberservice.adapter.in.web.dto.FindNicknameResponse;
+import com.freediving.memberservice.adapter.in.web.dto.FindUserInfoResponse;
 import com.freediving.memberservice.adapter.in.web.dto.FindUserResponse;
+import com.freediving.memberservice.application.port.in.FindUserInfoQuery;
 import com.freediving.memberservice.application.port.in.FindUserListQuery;
 import com.freediving.memberservice.application.port.in.FindUserQuery;
 import com.freediving.memberservice.application.port.in.FindUserUseCase;
@@ -138,5 +140,25 @@ public class FindUserController {
 		FindNicknameResponse response = new FindNicknameResponse(!isExistNickname);
 
 		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, response));
+	}
+
+	@Tag(name = "User", description = "유저 관련 API")
+	@Operation(summary = "사용자 정보 조회 API (본인 또는 다른 사용자 조회)"
+		, description = "요청한 userId를 바탕으로 사용자 정보를 반환한다. <br/>"
+		+ "본인 여부는 클라이언트가 userId 정보를 토대로 판단한다.",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
+		})
+	@GetMapping("/users/{userId}/info")
+	public ResponseEntity<ResponseJsonObject<FindUserInfoResponse>> findUserInfoByUserId(
+		@PathVariable(name = "userId") Long userId) {
+		FindUserInfoQuery query = FindUserInfoQuery.builder()
+			.userId(userId)
+			.build();
+		FindUserInfoResponse resp = findUserUseCase.findUserInfoByQuery(query);
+		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, resp));
 	}
 }

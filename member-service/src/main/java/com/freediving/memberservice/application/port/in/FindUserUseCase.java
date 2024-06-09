@@ -2,6 +2,7 @@ package com.freediving.memberservice.application.port.in;
 
 import java.util.List;
 
+import com.freediving.memberservice.adapter.in.web.dto.FindUserInfoResponse;
 import com.freediving.memberservice.adapter.in.web.dto.FindUserServiceResponse;
 import com.freediving.memberservice.domain.User;
 
@@ -24,4 +25,6 @@ public interface FindUserUseCase {
 	boolean findNickname(String trimSafeNickname);
 
 	User findUserByUserId(FindUserQuery findUserQuery);
+
+	FindUserInfoResponse findUserInfoByQuery(FindUserInfoQuery query);
 }
