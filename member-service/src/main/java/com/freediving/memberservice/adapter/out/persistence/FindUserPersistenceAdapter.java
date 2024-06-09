@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.common.response.ResponseJsonObject;
+import com.freediving.memberservice.adapter.in.web.dto.FindMyPageResponse;
 import com.freediving.memberservice.adapter.in.web.dto.FindUserInfoResponse;
+import com.freediving.memberservice.adapter.in.web.dto.FindUserResponse;
 import com.freediving.memberservice.adapter.in.web.dto.LicenseInfo;
 import com.freediving.memberservice.adapter.out.dto.UserConceptResponse;
 import com.freediving.memberservice.adapter.out.dto.UserKeyword;
@@ -69,13 +71,13 @@ public class FindUserPersistenceAdapter implements FindUserPort {
 
 	@Override
 	public User findUserDetailById(Long userId) {
-		return getUserDetail(userId).getUser();
+		return getUserDetail(userId, true).getUser();
 	}
 
 	@Override
 	public FindUserInfoResponse findUserInfoByQuery(Long userId) {
-		UserDetailInfo userDetailInfo = getUserDetail(userId);
-		User user = getUserDetail(userId).getUser();
+		UserDetailInfo userDetailInfo = getUserDetail(userId, true);
+		User user = userDetailInfo.getUser();
 		LicenseInfo licenseInfo = LicenseInfo.createLicenseInfo(user.userLicenseList());
 
 		List<UserStory> storyList = new ArrayList<>();
@@ -134,39 +136,57 @@ public class FindUserPersistenceAdapter implements FindUserPort {
 			.build();
 	}
 
-	private UserDetailInfo getUserDetail(Long userId) {
+	@Override
+	public FindMyPageResponse findMyPageByUserId(Long userId) {
+		UserDetailInfo userDetailInfo = getUserDetail(userId, false);
+		User user =userDetailInfo.user;
+		return FindMyPageResponse.from(user, 10, 5);
+	}
+
+	private UserDetailInfo getUserDetail(Long userId, boolean preferInfoTF) {
 		UserJpaEntity userJpaEntity = userJpaRepository.findUserDetailById(userId)
 			.orElseThrow(() -> new MemberServiceException(ErrorCode.NOT_FOUND_USER));
 		List<UserLicenseJpaEntity> userLicenseJpaEntityList = userLicenseJpaRepository.findAllByUserJpaEntity(userJpaEntity);
 
-		List<String> conceptList = null;
-		List<String> poolList = null;
+		if (preferInfoTF) {
+			List<String> conceptList = null;
+			List<String> poolList = null;
 
-		try {
-			ResponseEntity<ResponseJsonObject<UserPoolResponse>> userPoolList = buddyExternalAdapter.userDivingPoolListByUserId(userId);
-			ResponseEntity<ResponseJsonObject<UserConceptResponse>> userConceptList = buddyExternalAdapter.userConceptListByUserId(userId);
-			poolList = userPoolList.getBody().getData().getDivingPools();
-			conceptList = userConceptList.getBody().getData().getConcepts();
-			log.info("userDivingPoolList: {}", poolList);
-			log.info("userConceptList: {}", conceptList);
-		} catch (Exception e) {
-			log.error("BuddyService Exception - findUserPreferenceInfoById: {}", userId, e);
+			try {
+				ResponseEntity<ResponseJsonObject<UserPoolResponse>> userPoolList = buddyExternalAdapter.userDivingPoolListByUserId(userId);
+				ResponseEntity<ResponseJsonObject<UserConceptResponse>> userConceptList = buddyExternalAdapter.userConceptListByUserId(userId);
+				poolList = userPoolList.getBody().getData().getDivingPools();
+				conceptList = userConceptList.getBody().getData().getConcepts();
+				log.info("userDivingPoolList: {}", poolList);
+				log.info("userConceptList: {}", conceptList);
+			} catch (Exception e) {
+				log.error("BuddyService Exception - findUserPreferenceInfoById: {}", userId, e);
+			}
+
+			User user = User.fromJpaEntityListAndInternalInfo(userJpaEntity, userLicenseJpaEntityList, conceptList, poolList);
+			return new UserDetailInfo(user, conceptList, poolList);
 		}
 
-		User user = User.fromJpaEntityListAndInternalInfo(userJpaEntity, userLicenseJpaEntityList, conceptList, poolList);
-		return new UserDetailInfo(user, conceptList, poolList);
+		else {
+			User user = User.fromJpaEntityList(userJpaEntity, userLicenseJpaEntityList);
+			return new UserDetailInfo(user);
+		}
 	}
 
 	@Getter
 	private static class UserDetailInfo {
 		private final User user;
-		private final List<String> concepts;
-		private final List<String> pools;
+		private List<String> concepts;
+		private List<String> pools;
 
 		public UserDetailInfo(User user, List<String> concepts, List<String> pools) {
 			this.user = user;
 			this.concepts = concepts;
 			this.pools = pools;
+		}
+
+		public UserDetailInfo(User user) {
+			this.user = user;
 		}
 	}
 }

@@ -16,9 +16,11 @@ import com.freediving.common.config.annotation.WebAdapter;
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.dto.member.MemberFindUserResponse;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
+import com.freediving.memberservice.adapter.in.web.dto.FindMyPageResponse;
 import com.freediving.memberservice.adapter.in.web.dto.FindNicknameResponse;
 import com.freediving.memberservice.adapter.in.web.dto.FindUserInfoResponse;
 import com.freediving.memberservice.adapter.in.web.dto.FindUserResponse;
+import com.freediving.memberservice.application.port.in.FindMyPageQuery;
 import com.freediving.memberservice.application.port.in.FindUserInfoQuery;
 import com.freediving.memberservice.application.port.in.FindUserListQuery;
 import com.freediving.memberservice.application.port.in.FindUserQuery;
@@ -145,7 +147,8 @@ public class FindUserController {
 	@Tag(name = "User", description = "유저 관련 API")
 	@Operation(summary = "사용자 정보 조회 API (본인 또는 다른 사용자 조회)"
 		, description = "요청한 userId를 바탕으로 사용자 정보를 반환한다. <br/>"
-		+ "본인 여부는 클라이언트가 userId 정보를 토대로 판단한다.",
+		+ "본인 여부는 클라이언트가 userId 정보를 토대로 판단한다. <br/>"
+		+ "story, review 데이터는 임시 데이터 반환",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
 			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),
@@ -159,6 +162,27 @@ public class FindUserController {
 			.userId(userId)
 			.build();
 		FindUserInfoResponse resp = findUserUseCase.findUserInfoByQuery(query);
+		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, resp));
+	}
+
+	@Tag(name = "User", description = "유저 관련 API")
+	@Operation(summary = "마이페이지 조회 API (관심 목록, 내가 쓴 댓글 등)"
+		, description = "JWT 정보를 바탕으로 사용자 마이페이지 정보를 반환한다. <br/>"
+		+ "likeCnt (10), commentCnt(5) 모두 임시 샘플 데이터 반환 <br/>"
+		+ "연결된 SNS 계정은 MVP 이후 개발 예정",
+		responses = {
+			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),
+			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "401", description = "실패 - 권한 오류", ref = "#/components/responses/401"),
+			@ApiResponse(responseCode = "500", description = "실패 - 서버 오류", ref = "#/components/responses/500")
+		})
+	@GetMapping("/users/my-page")
+	public ResponseEntity<ResponseJsonObject<FindMyPageResponse>> findMyPageByUserId(
+		@AuthenticationPrincipal User user) {
+		FindMyPageQuery query = FindMyPageQuery.builder()
+			.userId(user.userId())
+			.build();
+		FindMyPageResponse resp = findUserUseCase.findMyPageByUserId(query);
 		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, resp));
 	}
 }
