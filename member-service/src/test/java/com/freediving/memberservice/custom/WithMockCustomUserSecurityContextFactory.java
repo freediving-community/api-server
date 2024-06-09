@@ -18,13 +18,13 @@ public class WithMockCustomUserSecurityContextFactory implements WithSecurityCon
 	public SecurityContext createSecurityContext(WithMockCustomUser customUser) {
 		SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-		UserLicense userLicense = new UserLicense(customUser.diveType(), customUser.roleLevel(),
+		UserLicense userLicense = new UserLicense(customUser.diveType(), null, customUser.roleLevel(),
 			customUser.licenseLevel(), customUser.licenseImgUrl(), customUser.licenseValidTF(),
 			customUser.confirmAdminId());
 		List<UserLicense> userLicenseList = Arrays.asList(userLicense);
 
-		User principal = new User(customUser.id(), customUser.email(), customUser.profileImgUrl(),
-			customUser.nickname(), customUser.content(), customUser.oauthType(), userLicenseList);
+		User principal = new User(customUser.id(), null, customUser.email(), customUser.profileImgUrl(),
+			customUser.nickname(), customUser.content(), customUser.oauthType(), userLicenseList, null, null);
 		Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, null);
 		context.setAuthentication(authentication);
 

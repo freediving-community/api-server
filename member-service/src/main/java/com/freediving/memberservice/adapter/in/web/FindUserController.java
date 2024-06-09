@@ -97,7 +97,8 @@ public class FindUserController {
 	@Tag(name = "Internal", description = "내부 통신 API")
 	@Operation(summary = "유저 조회 내부 통신 API"
 		, description = "userId 정보를 기반으로 사용자 정보를 조회하여 반환한다. <br/>"
-		+ "탈퇴 등으로 조회되지 않은 유저에 대해서도 기본 값을 생성하여 반환",
+		+ "탈퇴 등으로 조회되지 않은 유저에 대해서도 기본 값을 생성하여 반환 <br/>"
+		+ "userStatus 응답 필드 추가 (2024.06.09) - ACTIVE (정상 사용자), SUSPENDED (정지된 사용자), WITHDRAWN (탈퇴한 사용자), UNKNOWN(존재하지 않는 사용자)",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = SwaggerResponse.RespMemberFindUserResponse.class))),
 			@ApiResponse(responseCode = "400", description = "실패 - request 정보 오류", ref = "#/components/responses/400"),

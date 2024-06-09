@@ -27,6 +27,10 @@ public class MemberFindUserResponse {
 
 	@Schema(description = "유저 식별 키", example = "1")
 	private Long userId;
+
+	@Schema(description = "유저 상태 코드", example = "ACTIVE")
+	private String userStatus;
+
 	@Schema(description = "프로필 이미지 URL", example = "https://d1pjflw6c3jt4r.cloudfront.net")
 	private String profileImgUrl;
 

@@ -22,6 +22,7 @@ import com.freediving.memberservice.application.port.in.FindUserQuery;
 import com.freediving.memberservice.application.port.in.FindUserUseCase;
 import com.freediving.memberservice.application.port.out.FindUserPort;
 import com.freediving.memberservice.domain.User;
+import com.freediving.memberservice.domain.UserStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -60,7 +61,8 @@ public class FindUserService implements FindUserUseCase {
 			.map(id -> hashMap.getOrDefault(id,
 				FindUserServiceResponse.builder()
 					.userId(id)
-					.nickname("존재하지 않는 사용자")
+					.userStatus(UserStatus.UNKNOWN.name())
+					.nickname(UserStatus.UNKNOWN.getCode())
 					.licenseInfo(new LicenseInfo(new FreeDiving(), new ScubaDiving()))
 					.build())
 			)

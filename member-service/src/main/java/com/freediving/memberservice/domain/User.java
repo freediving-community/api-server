@@ -15,21 +15,21 @@ import com.freediving.memberservice.adapter.out.persistence.UserLicenseJpaEntity
  * 2024/01/17        sasca37       최초 생성
  */
 
-public record User(Long userId, String email, String profileImgUrl,
+public record User(Long userId, String userStatus, String email, String profileImgUrl,
 				   String nickname, String content, OauthType oauthType,
 				   List<UserLicense> userLicenseList, List<String> conceptList, List<String> poolList
 ) {
 
 	public static User fromJpaEntityList(UserJpaEntity userJpaEntity, List<UserLicenseJpaEntity> userLicenceJpaList) {
 
-		return new User(userJpaEntity.getUserId(), userJpaEntity.getEmail(), userJpaEntity.getProfileImgUrl(),
+		return new User(userJpaEntity.getUserId(), userJpaEntity.getUserStatus().name(), userJpaEntity.getEmail(), userJpaEntity.getProfileImgUrl(),
 			userJpaEntity.getNickname(), userJpaEntity.getContent(), userJpaEntity.getOauthType(),
 			UserLicense.fromJpaEntityList(userLicenceJpaList), null, null
 		);
 	}
 
 	public static User fromJpaEntityListAndInternalInfo(UserJpaEntity userJpaEntity, List<UserLicenseJpaEntity> userLicenceJpaList, List<String> conceptList, List<String> poolList) {
-		return new User(userJpaEntity.getUserId(), userJpaEntity.getEmail(), userJpaEntity.getProfileImgUrl(),
+		return new User(userJpaEntity.getUserId(), userJpaEntity.getUserStatus().name(), userJpaEntity.getEmail(), userJpaEntity.getProfileImgUrl(),
 			userJpaEntity.getNickname(), userJpaEntity.getContent(), userJpaEntity.getOauthType(),
 			UserLicense.fromJpaEntityList(userLicenceJpaList), conceptList, poolList
 		);
