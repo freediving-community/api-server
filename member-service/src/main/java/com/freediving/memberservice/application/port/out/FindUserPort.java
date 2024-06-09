@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.freediving.memberservice.adapter.in.web.dto.FindMyPageResponse;
 import com.freediving.memberservice.adapter.in.web.dto.FindUserInfoResponse;
+import com.freediving.memberservice.adapter.in.web.dto.FindUserLicenseResponse;
 import com.freediving.memberservice.domain.User;
 
 /**

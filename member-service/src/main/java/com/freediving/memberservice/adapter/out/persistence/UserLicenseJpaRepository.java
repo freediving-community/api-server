@@ -48,4 +48,15 @@ public interface UserLicenseJpaRepository extends JpaRepository<UserLicenseJpaEn
 			"AND u.diveType = :diveType"
 	)
 	UserLicenseJpaEntity findByUserIdAndDiveType(@Param("userId") Long userId, @Param("diveType") DiveType diveType);
+
+	@Query(
+		"SELECT u " +
+			"FROM UserLicenseJpaEntity u " +
+			"JOIN FETCH  UserJpaEntity  uj " +
+			"ON u.userJpaEntity.userId = uj.userId " +
+			"WHERE u.licenseStatus = 'EVALUATION' " +
+			"AND uj.userStatus = 'ACTIVE' "
+	)
+	List<UserLicenseJpaEntity> findUserLicenseSubmitList();
+
 }

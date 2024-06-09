@@ -12,6 +12,7 @@ import com.freediving.common.domain.member.FreeDiving;
 import com.freediving.common.domain.member.ScubaDiving;
 import com.freediving.memberservice.adapter.in.web.dto.FindMyPageResponse;
 import com.freediving.memberservice.adapter.in.web.dto.FindUserInfoResponse;
+import com.freediving.memberservice.adapter.in.web.dto.FindUserLicenseResponse;
 import com.freediving.memberservice.adapter.in.web.dto.FindUserServiceResponse;
 import com.freediving.memberservice.adapter.in.web.dto.LicenseInfo;
 import com.freediving.memberservice.application.port.in.FindMyPageQuery;
@@ -85,5 +86,4 @@ public class FindUserService implements FindUserUseCase {
 	public FindMyPageResponse findMyPageByUserId(FindMyPageQuery query) {
 		return findUserPort.findMyPageByUserId(query.userId());
 	}
-
 }

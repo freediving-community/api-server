@@ -10,25 +10,17 @@ import com.freediving.memberservice.domain.User;
 
 /**
  * @Author         : sasca37
- * @Date           : 2024/01/17
- * @Description    : Query 객체로 유저 정보를 조회하기 위한 UseCase
+ * @Date           : 2024/06/09
+ * @Description    : 관리자 UseCase
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * ===========================================================
- * 2024/01/17        sasca37       최초 생성
+ * 2024/06/09        sasca37       최초 생성
  */
 
-public interface FindUserUseCase {
+public interface AdminUseCase {
 
-	User findUserDetailByQuery(FindUserQuery findUserQuery);
+	FindUserLicenseResponse findUserLicenseSubmitList();
 
-	List<FindUserServiceResponse> findUserListByQuery(FindUserListQuery findUserListQuery);
-
-	boolean findNickname(String trimSafeNickname);
-
-	User findUserByUserId(FindUserQuery findUserQuery);
-
-	FindUserInfoResponse findUserInfoByQuery(FindUserInfoQuery query);
-
-	FindMyPageResponse findMyPageByUserId(FindMyPageQuery query);
+	void updateUserLicenseStatus(UpdateUserLicenseStatusCommand command);
 }
