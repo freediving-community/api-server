@@ -44,7 +44,7 @@ public class CreateUserControllerV2 {
 
 	private final CreateUserUseCaseV2 createUserUseCaseV2;
 
-	@Operation(summary = "유저 정보 등록 V2 API"
+	@Operation(summary = "내 정보 등록 V2 API"
 		, description = "다이브타입 [F (프리다이빙), S (스쿠버다이빙)], 라이센스, 다이빙 풀, 컨셉, 유저 정보 등의 정보를 저장한다. <br> <br>  "
 		+ "나중에 하기 기능을 위해 null request 허용 (DiveType은 값 필수)",
 		responses = {

@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.freediving.memberservice.domain.User;
 import com.freediving.memberservice.domain.UserLicense;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -47,6 +46,12 @@ public class FindUserResponse {
 	@Schema(description = "다이빙 별 라이센스 정보")
 	private LicenseInfo licenseInfo;
 
+	@Schema(description = "자주가는 다이빙 풀 정보", example = "PARADIVE")
+	private List<String> poolList;
+
+	@Schema(description = "관심있는 컨셉 정보", example = "FUN")
+	private List<String> conceptList;
+
 	/**
 	 * @Author           : sasca37
 	 * @Date             : 2024/02/03
@@ -65,6 +70,8 @@ public class FindUserResponse {
 			.nickname(user.nickname())
 			.content(user.content())
 			.licenseInfo(licenseInfo)
+			.poolList(user.poolList())
+			.conceptList(user.conceptList())
 			.build();
 	}
 }

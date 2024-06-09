@@ -3,6 +3,8 @@ package com.freediving.memberservice.application.port.out.service.buddy;
 import org.springframework.http.ResponseEntity;
 
 import com.freediving.common.response.ResponseJsonObject;
+import com.freediving.memberservice.adapter.out.dto.UserConceptResponse;
+import com.freediving.memberservice.adapter.out.dto.UserPoolResponse;
 
 /**
  * @Author         : sasca37
@@ -15,12 +17,7 @@ import com.freediving.common.response.ResponseJsonObject;
  */
 public interface BuddyFeignPort {
 
-	/**
-	 * @Author           : sasca37
-	 * @Date             : 2024/03/10
-	 * @Param            :
-	 * @Return           :
-	 * @Description      :
-	 */
-	ResponseEntity<ResponseJsonObject<?>> getDivingPools();
+	ResponseEntity<ResponseJsonObject<UserPoolResponse>> userDivingPoolListByUserId(Long userId);
+
+	ResponseEntity<ResponseJsonObject<UserConceptResponse>> userConceptListByUserId(Long userId);
 }

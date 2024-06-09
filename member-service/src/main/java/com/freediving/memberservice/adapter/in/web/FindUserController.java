@@ -51,7 +51,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/v1")
 @Slf4j
 @Validated
-@Tag(name = "User", description = "유저 관련 API")
 public class FindUserController {
 
 	private final FindUserUseCase findUserUseCase;
@@ -61,10 +60,11 @@ public class FindUserController {
 	 * @Date             : 2024/02/06
 	 * @Param            : Security Authentication
 	 * @Return           : User 조회 응답 DTO
-	 * @Description      : 사용자 정보에 조회에 대한 응답 (자격증, 소셜 정보 등)
+	 * @Description      : 내 정보에 조회에 대한 응답 (자격증, 소셜 정보 등)
 	 */
 
-	@Operation(summary = "사용자 정보 조회 API"
+	@Tag(name = "User", description = "유저 관련 API")
+	@Operation(summary = "내 정보 조회 API (사용자 로그인 시 최초로 호출될 API)"
 		, description = "JWT 정보를 기반으로 사용자 정보를 조회하여 반환한다. <br/>"
 		+ "응답 정보에는 사용자 ID, 이메일, 프로필 이미지, 닉네임, 소셜 정보, 라이센스 정보 등이 들어있다.",
 		responses = {
@@ -90,7 +90,8 @@ public class FindUserController {
 	 * @Description      : 탈퇴 등으로 조회되지 않은 유저에 대해서도 기본 값을 생성하여 반환
 	 */
 
-	@Operation(summary = "사용자 정보 조회 API (Service 간 통신)"
+	@Tag(name = "Internal", description = "내부 통신 API")
+	@Operation(summary = "유저 조회 내부 통신 API"
 		, description = "userId 정보를 기반으로 사용자 정보를 조회하여 반환한다. <br/>"
 		+ "탈퇴 등으로 조회되지 않은 유저에 대해서도 기본 값을 생성하여 반환",
 		responses = {
@@ -112,11 +113,12 @@ public class FindUserController {
 			.build();
 		// List<FindUserServiceResponse> findUserList = findUserUseCase.findUserListByQuery(findUserListQuery);
 		List<MemberFindUserResponse> resp = findUserUseCase.findUserListByQuery(findUserListQuery).stream()
-			.map(r -> FindUserMapper.INSTANCE.toCommonFindUserResponse(r)).collect(Collectors.toList());
+			.map(FindUserMapper.INSTANCE::toCommonFindUserResponse).collect(Collectors.toList());
 		return ResponseEntity.ok(new ResponseJsonObject(ServiceStatusCode.OK, resp));
 	}
 
-	@Operation(summary = "사용자 닉네임 중복 조회 API"
+	@Tag(name = "User", description = "유저 관련 API")
+	@Operation(summary = "닉네임 중복 조회 API (T/F)"
 		, description = "요청한 nickname의 중복여부를 확인하여 반환한다. <br/>"
 		+ "닉네임은 한글, 영어, 숫자, 언더바(_)만 사용 가능하고 16자리까지 생성이 가능합니다.",
 		responses = {

@@ -5,6 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.freediving.common.config.annotation.UseCase;
 import com.freediving.common.response.ResponseJsonObject;
+import com.freediving.memberservice.adapter.out.dto.UserConceptResponse;
+import com.freediving.memberservice.adapter.out.dto.UserPoolResponse;
 import com.freediving.memberservice.application.port.out.service.buddy.BuddyFeignPort;
 import com.freediving.memberservice.application.port.out.service.buddy.BuddyUseCase;
 
@@ -26,9 +28,14 @@ public class BuddyInternalService implements BuddyUseCase {
 
 	private final BuddyFeignPort buddyFeignPort;
 
-	@Override
-	public ResponseEntity<ResponseJsonObject<?>> getDivingPools() {
 
-		return buddyFeignPort.getDivingPools();
+	@Override
+	public ResponseEntity<ResponseJsonObject<UserConceptResponse>> userConceptListByUserId(Long userId) {
+		return buddyFeignPort.userConceptListByUserId(userId);
+	}
+
+	@Override
+	public ResponseEntity<ResponseJsonObject<UserPoolResponse>> userDivingPoolListByUserId(Long userId) {
+		return buddyFeignPort.userDivingPoolListByUserId(userId);
 	}
 }

@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ScubaDiving extends Diving {
-	public ScubaDiving(Integer roleLevel, String roleLevelCode, Integer licenseLevel, String licenseImgUrl,
+	public ScubaDiving(String orgName, Integer roleLevel, String roleLevelCode, Integer licenseLevel, String licenseImgUrl,
 		Boolean licenseValidTF) {
-		super(roleLevel, roleLevelCode, licenseLevel, licenseImgUrl, licenseValidTF);
+		super(orgName, roleLevel, roleLevelCode, licenseLevel, licenseImgUrl, licenseValidTF);
 	}
 }
