@@ -10,13 +10,19 @@ import org.springframework.transaction.annotation.Transactional;
 import com.freediving.common.config.annotation.UseCase;
 import com.freediving.common.domain.member.FreeDiving;
 import com.freediving.common.domain.member.ScubaDiving;
+import com.freediving.memberservice.adapter.in.web.dto.FindMyPageResponse;
+import com.freediving.memberservice.adapter.in.web.dto.FindUserInfoResponse;
+import com.freediving.memberservice.adapter.in.web.dto.FindUserLicenseResponse;
 import com.freediving.memberservice.adapter.in.web.dto.FindUserServiceResponse;
 import com.freediving.memberservice.adapter.in.web.dto.LicenseInfo;
+import com.freediving.memberservice.application.port.in.FindMyPageQuery;
+import com.freediving.memberservice.application.port.in.FindUserInfoQuery;
 import com.freediving.memberservice.application.port.in.FindUserListQuery;
 import com.freediving.memberservice.application.port.in.FindUserQuery;
 import com.freediving.memberservice.application.port.in.FindUserUseCase;
 import com.freediving.memberservice.application.port.out.FindUserPort;
 import com.freediving.memberservice.domain.User;
+import com.freediving.memberservice.domain.UserStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -55,7 +61,8 @@ public class FindUserService implements FindUserUseCase {
 			.map(id -> hashMap.getOrDefault(id,
 				FindUserServiceResponse.builder()
 					.userId(id)
-					.nickname("존재하지 않는 사용자")
+					.userStatus(UserStatus.UNKNOWN.name())
+					.nickname(UserStatus.UNKNOWN.getCode())
 					.licenseInfo(new LicenseInfo(new FreeDiving(), new ScubaDiving()))
 					.build())
 			)
@@ -72,4 +79,13 @@ public class FindUserService implements FindUserUseCase {
 		return findUserPort.findUserDetailById(findUserQuery.userId());
 	}
 
+	@Override
+	public FindUserInfoResponse findUserInfoByQuery(FindUserInfoQuery query) {
+		return findUserPort.findUserInfoByQuery(query.userId());
+	}
+
+	@Override
+	public FindMyPageResponse findMyPageByUserId(FindMyPageQuery query) {
+		return findUserPort.findMyPageByUserId(query.userId());
+	}
 }

@@ -29,6 +29,6 @@ public class DeleteUserPersistenceAdapter implements DeleteUserPort {
 	public void deleteUser(Long userId) {
 		UserJpaEntity userJpaEntity = userJpaRepository.findById(userId).orElseThrow(
 			() -> new BuddyMeException(ServiceStatusCode.BAD_REQUEST, ErrorCode.NOT_FOUND_USER.getMessage()));
-		userJpaEntity.updateStatue(UserStatus.WITHDRAWN);
+		userJpaEntity.updateStatus(UserStatus.WITHDRAWN);
 	}
 }

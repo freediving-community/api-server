@@ -47,7 +47,7 @@ public class UpdateUserController {
 
 	private final UpdateUserUseCase updateUserUseCase;
 
-	@Operation(summary = "유저 정보 수정 API"
+	@Operation(summary = "내 정보 수정 API"
 		, description = "다이브타입 [F (프리다이빙), S (스쿠버다이빙)], 라이센스, 다이빙 풀, 컨셉, 유저 정보 등의 정보를 수정한다. 모든 필드 값은 필수값이여야 합니다.",
 		responses = {
 			@ApiResponse(responseCode = "200", description = "성공", useReturnTypeSchema = true),

@@ -32,12 +32,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @RequestMapping("/v1")
 @Slf4j
-@Tag(name = "Image", description = "이미지 Presigned URL 정보를 생성")
 public class DeleteImgController {
 
 	private final DeleteImgUseCase deleteImgUseCase;
 
-	@Operation(summary = "이미지 삭제 요청 API (Service 간 통신)"
+	@Tag(name = "Internal", description = "내부 통신 API")
+	@Operation(summary = "이미지 삭제 요청 내부 통신 API"
 		, description = "이미지 단건, 다건 삭제 처리 (요청한 이미지가 존재하지 않는 경우에도 204 응답)",
 		responses = {
 			@ApiResponse(responseCode = "204", description = "성공", useReturnTypeSchema = true),

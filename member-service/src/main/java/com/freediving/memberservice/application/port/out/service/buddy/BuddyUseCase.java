@@ -4,6 +4,8 @@ import org.springframework.http.ResponseEntity;
 
 import com.freediving.common.config.annotation.UseCase;
 import com.freediving.common.response.ResponseJsonObject;
+import com.freediving.memberservice.adapter.out.dto.UserConceptResponse;
+import com.freediving.memberservice.adapter.out.dto.UserPoolResponse;
 
 /**
  * @Author         : sasca37
@@ -16,5 +18,6 @@ import com.freediving.common.response.ResponseJsonObject;
  */
 @UseCase
 public interface BuddyUseCase {
-	ResponseEntity<ResponseJsonObject<?>> getDivingPools();
+	ResponseEntity<ResponseJsonObject<UserConceptResponse>> userConceptListByUserId(Long userId);
+	ResponseEntity<ResponseJsonObject<UserPoolResponse>> userDivingPoolListByUserId(Long userId);
 }

@@ -1,8 +1,10 @@
 package com.freediving.memberservice.adapter.out.persistence;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
@@ -20,6 +22,7 @@ import com.freediving.memberservice.application.port.in.CreateUserProfileCommand
 import com.freediving.memberservice.application.port.out.CreateUserPort;
 import com.freediving.memberservice.application.port.out.CreateUserPortV2;
 import com.freediving.memberservice.domain.DiveType;
+import com.freediving.memberservice.domain.LicenseStatus;
 import com.freediving.memberservice.domain.OauthType;
 import com.freediving.memberservice.domain.User;
 import com.freediving.memberservice.exception.ErrorCode;
@@ -94,12 +97,16 @@ public class CreateUserPersistenceAdapter implements CreateUserPort, CreateUserP
 		Long userId = command.getUserId();
 		DiveType diveType = command.getDiveType();
 		UserLicenseJpaEntity userLicenseJpaEntity = userLicenseJpaRepository.findByUserIdAndDiveType(userId, diveType);
+		Integer beforeLicenseLevel = userLicenseJpaEntity.getLicenseLevel();
+		String beforeLicenseImgUrl = userLicenseJpaEntity.getLicenseImgUrl();
+
 		userLicenseJpaEntity.updateLicenseImgUrl(command.getLicenseImgUrl());
 		userLicenseJpaEntity.updateLicenseLevel(command.getLicenseLevel());
 		// 0레벨인 경우 심사 없이 바로 승인 나머지는 심사중 상태로 변경
 		if (command.getLicenseLevel() == 0) {
 			userLicenseJpaEntity.updateRoleLevel(RoleLevel.NO_LEVEL);
-		} else {
+		} else if(beforeLicenseLevel != userLicenseJpaEntity.getLicenseLevel() && !StringUtils.equals(beforeLicenseImgUrl, userLicenseJpaEntity.getLicenseImgUrl())) {
+			userLicenseJpaEntity.updateLicenseStatus(LicenseStatus.EVALUATION);
 			userLicenseJpaEntity.updateRoleLevel(RoleLevel.WAIT_LICENSE_APPROVAL);
 		}
 
@@ -131,6 +138,8 @@ public class CreateUserPersistenceAdapter implements CreateUserPort, CreateUserP
 		if (!ObjectUtils.isEmpty(diveType)) {
 			UserLicenseJpaEntity userLicenseJpaEntity = userLicenseJpaRepository.findByUserIdAndDiveType(userId,
 				diveType);
+			Integer beforeLicenseLevel = userLicenseJpaEntity.getLicenseLevel();
+			String beforeLicenseImgUrl = userLicenseJpaEntity.getLicenseImgUrl();
 
 			if (!ObjectUtils.isEmpty(licenseLevel)) {
 				userLicenseJpaEntity.updateLicenseLevel(licenseLevel);
@@ -139,7 +148,9 @@ public class CreateUserPersistenceAdapter implements CreateUserPort, CreateUserP
 					userLicenseJpaEntity.updateLicenseImgUrl(licenseImgUrl);
 					if (licenseLevel == 0) {
 						userLicenseJpaEntity.updateRoleLevel(RoleLevel.NO_LEVEL);
-					} else {
+					// 이전 라이센스 레벨, 이미지와 요청한 레벨, 이미지가 하나라도 다르면 심사 중으로 상태 값 변경
+					} else if (beforeLicenseLevel != userLicenseJpaEntity.getLicenseLevel() && !StringUtils.equals(beforeLicenseImgUrl, userLicenseJpaEntity.getLicenseImgUrl())) {
+						userLicenseJpaEntity.updateLicenseStatus(LicenseStatus.EVALUATION);
 						userLicenseJpaEntity.updateRoleLevel(RoleLevel.WAIT_LICENSE_APPROVAL);
 					}
 				}

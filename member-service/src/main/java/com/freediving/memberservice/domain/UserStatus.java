@@ -24,7 +24,10 @@ public enum UserStatus {
 
 	SUSPENDED("정지된 사용자"),
 
-	WITHDRAWN("탈퇴한 사용자");
+	WITHDRAWN("탈퇴한 사용자"),
+
+	UNKNOWN("존재하지 않는 사용자")
+	;
 
 	private final String code;
 

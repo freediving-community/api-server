@@ -45,7 +45,7 @@ public class BuddyEventLikeToggleService implements BuddyEventLikeToggleUseCase 
 			return -1;
 
 		// 3-2 좋아요 해지 and 좋아요 없는 상태
-		if (command.isLikeStatus() == false && (buddyEventLikeMappingJpaEntity != null
+		if (command.isLikeStatus() == false && (buddyEventLikeMappingJpaEntity == null
 			|| buddyEventLikeMappingJpaEntity.getIsDeleted() == true))
 			return -1;
 
