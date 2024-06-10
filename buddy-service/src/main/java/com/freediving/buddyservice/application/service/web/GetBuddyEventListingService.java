@@ -115,7 +115,7 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 			List<BuddyEventJoinMappingProjectDto> joinMappings = allJoinMappingByEventId.get(event.getEventId());
 
 			BuddyEventlistingCardResponse cardResponse = BuddyEventlistingCardResponse.builder()
-				.userInfo(buddyOwner)
+				.userInfo(buddyOwner.toResponse())
 				.isLiked(event.isLiked())
 				.likedCount(event.getLikedCount())
 				.eventId(event.getEventId())

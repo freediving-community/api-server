@@ -101,7 +101,7 @@ public class GetBuddyEventCarouselService implements GetBuddyEventCarouselUseCas
 				event.getEventId());
 
 			BuddyEventCarouselCardResponse cardResponse = BuddyEventCarouselCardResponse.builder()
-				.userInfo(buddyOwner)
+				.userInfo(buddyOwner.toResponse())
 				.isLiked(event.isLiked())
 				.likedCount(event.getLikedCount())
 				.eventId(event.getEventId())
@@ -197,7 +197,7 @@ public class GetBuddyEventCarouselService implements GetBuddyEventCarouselUseCas
 				event.getEventId());
 
 			BuddyEventCarouselCardResponse cardResponse = BuddyEventCarouselCardResponse.builder()
-				.userInfo(buddyOwner)
+				.userInfo(buddyOwner.toResponse())
 				.isLiked(event.isLiked())
 				.likedCount(event.getLikedCount())
 				.eventId(event.getEventId())
@@ -284,7 +284,7 @@ public class GetBuddyEventCarouselService implements GetBuddyEventCarouselUseCas
 				event.getEventId());
 
 			BuddyEventCarouselCardResponse cardResponse = BuddyEventCarouselCardResponse.builder()
-				.userInfo(buddyOwner)
+				.userInfo(buddyOwner.toResponse())
 				.isLiked(event.isLiked())
 				.likedCount(event.getLikedCount())
 				.eventId(event.getEventId())

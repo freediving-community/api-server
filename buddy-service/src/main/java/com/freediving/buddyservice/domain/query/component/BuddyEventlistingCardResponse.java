@@ -3,13 +3,13 @@ package com.freediving.buddyservice.domain.query.component;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto.UserInfo;
 import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.domain.query.common.ConceptInfoResponse;
 import com.freediving.buddyservice.domain.query.common.DivingPoolInfoResponse;
 import com.freediving.buddyservice.domain.query.common.ParticipantInfoResponse;
+import com.freediving.buddyservice.domain.query.common.UserInfoResponse;
 import com.freediving.common.enumerate.DivingPool;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Schema(title = "버디 매칭 리스팅 조회 쿼리 컴포넌트 ( BuddyEventlistingCardResponse )", description = "QueryComponent 객체이며, 버디 매칭 리스팅 타입 조회의 응답 객체 입니다.")
 public class BuddyEventlistingCardResponse implements QueryComponent {
 	@Schema(description = "사용자 정보", requiredMode = Schema.RequiredMode.REQUIRED)
-	private UserInfo userInfo;
+	private UserInfoResponse userInfo;
 
 	@Schema(description = "좋아요 여부", example = "true", requiredMode = Schema.RequiredMode.REQUIRED)
 	private boolean isLiked;

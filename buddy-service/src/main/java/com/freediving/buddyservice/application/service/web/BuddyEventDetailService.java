@@ -76,7 +76,7 @@ public class BuddyEventDetailService implements BuddyEventDetailUseCase {
 			buddyEventDetail.getEventId());
 
 		QueryBuddyEventDetailResponse response = QueryBuddyEventDetailResponse.builder()
-			.userInfo(buddyOwner)
+			.userInfo(buddyOwner.toResponse())
 			.isLiked(buddyEventDetail.isLiked())
 			.likedCount(buddyEventDetail.getLikedCount())
 			.eventId(buddyEventDetail.getEventId())

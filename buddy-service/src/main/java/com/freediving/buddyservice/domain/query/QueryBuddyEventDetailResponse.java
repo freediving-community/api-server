@@ -3,12 +3,12 @@ package com.freediving.buddyservice.domain.query;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto.UserInfo;
 import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventConcept;
 import com.freediving.buddyservice.domain.enumeration.BuddyEventStatus;
 import com.freediving.buddyservice.domain.query.common.ConceptInfoResponse;
 import com.freediving.buddyservice.domain.query.common.DivingPoolInfoResponse;
+import com.freediving.buddyservice.domain.query.common.UserInfoResponse;
 import com.freediving.common.enumerate.DivingPool;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -28,7 +28,7 @@ public class QueryBuddyEventDetailResponse {
 	private Long eventId;
 
 	@Schema(description = "사용자 정보", requiredMode = Schema.RequiredMode.REQUIRED)
-	private UserInfo userInfo;
+	private UserInfoResponse userInfo;
 
 	@Schema(description = "이벤트 시작 날짜", example = "2023-05-16T09:00:00", requiredMode = Schema.RequiredMode.REQUIRED)
 	private LocalDateTime eventStartDate;
