@@ -15,9 +15,11 @@ import com.freediving.common.domain.member.RoleLevel;
 import com.freediving.common.response.ResponseJsonObject;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class MemberServiceAdapter implements RequestMemberPort {
 
 	private final GetMemberInfoFeignClient getMemberInfoFeignClient;
@@ -37,6 +39,7 @@ public class MemberServiceAdapter implements RequestMemberPort {
 			return response;
 		} catch (Exception e) {
 
+			log.error(e.getMessage());
 			//todo 임시로 연결안되면 랜덤 사용자로 리턴
 
 			HashMap<Long, UserInfo> response = new HashMap<>();
