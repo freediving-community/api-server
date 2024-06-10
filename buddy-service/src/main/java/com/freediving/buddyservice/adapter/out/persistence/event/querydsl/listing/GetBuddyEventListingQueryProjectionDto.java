@@ -32,7 +32,8 @@ import lombok.NoArgsConstructor;
 			@ColumnResult(name = "status", type = String.class),
 			@ColumnResult(name = "participantCount", type = Integer.class),
 			@ColumnResult(name = "currentParticipantCount", type = Integer.class),
-			@ColumnResult(name = "genderType", type = String.class)
+			@ColumnResult(name = "genderType", type = String.class),
+			@ColumnResult(name = "userId", type = Long.class)
 		}
 	)
 )
@@ -48,6 +49,7 @@ public class GetBuddyEventListingQueryProjectionDto {
 	private Long participantCount;
 	private Long currentParticipantCount;
 	private GenderType genderType;
+	private Long userId;
 
 	@Builder
 	@QueryProjection
@@ -60,7 +62,7 @@ public class GetBuddyEventListingQueryProjectionDto {
 		, BuddyEventStatus status,
 		Long participantCount,
 		Long currentParticipantCount,
-		GenderType genderType) {
+		GenderType genderType, Long userId) {
 		this.eventId = eventId;
 		this.eventStartDate = eventStartDate;
 		this.eventEndDate = eventEndDate;
@@ -72,5 +74,6 @@ public class GetBuddyEventListingQueryProjectionDto {
 		this.participantCount = participantCount;
 		this.currentParticipantCount = currentParticipantCount;
 		this.genderType = genderType;
+		this.userId = userId;
 	}
 }

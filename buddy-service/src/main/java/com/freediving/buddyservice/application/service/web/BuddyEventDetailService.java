@@ -65,13 +65,18 @@ public class BuddyEventDetailService implements BuddyEventDetailUseCase {
 
 		HashMap<Long, UserInfo> userHashMap = requestMemberPort.getMemberStatus(userIds.stream().toList());
 
+		//작성자 정보를 못가져오면 제거.
+		UserInfo buddyOwner = userHashMap.get(buddyEventDetail.getUserId());
+		if (buddyOwner == null)
+			throw new BuddyMeException(ServiceStatusCode.NO_CONTENT);
+
 		List<BuddyEventConceptMappingProjectDto> conceptMappings = allConceptMappingByEventId.get(
 			buddyEventDetail.getEventId());
 		List<BuddyEventDivingPoolMappingProjectDto> divingPoolMappings = allDivingPoolMappingByEventId.get(
 			buddyEventDetail.getEventId());
 
 		QueryBuddyEventDetailResponse response = QueryBuddyEventDetailResponse.builder()
-			.userInfo(userHashMap.get(buddyEventDetail.getUserId()))
+			.userInfo(buddyOwner)
 			.isLiked(buddyEventDetail.isLiked())
 			.likedCount(buddyEventDetail.getLikedCount())
 			.eventId(buddyEventDetail.getEventId())

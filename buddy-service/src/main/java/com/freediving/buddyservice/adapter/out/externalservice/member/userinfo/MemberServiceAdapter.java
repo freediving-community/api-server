@@ -10,6 +10,7 @@ import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.d
 import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto.ScubaDiving;
 import com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto.UserInfo;
 import com.freediving.buddyservice.application.port.out.Internalservice.query.RequestMemberPort;
+import com.freediving.buddyservice.config.enumerate.UserStatus;
 import com.freediving.common.domain.member.RoleLevel;
 import com.freediving.common.response.ResponseJsonObject;
 
@@ -21,7 +22,6 @@ public class MemberServiceAdapter implements RequestMemberPort {
 
 	private final GetMemberInfoFeignClient getMemberInfoFeignClient;
 
-	//TODO 멤버 유효성 요청 구현 필요.
 	@Override
 	public HashMap<Long, UserInfo> getMemberStatus(List<Long> userId) {
 
@@ -30,7 +30,7 @@ public class MemberServiceAdapter implements RequestMemberPort {
 			List<UserInfo> users = obj.getData();
 			HashMap<Long, UserInfo> response = new HashMap<>();
 
-			users.stream().forEach(
+			users.stream().filter(e -> (e != null && e.getUserStatus().equals(UserStatus.ACTIVE))).forEach(
 				e -> response.put(e.getUserId(), e)
 			);
 

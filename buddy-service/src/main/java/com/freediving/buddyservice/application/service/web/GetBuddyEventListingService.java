@@ -102,6 +102,12 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 			.build();
 
 		for (GetBuddyEventListingQueryProjectionDto event : buddyEventListing) {
+
+			//작성자 정보를 못가져오면 제거.
+			UserInfo buddyOwner = userHashMap.get(event.getUserId());
+			if (buddyOwner == null)
+				continue;
+
 			List<BuddyEventConceptMappingProjectDto> conceptMappings = allConceptMappingByEventId.get(
 				event.getEventId());
 			List<BuddyEventDivingPoolMappingProjectDto> divingPoolMappings = allDivingPoolMappingByEventId.get(
@@ -109,8 +115,7 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 			List<BuddyEventJoinMappingProjectDto> joinMappings = allJoinMappingByEventId.get(event.getEventId());
 
 			BuddyEventlistingCardResponse cardResponse = BuddyEventlistingCardResponse.builder()
-				.userInfo(joinMappings.stream().filter(e -> e.getStatus().equals(ParticipationStatus.OWNER))
-					.map(e -> userHashMap.get(e.getUserId())).findFirst().orElse(null))
+				.userInfo(buddyOwner)
 				.isLiked(event.isLiked())
 				.likedCount(event.getLikedCount())
 				.eventId(event.getEventId())

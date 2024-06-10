@@ -58,11 +58,11 @@ public class BuddyEventCommandController {
 				content = @Content(mediaType = "application/json",
 					schema = @Schema(implementation = CreatedBuddyEventResponse.class))
 			),
-			@ApiResponse(responseCode = "3409", ref = "#/components/responses/3409"),
-			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
-			@ApiResponse(responseCode = "401", ref = "#/components/responses/401"),
-			@ApiResponse(responseCode = "403", ref = "#/components/responses/403"),
-			@ApiResponse(responseCode = "500", ref = "#/components/responses/500"),
+			@ApiResponse(responseCode = "3409", description = "이미 생성된 버디 모임과 시간 겹침.", ref = "#/components/responses/3409"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "401", description = "인증 실패", ref = "#/components/responses/401"),
+			@ApiResponse(responseCode = "403", description = "권한 없음 <br> - 정지된 사용자 <br> - 존재하지 않은 사용자", ref = "#/components/responses/403"),
+			@ApiResponse(responseCode = "500", description = "서비스 에러", ref = "#/components/responses/500"),
 		}
 	)
 	@PostMapping("")
@@ -120,10 +120,10 @@ public class BuddyEventCommandController {
 					schema = @Schema(example = "{ \"likeCount\" : 14 }"))
 
 			),
-			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
-			@ApiResponse(responseCode = "401", ref = "#/components/responses/401"),
-			@ApiResponse(responseCode = "403", ref = "#/components/responses/403"),
-			@ApiResponse(responseCode = "500", ref = "#/components/responses/500")
+			@ApiResponse(responseCode = "400", description = "잘못된 요청", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "401", description = "인증 실패", ref = "#/components/responses/401"),
+			@ApiResponse(responseCode = "403", description = "권한 없음( 잘못된 사용자가 요청시 ) <br> - 정지된 사용자 <br> - 존재하지 않은 사용자", ref = "#/components/responses/403"),
+			@ApiResponse(responseCode = "500", description = "서비스 에러", ref = "#/components/responses/500")
 		}
 	)
 	@PostMapping("/like")
