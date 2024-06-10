@@ -44,7 +44,8 @@ public class MemberServiceAdapter implements MemberFeignPort {
 			.stream()
 			.collect(Collectors.toUnmodifiableMap(
 				MemberFindUserResponse::getUserId,
-				m -> new UserInfo(m.getUserId(), m.getNickname(), m.getProfileImgUrl(), m.getLicenseInfo())
+				m -> new UserInfo(m.getUserId(), m.getUserStatus(), m.getNickname(), m.getProfileImgUrl(),
+					m.getLicenseInfo())
 			));
 	}
 
