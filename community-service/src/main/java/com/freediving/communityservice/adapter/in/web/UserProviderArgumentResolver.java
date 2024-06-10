@@ -41,7 +41,7 @@ public class UserProviderArgumentResolver implements HandlerMethodArgumentResolv
 		} else {
 			// RoleLevel rl = RoleLevel.valueOf(Integer.parseInt(roleLevel));
 			if (!NumberUtils.isCreatable(userId)) {
-				throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "User-Id 값은 숫자형식만 허용됩니다 >>" + userId);
+				throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "잘못된 형식 >>" + userId);
 			}
 			currentUserProvider.setRequestUserId(Long.valueOf(userId));
 			// currentUserProvider.setRoleLevel(rl);

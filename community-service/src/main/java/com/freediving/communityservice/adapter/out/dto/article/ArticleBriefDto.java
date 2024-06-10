@@ -19,8 +19,6 @@ public class ArticleBriefDto {
 
 	private String content;
 
-	private String authorName;
-
 	private LocalDateTime createdAt;
 
 	private Long createdBy;
@@ -36,13 +34,12 @@ public class ArticleBriefDto {
 	private ImageBriefResponse images;
 
 	@Builder
-	public ArticleBriefDto(Long articleId, String title, String content, String authorName, LocalDateTime createdAt,
+	public ArticleBriefDto(Long articleId, String title, String content, LocalDateTime createdAt,
 		Long createdBy, int viewCount, int likeCount, int commentCount, int sortNumber, String url,
 		int imageTotalCount) {
 		this.articleId = articleId;
 		this.title = title;
 		this.content = content;
-		this.authorName = authorName;
 		this.createdAt = createdAt;
 		this.createdBy = createdBy;
 		this.viewCount = viewCount;

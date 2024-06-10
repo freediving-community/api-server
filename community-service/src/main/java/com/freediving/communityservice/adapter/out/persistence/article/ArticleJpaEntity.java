@@ -56,9 +56,6 @@ public class ArticleJpaEntity {
 	@Column(nullable = false)
 	private BoardType boardType;
 
-	@Column(nullable = false, length = 20)
-	private String authorName;
-
 	// @ToString.Exclude
 	// @JoinColumn(name = "hashtagId")
 	// @ManyToOne
@@ -98,11 +95,9 @@ public class ArticleJpaEntity {
 	@LastModifiedBy
 	private Long modifiedBy;
 
-	public static ArticleJpaEntity of(String title, String content, BoardType boardType, String authorName,
-		boolean enableComment) {
-		return new ArticleJpaEntity(null, title, content, boardType, authorName, 0, 0, 0, enableComment,
-			null,
-			null, null, null, null);
+	public static ArticleJpaEntity of(String title, String content, BoardType boardType, boolean enableComment) {
+		return new ArticleJpaEntity(null, title, content, boardType, 0, 0, 0,
+			enableComment, null, null, null, null, null);
 	}
 
 	public void changeArticleContents(String title, String content, boolean enableComment) {

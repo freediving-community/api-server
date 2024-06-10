@@ -2,8 +2,11 @@ package com.freediving.communityservice.adapter.in.web.command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,19 +16,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.in.dto.ArticleEditRequest;
 import com.freediving.communityservice.adapter.in.dto.ArticleWriteRequest;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
-import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.ArticleEditCommand;
-import com.freediving.communityservice.application.port.in.ArticleReadCommand;
 import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleUseCase;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
 import com.freediving.communityservice.application.port.in.dto.ImageInfoCommand;
+import com.freediving.communityservice.config.type.CacheType;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,11 +42,13 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class ArticleCommandController {
 
+	private final CacheManager cacheManager;
 	private final ArticleUseCase articleUseCase;
 
 	@Value("${community.gateway.fqdn}")
 	private String GATEWAY_DOMAIN;
 
+	// TODO: 게시글 생성 시 GET 요청하여 UUID 발급 후, 서버 인메모리 저장. => 게시글 중복생성 방지 , 등록 취소시 업로드 이미지 삭제.
 	@Operation(
 		summary = "게시글 등록",
 		description = "게시글 (이미지 포함)을 등록",
@@ -56,10 +61,20 @@ public class ArticleCommandController {
 		}
 	)
 	@PostMapping("/boards/{boardType}/articles")
-	public ResponseEntity<ResponseJsonObject<ArticleContent>> writeArticleContent(
+	public ResponseEntity<ResponseJsonObject<Long>> writeArticleContent(
 		@Parameter(hidden = true) UserProvider userProvider,
 		@PathVariable("boardType") BoardType boardType,
 		@RequestBody ArticleWriteRequest articleWriteRequest) {
+
+		String cacheKey = CacheType.ARTICLE_CREATE_TIME_LIMIT.getCacheName() + ":" + userProvider.getRequestUserId();
+		Cache cache = cacheManager.getCache(CacheType.ARTICLE_CREATE_TIME_LIMIT.getCacheName());
+
+		Optional<Object> cachedValue = Optional.ofNullable(cache.get(cacheKey, Object.class));
+		if (cachedValue.isPresent()) {
+			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST,
+				String.format("%d초 이후 글 생성이 가능합니다.", CacheType.ARTICLE_CREATE_TIME_LIMIT.getExpiredSecondAfterWrite())
+			);
+		}
 
 		List<ImageInfoCommand> uploadedImages =
 			CollectionUtils.isEmpty(articleWriteRequest.getImages()) ? new ArrayList<ImageInfoCommand>() :
@@ -74,20 +89,13 @@ public class ArticleCommandController {
 				.boardType(boardType)
 				.title(articleWriteRequest.getTitle())
 				.content(articleWriteRequest.getContent())
-				.authorName(articleWriteRequest.getAuthorName())
 				.enableComment(articleWriteRequest.isEnableComment())
 				.images(uploadedImages)
 				.build());
 
-		ArticleContent articleContentDetail = articleUseCase.getArticleWithComment(
-			ArticleReadCommand.builder()
-				.userProvider(userProvider)
-				.boardType(boardType)
-				.articleId(articleId)
-				.isShowAll(false)
-				.withoutComment(true)
-				.build());
-		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, articleContentDetail));
+		cache.put(cacheKey, '1');
+
+		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, articleId));
 	}
 
 	@Operation(

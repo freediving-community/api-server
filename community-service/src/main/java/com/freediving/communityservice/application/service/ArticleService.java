@@ -18,8 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import com.freediving.common.response.ResponseJsonObject;
-import com.freediving.common.response.dto.member.MemberFindUserResponse;
+import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
@@ -128,7 +127,7 @@ public class ArticleService implements ArticleUseCase {
 		);
 
 		boolean isLiked = false;
-		if (command.getUserProvider().getRequestUserId() != null) {
+		if (command.getUserProvider().isValidUserId()) {
 			UserReactionType userReactionType = userReactionPort.getReactionTypeById(
 				UserReactionId.builder()
 					.boardType(command.getBoardType())
@@ -160,6 +159,7 @@ public class ArticleService implements ArticleUseCase {
 			command.getBoardType(),
 			command.getCursor(),
 			command.isOnlyPicture(),
+			command.getUserId(),
 			pageable
 		);
 
@@ -170,29 +170,12 @@ public class ArticleService implements ArticleUseCase {
 			.distinct()
 			.toList();
 
-		ResponseJsonObject<List<MemberFindUserResponse>> memberInfoList = memberFeignPort.findUserListByUserIds(
-			articleOwnerIds, true);
+		Map<Long, UserInfo> userMap = memberFeignPort.getUserMapByUserIds(articleOwnerIds, true);
 
-		if (ServiceStatusCode.OK.getCode() == memberInfoList.getCode()) {
-			Map<Long, MemberFindUserResponse> userDict = memberInfoList.getData().stream()
-				.collect(Collectors.toUnmodifiableMap(
-					MemberFindUserResponse::getUserId, m -> m
-				));
-
-			for (ArticleBriefDto articleBriefDto : pagingArticleList.getContent()) {
-				if (userDict.containsKey(articleBriefDto.getCreatedBy())) {
-					MemberFindUserResponse user = userDict.get(articleBriefDto.getCreatedBy());
-
-					articleBriefDto.setUserInfo(
-						UserInfo.builder()
-							.nickname(user.getNickname())
-							.profileImgUrl(user.getProfileImgUrl())
-							.licenseInfo(user.getLicenseInfo())
-							.build()
-					);
-				}
-			}
+		for (ArticleBriefDto articleBriefDto : pagingArticleList.getContent()) {
+			articleBriefDto.setUserInfo(userMap.get(articleBriefDto.getCreatedBy()));
 		}
+
 		return pagingArticleList;
 
 	}
@@ -203,7 +186,8 @@ public class ArticleService implements ArticleUseCase {
 		//TODO 한 사용자는 같은 게시판에 X분 연속으로 글 등록하기가 제한됨. => 서버 캐시 등
 		// articleReadPort.getXXXByAuthorId()
 		Optional<Board> foundBoard = boardReadPort.findByBoardType(articleWriteCommand.getBoardType());
-		Board board = foundBoard.orElseThrow(() -> new IllegalArgumentException("해당하는 게시판이 없습니다."));
+		Board board = foundBoard.orElseThrow(
+			() -> new BuddyMeException(ServiceStatusCode.COMMUNITY_SERVICE, "해당하는 게시판이 없습니다."));
 		board.checkPermission(articleWriteCommand);
 
 		//TODO: Article 도메인 객체에서 비즈니스 로직을 처리하며 생성 후 넘겨야 한다.
@@ -219,7 +203,7 @@ public class ArticleService implements ArticleUseCase {
 
 			// savedImageCount 추후 사용자별 이미지 저장 수 제한 정책 시
 			if (savedImageCount != articleWriteCommand.getImages().size())
-				throw new RuntimeException("게시글 이미지 저장에 실패했습니다.");
+				throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, "게시글 이미지 저장에 실패했습니다.");
 		}
 
 		return savedArticle.getId();
@@ -292,8 +276,12 @@ public class ArticleService implements ArticleUseCase {
 			}
 		}
 		imageWritePort.saveImages(article.getId(), article.getCreatedBy(), article.getCreatedAt(), imagesToCreate);
-		//TODO: Member에 AWS 삭제 요청
-		imageDeletePort.deleteAllByArticleIdAndUrlIn(article.getId(), imageUrlsToDelete);
+
+		if (!imageUrlsToDelete.isEmpty()) {
+			memberFeignPort.deleteImageByUrls(imageUrlsToDelete);
+			imageDeletePort.deleteAllByArticleIdAndUrlIn(article.getId(), imageUrlsToDelete);
+		}
+
 		imageEditPort.editAllImageSortNumber(article.getId(), imageMapToUpdate);
 	}
 
@@ -304,15 +292,17 @@ public class ArticleService implements ArticleUseCase {
 
 		Article article = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), isShowAll);
 		if (Objects.isNull(article)) {
-			throw new IllegalArgumentException("해당하는 게시글이 없습니다.");
+			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "해당하는 게시글이 없습니다.");
 		}
 		article.checkHasOwnership(command.getUserProvider().getRequestUserId());
 
+		List<ImageResponse> articleImages = imageReadPort.getImageListByArticle(article.getId());
+
 		articleDeletePort.markDeleted(command);
 		commentDeletePort.markDeletedByArticleId(article.getId());
-		imageDeletePort.deleteAllByArticleId(article.getId());
-		//TODO: Member로 AWS Image삭제 요청
 
+		memberFeignPort.deleteImageByUrls(articleImages.stream().map(ImageResponse::url).toList());
+		imageDeletePort.deleteAllByArticleId(article.getId());
 		return article.getId();
 	}
 

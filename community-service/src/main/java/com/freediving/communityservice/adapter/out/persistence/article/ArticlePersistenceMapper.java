@@ -12,7 +12,6 @@ public class ArticlePersistenceMapper {
 			.boardType(articleJpaEntity.getBoardType())
 			.title(articleJpaEntity.getTitle())
 			.content(articleJpaEntity.getContent())
-			.authorName(articleJpaEntity.getAuthorName())
 			.viewCount(articleJpaEntity.getViewCount())
 			.likeCount(articleJpaEntity.getLikeCount())
 			.enableComment(articleJpaEntity.isEnableComment())

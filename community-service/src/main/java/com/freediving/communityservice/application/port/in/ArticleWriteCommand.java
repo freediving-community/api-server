@@ -29,9 +29,6 @@ public class ArticleWriteCommand extends SelfValidating<ArticleWriteCommand> {
 	@NotBlank(message = "내용을 입력해주세요.")
 	private final String content;
 
-	@NotBlank(message = "작성자 닉네임이 없습니다.")
-	private final String authorName;
-
 	private final List<Long> hashtagIds;
 
 	private final boolean enableComment;
@@ -39,12 +36,11 @@ public class ArticleWriteCommand extends SelfValidating<ArticleWriteCommand> {
 	private final List<ImageInfoCommand> images;
 
 	public ArticleWriteCommand(UserProvider userProvider, BoardType boardType, String title, String content,
-		String authorName, List<Long> hashtagIds, boolean enableComment, List<ImageInfoCommand> images) {
+		List<Long> hashtagIds, boolean enableComment, List<ImageInfoCommand> images) {
 		this.userProvider = userProvider;
 		this.boardType = boardType;
 		this.title = title;
 		this.content = content;
-		this.authorName = authorName;
 		this.hashtagIds = hashtagIds;
 		this.enableComment = enableComment;
 		this.images = images;

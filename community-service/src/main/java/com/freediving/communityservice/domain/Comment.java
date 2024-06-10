@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import org.springframework.util.ObjectUtils;
 
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 
@@ -74,18 +76,18 @@ public class Comment {
 			if (Objects.equals(requestUser.getRequestUserId(), articleCreatedBy))
 				return;
 
-			throw new IllegalArgumentException("숨긴 댓글에 권한이 없습니다.");
+			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "숨긴 댓글에 권한이 없습니다.");
 		}
 	}
 
 	public void checkParentComment() {
 		if (this.parentId != null)
-			throw new IllegalArgumentException("답글에는 다시 답글을 달 수 없습니다.");
+			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "답글에는 다시 답글을 달 수 없습니다.");
 	}
 
 	public void checkCommentOwner(Long requestUserId) {
 		if (!requestUserId.equals(this.createdBy))
-			throw new IllegalArgumentException("수정 권한이 없습니다.");
+			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "수정 권한이 없습니다.");
 	}
 
 	public boolean isRootComment() {

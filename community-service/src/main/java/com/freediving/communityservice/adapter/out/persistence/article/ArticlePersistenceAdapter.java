@@ -14,6 +14,8 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.util.ObjectUtils;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
@@ -46,7 +48,6 @@ public class ArticlePersistenceAdapter
 				articleWriteCommand.getTitle(),
 				articleWriteCommand.getContent(),
 				articleWriteCommand.getBoardType(),
-				articleWriteCommand.getAuthorName(),
 				articleWriteCommand.isEnableComment()
 			)
 		);
@@ -66,7 +67,7 @@ public class ArticlePersistenceAdapter
 			).fetchOne();
 
 		if (foundArticle == null) {
-			throw new IllegalArgumentException("해당하는 게시글이 없습니다.");
+			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "해당하는 게시글이 없습니다.");
 		}
 		return articleMapper.mapToDomain(foundArticle);
 	}
@@ -83,7 +84,7 @@ public class ArticlePersistenceAdapter
 
 	@Override
 	public Page<ArticleBriefDto> retrieveArticleIndexList(BoardType boardType, Long cursor, boolean onlyPicture,
-		Pageable pageable) {
+		Long userId, Pageable pageable) {
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("boardType", boardType.name());
@@ -94,7 +95,6 @@ public class ArticlePersistenceAdapter
 			        A.ARTICLE_ID   ,
 			        A.TITLE        ,
 			        A.CONTENT      ,
-			        A.AUTHOR_NAME  ,
 			        A.CREATED_AT   ,
 			        A.CREATED_BY   ,
 			        A.VIEW_COUNT   ,
@@ -114,6 +114,11 @@ public class ArticlePersistenceAdapter
 		if (!ObjectUtils.isEmpty(cursor)) {
 			articleIndexQuery.append(" AND ARTICLE_ID < :articleId ");
 			paramMap.addValue("articleId", cursor);
+		}
+
+		if (!ObjectUtils.isEmpty(userId)) {
+			articleIndexQuery.append(" AND CREATED_BY = :userId ");
+			paramMap.addValue("userId", userId);
 		}
 
 		articleIndexQuery
@@ -149,7 +154,6 @@ public class ArticlePersistenceAdapter
 				.articleId(rs.getLong("article_id"))
 				.title(rs.getString("title"))
 				.content(rs.getString("content"))
-				.authorName(rs.getString("author_name"))
 				.createdAt(
 					rs.getTimestamp("created_at") == null ? null : rs.getTimestamp("created_at").toLocalDateTime())
 				.createdBy(rs.getLong("created_by"))
@@ -235,7 +239,7 @@ public class ArticlePersistenceAdapter
 			).fetchOne();
 
 		if (foundArticle == null) {
-			throw new IllegalArgumentException("해당하는 게시글이 없습니다.");
+			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "해당하는 게시글이 없습니다.");
 		}
 
 		foundArticle.changeArticleContents(changedArticle.getTitle(), changedArticle.getContent(),
@@ -263,7 +267,7 @@ public class ArticlePersistenceAdapter
 	public Long markDeleted(ArticleRemoveCommand articleRemoveCommand) {
 
 		ArticleJpaEntity articleJpa = articleRepository.findById(articleRemoveCommand.getArticleId())
-			.orElseThrow(IllegalStateException::new);
+			.orElseThrow(() -> new BuddyMeException(ServiceStatusCode.BAD_REQUEST));
 		articleJpa.markDeletedNow();
 		return 1L;
 

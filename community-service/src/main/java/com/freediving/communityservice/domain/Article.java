@@ -3,6 +3,8 @@ package com.freediving.communityservice.domain;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 
 import lombok.Builder;
@@ -19,8 +21,6 @@ public class Article {
 	private final String title;
 
 	private final String content;
-
-	private final String authorName;
 
 	private final int viewCount;
 
@@ -43,12 +43,12 @@ public class Article {
 
 	public void checkCommentEnabled() {
 		if (!this.enableComment)
-			throw new IllegalArgumentException("댓글을 작성할 수 없는 게시물입니다.");
+			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "댓글을 작성할 수 없는 게시물입니다.");
 	}
 
 	public void checkHasOwnership(Long requestUserId) {
 		if (!this.createdBy.equals(requestUserId))
-			throw new IllegalArgumentException("권한이 없습니다.");
+			throw new BuddyMeException(ServiceStatusCode.FORBIDDEN, "권한이 없습니다.");
 	}
 
 	public Article copyWithChanges(Article originalArticle, String title, String content, boolean enableComment) {
@@ -57,7 +57,6 @@ public class Article {
 			.boardType(originalArticle.getBoardType())
 			.title(title)
 			.content(content)
-			.authorName(originalArticle.getAuthorName())
 			.viewCount(originalArticle.getViewCount())
 			.likeCount(originalArticle.getLikeCount())
 			.enableComment(enableComment)
@@ -74,7 +73,6 @@ public class Article {
 			.boardType(this.boardType)
 			.title(this.title)
 			.content(this.content)
-			.authorName(this.authorName)
 			.viewCount(this.viewCount + 1)
 			.likeCount(this.likeCount)
 			.enableComment(this.enableComment)

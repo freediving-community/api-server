@@ -20,14 +20,8 @@ public class ArticleWriteRequest {
 	@Schema(description = "게시글 본문", example = "안녕하세요. 본문 내용입니다.")
 	private String content;
 
-	@Schema(description = "작성자 닉네임", example = "테슬라주주파크")
-	private String authorName;
-
 	@Schema(description = "댓글 허용여부", example = "true(기본값)")
 	private boolean enableComment;
-
-	@Schema(description = "게시글 작성자 ID", example = "12345")
-	private Long createdBy;
 
 	private List<ArticleImageRequest> images;
 }
