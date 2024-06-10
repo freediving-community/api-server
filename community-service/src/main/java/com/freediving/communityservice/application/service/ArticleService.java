@@ -94,8 +94,10 @@ public class ArticleService implements ArticleUseCase {
 
 		List<ImageResponse> images = imageReadPort.getImageListByArticle(article.getId());
 
+		Map<Long, UserInfo> userMap = memberFeignPort.getUserMapByUserIds(List.of(article.getCreatedBy()), true);
+
 		if (command.isWithoutComment()) { // 본문 내용 수정 등
-			return new ArticleContent(article, images);
+			return new ArticleContent(article, userMap.get(article.getCreatedBy()), images);
 		}
 
 		int allCommentCount = commentReadPort.getCommentCountOfArticle(article.getId());
@@ -141,6 +143,7 @@ public class ArticleService implements ArticleUseCase {
 
 		return new ArticleContentWithComment(
 			article,
+			userMap.get(article.getCreatedBy()),
 			images,
 			Stream.concat(filteredComments.stream(), commentReplies.stream()).toList(),
 			isLiked,
