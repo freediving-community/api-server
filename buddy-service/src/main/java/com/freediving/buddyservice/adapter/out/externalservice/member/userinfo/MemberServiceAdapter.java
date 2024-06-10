@@ -32,7 +32,7 @@ public class MemberServiceAdapter implements RequestMemberPort {
 			List<UserInfo> users = obj.getData();
 			HashMap<Long, UserInfo> response = new HashMap<>();
 
-			users.stream().filter(e -> (e != null && e.getUserStatus().equals(UserStatus.ACTIVE))).forEach(
+			users.stream().filter(e -> (e != null && UserStatus.ACTIVE.equals(e.getUserStatus()))).forEach(
 				e -> response.put(e.getUserId(), e)
 			);
 
