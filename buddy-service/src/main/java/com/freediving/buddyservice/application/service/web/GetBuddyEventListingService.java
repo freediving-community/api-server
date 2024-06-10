@@ -143,7 +143,8 @@ public class GetBuddyEventListingService implements GetBuddyEventListingUseCase 
 				.participantCount(event.getParticipantCount())
 				.currentParticipantCount(event.getCurrentParticipantCount() - 1)
 				.participantInfos(joinMappings.stream()
-					.filter(e -> e.getStatus().equals(ParticipationStatus.PARTICIPATING))
+					.filter(e -> (e.getStatus().equals(ParticipationStatus.PARTICIPATING)
+						&& userHashMap.containsKey(e.getUserId())))
 					.map(e -> ParticipantInfoResponse.builder().userId(e.getUserId())
 						.profileImgUrl(userHashMap.get(e.getUserId()).getProfileImgUrl()).build())
 					.collect(
