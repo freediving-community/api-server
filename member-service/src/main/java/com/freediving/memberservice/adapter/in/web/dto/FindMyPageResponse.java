@@ -2,6 +2,7 @@ package com.freediving.memberservice.adapter.in.web.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freediving.memberservice.adapter.out.dto.UserReviewResponse;
 import com.freediving.memberservice.adapter.out.dto.UserStoryResponse;
 import com.freediving.memberservice.domain.User;
@@ -31,25 +32,30 @@ import lombok.NoArgsConstructor;
 @Schema(description = "다이버 정보 조회 응답 DTO")
 public class FindMyPageResponse {
 
-	@Schema(description = "유저 식별 키", example = "1")
+	// @Schema(description = "유저 식별 키", example = "1")
+	@JsonIgnore
 	private Long userId;
 
-	@Schema(description = "프로필 이미지 URL", example = "https://d1pjflw6c3jt4r.cloudfront.net")
+	// @Schema(description = "프로필 이미지 URL", example = "https://d1pjflw6c3jt4r.cloudfront.net")
+	@JsonIgnore
 	private String profileImgUrl;
 
-	@Schema(description = "닉네임", example = "초보다이버_00001")
+	// @Schema(description = "닉네임", example = "초보다이버_00001")
+	@JsonIgnore
 	private String nickname;
 
-	@Schema(description = "소셜 로그인 타입", example = "KAKAO")
+	// @Schema(description = "소셜 로그인 타입", example = "KAKAO")
+	@JsonIgnore
 	private String oauthType;
 
-	@Schema(description = "다이빙 별 라이센스 정보")
+	// @Schema(description = "다이빙 별 라이센스 정보")
+	@JsonIgnore
 	private LicenseInfo licenseInfo;
 
-	@Schema(description = "관심 목록 갯수", example = "10")
+	// @Schema(description = "관심 목록 갯수", example = "10")
 	private Integer likeCnt;
 
-	@Schema(description = "내가 쓴 댓글 갯수", example = "5")
+	// @Schema(description = "내가 쓴 댓글 갯수", example = "5")
 	private Integer commentCnt;
 
 	/**
