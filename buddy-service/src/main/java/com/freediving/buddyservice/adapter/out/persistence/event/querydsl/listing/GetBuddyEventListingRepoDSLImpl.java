@@ -42,7 +42,8 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 		sql.append("events.status AS status, ");
 		sql.append("events.participant_count AS participantCount, ");
 		sql.append("COUNT(DISTINCT requests.user_id) AS participantCountDistinct, ");
-		sql.append("events.gender_type AS gender_type ");
+		sql.append("events.gender_type AS gender_type, ");
+		sql.append("events.user_id AS user_id ");
 		sql.append("FROM buddy_event AS events ");
 		sql.append("LEFT JOIN buddy_event_diving_pool_mapping AS pool ON events.event_id = pool.event_id ");
 		sql.append("LEFT JOIN buddy_event_concept_mapping AS concept ON events.event_id = concept.event_id ");
@@ -141,7 +142,8 @@ public class GetBuddyEventListingRepoDSLImpl implements GetBuddyEventListingRepo
 				// status
 				product[8] != null ? ((Number)product[8]).longValue() : 0, // participantCount
 				product[9] != null ? ((Number)product[9]).longValue() : 0,// currentParticipantCount
-				product[10] != null ? GenderType.valueOf((String)product[10]) : GenderType.ALL))// genderType
+				product[10] != null ? GenderType.valueOf((String)product[10]) : GenderType.ALL,
+				product[11] != null ? ((Number)product[11]).longValue() : -1))// userId
 			.collect(Collectors.toList());
 
 		return events;

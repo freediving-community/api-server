@@ -89,13 +89,19 @@ public class GetBuddyEventCarouselService implements GetBuddyEventCarouselUseCas
 			.build();
 
 		for (GetBuddyEventCarouselQueryProjectionDto event : buddyEventListing) {
+
+			//작성자 정보를 못가져오면 제거.
+			UserInfo buddyOwner = userHashMap.get(event.getUserId());
+			if (buddyOwner == null)
+				continue;
+
 			List<BuddyEventConceptMappingProjectDto> conceptMappings = allConceptMappingByEventId.get(
 				event.getEventId());
 			List<BuddyEventDivingPoolMappingProjectDto> divingPoolMappings = allDivingPoolMappingByEventId.get(
 				event.getEventId());
 
 			BuddyEventCarouselCardResponse cardResponse = BuddyEventCarouselCardResponse.builder()
-				.userInfo(userHashMap.get(event.getUserId()))
+				.userInfo(buddyOwner)
 				.isLiked(event.isLiked())
 				.likedCount(event.getLikedCount())
 				.eventId(event.getEventId())
@@ -179,13 +185,19 @@ public class GetBuddyEventCarouselService implements GetBuddyEventCarouselUseCas
 			.build();
 
 		for (GetBuddyEventCarouselQueryProjectionDto event : buddyEventListing) {
+
+			//작성자 정보를 못가져오면 제거.
+			UserInfo buddyOwner = userHashMap.get(event.getUserId());
+			if (buddyOwner == null)
+				continue;
+
 			List<BuddyEventConceptMappingProjectDto> conceptMappings = allConceptMappingByEventId.get(
 				event.getEventId());
 			List<BuddyEventDivingPoolMappingProjectDto> divingPoolMappings = allDivingPoolMappingByEventId.get(
 				event.getEventId());
 
 			BuddyEventCarouselCardResponse cardResponse = BuddyEventCarouselCardResponse.builder()
-				.userInfo(userHashMap.get(event.getUserId()))
+				.userInfo(buddyOwner)
 				.isLiked(event.isLiked())
 				.likedCount(event.getLikedCount())
 				.eventId(event.getEventId())
@@ -260,13 +272,19 @@ public class GetBuddyEventCarouselService implements GetBuddyEventCarouselUseCas
 			.build();
 
 		for (GetBuddyEventCarouselQueryProjectionDto event : buddyEventListing) {
+
+			//작성자 정보를 못가져오면 제거.
+			UserInfo buddyOwner = userHashMap.get(event.getUserId());
+			if (buddyOwner == null)
+				continue;
+
 			List<BuddyEventConceptMappingProjectDto> conceptMappings = allConceptMappingByEventId.get(
 				event.getEventId());
 			List<BuddyEventDivingPoolMappingProjectDto> divingPoolMappings = allDivingPoolMappingByEventId.get(
 				event.getEventId());
 
 			BuddyEventCarouselCardResponse cardResponse = BuddyEventCarouselCardResponse.builder()
-				.userInfo(userHashMap.get(event.getUserId()))
+				.userInfo(buddyOwner)
 				.isLiked(event.isLiked())
 				.likedCount(event.getLikedCount())
 				.eventId(event.getEventId())

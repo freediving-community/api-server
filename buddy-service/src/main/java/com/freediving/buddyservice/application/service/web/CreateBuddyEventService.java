@@ -42,7 +42,7 @@ public class CreateBuddyEventService implements CreateBuddyEventUseCase {
 
 		// 1. Member Service로 정상적인 사용자 인지 확인 ( 버디 일정 생성 가능한 사용자? 제재 리스트 사용자? 등. 정상적인 사용자 체크)
 		HashMap<Long, UserInfo> status = requestMemberPort.getMemberStatus(List.of(command.getUserId()));
-		if (status.get(command.getUserId()).getLicenseInfo().getFreeDiving().getRoleLevel() < 0) {
+		if (status.get(command.getUserId()) == null) {
 			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, "비정상적인 사용자."); // TODO 예외 처리
 		}
 

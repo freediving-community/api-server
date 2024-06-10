@@ -1,6 +1,7 @@
 package com.freediving.buddyservice.adapter.out.externalservice.member.userinfo.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.freediving.buddyservice.config.enumerate.UserStatus;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ public class UserInfo {
 	private String profileImgUrl;
 
 	private String nickname;
+	private UserStatus userStatus;
 	private LicenseInfo licenseInfo;
 
 }
