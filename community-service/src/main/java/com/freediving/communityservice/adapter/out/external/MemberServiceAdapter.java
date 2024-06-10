@@ -53,7 +53,7 @@ public class MemberServiceAdapter implements MemberFeignPort {
 		try {
 			ResponseEntity<Object> response = memberClient.deleteImages(Map.of("imgUrlList", deleteImages));
 			if (response.getStatusCode().value() > HttpStatus.NO_CONTENT.value()) {
-				throw new BuddyMeException(COMMUNITY_SERVICE, "MemberService로 AWS 이미지 삭제 요청이 실패하였습니다.");
+				throw new BuddyMeException(INTERVAL_SERVER_ERROR, "이미지 삭제 요청이 실패하였습니다.");
 			}
 		} catch (Exception ex) {
 			//TODO: 관리자 모니터링 데이터 삽입 , 알림 , 재처리 시도 등

@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.BoardReadCommand;
 import com.freediving.communityservice.application.port.in.BoardWriteCommand;
@@ -40,7 +42,7 @@ public class BoardPersistenceAdapter implements BoardWritePort, BoardReadPort {
 	public Board findById(Long boardId) {
 		Optional<BoardJpaEntity> boardJpaEntity = boardRepository.findById(boardId);
 		return boardMapper.mapToDomain(
-			boardJpaEntity.orElseThrow(() -> new IllegalArgumentException("해당하는 게시판이 없습니다."))
+			boardJpaEntity.orElseThrow(() -> new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "해당하는 게시판이 없습니다."))
 		);
 	}
 

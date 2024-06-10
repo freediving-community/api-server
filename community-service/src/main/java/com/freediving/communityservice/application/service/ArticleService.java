@@ -127,7 +127,7 @@ public class ArticleService implements ArticleUseCase {
 		);
 
 		boolean isLiked = false;
-		if (command.getUserProvider().getRequestUserId() != null) {
+		if (command.getUserProvider().isValidUserId()) {
 			UserReactionType userReactionType = userReactionPort.getReactionTypeById(
 				UserReactionId.builder()
 					.boardType(command.getBoardType())
@@ -186,7 +186,8 @@ public class ArticleService implements ArticleUseCase {
 		//TODO 한 사용자는 같은 게시판에 X분 연속으로 글 등록하기가 제한됨. => 서버 캐시 등
 		// articleReadPort.getXXXByAuthorId()
 		Optional<Board> foundBoard = boardReadPort.findByBoardType(articleWriteCommand.getBoardType());
-		Board board = foundBoard.orElseThrow(() -> new IllegalArgumentException("해당하는 게시판이 없습니다."));
+		Board board = foundBoard.orElseThrow(
+			() -> new BuddyMeException(ServiceStatusCode.COMMUNITY_SERVICE, "해당하는 게시판이 없습니다."));
 		board.checkPermission(articleWriteCommand);
 
 		//TODO: Article 도메인 객체에서 비즈니스 로직을 처리하며 생성 후 넘겨야 한다.
@@ -202,7 +203,7 @@ public class ArticleService implements ArticleUseCase {
 
 			// savedImageCount 추후 사용자별 이미지 저장 수 제한 정책 시
 			if (savedImageCount != articleWriteCommand.getImages().size())
-				throw new RuntimeException("게시글 이미지 저장에 실패했습니다.");
+				throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, "게시글 이미지 저장에 실패했습니다.");
 		}
 
 		return savedArticle.getId();

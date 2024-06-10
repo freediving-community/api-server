@@ -46,13 +46,14 @@ public class ArticleQueryController {
 	@GetMapping("/boards/{boardType}/articles")
 	public ResponseEntity<ResponseJsonObject<Page<ArticleBriefDto>>> getArticleList(
 		@Parameter(hidden = true) UserProvider userProvider,
-		@PathVariable("boardType") BoardType boardType,
+		@Parameter(description = "게시판 유형", required = true) @PathVariable("boardType") BoardType boardType,
 		// @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-		@RequestParam(value = "offset", required = false, defaultValue = "20") int offset,
+		@Parameter(description = "한 번에 가져올 갯수") @RequestParam(value = "offset", required = false, defaultValue = "20") int offset,
+		@Parameter(description = "createdAt(default)생성시각, liked 좋아요수, comment 댓글수, hits 조회수 (전체-DESC)")
 		@RequestParam(value = "orderBy", required = false, defaultValue = "createdAt") String orderBy,
-		@RequestParam(value = "c", required = false, defaultValue = "") Long cursor,
-		@RequestParam(value = "onlyPicture", required = false) boolean onlyPicture,
-		@RequestParam(value = "userId", required = false) Long userId
+		@Parameter(description = "마지막 조회한 게시글 ID") @RequestParam(value = "c", required = false, defaultValue = "") Long cursor,
+		@Parameter(description = "이미지가 있는 게시글만 가져올 지 여부") @RequestParam(value = "onlyPicture", required = false) boolean onlyPicture,
+		@Parameter(description = "특정 사용자의 게시글만 조회") @RequestParam(value = "userId", required = false) Long userId
 	) {
 		Page<ArticleBriefDto> articleIndexList = articleUseCase.getArticleIndexList(
 			ArticleIndexListCommand.builder()

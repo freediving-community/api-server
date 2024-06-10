@@ -68,6 +68,6 @@ public class BoardQueryController {
 		@PathVariable("boardType") BoardType boardType) {
 		Optional<Board> board = boardUseCase.readBoard(boardType);
 		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK,
-			BoardResponse.of("success", board.orElseThrow(IllegalArgumentException::new))));
+			BoardResponse.of("success", board.orElseThrow())));
 	}
 }

@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.BoardReadCommand;
 import com.freediving.communityservice.application.port.in.BoardUseCase;
@@ -28,7 +30,7 @@ public class BoardService implements BoardUseCase {
 	public Board createBoard(BoardWriteCommand command) {
 		boardReadPort.findByBoardType(command.getBoardType())
 			.ifPresent(board -> {
-				throw new IllegalArgumentException("이미 동일한 이름(유형)의 게시판이 존재합니다.");
+				throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "이미 동일한 이름(유형)의 게시판이 존재합니다.");
 			});
 		return boardWritePort.makeBoard(command);
 	}

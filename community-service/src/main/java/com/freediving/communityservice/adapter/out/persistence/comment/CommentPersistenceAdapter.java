@@ -9,6 +9,8 @@ import java.util.List;
 import org.springframework.jdbc.core.simple.JdbcClient;
 
 import com.freediving.common.config.annotation.PersistenceAdapter;
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.CommentEditCommand;
 import com.freediving.communityservice.application.port.in.CommentReadCommand;
@@ -35,7 +37,7 @@ public class CommentPersistenceAdapter
 	@Override
 	public Comment findById(CommentReadCommand command) {
 		CommentJpaEntity foundCommentEntity = commentRepository.findById(command.getCommentId()).orElseThrow(
-			() -> new IllegalArgumentException("해당하는 댓글이 없습니다."));
+			() -> new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "해당하는 댓글이 없습니다."));
 
 		return commentMapper.mapToDomain(foundCommentEntity);
 	}
@@ -190,7 +192,7 @@ public class CommentPersistenceAdapter
 	@Override
 	public Comment editComment(CommentEditCommand command) {
 		CommentJpaEntity commentJpa = commentRepository.findById(command.getCommentId())
-			.orElseThrow(() -> new IllegalArgumentException("해당하는 댓글이 없습니다."));
+			.orElseThrow(() -> new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "해당하는 댓글이 없습니다."));
 		commentJpa.editComment(command.getContent()/*, command.isVisible()*/);
 
 		return commentMapper.mapToDomain(commentJpa);
@@ -212,7 +214,7 @@ public class CommentPersistenceAdapter
 	public void markDeleted(Long commentId) {
 		LocalDateTime deletedAt = LocalDateTime.now();
 		CommentJpaEntity commentJpa = commentRepository.findById(commentId)
-			.orElseThrow(() -> new IllegalArgumentException("해당하는 댓글이 없습니다."));
+			.orElseThrow(() -> new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "해당하는 댓글이 없습니다."));
 		commentJpa.markDeleted(deletedAt);
 	}
 }

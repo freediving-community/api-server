@@ -25,6 +25,10 @@ public class UserProvider {
 		// this.roleLevel = roleLevel != null ? roleLevel : RoleLevel.ANONYMOUS;
 	}
 
+	public boolean isValidUserId() {
+		return this.requestUserId != null && this.requestUserId != -1L;
+	}
+
 	@Getter
 	public enum RoleLevel {
 		ANONYMOUS(-1),            // 비로그인 사용자
