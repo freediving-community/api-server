@@ -2,8 +2,11 @@ package com.freediving.communityservice.adapter.in.web.command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.in.dto.ArticleEditRequest;
@@ -24,6 +28,7 @@ import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleUseCase;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
 import com.freediving.communityservice.application.port.in.dto.ImageInfoCommand;
+import com.freediving.communityservice.config.type.CacheType;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -37,6 +42,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class ArticleCommandController {
 
+	private final CacheManager cacheManager;
 	private final ArticleUseCase articleUseCase;
 
 	@Value("${community.gateway.fqdn}")
@@ -60,6 +66,16 @@ public class ArticleCommandController {
 		@PathVariable("boardType") BoardType boardType,
 		@RequestBody ArticleWriteRequest articleWriteRequest) {
 
+		String cacheKey = CacheType.ARTICLE_CREATE_TIME_LIMIT.getCacheName() + ":" + userProvider.getRequestUserId();
+		Cache cache = cacheManager.getCache(CacheType.ARTICLE_CREATE_TIME_LIMIT.getCacheName());
+
+		Optional<Object> cachedValue = Optional.ofNullable(cache.get(cacheKey, Object.class));
+		if (cachedValue.isPresent()) {
+			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST,
+				String.format("%d초 이후 글 생성이 가능합니다.", CacheType.ARTICLE_CREATE_TIME_LIMIT.getExpiredSecondAfterWrite())
+			);
+		}
+
 		List<ImageInfoCommand> uploadedImages =
 			CollectionUtils.isEmpty(articleWriteRequest.getImages()) ? new ArrayList<ImageInfoCommand>() :
 				articleWriteRequest.getImages()
@@ -76,6 +92,8 @@ public class ArticleCommandController {
 				.enableComment(articleWriteRequest.isEnableComment())
 				.images(uploadedImages)
 				.build());
+
+		cache.put(cacheKey, '1');
 
 		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, articleId));
 	}
