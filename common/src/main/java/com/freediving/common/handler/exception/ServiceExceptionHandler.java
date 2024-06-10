@@ -118,8 +118,17 @@ public class ServiceExceptionHandler extends ResponseEntityExceptionHandler {
 		HttpStatus exceptionStatus = HttpStatus.OK;
 
 		switch (ex.getResponseJsonObject().getCode()) {
+			case 201:
+				exceptionStatus = HttpStatus.CREATED;
+				break;
+			case 204:
+				exceptionStatus = HttpStatus.NO_CONTENT;
+				break;
 			case 400:
 				exceptionStatus = HttpStatus.BAD_REQUEST;
+				break;
+			case 401:
+				exceptionStatus = HttpStatus.UNAUTHORIZED;
 				break;
 			default:
 				exceptionStatus = HttpStatus.OK;
