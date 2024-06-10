@@ -43,8 +43,9 @@ public class InternalController {
 				content = @Content(mediaType = "application/json",
 					schema = @Schema(implementation = UserConceptListResponse.class))
 			),
-			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
-			@ApiResponse(responseCode = "500", ref = "#/components/responses/500")
+			@ApiResponse(responseCode = "204", description = "선호 콘셉트 없음.", ref = "#/components/responses/204"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청 ( 파라미터 체크 )", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "500", description = "서비스 에러", ref = "#/components/responses/500")
 		}
 	)
 	@GetMapping("/{userId}/concept")
@@ -76,9 +77,9 @@ public class InternalController {
 				content = @Content(mediaType = "application/json",
 					schema = @Schema(example = "{ \"userIds\": [ 1, 2 ] }"))
 			),
-			@ApiResponse(responseCode = "204", ref = "#/components/responses/204"),
-			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
-			@ApiResponse(responseCode = "500", ref = "#/components/responses/500")
+			@ApiResponse(responseCode = "204", description = "참여자 없음(발생 케이스 없음)", ref = "#/components/responses/204"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "500", description = "서비스 에러", ref = "#/components/responses/500")
 		}
 	)
 	@GetMapping("/{eventId}/participants")

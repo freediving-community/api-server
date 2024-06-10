@@ -83,7 +83,7 @@ public class BuddyEventQueryController {
 
 	@Operation(
 		summary = "버디 이벤트 상세정보 조회하기. ",
-		description = "버디 매칭 상세정보를 조회합니다.",
+		description = "버디 이벤트 상세정보를 조회합니다.",
 		responses = {
 			@ApiResponse(
 				responseCode = "200",
@@ -91,9 +91,9 @@ public class BuddyEventQueryController {
 				content = @Content(mediaType = "application/json",
 					schema = @Schema(implementation = QueryBuddyEventDetailResponse.class))
 			),
-			@ApiResponse(responseCode = "204", ref = "#/components/responses/204"),
-			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
-			@ApiResponse(responseCode = "500", ref = "#/components/responses/500")
+			@ApiResponse(responseCode = "204", description = "존재하지 않는 버디 모임 상세정보 또는 잘못된 사용자의 버디 모임  ", ref = "#/components/responses/204"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "500", description = "서비스 에러", ref = "#/components/responses/500")
 		}
 	)
 	@GetMapping("event/{eventId}")
@@ -131,9 +131,9 @@ public class BuddyEventQueryController {
 				content = @Content(mediaType = "application/json",
 					schema = @Schema(implementation = BuddyEventlistingCardResponse.class))
 			),
-			@ApiResponse(responseCode = "204", ref = "#/components/responses/204"),
-			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
-			@ApiResponse(responseCode = "500", ref = "#/components/responses/500")
+			@ApiResponse(responseCode = "204", description = "조회 결과 없음", ref = "#/components/responses/204"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "500", description = "서비스 에러", ref = "#/components/responses/500")
 		}
 	)
 	@GetMapping("event/listing")
@@ -182,9 +182,9 @@ public class BuddyEventQueryController {
 				description = "조회 성공",
 				content = @Content(mediaType = "application/json",
 					schema = @Schema(implementation = BuddyEventCarouselCardResponse.class))),
-			@ApiResponse(responseCode = "204", ref = "#/components/responses/204"),
-			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
-			@ApiResponse(responseCode = "500", ref = "#/components/responses/500")
+			@ApiResponse(responseCode = "204", description = "조회 결과 없음", ref = "#/components/responses/204"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "500", description = "서비스 에러", ref = "#/components/responses/500")
 		}
 	)
 	@GetMapping("/home/weekly")
@@ -228,9 +228,9 @@ public class BuddyEventQueryController {
 				description = "조회 성공",
 				content = @Content(mediaType = "application/json",
 					schema = @Schema(implementation = QueryPreferencePoolCarouselResponse.class))),
-			@ApiResponse(responseCode = "204", ref = "#/components/responses/204"),
-			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
-			@ApiResponse(responseCode = "500", ref = "#/components/responses/500")
+			@ApiResponse(responseCode = "204", description = "조회 결과 없음", ref = "#/components/responses/204"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "500", description = "서비스 에러", ref = "#/components/responses/500")
 		}
 	)
 	@GetMapping("/home/preference")
@@ -274,9 +274,9 @@ public class BuddyEventQueryController {
 				description = "조회 성공",
 				content = @Content(mediaType = "application/json",
 					schema = @Schema(implementation = BuddyEventCarouselCardResponse.class))),
-			@ApiResponse(responseCode = "204", ref = "#/components/responses/204"),
-			@ApiResponse(responseCode = "400", ref = "#/components/responses/400"),
-			@ApiResponse(responseCode = "500", ref = "#/components/responses/500")
+			@ApiResponse(responseCode = "204", description = "조회 결과 없음", ref = "#/components/responses/204"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청", ref = "#/components/responses/400"),
+			@ApiResponse(responseCode = "500", description = "서비스 에러", ref = "#/components/responses/500")
 		}
 	)
 	@GetMapping("/home/active")

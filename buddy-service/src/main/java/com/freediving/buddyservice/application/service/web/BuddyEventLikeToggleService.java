@@ -31,7 +31,7 @@ public class BuddyEventLikeToggleService implements BuddyEventLikeToggleUseCase 
 		BuddyEventJpaEntity buddyEvent = validationBuddyEventPort.existBuddyEvent(command.getEventId());
 
 		if (buddyEvent == null)
-			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, "BuddyEvent is null"); // todo 응답 코드 필요
+			throw new BuddyMeException(ServiceStatusCode.FORBIDDEN, "BuddyEvent is null"); // todo 응답 코드 필요
 
 		// 2. 버디 이벤트 좋아요 설정이 되어있는지 확인한다.
 		BuddyEventLikeMappingJpaEntity buddyEventLikeMappingJpaEntity = buddyEventLikeTogglePort.existBuddyEventLikeMapping(
