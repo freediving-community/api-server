@@ -158,6 +158,48 @@ public class createBuddyEventPersistenceAdapter implements createBuddyEventPort,
 	}
 
 	@Override
+	public List<GetBuddyEventListingQueryProjectionDto> getLikeBuddyEventListing(Long userId, LocalDateTime now,
+		int pageNumber,
+		int pageSize) {
+		// todo 고도화 필요.
+
+		//eventId = {Long@15333} 1
+		// eventStartDate = {LocalDateTime@15837} "2024-05-07T10:00"
+		// eventEndDate = {LocalDateTime@15838} "2024-05-07T13:00"
+		// isLiked = true
+		// likedCount = {Integer@15635} 1
+		// comment = "이번 모임은 캐주얼하게 진행합니다."
+		// freedivingLevel = {Integer@15337} 0
+		// status = {BuddyEventStatus@15637} "RECRUITING"
+		// participantCount = {Integer@15645} 3
+		// currentParticipantCount = {Long@15333} 1
+		List<GetBuddyEventListingQueryProjectionDto> buddyEventListing = getBuddyEventListingRepoDSL.getLikeBuddyEventListing(
+			userId, now, pageNumber, pageSize);
+
+		return buddyEventListing;
+	}
+
+	@Override
+	public Long countOfGetLikeBuddyEventListing(Long userId, LocalDateTime now) {
+		// todo 고도화 필요.
+
+		//eventId = {Long@15333} 1
+		// eventStartDate = {LocalDateTime@15837} "2024-05-07T10:00"
+		// eventEndDate = {LocalDateTime@15838} "2024-05-07T13:00"
+		// isLiked = true
+		// likedCount = {Integer@15635} 1
+		// comment = "이번 모임은 캐주얼하게 진행합니다."
+		// freedivingLevel = {Integer@15337} 0
+		// status = {BuddyEventStatus@15637} "RECRUITING"
+		// participantCount = {Integer@15645} 3
+		// currentParticipantCount = {Long@15333} 1
+		Long count = getBuddyEventListingRepoDSL.countOfGetLikeBuddyEventListing(
+			userId, now);
+
+		return count;
+	}
+
+	@Override
 	public List<GetBuddyEventCarouselQueryProjectionDto> getBuddyEventWeekly(Long userId, LocalDateTime eventStartDate,
 		int pageNumber, int pageSize) {
 

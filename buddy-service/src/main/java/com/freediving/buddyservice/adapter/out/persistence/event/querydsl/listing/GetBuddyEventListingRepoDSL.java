@@ -30,4 +30,10 @@ public interface GetBuddyEventListingRepoDSL {
 		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
 		Integer freedivingLevel, Set<DivingPool> divingPools, GenderType genderType);
 
+	List<GetBuddyEventListingQueryProjectionDto> getLikeBuddyEventListing(Long userId, LocalDateTime now,
+		int pageNumber,
+		int offset);
+
+	Long countOfGetLikeBuddyEventListing(Long userId, LocalDateTime now);
+
 }

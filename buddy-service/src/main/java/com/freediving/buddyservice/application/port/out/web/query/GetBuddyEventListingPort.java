@@ -21,4 +21,10 @@ public interface GetBuddyEventListingPort {
 		LocalDateTime eventEndDate, Set<BuddyEventConcept> buddyEventConcepts, Boolean carShareYn,
 		Integer freedivingLevel, Set<DivingPool> divingPools, GenderType genderType);
 
+	List<GetBuddyEventListingQueryProjectionDto> getLikeBuddyEventListing(Long userId, LocalDateTime now,
+		int pageNumber,
+		int pageSize);
+
+	Long countOfGetLikeBuddyEventListing(Long userId, LocalDateTime now);
+
 }
