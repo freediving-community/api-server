@@ -38,7 +38,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -187,7 +186,8 @@ public class BuddyEventQueryController {
 	public ResponseEntity<ResponseJsonObject<QueryComponentListWithoutPageResponse>> getBuddyEventCarouselSimple(
 		@RequestParam(value = "eventStartDate") @Valid @NotNull @Schema(example = "2024-06-01T00:00:00") LocalDateTime eventStartDate,
 		@RequestParam(value = "eventEndDate") @Valid @NotNull @Schema(example = "2024-06-02T00:00:00") LocalDateTime eventEndDate,
-		@RequestParam(value = "divingPool", required = false) @Null @Parameter(schema = @Schema(implementation = DivingPool.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED)) DivingPool divingPool,
+		@RequestParam(value = "divingPool", required = false) @Parameter(schema = @Schema(implementation = DivingPool.class, requiredMode = Schema.RequiredMode.NOT_REQUIRED)) DivingPool divingPool,
+		@RequestParam(value = "excludedEventId", required = false) @Schema(description = "제외할 Event ID", example = "12345", requiredMode = Schema.RequiredMode.NOT_REQUIRED) Long excludedEventId,
 		HttpServletRequest httpServletRequest) {
 		try {
 
@@ -196,6 +196,7 @@ public class BuddyEventQueryController {
 					.eventStartDate(eventStartDate)
 					.eventEndDate(eventEndDate)
 					.divingPool(divingPool)
+					.excludedEventId(excludedEventId)
 					.build()
 			);
 

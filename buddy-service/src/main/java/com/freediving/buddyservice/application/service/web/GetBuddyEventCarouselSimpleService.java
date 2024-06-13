@@ -47,7 +47,8 @@ public class GetBuddyEventCarouselSimpleService implements GetBuddyEventCarousel
 	public QueryComponentListWithoutPageResponse getBuddyEventCarouselSimple(
 		GetBuddyEventCarouselSimpleCommand command) {
 		List<GetBuddyEventCarouselSimpleQueryProjectionDto> buddyEvents = getBuddyEventCarouselSimplePort.getBuddyEventCarouselSimple(
-			command.getEventStartDate(), command.getEventEndDate(), command.getDivingPool());
+			command.getEventStartDate(), command.getEventEndDate(), command.getDivingPool(),
+			command.getExcludedEventId());
 
 		if (buddyEvents == null || buddyEvents.isEmpty())
 			throw new BuddyMeException(ServiceStatusCode.NO_CONTENT);
