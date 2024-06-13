@@ -24,7 +24,7 @@ public class GetBuddyEventCarouselSimpleRepoDSLImpl implements GetBuddyEventCaro
 
 	@Override
 	public List<GetBuddyEventCarouselSimpleQueryProjectionDto> getBuddyEventCarouselSimple(LocalDateTime eventStartDate,
-		LocalDateTime eventEndDate, DivingPool divingPool) {
+		LocalDateTime eventEndDate, DivingPool divingPool, Long excludedEventId) {
 
 		StringBuilder sql = new StringBuilder();
 
@@ -49,6 +49,10 @@ public class GetBuddyEventCarouselSimpleRepoDSLImpl implements GetBuddyEventCaro
 			sql.append("AND pool.diving_pool_id = :divingPools ");
 		}
 
+		if (excludedEventId != null) {
+			sql.append("AND events.event_id != :excludedEventId ");
+		}
+
 		sql.append(
 			"GROUP BY events.event_id, events.event_start_date, events.event_end_date, events.freediving_level, events.status, events.participant_count ");
 		sql.append("ORDER BY events.event_start_date ASC ");
@@ -59,7 +63,11 @@ public class GetBuddyEventCarouselSimpleRepoDSLImpl implements GetBuddyEventCaro
 		query.setParameter("endDate", eventEndDate);
 
 		if (divingPool != null) {
-			query.setParameter("divingPools", divingPool);
+			query.setParameter("divingPools", divingPool.name());
+		}
+
+		if (excludedEventId != null) {
+			query.setParameter("excludedEventId", excludedEventId);
 		}
 
 		List<Object[]> resultList = query.getResultList();

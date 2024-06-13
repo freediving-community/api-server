@@ -29,10 +29,11 @@ public class GetBuddyEventCarouselSimpleCommand extends SelfValidating<GetBuddyE
 	@FutureOrPresent(message = "일정 종료 시간은 현재 시간 이후여야 합니다.")
 	private final LocalDateTime eventEndDate;
 	private final DivingPool divingPool;
+	private final Long excludedEventId;
 
 	@Builder
 	public GetBuddyEventCarouselSimpleCommand(LocalDateTime eventStartDate, LocalDateTime eventEndDate,
-		DivingPool divingPool) {
+		DivingPool divingPool, Long excludedEventId) {
 
 		if (eventStartDate.isAfter(LocalDateTime.now()) == false)
 			eventStartDate = LocalDateTime.now();
@@ -44,6 +45,7 @@ public class GetBuddyEventCarouselSimpleCommand extends SelfValidating<GetBuddyE
 			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST, "일정 종료 시간은 시작 시간 이후여야 합니다.");
 
 		this.divingPool = divingPool;
+		this.excludedEventId = excludedEventId;
 
 		this.validateSelf();
 	}

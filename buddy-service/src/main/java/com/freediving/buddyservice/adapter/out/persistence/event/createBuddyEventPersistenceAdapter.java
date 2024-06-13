@@ -268,9 +268,9 @@ public class createBuddyEventPersistenceAdapter implements createBuddyEventPort,
 
 	@Override
 	public List<GetBuddyEventCarouselSimpleQueryProjectionDto> getBuddyEventCarouselSimple(LocalDateTime eventStartDate,
-		LocalDateTime eventEndDate, DivingPool divingPool) {
+		LocalDateTime eventEndDate, DivingPool divingPool, Long excludedEventId) {
 		List<GetBuddyEventCarouselSimpleQueryProjectionDto> buddyEventListing = getBuddyEventCarouselSimpleRepoDSL.getBuddyEventCarouselSimple(
-			eventStartDate, eventEndDate, divingPool);
+			eventStartDate, eventEndDate, divingPool, excludedEventId);
 
 		return buddyEventListing;
 

@@ -10,6 +10,6 @@ public interface GetBuddyEventCarouselSimplePort {
 
 	List<GetBuddyEventCarouselSimpleQueryProjectionDto> getBuddyEventCarouselSimple(LocalDateTime eventStartDate
 		, LocalDateTime eventEndDate,
-		DivingPool divingPool);
+		DivingPool divingPool, Long excludedEventId);
 
 }
