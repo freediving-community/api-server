@@ -13,7 +13,9 @@ public enum DivingPool {
 	SONGDO_SPORTS_PARK_POOL("송도 스포츠파크 잠수풀"),
 	SEONGNAM_AQUALINE_POOL("성남 아쿠아라인 다목적풀"),
 	WORLDCUP_SCUBA_POOL("월드컵 스킨스쿠버 다이빙풀"),
-	DAEBU_WELFARE_POOL("대부동 복지체육센터");
+	DAEBU_WELFARE_POOL("대부동 복지체육센터"),
+	CINEBLUE("시네블루"),
+	INADIV("인어다이브");
 
 	private String divingPoolName;
 
