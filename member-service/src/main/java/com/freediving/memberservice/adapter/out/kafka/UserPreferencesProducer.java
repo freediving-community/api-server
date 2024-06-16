@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.freediving.common.handler.exception.BuddyMeException;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.memberservice.adapter.out.dto.UserConceptRequest;
 import com.freediving.memberservice.adapter.out.dto.UserPoolRequest;
 
@@ -42,6 +44,7 @@ public class UserPreferencesProducer {
 			this.kafkaTemplate.send(poolTopic, objectMapper.writeValueAsString(userPoolRequest));
 		} catch (Exception e) {
 			log.error("ERROR [Produce sendUserPool] userId : {}, error : ", userPoolRequest.getUserId(), e);
+			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, "userPoolRequest 카프카 Producing 중 오류 발생");
 		}
 	}
 
@@ -52,6 +55,7 @@ public class UserPreferencesProducer {
 			this.kafkaTemplate.send(conceptTopic, objectMapper.writeValueAsString(userConceptRequest));
 		} catch (Exception e) {
 			log.error("ERROR [Produce sendUserPool] userId : {}, error : ", userConceptRequest.getUserId(), e);
+			throw new BuddyMeException(ServiceStatusCode.INTERVAL_SERVER_ERROR, "userConceptRequest 카프카 Producing 중 오류 발생");
 		}
 	}
 }
