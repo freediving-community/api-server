@@ -34,7 +34,7 @@ jobs:
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
-          host: "35.199.188.230"
+          host: "34.64.196.150"
           username: ${{ secrets.GCP_SSH_USERNAME }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.GCP_SSH_PASSPHRASE }}
