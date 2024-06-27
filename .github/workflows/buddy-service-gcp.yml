@@ -38,7 +38,7 @@ jobs:
           host: "34.64.196.150"
           username: ${{ secrets.GCP_SSH_USERNAME }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GCP_SSH_PASSPHRASE }}
+#          passphrase: ${{ secrets.GCP_SSH_PASSPHRASE }}
           script: | 
             sudo docker pull ${{ secrets.DOCKER_REPO }}/buddy-service
             sudo docker image prune -a -f
