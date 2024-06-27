@@ -43,7 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CreateImgController {
 
 	private final CreateImgUseCase imgUseCase;
-
+	
 	/**
 	 * @Author           : sasca37
 	 * @Date             : 2024/01/21
