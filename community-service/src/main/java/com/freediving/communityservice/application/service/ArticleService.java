@@ -20,9 +20,9 @@ import org.springframework.util.ObjectUtils;
 
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
-import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
-import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
-import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithComment;
+import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefResponse;
+import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithCommentResponse;
+import com.freediving.communityservice.adapter.out.dto.comment.CommentResponse;
 import com.freediving.communityservice.adapter.out.dto.image.ImageResponse;
 import com.freediving.communityservice.adapter.out.dto.user.UserInfo;
 import com.freediving.communityservice.adapter.out.persistence.constant.UserReactionType;
@@ -75,29 +75,30 @@ public class ArticleService implements ArticleUseCase {
 	private final ImageDeletePort imageDeletePort;
 	private final MemberFeignPort memberFeignPort;
 
-	//Query
-	// @Override
-	// public Article getArticle(ArticleReadCommand command) {
-	// 	return articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), command.isShowAll());
-	// }
-
 	@Override
-	public ArticleContent getArticleWithComment(ArticleReadCommand command) {
+	public ArticleContentWithCommentResponse getArticleWithComment(ArticleReadCommand command) {
 
-		Article foundArticle = articleReadPort.readArticle(
+		Article article = articleReadPort.readArticle(
 			command.getBoardType(),
 			command.getArticleId(),
 			command.isShowAll()
 		);
-		Article article = foundArticle.increaseViewCount();
+		article.increaseViewCount();
 		articleReadPort.increaseViewCount(article.getBoardType(), article.getId());
 
 		List<ImageResponse> images = imageReadPort.getImageListByArticle(article.getId());
 
-		Map<Long, UserInfo> userMap = memberFeignPort.getUserMapByUserIds(List.of(article.getCreatedBy()), true);
+		Map<Long, UserInfo> articleOwner = memberFeignPort.getUserMapByUserIds(List.of(article.getCreatedBy()), true);
 
 		if (command.isWithoutComment()) { // 본문 내용 수정 등
-			return new ArticleContent(article, userMap.get(article.getCreatedBy()), images);
+			return ArticleContentWithCommentResponse.of(
+				article,
+				articleOwner.get(article.getCreatedBy()),
+				images,
+				0,
+				null,
+				false
+			);
 		}
 
 		int allCommentCount = commentReadPort.getCommentCountOfArticle(article.getId());
@@ -115,8 +116,7 @@ public class ArticleService implements ArticleUseCase {
 				command.getBoardType(),
 				article.getCreatedBy(),
 				command.getUserProvider().getRequestUserId())
-			)
-			.toList();
+			).toList();
 
 		List<Long> validCommentIds = filteredComments.stream()
 			.filter(Comment::isVisible)
@@ -127,6 +127,33 @@ public class ArticleService implements ArticleUseCase {
 			article.getId(),
 			validCommentIds
 		);
+
+		List<Comment> allComments = Stream.concat(filteredComments.stream(), commentReplies.stream()).toList();
+		List<Long> userIds = allComments.stream()
+			.filter(comment -> comment.getCreatedBy() != null)
+			.distinct()
+			.map(Comment::getCreatedBy)
+			.toList();
+
+		Map<Long, UserInfo> commentOwner = memberFeignPort.getUserMapByUserIds(userIds, true);
+		List<CommentResponse> commentResponses = allComments.stream()
+			.map(c -> {
+				return CommentResponse.builder()
+					.commentId(c.getCommentId())
+					.articleId(c.getArticleId())
+					.parentId(c.getParentId())
+					.content(c.getContent())
+					.visible(c.isVisible())
+					.createdAt(c.getCreatedAt())
+					.createdBy(c.getCreatedBy())
+					.userInfo(
+						commentOwner.isEmpty() || !commentOwner.containsKey(c.getCreatedBy())
+							? null
+							: commentOwner.get(c.getCreatedBy())
+					)
+					.build();
+			})
+			.toList();
 
 		boolean isLiked = false;
 		if (command.getUserProvider().isValidUserId()) {
@@ -141,24 +168,24 @@ public class ArticleService implements ArticleUseCase {
 			isLiked = ObjectUtils.nullSafeEquals(UserReactionType.LIKE, userReactionType);
 		}
 
-		return new ArticleContentWithComment(
+		return ArticleContentWithCommentResponse.of(
 			article,
-			userMap.get(article.getCreatedBy()),
+			articleOwner.get(article.getCreatedBy()),
 			images,
-			Stream.concat(filteredComments.stream(), commentReplies.stream()).toList(),
-			isLiked,
-			allCommentCount
+			allCommentCount,
+			commentResponses,
+			isLiked
 		);
 	}
 
 	@Override
-	public Page<ArticleBriefDto> getArticleIndexList(ArticleIndexListCommand command) {
+	public Page<ArticleBriefResponse> getArticleIndexList(ArticleIndexListCommand command) {
 		Pageable pageable = PageRequest.of(
 			command.getPage(),
 			command.getOffset(),
 			Sort.by(Sort.Direction.DESC, command.getOrderBy()));
 
-		Page<ArticleBriefDto> pagingArticleList = articleReadPort.retrieveArticleIndexList(
+		Page<ArticleBriefResponse> pagingArticleList = articleReadPort.retrieveArticleIndexList(
 			command.getBoardType(),
 			command.getCursor(),
 			command.isOnlyPicture(),
@@ -169,13 +196,13 @@ public class ArticleService implements ArticleUseCase {
 		//TODO "pageable"-"pageNumber": 1 등의 값만 사용. 응답값 재구성
 
 		List<Long> articleOwnerIds = pagingArticleList.getContent().stream()
-			.map(ArticleBriefDto::getCreatedBy)
+			.map(ArticleBriefResponse::getCreatedBy)
 			.distinct()
 			.toList();
 
 		Map<Long, UserInfo> userMap = memberFeignPort.getUserMapByUserIds(articleOwnerIds, true);
 
-		for (ArticleBriefDto articleBriefDto : pagingArticleList.getContent()) {
+		for (ArticleBriefResponse articleBriefDto : pagingArticleList.getContent()) {
 			articleBriefDto.setUserInfo(userMap.get(articleBriefDto.getCreatedBy()));
 		}
 

@@ -7,10 +7,14 @@ public interface ArticleEditPort {
 
 	Long updateArticle(Article changedArticle);
 
+	int increaseViewCount(BoardType boardType, Long articleId);
+
 	int increaseLikeCount(BoardType boardType, Long articleId);
 
 	int decreaseLikeCount(BoardType boardType, Long articleId);
 
-	int increaseViewCount(BoardType boardType, Long articleId);
+	int increaseCommentCount(BoardType boardType, Long articleId);
+
+	int decreaseCommentCount(BoardType boardType, Long articleId);
 
 }

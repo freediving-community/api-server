@@ -2,6 +2,7 @@ package com.freediving.communityservice.adapter.out.external;
 
 import static com.freediving.common.response.enumerate.ServiceStatusCode.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,6 +35,9 @@ public class MemberServiceAdapter implements MemberFeignPort {
 	}
 
 	public Map<Long, UserInfo> getUserMapByUserIds(List<Long> userIds, Boolean profileImgTF) {
+
+		if (userIds.isEmpty())
+			return new HashMap<Long, UserInfo>();
 
 		ResponseJsonObject<List<MemberFindUserResponse>> memberInfoList = findUserListByUserIds(userIds, profileImgTF);
 		if (ServiceStatusCode.OK.getCode() != memberInfoList.getCode()) {
