@@ -49,8 +49,8 @@ jobs:
           host: ${{ secrets.NAS_SSH_HOST }}
           port: ${{ secrets.NAS_SSH_PORT }}
           username: ${{ secrets.NAS_SSH_USER }}
-          key: ${{ secrets.NAS_SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.NAS_SSH_PASSWORD }}
+          #key: ${{ secrets.NAS_SSH_PRIVATE_KEY }}
+          password: ${{ secrets.NAS_SSH_PASSWORD }}
           script: |
             sudo docker pull ${{ secrets.DOCKER_REPO }}/discovery-service
             sudo docker image prune -a -f
