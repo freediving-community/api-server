@@ -32,7 +32,7 @@ jobs:
       - name: COPY JAR With SCP
         uses: appleboy/scp-action@v0.1.7
         with:
-          source: ./discovery-service/libs/discovery-service.jar
+          source: ./discovery-service/build/libs/discovery-service.jar
           target: ${{ secrets.NAS_SSH_DIR }}
           host: ${{ secrets.NAS_SSH_HOST }}
           port: ${{ secrets.NAS_SSH_PORT }}
