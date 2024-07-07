@@ -47,6 +47,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.NAS_SSH_HOST }}
+          port: ${{ secrets.NAS_SSH_PORT }}
           username: ${{ secrets.NAS_SSH_USER }}
           key: ${{ secrets.NAS_SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.NAS_SSH_PASSWORD }}
