@@ -1,0 +1,59 @@
+name: CI & CD for discovery-service-nas
+
+on:
+  push:
+    #paths:
+    # - 'discovery-service/**'
+    branches: [ "deploy/#188" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Create application-dev.yml
+        run: |
+          touch ./discovery-service/src/main/resources/application-dev.yml
+          echo "${{ secrets.DISCOVERY_APPLICATION_GCP_YML }}" > ./discovery-service/src/main/resources/application-dev.yml
+
+
+
+      - name: Build with Gradle
+        run: ./gradlew discovery-service:build
+
+      - name: COPY JAR With SCP
+        uses: nogsantos/scp-deploy@master
+        with:
+          src: ./discovery-service/libs/discovery-service.jar
+          host: ${{ secrets.NAS_SSH_HOST }}
+          remote: ${{ secrets.NAS_SSH_DIR }}
+          port: ${{ secrets.NAS_SSH_PORT }}
+          user: ${{ secrets.NAS_SSH_USER }}
+          key: ${{ secrets.NAS_SSH_PRIVATE_KEY }}
+
+      #      - name: Docker build and push
+      #        run: |
+      #          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      #          docker build -t ${{ secrets.DOCKER_REPO }}/discovery-service ./discovery-service
+      #          docker push ${{ secrets.DOCKER_REPO }}/discovery-service
+      # Deploy
+
+#      - name: Deploy
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: "34.64.196.150"
+#          username: ${{ secrets.GCP_SSH_USERNAME }}
+#          key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
+#          #          passphrase: ${{ secrets.GCP_SSH_PASSPHRASE }}
+#          script: |
+#            sudo docker pull ${{ secrets.DOCKER_REPO }}/discovery-service
+#            sudo docker image prune -a -f
+#            docker-compose -f /docker/docker-compose.yml up -d
