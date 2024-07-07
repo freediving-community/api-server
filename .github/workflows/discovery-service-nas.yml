@@ -30,13 +30,14 @@ jobs:
         run: ./gradlew discovery-service:build
 
       - name: COPY JAR With SCP
-        uses: nogsantos/scp-deploy@master
+        uses: appleboy/scp-action@v0.1.7
         with:
-          src: ./discovery-service/libs/discovery-service.jar
+          source: ./discovery-service/libs/discovery-service.jar
+          target: ${{ secrets.NAS_SSH_DIR }}
           host: ${{ secrets.NAS_SSH_HOST }}
-          remote: ${{ secrets.NAS_SSH_DIR }}
           port: ${{ secrets.NAS_SSH_PORT }}
-          user: ${{ secrets.NAS_SSH_USER }}
+          username: ${{ secrets.NAS_SSH_USER }}
+          password: ${{ secrets.NAS_SSH_PASSWORD }}
           key: ${{ secrets.NAS_SSH_PRIVATE_KEY }}
 
       #      - name: Docker build and push
