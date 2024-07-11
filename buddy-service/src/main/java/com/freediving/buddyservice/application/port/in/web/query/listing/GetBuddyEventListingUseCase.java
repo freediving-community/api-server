@@ -6,4 +6,6 @@ public interface GetBuddyEventListingUseCase {
 	QueryComponentListResponse getBuddyEventListing(Long userId,
 		GetBuddyEventListingCommand command);
 
+	QueryComponentListResponse getLikeBuddyEventListing(Long userId, int pageNumber, int offset);
+
 }

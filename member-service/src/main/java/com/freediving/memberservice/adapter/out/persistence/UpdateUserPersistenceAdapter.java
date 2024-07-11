@@ -53,7 +53,7 @@ public class UpdateUserPersistenceAdapter implements UpdateUserPort {
 		updateUserInfo(command, userJpaEntity);
 		updateUserPreferences(userId, poolList, conceptList);
 
-		User user = User.fromJpaEntityList(userJpaEntity, userLicenseJpaEntityList);
+		User user = User.fromJpaEntityListAndInternalInfo(userJpaEntity, userLicenseJpaEntityList,conceptList, poolList);
 		return FindUserResponse.from(user);
 	}
 

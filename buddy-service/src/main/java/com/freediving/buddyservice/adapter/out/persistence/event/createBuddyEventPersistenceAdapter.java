@@ -12,6 +12,8 @@ import com.freediving.buddyservice.adapter.out.persistence.event.divingpool.Budd
 import com.freediving.buddyservice.adapter.out.persistence.event.join.BuddyEventJoinRequestJpaEntity;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventDetailQueryProjectionDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.BuddyEventDetailRepoDSL;
+import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.caroselsimple.GetBuddyEventCarouselSimpleQueryProjectionDto;
+import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.caroselsimple.GetBuddyEventCarouselSimpleRepoDSL;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.carousel.GetBuddyEventCarouselQueryProjectionDto;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.carousel.GetBuddyEventCarouselRepoDSL;
 import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listing.GetBuddyEventListingQueryProjectionDto;
@@ -19,6 +21,7 @@ import com.freediving.buddyservice.adapter.out.persistence.event.querydsl.listin
 import com.freediving.buddyservice.application.port.out.web.createBuddyEventPort;
 import com.freediving.buddyservice.application.port.out.web.query.BuddyEventDetailPort;
 import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventCarouselPort;
+import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventCarouselSimplePort;
 import com.freediving.buddyservice.application.port.out.web.query.GetBuddyEventListingPort;
 import com.freediving.buddyservice.config.enumerate.GenderType;
 import com.freediving.buddyservice.config.enumerate.SortType;
@@ -41,12 +44,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @PersistenceAdapter
 public class createBuddyEventPersistenceAdapter implements createBuddyEventPort, GetBuddyEventListingPort,
-	GetBuddyEventCarouselPort, BuddyEventDetailPort {
+	GetBuddyEventCarouselPort, BuddyEventDetailPort, GetBuddyEventCarouselSimplePort {
 
 	private final BuddyEventRepository buddyEventRepository;
 	private final GetBuddyEventListingRepoDSL getBuddyEventListingRepoDSL;
 	private final GetBuddyEventCarouselRepoDSL getBuddyEventCarouselRepoDSL;
 	private final BuddyEventDetailRepoDSL buddyEventDetailRepoDSL;
+	private final GetBuddyEventCarouselSimpleRepoDSL getBuddyEventCarouselSimpleRepoDSL;
 
 	@Override
 	@Transactional
@@ -154,6 +158,48 @@ public class createBuddyEventPersistenceAdapter implements createBuddyEventPort,
 	}
 
 	@Override
+	public List<GetBuddyEventListingQueryProjectionDto> getLikeBuddyEventListing(Long userId, LocalDateTime now,
+		int pageNumber,
+		int pageSize) {
+		// todo 고도화 필요.
+
+		//eventId = {Long@15333} 1
+		// eventStartDate = {LocalDateTime@15837} "2024-05-07T10:00"
+		// eventEndDate = {LocalDateTime@15838} "2024-05-07T13:00"
+		// isLiked = true
+		// likedCount = {Integer@15635} 1
+		// comment = "이번 모임은 캐주얼하게 진행합니다."
+		// freedivingLevel = {Integer@15337} 0
+		// status = {BuddyEventStatus@15637} "RECRUITING"
+		// participantCount = {Integer@15645} 3
+		// currentParticipantCount = {Long@15333} 1
+		List<GetBuddyEventListingQueryProjectionDto> buddyEventListing = getBuddyEventListingRepoDSL.getLikeBuddyEventListing(
+			userId, now, pageNumber, pageSize);
+
+		return buddyEventListing;
+	}
+
+	@Override
+	public Long countOfGetLikeBuddyEventListing(Long userId, LocalDateTime now) {
+		// todo 고도화 필요.
+
+		//eventId = {Long@15333} 1
+		// eventStartDate = {LocalDateTime@15837} "2024-05-07T10:00"
+		// eventEndDate = {LocalDateTime@15838} "2024-05-07T13:00"
+		// isLiked = true
+		// likedCount = {Integer@15635} 1
+		// comment = "이번 모임은 캐주얼하게 진행합니다."
+		// freedivingLevel = {Integer@15337} 0
+		// status = {BuddyEventStatus@15637} "RECRUITING"
+		// participantCount = {Integer@15645} 3
+		// currentParticipantCount = {Long@15333} 1
+		Long count = getBuddyEventListingRepoDSL.countOfGetLikeBuddyEventListing(
+			userId, now);
+
+		return count;
+	}
+
+	@Override
 	public List<GetBuddyEventCarouselQueryProjectionDto> getBuddyEventWeekly(Long userId, LocalDateTime eventStartDate,
 		int pageNumber, int pageSize) {
 
@@ -220,4 +266,13 @@ public class createBuddyEventPersistenceAdapter implements createBuddyEventPort,
 		return count;
 	}
 
+	@Override
+	public List<GetBuddyEventCarouselSimpleQueryProjectionDto> getBuddyEventCarouselSimple(LocalDateTime eventStartDate,
+		LocalDateTime eventEndDate, DivingPool divingPool, Long excludedEventId) {
+		List<GetBuddyEventCarouselSimpleQueryProjectionDto> buddyEventListing = getBuddyEventCarouselSimpleRepoDSL.getBuddyEventCarouselSimple(
+			eventStartDate, eventEndDate, divingPool, excludedEventId);
+
+		return buddyEventListing;
+
+	}
 }

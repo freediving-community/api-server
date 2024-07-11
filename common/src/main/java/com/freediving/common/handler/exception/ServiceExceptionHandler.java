@@ -19,7 +19,7 @@ import com.freediving.common.response.enumerate.ServiceStatusCode;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.ConstraintViolationException;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 버디미 서비스 RestController에서 발생하는 API Exception을 핸들링 한다.
@@ -28,7 +28,7 @@ import lombok.extern.log4j.Log4j2;
  * @version 1.0.0
  * 작성일 2024-01-29
  **/
-@Log4j2
+@Slf4j
 @RestControllerAdvice(basePackages = "com.freediving")
 public class ServiceExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -133,6 +133,8 @@ public class ServiceExceptionHandler extends ResponseEntityExceptionHandler {
 			default:
 				exceptionStatus = HttpStatus.OK;
 		}
+		if (ex.getResponseJsonObject().errorType() == true)
+			log.error(ex.getMessage());
 
 		return new ResponseEntity<>(ex.getResponseJsonObject(), exceptionStatus);
 	}
