@@ -44,7 +44,7 @@ jobs:
 
 
       - name: Deploy
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.NAS_SSH_HOST }}
           port: ${{ secrets.NAS_SSH_PORT }}
@@ -52,6 +52,8 @@ jobs:
           key: ${{ secrets.NAS_SSH_PRIVATE_KEY }}
           #passphrase: ${{ secrets.NAS_SSH_PASSWORD }}
           script: |
+            whoami
+            ls -al
             docker pull ${{ secrets.DOCKER_REPO }}/discovery-service
             docker image prune -a -f
             docker-compose -f /buddyme/docker-compose.yml up -d
