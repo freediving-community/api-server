@@ -52,6 +52,6 @@ jobs:
           key: ${{ secrets.NAS_SSH_PRIVATE_KEY }}
           #passphrase: ${{ secrets.NAS_SSH_PASSWORD }}
           script: |
-            sudo docker pull ${{ secrets.DOCKER_REPO }}/discovery-service
-            sudo docker image prune -a -f
+            docker pull ${{ secrets.DOCKER_REPO }}/discovery-service
+            docker image prune -a -f
             docker-compose -f /buddyme/docker-compose.yml up -d
