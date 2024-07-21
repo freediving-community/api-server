@@ -17,7 +17,7 @@ spring:
     hibernate:
       ddl-auto: create
   kafka:
-    bootstrap-servers: 35.199.188.230:19993
+    bootstrap-servers: 34.64.196.150:19993
     consumer:
       group-id: member-service-group
       auto-offset-reset: earliest
@@ -110,3 +110,4 @@ task:
   topic:
     user-pool-preferences: buddyservice.task.user-pool-preferences-local
     user-concept-preferences: buddyservice.task.user-concept-preferences-local
+    ®common-noti: memberservice.task.noti-local
