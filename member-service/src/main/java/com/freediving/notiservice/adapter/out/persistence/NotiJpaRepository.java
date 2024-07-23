@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
  * 2024/07/21        sasca37       최초 생성
  */
 @Repository
-public interface CommonNotiJpaRepository extends JpaRepository<NotiJpaEntity, Long> {
+public interface NotiJpaRepository extends JpaRepository<NotiJpaEntity, Long> {
 
 }

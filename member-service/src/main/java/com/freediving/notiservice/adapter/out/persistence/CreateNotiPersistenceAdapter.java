@@ -8,13 +8,12 @@ import com.freediving.memberservice.exception.MemberServiceException;
 import com.freediving.notiservice.application.port.in.CreateNotiCommand;
 import com.freediving.notiservice.application.port.out.CreateNotiPort;
 import com.freediving.notiservice.domain.Notification;
-
 import lombok.RequiredArgsConstructor;
 
 /**
- * @Author         : sasca37
- * @Date           : 2024/07/22
- * @Description    : 가입 여부를 확인하고 유저 생성
+ * @Author : sasca37
+ * @Date : 2024/07/22
+ * @Description : 가입 여부를 확인하고 알림 생성
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * ===========================================================
@@ -24,19 +23,19 @@ import lombok.RequiredArgsConstructor;
 @PersistenceAdapter
 @RequiredArgsConstructor
 public class CreateNotiPersistenceAdapter implements CreateNotiPort {
-	private final UserJpaRepository userJpaRepository;
-	private final CommonNotiJpaRepository commonNotiJpaRepository;
+    private final UserJpaRepository userJpaRepository;
+    private final NotiJpaRepository notiJpaRepository;
 
-	@Override
-	public void createNoti(CreateNotiCommand command) {
-		// 송신 유저 프로필 이미지 정보 받아오기
-		UserJpaEntity userJpaEntity = userJpaRepository.findById(command.getSourceUserId())
-			.orElseThrow(() -> new MemberServiceException(ErrorCode.NOT_FOUND_USER));
+    @Override
+    public void createNoti(CreateNotiCommand command) {
+        // 송신 유저 프로필 이미지 정보 받아오기
+        UserJpaEntity userJpaEntity = userJpaRepository.findById(command.getSourceUserId())
+                .orElseThrow(() -> new MemberServiceException(ErrorCode.NOT_FOUND_USER));
 
-		Notification noti = Notification.fromCommand(command, userJpaEntity.getProfileImgUrl());
-		NotiJpaEntity notiJpaEntity = NotiJpaEntity.fromDomain(noti);
-		commonNotiJpaRepository.save(notiJpaEntity);
+        Notification noti = Notification.fromCommand(command, userJpaEntity.getProfileImgUrl());
+        NotiJpaEntity notiJpaEntity = NotiJpaEntity.fromDomain(noti);
+        notiJpaRepository.save(notiJpaEntity);
 
-		// TODO : SSE
-	}
+        // TODO : SSE
+    }
 }
