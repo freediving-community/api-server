@@ -12,7 +12,7 @@ public class CheckBoardRoleInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws
 		Exception {
-
+		// TODO: 권한 일괄 체크
 /*		Map<String, String> pathVariables = (Map<String, String>)request.getAttribute(
 			HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 		String boardType = pathVariables.get("boardType");
