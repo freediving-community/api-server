@@ -4,6 +4,7 @@ import com.freediving.communityservice.adapter.out.persistence.constant.ChatType
 import com.freediving.communityservice.domain.ChatRoom;
 
 public interface ChatRoomCreationPort {
-	ChatRoom createBuddyChatRoom(Long requestUserId, ChatType chatType, Long buddyEventId, String title,
+	ChatRoom createChatRoom(Long requestUserId, ChatType chatType, Long buddyEventId, String title,
+		Long participantCount,
 		String openChatRoomURL);
 }

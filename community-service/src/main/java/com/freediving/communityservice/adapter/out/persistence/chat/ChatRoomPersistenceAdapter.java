@@ -33,7 +33,8 @@ public class ChatRoomPersistenceAdapter implements ChatRoomReadPort, ChatRoomCre
 	}
 
 	@Override
-	public ChatRoom createBuddyChatRoom(Long requestUserId, ChatType chatType, Long buddyEventId, String title,
+	public ChatRoom createChatRoom(Long requestUserId, ChatType chatType, Long buddyEventId, String title,
+		Long participantCount,
 		String openChatRoomURL) {
 		return null;
 	}

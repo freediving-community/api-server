@@ -23,35 +23,33 @@ public class ChatService implements ChatUseCase {
 	private final ChatRoomCreationPort chatRoomCreationPort;
 	// private final ChatRoomDeletePort chatRoomDeletePort;
 
+	/*
+	 * 버디 이벤트로부터 받은 채팅방 입장(없는 경우 생성 후 입장) 처리
+	 * */
 	@Override
-	public ChatResponse requestChatRoom(ChatRoomCommand command) {
+	public ChatResponse requestBuddyChatRoom(ChatRoomCommand command) {
 
-		/*
-		 *	TODO: Buddy서비스에서 eventId로 참여자 조회하여 유효성 검사
-		 *   아닌 경우 거절 후 제거, 없는 경우 생성 후 참여
-		 * */
-
-		//TODO: BuddyEvent로부터 받아온 정보를 기반으로 생성
-		String buddyEventInfoTitle = "";
-		String buddyEventOpenChatRoomURL = "https://kakaotalk.openchat.url/sample";
-
-		ChatRoom chatRoom = chatRoomReadPort.getChatRoom(command.getChatType(), command.getBuddyEventId());
+		ChatRoom chatRoom = chatRoomReadPort.getChatRoom(command.getChatType(), command.getTargetId());
 		if (chatRoom == null) {
-			chatRoom = chatRoomCreationPort.createBuddyChatRoom(
+			//TODO: Kafka -> BuddyEvent로부터 받아온 정보를 기반으로 생성 (Plan B. 입장 시점에 Buddy Internal API를 조회)
+			String buddyEventInfoTitle = "";
+			String buddyEventOpenChatRoomURL = "https://open.kakao.com/o/sHRwpFCg";
+			Long chatCreatedBy = 1L;
+
+			chatRoom = chatRoomCreationPort.createChatRoom(
 				// TODO: 버디 이벤트 방장 사용자 정보
-				command.getUserProvider().getRequestUserId(),
+				chatCreatedBy,
 				command.getChatType(),
-				command.getBuddyEventId(),
+				command.getTargetId(),
 				buddyEventInfoTitle,
+				1L,
 				buddyEventOpenChatRoomURL
 			);
+
+			// return ChatResponse(chatRoom의 정보)
 		}
 
 		if (chatRoom.isEnabled()) {
-		}
-		if ("BuddyChatRoomInfo".equals("isValidETC")) {
-			// chatRoomDeletePort.markDeleted
-			// chatRoomDeletePort.editChatRoom( isEnabled false)
 		}
 
 		return null;

@@ -43,84 +43,14 @@ public class ChatRoomController {
 		@Parameter(hidden = true) UserProvider userProvider,
 		@PathVariable("buddyEventId") Long buddyEventId
 	) {
-		ChatResponse chatRoom = chatUseCase.requestChatRoom(
+		ChatResponse chatRoom = chatUseCase.requestBuddyChatRoom(
 			ChatRoomCommand.builder()
 				.userProvider(userProvider)
 				.chatType(ChatType.BUDDY)
-				.buddyEventId(buddyEventId)
+				.targetId(buddyEventId)
 				.build()
 		);
 		return null;
 		// return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, articleId));
 	}
-
-/*
-	@Operation(
-		summary = "게시글 내용 수정",
-		description = "게시글 (이미지 포함)을 수정",
-		responses = {
-			@ApiResponse(
-				responseCode = "200",
-				description = "게시글 수정됨",
-				useReturnTypeSchema = true
-			)
-		}
-	)
-	@PostMapping("/boards/{boardType}/articles/{articleId}")
-	public ResponseEntity<ResponseJsonObject<Long>> editArticleContent(
-		@Parameter(hidden = true) UserProvider userProvider,
-		@PathVariable("boardType") BoardType boardType,
-		@PathVariable("articleId") Long articleId,
-		@RequestBody ArticleEditRequest articleEditRequest
-	) {
-		List<ImageInfoCommand> contentImages =
-			CollectionUtils.isEmpty(articleEditRequest.getImages()) ? new ArrayList<ImageInfoCommand>() :
-				articleEditRequest.getImages()
-					.stream()
-					.map(image -> new ImageInfoCommand(image.getSortNumber(), image.getUrl()))
-					.toList();
-
-		Long editedArticleId = articleUseCase.editArticle(
-			ArticleEditCommand.builder()
-				.userProvider(userProvider)
-				.boardType(boardType)
-				.articleId(articleId)
-				.title(articleEditRequest.getTitle())
-				.content(articleEditRequest.getContent())
-				.enableComment(articleEditRequest.isEnableComment())
-				.images(contentImages)
-				.build()
-		);
-
-		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, editedArticleId));
-	}
-
-	@Operation(
-		summary = "게시글 삭제",
-		description = "게시글 (이미지, 댓글 포함)을 삭제",
-		responses = {
-			@ApiResponse(
-				responseCode = "200",
-				description = "게시글 삭제됨",
-				useReturnTypeSchema = true
-			)
-		}
-	)
-	@DeleteMapping("/boards/{boardType}/articles/{articleId}")
-	public ResponseEntity<ResponseJsonObject<Long>> removeArticle(
-		@Parameter(hidden = true) UserProvider userProvider,
-		@PathVariable("boardType") BoardType boardType,
-		@PathVariable("articleId") Long articleId
-	) {
-
-		Long deletedArticleId = articleUseCase.deleteArticle(
-			ArticleRemoveCommand.builder()
-				.userProvider(userProvider)
-				.boardType(boardType)
-				.articleId(articleId)
-				.build()
-		);
-		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, deletedArticleId));
-	}*/
-
 }

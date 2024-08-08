@@ -20,12 +20,12 @@ public class ChatRoomCommand extends SelfValidating<ChatRoomCommand> {
 	@NotNull
 	private final ChatType chatType;
 
-	private final Long buddyEventId;
+	private final Long targetId;
 
-	public ChatRoomCommand(UserProvider userProvider, ChatType chatType, Long buddyEventId) {
+	public ChatRoomCommand(UserProvider userProvider, ChatType chatType, Long targetId) {
 		this.userProvider = userProvider;
 		this.chatType = chatType;
-		this.buddyEventId = buddyEventId;
+		this.targetId = targetId;
 		this.validateSelf();
 	}
 }
