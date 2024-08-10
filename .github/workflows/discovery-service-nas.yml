@@ -53,7 +53,7 @@ jobs:
           #passphrase: ${{ secrets.NAS_SSH_PASSWORD }}
           script: |
             cd $HOME/buddyme
-            ./deploy.sh
+            whoami > test.t
 
 
 
