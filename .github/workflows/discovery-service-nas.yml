@@ -55,3 +55,5 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_REPO }}/discovery-service
             sudo docker image prune -a -f
             docker-compose -f /buddyme/docker-compose.yml up -d
+
+
