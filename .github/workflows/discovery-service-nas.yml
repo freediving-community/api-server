@@ -52,7 +52,7 @@ jobs:
           key: ${{ secrets.NAS_SSH_PRIVATE_KEY }}
           #passphrase: ${{ secrets.NAS_SSH_PASSWORD }}
           script: |
-            docker --version
+            kubectl get all
             ls -al
             docker pull ${{ secrets.DOCKER_REPO }}/discovery-service
             docker image prune -a -f
