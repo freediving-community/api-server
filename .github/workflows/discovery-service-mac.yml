@@ -2,8 +2,8 @@ name: CI & CD for discovery-service-mac
 
 on:
   push:
-    #paths:
-    # - 'discovery-service/**'
+    #    paths:
+    #      - 'discovery-service/**'
     branches: [ "deploy/**" ]
 
 permissions:
@@ -27,11 +27,11 @@ jobs:
       - name: Docker build and push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_REPO }}/discovery-service ./discovery-service
-          docker push ${{ secrets.DOCKER_REPO }}/discovery-service
+          docker build -t ${{ secrets.DOCKER_REPO }}/discovery-service-prd ./discovery-service
+          docker push ${{ secrets.DOCKER_REPO }}/discovery-service-prd
       - name: Docker pull and Docker-compose up
         run: |
-          docker pull ${{ secrets.DOCKER_REPO }}/discovery-service
+          docker pull ${{ secrets.DOCKER_REPO }}/discovery-service-prd
           docker image prune -a -f
           docker-compose -f $HOME/buddyme/docker-compose.yml up -d
 
