@@ -19,10 +19,6 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - name: Create Dockerfile
-        run: |
-          rm -f ./gateway-service/Dockerfile
-          echo "${{ secrets.GATEWAY_PRD_DOCKERFILE }}" > ./gateway-service/Dockerfile
       - name: Create application-prd.yml
         run: |
           echo "$GATEWAY_APPLICATION_PRD_YML" > ./gateway-service/src/main/resources/application-prd.yml
@@ -33,7 +29,7 @@ jobs:
       - name: Docker build and push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_REPO }}/gateway-service-prd ./gateway-service
+          docker build --build-arg PROFILE=prd -t ${{ secrets.DOCKER_REPO }}/gateway-service-prd ./gateway-service
           docker push ${{ secrets.DOCKER_REPO }}/gateway-service-prd
       # Deploy
       - name: Docker pull and Docker-compose up
