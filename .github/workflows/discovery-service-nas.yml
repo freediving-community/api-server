@@ -11,14 +11,14 @@ permissions:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK 21
-        uses: actions/setup-java@v3
-        with:
-          java-version: '21'
-          distribution: 'temurin'
+      #- uses: actions/checkout@v3
+      #      - name: Set up JDK 21
+      #        uses: actions/setup-java@v3
+      #        with:
+      #          java-version: '21'
+      #          distribution: 'temurin'
       - name: Create application-dev.yml
         run: |
           touch ./discovery-service/src/main/resources/application-dev.yml
@@ -30,30 +30,19 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_REPO }}/discovery-service ./discovery-service
           docker push ${{ secrets.DOCKER_REPO }}/discovery-service
+          docker pull ${{ secrets.DOCKER_REPO }}/discovery-service
+          docker image prune -a -f
+          docker-compose -f $HOME/buddyme/docker-compose.yml up -d
+#      - name: Deploy
+#        uses: appleboy/ssh-action@v1.0.3
+#        with:
+#          host: ${{ secrets.NAS_SSH_HOST }}
+#          port: ${{ secrets.NAS_SSH_PORT }}
+#          username: ${{ secrets.NAS_SSH_USER }}
+#          key: ${{ secrets.NAS_SSH_PRIVATE_KEY }}
+#          #passphrase: ${{ secrets.NAS_SSH_PASSWORD }}
+#          script: |
 
-      #      - name: COPY JAR With SCP
-      #        uses: appleboy/scp-action@v0.1.7
-      #        with:
-      #          source: ./discovery-service/build/libs/discovery-service.jar
-      #          target: ${{ secrets.NAS_SSH_DIR }}
-      #          host: ${{ secrets.NAS_SSH_HOST }}
-      #          port: ${{ secrets.NAS_SSH_PORT }}
-      #          username: ${{ secrets.NAS_SSH_USER }}
-      #          passphrase: ${{ secrets.NAS_SSH_PASSWORD }}
-      #          key: ${{ secrets.NAS_SSH_PRIVATE_KEY }}
-
-
-      - name: Deploy
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.NAS_SSH_HOST }}
-          port: ${{ secrets.NAS_SSH_PORT }}
-          username: ${{ secrets.NAS_SSH_USER }}
-          key: ${{ secrets.NAS_SSH_PRIVATE_KEY }}
-          #passphrase: ${{ secrets.NAS_SSH_PASSWORD }}
-          script: |
-            cd $HOME/buddyme
-            whoami > test.t
 
 
 
