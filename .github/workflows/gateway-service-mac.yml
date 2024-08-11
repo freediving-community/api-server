@@ -1,17 +1,17 @@
-name: CI & CD for discovery-service-mac
+name: CI & CD for gateway-service-gcp
 
 on:
   push:
-    paths:
-      - 'discovery-service/**'
-#    branches: [ "deploy/**" ]
+    #    paths:
+    #      - 'gateway-service/**'
+    branches: [ "deploy/#188" ]
 
 permissions:
   contents: read
 
 jobs:
   build-and-deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 21
@@ -21,20 +21,19 @@ jobs:
           distribution: 'temurin'
       - name: Create application-prd.yml
         run: |
-          echo "${{ secrets.DISCOVERY_APPLICATION_PRD_YML }}" > ./discovery-service/src/main/resources/application-prd.yml
+          echo "$GATEWAY_APPLICATION_PRD_YML" > ./gateway-service/src/main/resources/application-prd.yml
+        env:
+          GATEWAY_APPLICATION_PRD_YML: ${{ secrets.GATEWAY_APPLICATION_PRD_YML }}
       - name: Build with Gradle
-        run: ./gradlew discovery-service:build
+        run: ./gradlew gateway-service:build
       - name: Docker build and push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_REPO }}/discovery-service-prd ./discovery-service
-          docker push ${{ secrets.DOCKER_REPO }}/discovery-service-prd
+          docker build -t ${{ secrets.DOCKER_REPO }}/gateway-service-prd ./gateway-service
+          docker push ${{ secrets.DOCKER_REPO }}/gateway-service-prd
+      # Deploy
       - name: Docker pull and Docker-compose up
         run: |
-          docker pull ${{ secrets.DOCKER_REPO }}/discovery-service-prd
+          docker pull ${{ secrets.DOCKER_REPO }}/gateway-service-prd
           docker image prune -a -f
           docker-compose -f $HOME/buddyme/docker-compose.yml up -d
-
-
-
-
