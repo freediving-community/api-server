@@ -1,7 +1,7 @@
 package com.freediving.communityservice.application.port.in;
 
-import com.freediving.communityservice.adapter.out.dto.chat.ChatResponse;
+import com.freediving.communityservice.adapter.out.dto.chat.ChatRoomResponse;
 
 public interface ChatUseCase {
-	ChatResponse requestBuddyChatRoom(ChatRoomCommand command);
+	ChatRoomResponse requestBuddyChatRoom(ChatRoomCommand command);
 }

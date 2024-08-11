@@ -24,15 +24,7 @@ import lombok.ToString;
 @Table(name = "chat_room_user")
 @Entity
 public class ChatRoomUserJpaEntity {
-	// @Id
-	// @ManyToOne
-	// @JoinColumn(name = "user_id", nullable = false)
-	// private Long userId; // 사용자를 참조하는 엔티티
-	//
-	// @Id
-	// @ManyToOne
-	// @JoinColumn(name = "chat_room_id", nullable = false)
-	// private Long chatRoomId; // 채팅방을 참조하는 엔티티
+
 	@EmbeddedId
 	private ChatRoomUserId id; // 복합 키
 	// Auditing
@@ -41,7 +33,3 @@ public class ChatRoomUserJpaEntity {
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
 }
-
-
-
-

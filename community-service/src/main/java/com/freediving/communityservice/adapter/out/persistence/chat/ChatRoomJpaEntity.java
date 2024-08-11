@@ -3,7 +3,6 @@ package com.freediving.communityservice.adapter.out.persistence.chat;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.DynamicInsert;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -68,7 +67,7 @@ public class ChatRoomJpaEntity {
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
 
-	@CreatedBy
+	// @CreatedBy
 	@Column(nullable = false, updatable = false)
 	private Long createdBy;
 
@@ -81,6 +80,11 @@ public class ChatRoomJpaEntity {
 	@LastModifiedBy
 	private Long modifiedBy;
 
+	public static ChatRoomJpaEntity of(Long requestUserId, ChatType chatType, Long targetId, String title,
+		Long participantCount, String openChatRoomURL) {
+		return new ChatRoomJpaEntity(null, chatType, targetId, title, participantCount, null, true, null, null,
+			requestUserId, null, null);
+	}
 }
 
 

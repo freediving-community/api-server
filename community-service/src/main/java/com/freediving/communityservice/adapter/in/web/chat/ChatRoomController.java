@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.common.response.ResponseJsonObject;
+import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
-import com.freediving.communityservice.adapter.out.dto.chat.ChatResponse;
+import com.freediving.communityservice.adapter.out.dto.chat.ChatRoomResponse;
 import com.freediving.communityservice.adapter.out.persistence.constant.ChatType;
 import com.freediving.communityservice.application.port.in.ChatRoomCommand;
 import com.freediving.communityservice.application.port.in.ChatUseCase;
@@ -39,18 +40,18 @@ public class ChatRoomController {
 		}
 	)
 	@GetMapping("/chat/buddy/{buddyEventId}")
-	public ResponseEntity<ResponseJsonObject<Long>> requestBuddyChatRoom(
+	public ResponseEntity<ResponseJsonObject<ChatRoomResponse>> requestBuddyChatRoom(
 		@Parameter(hidden = true) UserProvider userProvider,
 		@PathVariable("buddyEventId") Long buddyEventId
 	) {
-		ChatResponse chatRoom = chatUseCase.requestBuddyChatRoom(
+		//TODO: Buddy Service에서 카프카로 생성시 변경 예정
+		ChatRoomResponse chatRoom = chatUseCase.requestBuddyChatRoom(
 			ChatRoomCommand.builder()
 				.userProvider(userProvider)
 				.chatType(ChatType.BUDDY)
 				.targetId(buddyEventId)
 				.build()
 		);
-		return null;
-		// return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, articleId));
+		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, chatRoom));
 	}
 }

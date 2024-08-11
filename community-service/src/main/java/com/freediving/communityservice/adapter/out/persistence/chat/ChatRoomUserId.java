@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @Embeddable
 public class ChatRoomUserId implements Serializable {
-	private Long userId;
 	private Long chatRoomId;
+	private Long userId;
 }

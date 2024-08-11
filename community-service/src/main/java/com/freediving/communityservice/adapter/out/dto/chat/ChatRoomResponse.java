@@ -14,8 +14,8 @@ public class ChatRoomResponse {
 	 * 메세지: [ {ID,작성자,내용,시간}, {}... ]
 	 * 버디이벤트: 장소, 시간, 단톡 URL
 	 * */
-	private ChatRoomInfoResponse roomInfo;
-	private List<UserInfo> users;
-	private List<ChatMessageResponse> messages;
-	private ChatRoomBuddyEventInfo buddyEventInfo;
+	private final ChatRoomInfoResponse roomInfo;
+	private final List<UserInfo> users;
+	private final List<ChatMessageResponse> messages;
+	private final ChatRoomBuddyEventInfo buddyEventInfo;
 }
