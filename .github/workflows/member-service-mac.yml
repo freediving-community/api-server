@@ -4,7 +4,7 @@ on:
   push:
     #    paths:
     #      - 'member-service/**'
-    branches: [ "deploy/#188" ]
+    branches: [ "main" ]
 
 env:
   MEMBER_APPLICATION_PRD_YML: ${{ secrets.MEMBER_APPLICATION_PRD_YML }}

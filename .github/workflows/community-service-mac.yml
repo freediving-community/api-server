@@ -1,17 +1,20 @@
-name: CI & CD for discovery-service-mac
+name: CI & CD for community-service-mac
 
 on:
   push:
-    #    paths:
-    #      - 'discovery-service/**'
-    branches: [ "main" ]
+    #paths:
+    #- 'community-service/**'
+    branches: [ "deploy/#188" ]
+
+env:
+  COMMUNITY_APPLICATION_PRD_YML: ${{ secrets.COMMUNITY_APPLICATION_PRD_YML }}
 
 permissions:
   contents: read
 
 jobs:
   build-and-deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 21
@@ -21,20 +24,17 @@ jobs:
           distribution: 'temurin'
       - name: Create application-prd.yml
         run: |
-          echo "${{ secrets.DISCOVERY_APPLICATION_PRD_YML }}" > ./discovery-service/src/main/resources/application-prd.yml
+          echo "$COMMUNITY_APPLICATION_PRD_YML" > ./community-service/src/main/resources/application-prd.yml
       - name: Build with Gradle
-        run: ./gradlew discovery-service:build
+        run: ./gradlew community-service:build
       - name: Docker build and push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build --build-arg PROFILE=prd -t ${{ secrets.DOCKER_REPO }}/discovery-service-prd ./discovery-service
-          docker push ${{ secrets.DOCKER_REPO }}/discovery-service-prd
+          docker build --build-arg PROFILE=prd -t ${{ secrets.DOCKER_REPO }}/community-service ./community-service
+          docker push ${{ secrets.DOCKER_REPO }}/community-service
+      # Deploy
       - name: Docker pull and Docker-compose up
         run: |
-          docker pull ${{ secrets.DOCKER_REPO }}/discovery-service-prd
+          docker pull ${{ secrets.DOCKER_REPO }}/gateway-service-prd
           docker image prune -a -f
           docker-compose -f $HOME/buddyme/docker-compose.yml up -d
-
-
-
-
