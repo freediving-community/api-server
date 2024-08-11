@@ -1,4 +1,4 @@
-name: CI & CD for discovery-service-nas
+name: CI & CD for discovery-service-mac
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
       - name: Create application-dev.yml
         run: |
           touch ./discovery-service/src/main/resources/application-dev.yml
-          echo "${{ secrets.DISCOVERY_APPLICATION_GCP_YML }}" > ./discovery-service/src/main/resources/application-dev.yml
+          echo "${{ secrets.DISCOVERY_APPLICATION_PRD_YML }}" > ./discovery-service/src/main/resources/application-prd.yml
       - name: Build with Gradle
         run: ./gradlew discovery-service:build
       - name: Docker build and push
@@ -30,19 +30,11 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_REPO }}/discovery-service ./discovery-service
           docker push ${{ secrets.DOCKER_REPO }}/discovery-service
+      - name: Docker pull and Docker-compose up
+        run: |
           docker pull ${{ secrets.DOCKER_REPO }}/discovery-service
           docker image prune -a -f
           docker-compose -f $HOME/buddyme/docker-compose.yml up -d
-#      - name: Deploy
-#        uses: appleboy/ssh-action@v1.0.3
-#        with:
-#          host: ${{ secrets.NAS_SSH_HOST }}
-#          port: ${{ secrets.NAS_SSH_PORT }}
-#          username: ${{ secrets.NAS_SSH_USER }}
-#          key: ${{ secrets.NAS_SSH_PRIVATE_KEY }}
-#          #passphrase: ${{ secrets.NAS_SSH_PASSWORD }}
-#          script: |
-
 
 
 
