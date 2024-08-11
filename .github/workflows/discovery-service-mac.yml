@@ -2,9 +2,9 @@ name: CI & CD for discovery-service-mac
 
 on:
   push:
-    paths:
-      - 'discovery-service/**'
-#    branches: [ "deploy/**" ]
+    #    paths:
+    #      - 'discovery-service/**'
+    branches: [ "deploy/**" ]
 
 permissions:
   contents: read
@@ -27,7 +27,7 @@ jobs:
       - name: Docker build and push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_REPO }}/discovery-service-prd ./discovery-service
+          docker build --build-arg PROFILE=prd -t ${{ secrets.DOCKER_REPO }}/discovery-service-prd ./discovery-service
           docker push ${{ secrets.DOCKER_REPO }}/discovery-service-prd
       - name: Docker pull and Docker-compose up
         run: |

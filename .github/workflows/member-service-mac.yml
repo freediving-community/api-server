@@ -31,7 +31,7 @@ jobs:
       - name: Docker build and push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_REPO }}/member-service-prd ./member-service
+          docker build --build-arg PROFILE=prd -t ${{ secrets.DOCKER_REPO }}/member-service-prd ./member-service
           docker push ${{ secrets.DOCKER_REPO }}/member-service-prd
       # Deploy
       - name: Docker pull and Docker-compose up

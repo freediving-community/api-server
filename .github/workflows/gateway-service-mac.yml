@@ -2,9 +2,9 @@ name: CI & CD for gateway-service-mac
 
 on:
   push:
-    #    paths:
-    #      - 'gateway-service/**'
-    branches: [ "deploy/#188" ]
+    paths:
+      - 'gateway-service/**'
+    branches: [ "main" ]
 
 permissions:
   contents: read
