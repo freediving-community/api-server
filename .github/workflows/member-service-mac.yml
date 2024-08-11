@@ -1,0 +1,41 @@
+name: CI & CD for member-service-gcp
+
+on:
+  push:
+    #    paths:
+    #      - 'member-service/**'
+    branches: [ "deploy/#188" ]
+
+env:
+  MEMBER_APPLICATION_PRD_YML: ${{ secrets.MEMBER_APPLICATION_PRD_YML }}
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Create application-prd.yml
+        run: |
+          touch ./member-service/src/main/resources/application-prd.yml
+          echo "$MEMBER_APPLICATION_PRD_YML" > ./member-service/src/main/resources/application-prd.yml
+      - name: Build with Gradle
+        run: ./gradlew member-service:build
+      - name: Docker build and push
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_REPO }}/member-service-prd ./member-service
+          docker push ${{ secrets.DOCKER_REPO }}/member-service-prd
+      # Deploy
+      - name: Docker pull and Docker-compose up
+        run: |
+          docker pull ${{ secrets.DOCKER_REPO }}/member-service-prd
+          docker image prune -a -f
+          docker-compose -f $HOME/buddyme/docker-compose.yml up -d
