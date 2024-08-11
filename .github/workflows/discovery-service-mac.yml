@@ -4,7 +4,7 @@ on:
   push:
     #paths:
     # - 'discovery-service/**'
-    branches: [ "deploy/#188" ]
+    branches: [ "deploy/**" ]
 
 permissions:
   contents: read
@@ -19,9 +19,8 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - name: Create application-dev.yml
+      - name: Create application-prd.yml
         run: |
-          touch ./discovery-service/src/main/resources/application-dev.yml
           echo "${{ secrets.DISCOVERY_APPLICATION_PRD_YML }}" > ./discovery-service/src/main/resources/application-prd.yml
       - name: Build with Gradle
         run: ./gradlew discovery-service:build
