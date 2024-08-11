@@ -22,7 +22,7 @@ jobs:
       - name: Create Dockerfile
         run: |
           rm -f ./gateway-service/Dockerfile
-          echo ${{ secrets.GATEWAY_PRD_DOCKERFILE }} > ./gateway-service/Dockerfile
+          echo "${{ secrets.GATEWAY_PRD_DOCKERFILE }}" > ./gateway-service/Dockerfile
       - name: Create application-prd.yml
         run: |
           echo "$GATEWAY_APPLICATION_PRD_YML" > ./gateway-service/src/main/resources/application-prd.yml
