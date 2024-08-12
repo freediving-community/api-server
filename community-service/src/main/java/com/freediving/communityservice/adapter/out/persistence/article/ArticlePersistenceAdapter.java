@@ -16,7 +16,7 @@ import org.springframework.util.ObjectUtils;
 import com.freediving.common.config.annotation.PersistenceAdapter;
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
-import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
+import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefResponse;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.ArticleRemoveCommand;
 import com.freediving.communityservice.application.port.in.ArticleWriteCommand;
@@ -83,7 +83,7 @@ public class ArticlePersistenceAdapter
 	// }
 
 	@Override
-	public Page<ArticleBriefDto> retrieveArticleIndexList(BoardType boardType, Long cursor, boolean onlyPicture,
+	public Page<ArticleBriefResponse> retrieveArticleIndexList(BoardType boardType, Long cursor, boolean onlyPicture,
 		Long userId, Pageable pageable) {
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
@@ -121,6 +121,10 @@ public class ArticlePersistenceAdapter
 			paramMap.addValue("userId", userId);
 		}
 
+		if (pageable.getSort().stream().anyMatch(order -> order.getProperty().equals("comment"))) {
+			articleIndexQuery.append(" AND CREATED_AT >  current_date - 7 ");
+		}
+
 		articleIndexQuery
 			.append(" ORDER BY ")
 			.append(articleSort(pageable))
@@ -147,10 +151,10 @@ public class ArticlePersistenceAdapter
 				.append(" DESC ");
 		}
 
-		List<ArticleBriefDto> articleJpaEntityList = jdbcClient
+		List<ArticleBriefResponse> articleJpaEntityList = jdbcClient
 			.sql(articleIndexQuery.toString())
 			.paramSource(paramMap)
-			.query((rs, rowNum) -> ArticleBriefDto.builder()
+			.query((rs, rowNum) -> ArticleBriefResponse.builder()
 				.articleId(rs.getLong("article_id"))
 				.title(rs.getString("title"))
 				.content(rs.getString("content"))
@@ -194,7 +198,7 @@ public class ArticlePersistenceAdapter
 
 		for (Sort.Order order : pageable.getSort()) {
 			return switch (order.getProperty()) {
-				case "liked" -> "like_count DESC, created_at ";
+				case "liked" -> "like_count DESC, article_id ";
 				case "comment" -> "comment_count DESC, created_at ";
 				case "hits" -> "view_count DESC, created_at ";
 				default -> " created_at ";
@@ -249,6 +253,11 @@ public class ArticlePersistenceAdapter
 	}
 
 	@Override
+	public int increaseViewCount(BoardType boardType, Long articleId) {
+		return articleRepository.increaseViewCount(boardType.name(), articleId);
+	}
+
+	@Override
 	public int increaseLikeCount(BoardType boardType, Long articleId) {
 		return articleRepository.increaseLikeCount(boardType.name(), articleId);
 	}
@@ -259,8 +268,13 @@ public class ArticlePersistenceAdapter
 	}
 
 	@Override
-	public int increaseViewCount(BoardType boardType, Long articleId) {
-		return articleRepository.increaseViewCount(boardType.name(), articleId);
+	public int increaseCommentCount(BoardType boardType, Long articleId) {
+		return articleRepository.increaseCommentCount(boardType.name(), articleId);
+	}
+
+	@Override
+	public int decreaseCommentCount(BoardType boardType, Long articleId) {
+		return articleRepository.decreaseCommentCount(boardType.name(), articleId);
 	}
 
 	@Override

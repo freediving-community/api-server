@@ -26,7 +26,7 @@ public class UserProvider {
 	}
 
 	public boolean isValidUserId() {
-		return this.requestUserId != null && this.requestUserId != -1L;
+		return this.getRequestUserId() != null && this.getRequestUserId() != -1L;
 	}
 
 	@Getter

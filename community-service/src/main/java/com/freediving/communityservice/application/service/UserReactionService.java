@@ -35,6 +35,7 @@ public class UserReactionService implements UserReactionUseCase {
 		);
 
 		if (savedReactionType.equals(UserReactionType.LIKE)) {
+			targetArticle.increaseLikeCount();
 			articleEditPort.increaseLikeCount(command.getBoardType(), command.getArticleId());
 		}
 
@@ -52,6 +53,7 @@ public class UserReactionService implements UserReactionUseCase {
 		);
 
 		if (UserReactionType.LIKE.equals(command.getUserReactionType()) && processStatus == 1) {
+			targetArticle.decreaseLikeCount();
 			articleEditPort.decreaseLikeCount(command.getBoardType(), command.getArticleId());
 		}
 

@@ -8,6 +8,10 @@ import org.springframework.data.repository.query.Param;
 public interface ArticleRepository extends JpaRepository<ArticleJpaEntity, Long> {
 
 	@Modifying
+	@Query(value = "UPDATE ARTICLE SET VIEW_COUNT = VIEW_COUNT + 1 WHERE BOARD_TYPE = :boardTypeName AND ARTICLE_ID = :articleId", nativeQuery = true)
+	int increaseViewCount(@Param("boardTypeName") String boardTypeName, @Param("articleId") Long articleId);
+
+	@Modifying
 	@Query(value = "UPDATE ARTICLE SET LIKE_COUNT = LIKE_COUNT + 1 WHERE BOARD_TYPE = :boardTypeName AND ARTICLE_ID = :articleId", nativeQuery = true)
 	int increaseLikeCount(@Param("boardTypeName") String boardTypeName, @Param("articleId") Long articleId);
 
@@ -16,6 +20,10 @@ public interface ArticleRepository extends JpaRepository<ArticleJpaEntity, Long>
 	int decreaseLikeCount(@Param("boardTypeName") String boardTypeName, @Param("articleId") Long articleId);
 
 	@Modifying
-	@Query(value = "UPDATE ARTICLE SET VIEW_COUNT = VIEW_COUNT + 1 WHERE BOARD_TYPE = :boardTypeName AND ARTICLE_ID = :articleId", nativeQuery = true)
-	int increaseViewCount(@Param("boardTypeName") String boardTypeName, @Param("articleId") Long articleId);
+	@Query(value = "UPDATE ARTICLE SET COMMENT_COUNT = COMMENT_COUNT + 1 WHERE BOARD_TYPE = :boardTypeName AND ARTICLE_ID = :articleId", nativeQuery = true)
+	int increaseCommentCount(@Param("boardTypeName") String boardTypeName, @Param("articleId") Long articleId);
+
+	@Modifying
+	@Query(value = "UPDATE ARTICLE SET COMMENT_COUNT = COMMENT_COUNT - 1 WHERE BOARD_TYPE = :boardTypeName AND ARTICLE_ID = :articleId", nativeQuery = true)
+	int decreaseCommentCount(@Param("boardTypeName") String boardTypeName, @Param("articleId") Long articleId);
 }

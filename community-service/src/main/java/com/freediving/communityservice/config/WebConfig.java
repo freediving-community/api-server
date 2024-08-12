@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.freediving.communityservice.adapter.in.web.CheckBoardRoleInterceptor;
 import com.freediving.communityservice.adapter.in.web.UserProviderArgumentResolver;
 
 @Configuration
@@ -29,4 +31,11 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addConverter(new StringToEnumConverter());
 	}
 
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new CheckBoardRoleInterceptor())
+			.order(1)
+			.addPathPatterns("/**");
+		// .excludePathPatterns()
+	}
 }
