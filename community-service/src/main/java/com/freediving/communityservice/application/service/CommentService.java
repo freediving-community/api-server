@@ -10,6 +10,7 @@ import com.freediving.communityservice.application.port.in.CommentEditCommand;
 import com.freediving.communityservice.application.port.in.CommentReadCommand;
 import com.freediving.communityservice.application.port.in.CommentUseCase;
 import com.freediving.communityservice.application.port.in.CommentWriteCommand;
+import com.freediving.communityservice.application.port.out.ArticleEditPort;
 import com.freediving.communityservice.application.port.out.ArticleReadPort;
 import com.freediving.communityservice.application.port.out.CommentDeletePort;
 import com.freediving.communityservice.application.port.out.CommentEditPort;
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class CommentService implements CommentUseCase {
 
 	private final ArticleReadPort articleReadPort;
+	private final ArticleEditPort articleEditPort;
 	private final CommentReadPort commentReadPort;
 	private final CommentWritePort commentWritePort;
 	private final CommentEditPort commentEditPort;
@@ -34,7 +36,7 @@ public class CommentService implements CommentUseCase {
 
 	@Override
 	public Comment writeComment(CommentWriteCommand command) {
-		Article article = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), true);
+		Article article = articleReadPort.readArticle(command.getBoardType(), command.getArticleId(), false);
 		article.checkCommentEnabled();
 
 		if (command.hasParentComment()) {
@@ -55,6 +57,9 @@ public class CommentService implements CommentUseCase {
 
 			return commentWritePort.writeComment(forcedVisibleComment);
 		}
+
+		article.increaseCommentCount();
+		articleEditPort.increaseCommentCount(article.getBoardType(), article.getId());
 
 		return commentWritePort.writeComment(command);
 	}
@@ -105,6 +110,12 @@ public class CommentService implements CommentUseCase {
 
 	@Override
 	public Long removeComment(CommentDeleteCommand command) {
+
+		Article article = articleReadPort.readArticle(
+			command.getBoardType(),
+			command.getArticleId(),
+			false
+		);
 		Comment comment = commentReadPort.findById(CommentReadCommand.builder()
 			.commentId(command.getCommentId())
 			.build());
@@ -118,6 +129,9 @@ public class CommentService implements CommentUseCase {
 			// 답글인 경우 단건 삭제
 			commentDeletePort.markDeleted(comment.getCommentId());
 		}
+
+		article.decreaseCommentCount();
+		articleEditPort.decreaseCommentCount(article.getBoardType(), article.getId());
 
 		return command.getCommentId();
 	}

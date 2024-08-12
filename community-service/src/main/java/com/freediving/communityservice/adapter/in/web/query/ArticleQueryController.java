@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.freediving.common.response.ResponseJsonObject;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
-import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefDto;
-import com.freediving.communityservice.adapter.out.dto.article.ArticleContent;
+import com.freediving.communityservice.adapter.out.dto.article.ArticleBriefResponse;
+import com.freediving.communityservice.adapter.out.dto.article.ArticleContentWithCommentResponse;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 import com.freediving.communityservice.application.port.in.ArticleIndexListCommand;
 import com.freediving.communityservice.application.port.in.ArticleReadCommand;
@@ -44,7 +44,7 @@ public class ArticleQueryController {
 		}
 	)
 	@GetMapping("/boards/{boardType}/articles")
-	public ResponseEntity<ResponseJsonObject<Page<ArticleBriefDto>>> getArticleList(
+	public ResponseEntity<ResponseJsonObject<Page<ArticleBriefResponse>>> getArticleList(
 		@Parameter(hidden = true) UserProvider userProvider,
 		@Parameter(description = "게시판 유형", required = true) @PathVariable("boardType") BoardType boardType,
 		// @RequestParam(value = "page", required = false, defaultValue = "1") int page,
@@ -55,7 +55,7 @@ public class ArticleQueryController {
 		@Parameter(description = "이미지가 있는 게시글만 가져올 지 여부") @RequestParam(value = "onlyPicture", required = false) boolean onlyPicture,
 		@Parameter(description = "특정 사용자의 게시글만 조회") @RequestParam(value = "userId", required = false) Long userId
 	) {
-		Page<ArticleBriefDto> articleIndexList = articleUseCase.getArticleIndexList(
+		Page<ArticleBriefResponse> articleIndexList = articleUseCase.getArticleIndexList(
 			ArticleIndexListCommand.builder()
 				.userProvider(userProvider)
 				.boardType(boardType)
@@ -82,14 +82,14 @@ public class ArticleQueryController {
 		}
 	)
 	@GetMapping("/boards/{boardType}/articles/{articleId}")
-	public ResponseEntity<ResponseJsonObject<ArticleContent>> getArticleContent(
+	public ResponseEntity<ResponseJsonObject<ArticleContentWithCommentResponse>> getArticleContent(
 		@Parameter(hidden = true) UserProvider userProvider,
 		@PathVariable("boardType") BoardType boardType,
 		@PathVariable("articleId") Long articleId,
 		@RequestParam(value = "showAll", required = false, defaultValue = "false") boolean showAll,
 		@RequestParam(value = "articleOnly", required = false, defaultValue = "false") boolean withoutComment) {
 
-		ArticleContent articleContentDetail = articleUseCase.getArticleWithComment(
+		ArticleContentWithCommentResponse articleContentResponseDetail = articleUseCase.getArticleWithComment(
 			ArticleReadCommand.builder()
 				.userProvider(userProvider)
 				.boardType(boardType)
@@ -97,7 +97,6 @@ public class ArticleQueryController {
 				.isShowAll(showAll)
 				.withoutComment(withoutComment)
 				.build());
-		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, articleContentDetail));
+		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, articleContentResponseDetail));
 	}
-
 }

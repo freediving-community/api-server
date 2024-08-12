@@ -11,7 +11,8 @@ public enum BoardType {
 	BUDDY_QNA(UserProvider.RoleLevel.UNREGISTER.getValue()),
 	BUDDY_CHAT(UserProvider.RoleLevel.UNREGISTER.getValue()),
 	QNA(UserProvider.RoleLevel.UNREGISTER.getValue()),
-	TIP(UserProvider.RoleLevel.LEVEL0.getValue());
+	TIP(UserProvider.RoleLevel.LEVEL0.getValue()),
+	REPORT(UserProvider.RoleLevel.UNREGISTER.getValue());
 
 	private final int createRoleLevel;
 

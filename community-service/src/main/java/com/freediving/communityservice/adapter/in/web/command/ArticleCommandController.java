@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
@@ -45,8 +44,8 @@ public class ArticleCommandController {
 	private final CacheManager cacheManager;
 	private final ArticleUseCase articleUseCase;
 
-	@Value("${community.gateway.fqdn}")
-	private String GATEWAY_DOMAIN;
+	// @Value("${community.gateway.fqdn}")
+	// private String GATEWAY_DOMAIN;
 
 	// TODO: 게시글 생성 시 GET 요청하여 UUID 발급 후, 서버 인메모리 저장. => 게시글 중복생성 방지 , 등록 취소시 업로드 이미지 삭제.
 	@Operation(

@@ -2,13 +2,13 @@ package com.freediving.communityservice.domain;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freediving.common.handler.exception.BuddyMeException;
 import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.out.persistence.constant.BoardType;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Builder
@@ -22,23 +22,25 @@ public class Article {
 
 	private final String content;
 
-	private final int viewCount;
+	@Setter
+	private int viewCount;
 
-	private final int likeCount;
+	@Setter
+	private int likeCount;
+
+	@Setter
+	private int commentCount;
 
 	private final boolean enableComment;
 
-	@JsonIgnore
 	private final LocalDateTime deletedAt;
 
 	private final LocalDateTime createdAt;
 
 	private final Long createdBy;
 
-	@JsonIgnore
 	private final LocalDateTime modifiedAt;
 
-	@JsonIgnore
 	private final Long modifiedBy;
 
 	public void checkCommentEnabled() {
@@ -59,6 +61,7 @@ public class Article {
 			.content(content)
 			.viewCount(originalArticle.getViewCount())
 			.likeCount(originalArticle.getLikeCount())
+			.commentCount(originalArticle.getCommentCount())
 			.enableComment(enableComment)
 			.createdAt(originalArticle.getCreatedAt())
 			.createdBy(originalArticle.getCreatedBy())
@@ -67,21 +70,23 @@ public class Article {
 			.build();
 	}
 
-	public Article increaseViewCount() {
-		return Article.builder()
-			.id(this.id)
-			.boardType(this.boardType)
-			.title(this.title)
-			.content(this.content)
-			.viewCount(this.viewCount + 1)
-			.likeCount(this.likeCount)
-			.enableComment(this.enableComment)
-			.deletedAt(this.deletedAt)
-			.createdAt(this.createdAt)
-			.createdBy(this.createdBy)
-			.modifiedAt(this.modifiedAt)
-			.modifiedBy(this.modifiedBy)
-			.build();
+	public void increaseViewCount() {
+		setViewCount(this.viewCount + 1);
 	}
 
+	public void increaseLikeCount() {
+		setLikeCount(this.likeCount + 1);
+	}
+
+	public void decreaseLikeCount() {
+		setLikeCount(this.likeCount - 1);
+	}
+
+	public void increaseCommentCount() {
+		setCommentCount(this.commentCount + 1);
+	}
+
+	public void decreaseCommentCount() {
+		setCommentCount(this.commentCount - 1);
+	}
 }
