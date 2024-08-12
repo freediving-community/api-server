@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'community-service/**'
-    branches: [ "main1" ]
+    branches: [ "deploy/#188" ]
 
 env:
   COMMUNITY_APPLICATION_PRD_YML: ${{ secrets.COMMUNITY_APPLICATION_PRD_YML }}
