@@ -2,8 +2,8 @@ name: CI & CD for member-service-mac
 
 on:
   push:
-    #    paths:
-    #      - 'member-service/**'
+    paths:
+      - 'member-service/**'
     branches: [ "main" ]
 
 env:
