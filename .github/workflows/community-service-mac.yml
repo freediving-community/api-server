@@ -2,8 +2,8 @@ name: CI & CD for community-service-mac
 
 on:
   push:
-    paths:
-      - 'community-service/**'
+    #    paths:
+    #      - 'community-service/**'
     branches: [ "deploy/#188" ]
 
 env:
