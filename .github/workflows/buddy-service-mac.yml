@@ -34,6 +34,6 @@ jobs:
       # Deploy
       - name: Docker pull and Docker-compose up
         run: |
-          sudo docker pull ${{ secrets.DOCKER_REPO }}/buddy-service-prd
-          sudo docker image prune -a -f
+          docker pull ${{ secrets.DOCKER_REPO }}/buddy-service-prd
+          docker image prune -a -f
           docker-compose -f /docker/docker-compose.yml up -d
