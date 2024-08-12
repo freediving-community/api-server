@@ -2,9 +2,9 @@ name: CI & CD for community-service-mac
 
 on:
   push:
-    #    paths:
-    #      - 'community-service/**'
-    branches: [ "deploy/#188" ]
+    paths:
+      - 'community-service/**'
+    branches: [ "main" ]
 
 env:
   COMMUNITY_APPLICATION_PRD_YML: ${{ secrets.COMMUNITY_APPLICATION_PRD_YML }}
