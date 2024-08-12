@@ -30,7 +30,7 @@ jobs:
       - name: Docker build and push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build --bui.github/workflows/community-service-gcp.ymlld-arg PROFILE=prd -t ${{ secrets.DOCKER_REPO }}/community-service-prd ./community-service
+          docker build --build-arg PROFILE=prd -t ${{ secrets.DOCKER_REPO }}/community-service-prd ./community-service
           docker push ${{ secrets.DOCKER_REPO }}/community-service-prd
       # Deploy
       - name: Docker pull and Docker-compose up
