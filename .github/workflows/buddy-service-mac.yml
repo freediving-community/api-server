@@ -1,0 +1,39 @@
+name: CI & CD for buddy-service-mac
+
+on:
+  push:
+    paths:
+      - 'buddy-service/**'
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Create application-prd.yml
+        run: |
+          echo "$BUDDY_APPLICATION_PRD_YML" > ./buddy-service/src/main/resources/application-prd.yml
+        env:
+          BUDDY_APPLICATION_PRD_YML: ${{ secrets.BUDDY_APPLICATION_PRD_YML }}
+      - name: Build with Gradle
+        run: ./gradlew buddy-service:build
+      - name: Docker build and push
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build --build-arg PROFILE=prd -t ${{ secrets.DOCKER_REPO }}/buddy-service-prd ./buddy-service
+          docker push ${{ secrets.DOCKER_REPO }}/buddy-service-prd
+      # Deploy
+      - name: Docker pull and Docker-compose up
+        run: |
+          docker pull ${{ secrets.DOCKER_REPO }}/buddy-service-prd
+          docker image prune -a -f
+          docker-compose -f $HOME/buddyme/docker-compose.yml up -d

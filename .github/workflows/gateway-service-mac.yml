@@ -1,0 +1,39 @@
+name: CI & CD for gateway-service-mac
+
+on:
+  push:
+    paths:
+      - 'gateway-service/**'
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Create application-prd.yml
+        run: |
+          echo "$GATEWAY_APPLICATION_PRD_YML" > ./gateway-service/src/main/resources/application-prd.yml
+        env:
+          GATEWAY_APPLICATION_PRD_YML: ${{ secrets.GATEWAY_APPLICATION_PRD_YML }}
+      - name: Build with Gradle
+        run: ./gradlew gateway-service:build
+      - name: Docker build and push
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build --build-arg PROFILE=prd -t ${{ secrets.DOCKER_REPO }}/gateway-service-prd ./gateway-service
+          docker push ${{ secrets.DOCKER_REPO }}/gateway-service-prd
+      # Deploy
+      - name: Docker pull and Docker-compose up
+        run: |
+          docker pull ${{ secrets.DOCKER_REPO }}/gateway-service-prd
+          docker image prune -a -f
+          docker-compose -f $HOME/buddyme/docker-compose.yml up -d
