@@ -27,9 +27,13 @@ public class ChatRoomUserJpaEntity {
 
 	@EmbeddedId
 	private ChatRoomUserId id; // 복합 키
+
 	// Auditing
 	@CreatedDate
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
+
+	@Column
+	private Long lastCheckedMsgId;
 }

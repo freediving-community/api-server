@@ -34,10 +34,19 @@ public class MemberServiceAdapter implements MemberFeignPort {
 		return memberClient.findUserListByUserIds(userIdList, profileImgTF);
 	}
 
+	public UserInfo getUserInfoByUserId(Long userId, Boolean profileImgTF) {
+		Map<Long, UserInfo> userInfoMap = this.getUserMapByUserIds(List.of(userId), profileImgTF);
+		if (userInfoMap.isEmpty()) {
+			throw new BuddyMeException(INTERVAL_SERVER_ERROR, "사용자 조회에 실패했습니다.");
+		}
+		return userInfoMap.get(userId);
+	}
+
 	public Map<Long, UserInfo> getUserMapByUserIds(List<Long> userIds, Boolean profileImgTF) {
 
-		if (userIds.isEmpty())
+		if (userIds.isEmpty()) {
 			return new HashMap<Long, UserInfo>();
+		}
 
 		ResponseJsonObject<List<MemberFindUserResponse>> memberInfoList = findUserListByUserIds(userIds, profileImgTF);
 		if (ServiceStatusCode.OK.getCode() != memberInfoList.getCode()) {
