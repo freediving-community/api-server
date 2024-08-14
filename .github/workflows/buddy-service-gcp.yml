@@ -2,8 +2,8 @@ name: CI & CD for buddy-service-gcp
 
 on:
   push:
-    paths:
-      - 'buddy-service/**'
+    #paths:
+    #  - 'buddy-service/**'
     branches: [ "main" ]
 
 permissions:
