@@ -26,7 +26,6 @@ import com.freediving.communityservice.application.port.out.ChatRoomCreationPort
 import com.freediving.communityservice.application.port.out.ChatRoomEditPort;
 import com.freediving.communityservice.application.port.out.ChatRoomReadPort;
 import com.freediving.communityservice.application.port.out.ChatRoomUserCreationPort;
-import com.freediving.communityservice.application.port.out.ChatRoomUserDeletePort;
 import com.freediving.communityservice.application.port.out.ChatRoomUserReadPort;
 import com.freediving.communityservice.application.port.out.external.MemberFeignPort;
 import com.freediving.communityservice.config.CommunityMessage;
@@ -49,7 +48,7 @@ public class ChatService implements ChatUseCase {
 
 	private final ChatRoomUserReadPort chatRoomUserReadPort;
 	private final ChatRoomUserCreationPort chatRoomUserCreationPort;
-	private final ChatRoomUserDeletePort chatRoomUserDeletePort;
+	// private final ChatRoomUserDeletePort chatRoomUserDeletePort;
 
 	private final ChatMsgCreationPort chatMsgCreationPort;
 	private final ChatMsgReadPort chatMsgReadPort;
