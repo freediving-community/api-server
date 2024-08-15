@@ -20,7 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "ChatRoom 채팅방", description = "채팅 일괄 API")
+@Tag(name = "ChatRoom 채팅방", description = "채팅방 입장, 조회")
 @RequiredArgsConstructor
 @RequestMapping("/v1")
 @RestController
@@ -45,7 +45,7 @@ public class ChatRoomController {
 		@PathVariable("buddyEventId") Long buddyEventId
 	) {
 		//TODO: Buddy Service에서 카프카로 생성시 변경 예정
-		ChatRoomResponse chatRoom = chatUseCase.requestBuddyChatRoom(
+		ChatRoomResponse chatRoom = chatUseCase.requestChatRoom(
 			ChatRoomCommand.builder()
 				.userProvider(userProvider)
 				.chatType(ChatType.BUDDY)

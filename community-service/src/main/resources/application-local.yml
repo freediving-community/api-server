@@ -55,6 +55,14 @@ spring:
   output:
     ansi:
       enabled: always # IntelliJ CE Console Color
+  kafka:
+    bootstrap-servers: 34.64.196.150:19993
+    consumer:
+      group-id: community-service-group
+task:
+  topic:
+    buddyservice:
+      buddy-event-users: buddyservice.task.buddy-event-users
 
 eureka:
   instance:

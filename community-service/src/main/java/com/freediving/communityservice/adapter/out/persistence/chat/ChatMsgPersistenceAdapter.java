@@ -11,7 +11,6 @@ import com.freediving.communityservice.adapter.out.dto.chat.ChatMsgResponse;
 import com.freediving.communityservice.adapter.out.persistence.constant.MsgType;
 import com.freediving.communityservice.application.port.out.ChatMsgCreationPort;
 import com.freediving.communityservice.application.port.out.ChatMsgReadPort;
-import com.freediving.communityservice.config.CommunityMessage;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 public class ChatMsgPersistenceAdapter implements ChatMsgCreationPort, ChatMsgReadPort {
 
 	private final ChatMsgRepository chatMsgRepository;
-	private final CommunityMessage communityMessage;
 
 	@Value("${community.api.chat.msg.paging}")
 	private String CHAT_MSG_PAGING_SIZE;

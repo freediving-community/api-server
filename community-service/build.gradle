@@ -43,6 +43,9 @@ dependencies {
     // Apache Commons Text 1.11.0
     implementation 'org.apache.commons:commons-text:1.11.0'
 
+    // Kafka
+    implementation 'org.springframework.kafka:spring-kafka'
+
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'
 
