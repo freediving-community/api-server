@@ -47,4 +47,15 @@ public class JwtTokenUtils {
 			.signWith(getKey(key), SignatureAlgorithm.HS256)
 			.compact();
 	}
+
+	public static String extractOauthType(String token, String key) {
+		Claims claims = extractClaims(token, key);
+		String oauthType = claims.get("oauthType", String.class);
+		return oauthType;
+	}
+
+	private static Claims extractClaims(String token, String key) {
+		return Jwts.parserBuilder().setSigningKey(getKey(key))
+			.build().parseClaimsJws(token).getBody();
+	}
 }

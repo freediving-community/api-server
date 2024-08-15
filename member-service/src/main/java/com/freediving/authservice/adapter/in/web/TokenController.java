@@ -57,6 +57,8 @@ public class TokenController {
 
 	@GetMapping("/sample/token/{userId}")
 	@Tag(name = "Ping")
+	@Operation(summary = "사용자가 존재하는 경우 액세스토큰을 생성하여 반환"
+		, description = "개발서버의 경우 샘플 사용자 존재")
 	public String getRefreshToken(@PathVariable("userId") Long userId) {
 		return tokenUseCase.findRefreshTokenByUserId(userId);
 	}
