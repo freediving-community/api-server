@@ -22,6 +22,7 @@ public class JwtTokenUtils {
 
 	private static final long EXPIRED_ACCESS_TIME = 5 * 60 * 60 * 1000L;
 	private static final long EXPIRED_REFRESH_TIME = 30 * 24 * 60 * 60 * 1000L;
+	private static final long ALLOW_SAMPLE_EXPIRED_TIME = 10 * 365 * 24 * 60 * 60 * 1000L;
 
 	public static String generateAccessToken(String userId, String oauthType, String key) {
 		return generateToken(userId, oauthType, key, EXPIRED_ACCESS_TIME);
@@ -46,5 +47,17 @@ public class JwtTokenUtils {
 			.setExpiration(new Date(System.currentTimeMillis() + expiredTime))
 			.signWith(getKey(key), SignatureAlgorithm.HS256)
 			.compact();
+	}
+
+	public static String extractOauthType(String token, String key) {
+		Claims claims = extractClaims(token, key);
+		String oauthType = claims.get("oauthType", String.class);
+		return oauthType;
+	}
+
+	private static Claims extractClaims(String token, String key) {
+		return Jwts.parserBuilder().setSigningKey(getKey(key))
+			.setAllowedClockSkewSeconds(ALLOW_SAMPLE_EXPIRED_TIME)
+			.build().parseClaimsJws(token).getBody();
 	}
 }
