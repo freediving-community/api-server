@@ -12,6 +12,7 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.web.filter.ForwardedHeaderFilter;
 
 @Configuration
 public class SwaggerConfig {
@@ -41,5 +42,10 @@ public class SwaggerConfig {
 			.components(new Components().addSecuritySchemes("Access Token", securityScheme))
 			.security(List.of(securityRequirement))
 			.info(new Info().title(title).version(version));
+	}
+
+	@Bean
+	ForwardedHeaderFilter forwardedHeaderFilter() {
+		return new ForwardedHeaderFilter();
 	}
 }
