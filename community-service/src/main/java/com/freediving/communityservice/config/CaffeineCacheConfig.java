@@ -20,10 +20,20 @@ public class CaffeineCacheConfig {
 	@Bean
 	public List<CaffeineCache> caffeineCaches() {
 		return Arrays.stream(CacheType.values())
-			.map(cache -> new CaffeineCache(cache.getCacheName(), Caffeine.newBuilder().recordStats()
-				.expireAfterWrite(cache.getExpiredSecondAfterWrite(), TimeUnit.SECONDS)
-				.maximumSize(cache.getMaximumSize())
-				.build()))
+			.map(cache -> {
+					if (cache.getExpireAfterAccessSeconds() == -1L) {
+						return new CaffeineCache(cache.getCacheName(), Caffeine.newBuilder().recordStats()
+							.expireAfterWrite(cache.getExpiredSecondAfterWriteSeconds(), TimeUnit.SECONDS)
+							.maximumSize(cache.getMaximumSize())
+							.build());
+					}
+					return new CaffeineCache(cache.getCacheName(), Caffeine.newBuilder().recordStats()
+						.expireAfterWrite(cache.getExpiredSecondAfterWriteSeconds(), TimeUnit.SECONDS)
+						.expireAfterAccess(cache.getExpireAfterAccessSeconds(), TimeUnit.SECONDS)
+						.maximumSize(cache.getMaximumSize())
+						.build());
+				}
+			)
 			.toList();
 	}
 

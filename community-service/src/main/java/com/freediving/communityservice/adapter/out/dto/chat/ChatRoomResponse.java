@@ -4,8 +4,10 @@ import java.util.List;
 
 import com.freediving.communityservice.adapter.out.dto.user.UserInfo;
 
+import lombok.Builder;
 import lombok.Data;
 
+@Builder
 @Data
 public class ChatRoomResponse {
 	/*
@@ -16,6 +18,7 @@ public class ChatRoomResponse {
 	 * */
 	private final ChatRoomInfoResponse roomInfo;
 	private final List<UserInfo> users;
-	private final List<ChatMessageResponse> messages;
+	private final List<ChatMsgResponse> messages;
 	private final ChatRoomBuddyEventInfo buddyEventInfo;
+	private final List<ChatMessageLastChecked> chatMessageLastCheckedList;
 }

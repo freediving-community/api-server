@@ -21,7 +21,9 @@ spring:
     mongodb:
       uri: ${MONGODB_ATLAS_URI}
       database: sample_mflix
-
+  messages:
+    basename: messages
+    encoding: UTF-8
   datasource:
     # PostgreSQL 설정
     url: jdbc:postgresql://localhost:5432/commdb
@@ -36,7 +38,7 @@ spring:
     # driver-class-name: org.h2.Driver
 
   jpa:
-    hibernate.ddl-auto: none
+    hibernate.ddl-auto: update
     # H2 설정
     # database-platform: org.hibernate.dialect.H2Dialect
 
@@ -53,6 +55,14 @@ spring:
   output:
     ansi:
       enabled: always # IntelliJ CE Console Color
+  kafka:
+    bootstrap-servers: 34.64.196.150:19993
+    consumer:
+      group-id: community-service-group
+task:
+  topic:
+    buddyservice:
+      buddy-event-users: buddyservice.task.buddy-event-users
 
 eureka:
   instance:
@@ -80,5 +90,9 @@ feign:
         readTimeout: 5000
 
 community:
+  api:
+    chat:
+      msg:
+        paging: 15
   gateway:
     fqdn: http://localhost:8080

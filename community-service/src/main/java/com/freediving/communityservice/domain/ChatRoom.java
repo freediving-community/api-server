@@ -33,4 +33,5 @@ public class ChatRoom {
 	private final LocalDateTime modifiedAt;
 
 	private final Long modifiedBy;
+
 }

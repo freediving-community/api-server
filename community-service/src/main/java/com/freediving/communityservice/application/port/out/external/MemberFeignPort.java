@@ -11,6 +11,8 @@ public interface MemberFeignPort {
 
 	ResponseJsonObject<List<MemberFindUserResponse>> findUserListByUserIds(List<Long> userIdList, Boolean profileImgTF);
 
+	UserInfo getUserInfoByUserId(Long userId, Boolean profileImgTF);
+
 	Map<Long, UserInfo> getUserMapByUserIds(List<Long> userIds, Boolean profileImgTF);
 
 	void deleteImageByUrls(List<String> deleteImages);

@@ -9,6 +9,7 @@ import com.freediving.communityservice.application.port.in.dto.ImageInfoCommand;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,6 +25,7 @@ public class ArticleWriteCommand extends SelfValidating<ArticleWriteCommand> {
 	private final BoardType boardType;
 
 	@NotBlank(message = "제목을 입력해주세요.")
+	@Size(min = 2, max = 255, message = "제목은 2~255자로 입력해주세요.")
 	private final String title;
 
 	@NotBlank(message = "내용을 입력해주세요.")
