@@ -59,7 +59,7 @@ public class ChatRoomJpaEntity {
 
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	@Column(nullable = false, updatable = false)
-	private LocalDateTime createdAt = LocalDateTime.now();
+	private LocalDateTime createdAt;
 
 	@Column(nullable = false, updatable = false)
 	private Long createdBy;
@@ -80,6 +80,7 @@ public class ChatRoomJpaEntity {
 			.title(title)
 			.participantCount(participantCount)
 			.openChatRoomURL(openChatRoomURL)
+			.createdAt(LocalDateTime.now())
 			.build();
 	}
 
