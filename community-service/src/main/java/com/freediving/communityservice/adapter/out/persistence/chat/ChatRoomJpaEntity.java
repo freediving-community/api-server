@@ -16,12 +16,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
 @ToString
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert // null 인 값은 제외하고 Insert. DB DefaultValue 사용을 위함.
@@ -71,7 +73,14 @@ public class ChatRoomJpaEntity {
 
 	public static ChatRoomJpaEntity of(Long requestUserId, ChatType chatType, Long targetId, String title,
 		Long participantCount, String openChatRoomURL) {
-		return null;
+		return ChatRoomJpaEntity.builder()
+			.createdBy(requestUserId)
+			.chatType(chatType)
+			.targetId(targetId)
+			.title(title)
+			.participantCount(participantCount)
+			.openChatRoomURL(openChatRoomURL)
+			.build();
 	}
 
 	public void editChatRoomInfo(String title, Long participantCount, String openChatRoomURL) {
