@@ -1168,7 +1168,7 @@
 
       // 채팅 작성
       const input = document.getElementById('messageInput').value;
-      postData('/v1/chat/send/' + chatRoomId,
+      postData('/api/community-service/v1/chat/send/' + chatRoomId,
         {
             "msg": input,
             "msgType": "CHAT",
@@ -1200,7 +1200,7 @@
     function enterRoom() {
       const buddyEventId = document.getElementById("buddyEventId").value;
       
-      fetch('/v1/chat/buddy/' + buddyEventId, {
+      fetch('/api/community-service/v1/chat/buddy/' + buddyEventId, {
         method: 'GET',
         headers: {
             'User-Id': id,
@@ -1223,7 +1223,7 @@
           document.getElementById("list").scrollTop = 200;
 
           // 실시간 채팅 연결
-          registerSSE('/v1/chat/sub/' + data.data.roomInfo.chatRoomId);
+          registerSSE('/api/community-service/v1/chat/sub/' + data.data.roomInfo.chatRoomId);
         })
         .catch(error => {
           console.error('에러:', error);
