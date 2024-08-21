@@ -19,14 +19,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'com.github.ben-manes.caffeine:caffeine'
 
     // FeignClient
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
 
-    // WebSocket
+    // WebSocket Stomp
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     // Eureka Discovery
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
@@ -47,7 +47,7 @@ dependencies {
     implementation 'org.springframework.kafka:spring-kafka'
 
     runtimeOnly 'org.postgresql:postgresql'
-    runtimeOnly 'com.h2database:h2'
+//    runtimeOnly 'com.h2database:h2'
 
     testImplementation 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

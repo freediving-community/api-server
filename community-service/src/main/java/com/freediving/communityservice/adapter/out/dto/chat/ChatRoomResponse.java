@@ -20,6 +20,5 @@ public class ChatRoomResponse {
 	private final List<UserInfo> users;
 	private final List<ChatMsgResponse> messages;
 	private final ChatRoomBuddyEventInfo buddyEventInfo;
-	private final List<ChatMessageLasChecked> chatMessageLasCheckeds;
-	private final Boolean hasNewMsg;
+	private final List<ChatMessageLastChecked> chatMessageLastCheckedList;
 }

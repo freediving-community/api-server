@@ -28,6 +28,11 @@ public class ChatRoomUserPersistenceAdapter implements ChatRoomUserCreationPort,
 	}
 
 	@Override
+	public void leaveChatRoom(ChatRoomUserId chatRoomUserId) {
+		chatRoomUserRepository.deleteById(chatRoomUserId);
+	}
+
+	@Override
 	public List<ChatRoomUser> getAllUserByRoomId(Long chatRoomId) {
 		Optional<List<ChatRoomUserJpaEntity>> chatRoomUserJpaEntities = chatRoomUserRepository.findAllById_ChatRoomId(
 			chatRoomId);

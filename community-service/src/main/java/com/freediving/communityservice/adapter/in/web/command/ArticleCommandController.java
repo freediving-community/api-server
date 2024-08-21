@@ -68,10 +68,11 @@ public class ArticleCommandController {
 		String cacheKey = CacheType.ARTICLE_CREATE_TIME_LIMIT.getCacheName() + ":" + userProvider.getRequestUserId();
 		Cache cache = cacheManager.getCache(CacheType.ARTICLE_CREATE_TIME_LIMIT.getCacheName());
 
-		Optional<Object> cachedValue = Optional.ofNullable(cache.get(cacheKey, Object.class));
+		Optional<Object> cachedValue = Optional.ofNullable(cache.get(cacheKey));
 		if (cachedValue.isPresent()) {
 			throw new BuddyMeException(ServiceStatusCode.BAD_REQUEST,
-				String.format("%d초 이후 글 생성이 가능합니다.", CacheType.ARTICLE_CREATE_TIME_LIMIT.getExpiredSecondAfterWrite())
+				String.format("%d초 이후 글 생성이 가능합니다.",
+					CacheType.ARTICLE_CREATE_TIME_LIMIT.getExpiredSecondAfterWriteSeconds())
 			);
 		}
 

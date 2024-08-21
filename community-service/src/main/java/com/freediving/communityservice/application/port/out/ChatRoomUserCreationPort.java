@@ -4,4 +4,6 @@ import com.freediving.communityservice.adapter.out.persistence.chat.ChatRoomUser
 
 public interface ChatRoomUserCreationPort {
 	Long enterChatRoom(ChatRoomUserId chatRoomUserId, Long lastCheckedMsgId);
+
+	void leaveChatRoom(ChatRoomUserId build);
 }

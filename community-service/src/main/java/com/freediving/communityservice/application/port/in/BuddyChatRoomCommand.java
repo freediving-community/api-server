@@ -11,7 +11,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@Builder
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class BuddyChatRoomCommand extends SelfValidating<BuddyChatRoomCommand> {
@@ -30,17 +29,21 @@ public class BuddyChatRoomCommand extends SelfValidating<BuddyChatRoomCommand> {
 
 	private List<String> divingPools;
 
+	private String openChatRoomUrl;
+
 	@NotNull
 	private final ChatType chatType;
 
+	@Builder
 	public BuddyChatRoomCommand(Long eventId, Long createdBy, LocalDateTime eventStartDate, List<Long> participants,
-		String status, List<String> divingPools, ChatType chatType) {
+		String status, List<String> divingPools, String openChatRoomUrl, ChatType chatType) {
 		this.eventId = eventId;
 		this.createdBy = createdBy;
 		this.eventStartDate = eventStartDate;
 		this.participants = participants;
 		this.status = status;
 		this.divingPools = divingPools;
+		this.openChatRoomUrl = openChatRoomUrl;
 		this.chatType = chatType;
 		this.validateSelf();
 	}

@@ -45,4 +45,6 @@ public class BuddyEventInfoDTO {
 	@Schema(description = "모집 희망 다이빙풀")
 	private List<String> divingPools;
 
+	@Schema(description = "오픈채팅방 URL")
+	private String openChatRoomUrl;
 }
