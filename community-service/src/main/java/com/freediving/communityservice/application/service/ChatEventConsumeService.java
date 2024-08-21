@@ -94,7 +94,7 @@ public class ChatEventConsumeService implements ChatRoomEventUseCase {
 					command.getEventStartDate(),
 					command.getDivingPools()
 				),
-				command.getParticipants().size() + 1L,
+				(long)command.getParticipants().size(),
 				command.getOpenChatRoomUrl()
 			);
 

@@ -80,6 +80,7 @@ public class ChatRoomJpaEntity {
 			.title(title)
 			.participantCount(participantCount)
 			.openChatRoomURL(openChatRoomURL)
+			.enabled(true)
 			.createdAt(LocalDateTime.now())
 			.build();
 	}

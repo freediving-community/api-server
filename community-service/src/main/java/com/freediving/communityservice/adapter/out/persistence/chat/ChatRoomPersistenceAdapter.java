@@ -14,7 +14,9 @@ import com.freediving.communityservice.domain.ChatRoom;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @PersistenceAdapter
 @RequiredArgsConstructor
 public class ChatRoomPersistenceAdapter implements ChatRoomReadPort, ChatRoomCreationPort, ChatRoomEditPort {
@@ -26,7 +28,11 @@ public class ChatRoomPersistenceAdapter implements ChatRoomReadPort, ChatRoomCre
 
 	@Override
 	public ChatRoom getChatRoom(ChatType chatType, Long targetId) {
+		log.info("enterChatRoom-getChatRoom : chatType:{}, targetId:{}", chatType, targetId);
+
 		Optional<ChatRoomJpaEntity> chatRoom = chatRoomRepository.findByChatTypeAndTargetId(chatType, targetId);
+		log.info("enterChatRoom-chatRoom : chatRoom.isPresent():{}", chatRoom.isPresent());
+
 		return chatRoom.map(chatRoomMapper::mapToDomain).orElse(null);
 	}
 

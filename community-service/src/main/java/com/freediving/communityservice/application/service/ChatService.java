@@ -53,6 +53,7 @@ public class ChatService implements ChatUseCase {
 	@Override
 	public ChatRoomResponse enterChatRoom(ChatRoomCommand command) {
 
+		log.info("enterChatRoom.command : {}", command.getUserProvider().getRequestUserId());
 		ChatRoom chatRoom = chatRoomReadPort.getChatRoom(command.getChatType(), command.getTargetId());
 		if (ObjectUtils.isEmpty(chatRoom)) {
 			throw new BuddyMeException(ServiceStatusCode.COMMUNITY_SERVICE, "해당 채팅방이 없습니다.");
