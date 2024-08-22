@@ -13,10 +13,12 @@ import com.freediving.communityservice.adapter.out.dto.chat.ChatMessageLastCheck
 import com.freediving.communityservice.adapter.out.dto.chat.ChatMsgResponse;
 import com.freediving.communityservice.adapter.out.dto.chat.ChatRoomBuddyEventInfo;
 import com.freediving.communityservice.adapter.out.dto.chat.ChatRoomInfoResponse;
+import com.freediving.communityservice.adapter.out.dto.chat.ChatRoomListResponse;
 import com.freediving.communityservice.adapter.out.dto.chat.ChatRoomResponse;
 import com.freediving.communityservice.adapter.out.dto.user.UserInfo;
 import com.freediving.communityservice.application.port.in.ChatMsgCommand;
 import com.freediving.communityservice.application.port.in.ChatRoomCommand;
+import com.freediving.communityservice.application.port.in.ChatRoomListQueryCommand;
 import com.freediving.communityservice.application.port.in.ChatUseCase;
 import com.freediving.communityservice.application.port.out.ChatMsgCreationPort;
 import com.freediving.communityservice.application.port.out.ChatMsgReadPort;
@@ -53,7 +55,6 @@ public class ChatService implements ChatUseCase {
 	@Override
 	public ChatRoomResponse enterChatRoom(ChatRoomCommand command) {
 
-		log.info("enterChatRoom.command : {}", command.getUserProvider().getRequestUserId());
 		ChatRoom chatRoom = chatRoomReadPort.getChatRoom(command.getChatType(), command.getTargetId());
 		if (ObjectUtils.isEmpty(chatRoom)) {
 			throw new BuddyMeException(ServiceStatusCode.COMMUNITY_SERVICE, "해당 채팅방이 없습니다.");
@@ -104,6 +105,13 @@ public class ChatService implements ChatUseCase {
 				command.getCreatedBy()
 			)
 		);
+	}
+
+	@Override
+	public List<ChatRoomListResponse> getChatRoomList(ChatRoomListQueryCommand command) {
+		return chatRoomReadPort.getChatRoomList(
+			command.getUserProvider().getRequestUserId(),
+			command.getChatType());
 	}
 
 	private void validateChatRoom(Long requestUserId, List<Long> joinedUserIds, ChatRoom chatRoom) {

@@ -91,7 +91,3 @@ public class ChatRoomJpaEntity {
 		this.openChatRoomURL = openChatRoomURL;
 	}
 }
-
-
-
-
