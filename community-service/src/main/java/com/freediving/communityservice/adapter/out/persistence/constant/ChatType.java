@@ -4,14 +4,14 @@ import lombok.Getter;
 
 @Getter
 public enum ChatType {
-	BUDDY("buddy"),
-	DIRECT("direct"),
-	GROUP("group");
+	BUDDY("BUDDY"),
+	DIRECT("DIRECT"),
+	GROUP("GROUP");
 
 	private final String type;
 
 	ChatType(String type) {
-		this.type = type.toLowerCase();
+		this.type = type.toUpperCase();
 	}
 
 }

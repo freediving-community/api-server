@@ -62,7 +62,7 @@ spring:
 task:
   topic:
     buddyservice:
-      buddy-event-users: buddyservice.task.buddy-event-users
+      buddy-event-users: buddyservice.task.buddy-event-users-local
 
 eureka:
   instance:

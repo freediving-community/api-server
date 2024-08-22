@@ -1,5 +1,6 @@
 package com.freediving.communityservice.adapter.in.web.chat;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.cache.Cache;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.freediving.common.handler.exception.BuddyMeException;
@@ -19,10 +21,12 @@ import com.freediving.common.response.enumerate.ServiceStatusCode;
 import com.freediving.communityservice.adapter.in.dto.ChatMsgWriteRequest;
 import com.freediving.communityservice.adapter.in.web.UserProvider;
 import com.freediving.communityservice.adapter.out.dto.chat.ChatMsgResponse;
+import com.freediving.communityservice.adapter.out.dto.chat.ChatRoomListResponse;
 import com.freediving.communityservice.adapter.out.dto.chat.ChatRoomResponse;
 import com.freediving.communityservice.adapter.out.persistence.constant.ChatType;
 import com.freediving.communityservice.application.port.in.ChatMsgCommand;
 import com.freediving.communityservice.application.port.in.ChatRoomCommand;
+import com.freediving.communityservice.application.port.in.ChatRoomListQueryCommand;
 import com.freediving.communityservice.application.port.in.ChatUseCase;
 import com.freediving.communityservice.application.port.in.SseUseCase;
 import com.freediving.communityservice.config.type.CacheType;
@@ -111,6 +115,32 @@ public class ChatRoomController {
 		chatRoomCache.put(cacheKey, chatRoomResponse.getRoomInfo().getChatRoomId());
 
 		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, chatRoomResponse));
+	}
+
+	@Operation(
+		summary = "입장한 채팅방 목록",
+		description = "입장한 채팅방 목록과 읽지 않은 메세지 여부 표시",
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "입장한 채팅방 목록",
+				useReturnTypeSchema = true
+			)
+		}
+	)
+	@GetMapping("/chat/room")
+	public ResponseEntity<ResponseJsonObject<List<ChatRoomListResponse>>> enterBuddyChatRoom(
+		@Parameter(hidden = true) UserProvider userProvider,
+		@Parameter(description = "채팅방 타입") @RequestParam(value = "chatType", required = false, defaultValue = "") ChatType chatType
+	) {
+		List<ChatRoomListResponse> chatRoomListResponse = chatUseCase.getChatRoomList(
+			ChatRoomListQueryCommand.builder()
+				.userProvider(userProvider)
+				.chatType(chatType)
+				.build()
+		);
+
+		return ResponseEntity.ok(new ResponseJsonObject<>(ServiceStatusCode.OK, chatRoomListResponse));
 	}
 
 	private String getCacheKey(Long userId) {
