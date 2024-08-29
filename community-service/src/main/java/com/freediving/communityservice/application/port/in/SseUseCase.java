@@ -9,4 +9,6 @@ public interface SseUseCase {
 	SseEmitter subsChatRoom(Long chatRoomId, Long requestUserId, String lastEventId);
 
 	void broadcastMsg(Long chatRoomId, ChatMsgResponse chatMsgResponse);
+
+	void closeChatRoom(Long chatRoomId, Long requestUserId);
 }

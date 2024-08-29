@@ -1134,7 +1134,6 @@
     <button type="submit" value="Send" onclick="send()">전송</button>
     <ul id="list"></ul>
 </div>
-
 <script>
     "use strict";
     const id = new URL(window.location.href).searchParams.get('id');
@@ -1162,18 +1161,18 @@
 
     function send() {
 
-      if(!isJoined) {
+      if (!isJoined) {
         alert('방 입장부터 해주세요');
         return;
       }
 
       // 채팅 작성
       const input = document.getElementById('messageInput').value;
-      postData( urlPrefix + '/v1/chat/send/' + chatRoomId,
+      postData(urlPrefix + '/v1/chat/send/' + chatRoomId,
         {
-            "msg": input,
-            "msgType": "CHAT",
-            "replyToMsgId": ""
+          "msg": input,
+          "msgType": "CHAT",
+          "replyToMsgId": ""
         }
       );
       document.getElementById('messageInput').value = '';
@@ -1200,12 +1199,13 @@
     // 방 입장
     function enterRoom() {
       const buddyEventId = document.getElementById("buddyEventId").value;
-      
-      fetch( urlPrefix + '/v1/chat/buddy/' + buddyEventId, {
+
+      fetch(urlPrefix + '/v1/chat/buddy/' + buddyEventId, {
         method: 'GET',
         headers: {
-            'User-Id': id,
-        }})
+          'User-Id': id,
+        }
+      })
         .then(response => {
           if (!response.ok) {
             throw new Error('응답 에러: ' + response.status);
@@ -1217,14 +1217,14 @@
           chatRoomId = data.data.roomInfo.chatRoomId;
 
           // 방 입장시 기본 15개 이전 채팅을 불러옴.
-          for(var i = data.data.messages.length-1; i > -1; i--) {
-            handleChatEvent( data.data.messages[i]);
+          for (var i = data.data.messages.length - 1; i > -1; i--) {
+            handleChatEvent(data.data.messages[i]);
           }
 
           document.getElementById("list").scrollTop = 200;
 
           // 실시간 채팅 연결
-          registerSSE( urlPrefix + '/v1/chat/sub/' + data.data.roomInfo.chatRoomId);
+          registerSSE(urlPrefix + '/v1/chat/sub/' + data.data.roomInfo.chatRoomId);
         })
         .catch(error => {
           console.error('에러:', error);
@@ -1234,8 +1234,8 @@
     // 실시간 채팅 연결
     function registerSSE(url) {
       isJoined = true;
-      document.getElementById('messageInput').addEventListener("keydown", function (e){
-        if(e.key === "Enter") send();
+      document.getElementById('messageInput').addEventListener("keydown", function (e) {
+        if (e.key === "Enter") send();
       });
 
       document.getElementById('name').innerText = id;
@@ -1245,7 +1245,18 @@
             'User-Id': id,
           },
         });
-
+      window.addEventListener('beforeunload', e => {
+        e.preventDefault();
+        e.returnValue = '';
+        fetch(urlPrefix + '/v1/chat/close/' + chatRoomId, {
+          method: 'GET',
+          headers: {
+            'User-Id': id
+          }
+        }).then(() => {
+          source.close();
+        });
+      });
       // "msgType": "CHAT"
       source.addEventListener('chat', event => {
         handleChatEvent(JSON.parse(event.data));

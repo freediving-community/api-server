@@ -20,12 +20,19 @@ public class ChatEventStreamService implements SseUseCase {
 
 	@Override
 	public SseEmitter subsChatRoom(Long chatRoomId, Long requestUserId, String lastEventId) {
-
+		log.info("lastEventId >>> {}", lastEventId);
 		SseEmitter emitter = sseManager.registerEmitter(chatRoomId, requestUserId);
 
-		sendOnlineUser(emitter, chatRoomId);
+		broadcastOnlineUser(chatRoomId);
 		log.info("subs >>> chatRoomId:{}, userId:{}", chatRoomId, requestUserId);
 		return emitter;
+	}
+
+	@Override
+	public void closeChatRoom(Long chatRoomId, Long requestUserId) {
+		sseManager.get(chatRoomId).get(requestUserId).complete();
+		sseManager.get(chatRoomId).remove(requestUserId);
+		broadcastOnlineUser(chatRoomId);
 	}
 
 	@Override
@@ -41,8 +48,12 @@ public class ChatEventStreamService implements SseUseCase {
 		sseManager.sendMsg(sseEmitter, ChatSseManager.EVENT_TYPE_CHAT, chatMsgResponse);
 	}
 
-	private void sendOnlineUser(SseEmitter sseEmitter, Long chatRoomId) {
+	private void broadcastOnlineUser(Long chatRoomId) {
 		List<Long> onlineUsers = sseManager.get(chatRoomId).keySet().stream().toList();
-		sseManager.sendMsg(sseEmitter, ChatSseManager.EVENT_TYPE_SYSTEM, onlineUsers);
+		sseManager.get(chatRoomId).values().forEach(
+			(e) -> {
+				sseManager.sendMsg(e, ChatSseManager.EVENT_TYPE_SYSTEM, onlineUsers);
+			}
+		);
 	}
 }
