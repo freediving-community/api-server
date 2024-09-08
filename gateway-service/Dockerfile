@@ -1,4 +1,4 @@
-FROM openjdk:21-alpine
+FROM alpine/java:21
 ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} ./gateway-service.jar
 ENV TZ=Asia/Seoul
