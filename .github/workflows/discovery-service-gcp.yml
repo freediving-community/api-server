@@ -2,8 +2,8 @@ name: CI & CD for discovery-service-gcp
 
 on:
   push:
-    paths:
-      - 'discovery-service/**'
+#    paths:
+#      - 'discovery-service/**'
     branches: [ "main" ]
 
 permissions:
