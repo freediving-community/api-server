@@ -4,7 +4,7 @@ on:
   push:
     #paths:
     #- 'community-service/**'
-    branches: [ "feat/#179" ]
+    branches: [ "main" ]
 
 env:
   COMMUNITY_APPLICATION_DEV_GCP_YML: ${{ secrets.COMMUNITY_APPLICATION_DEV_GCP_YML }}
@@ -37,7 +37,7 @@ jobs:
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
-          host: "34.64.196.150"
+          host: ${{ secrets.GCP_HOST }}
           username: ${{ secrets.GCP_SSH_USERNAME }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           #          passphrase: ${{ secrets.GCP_SSH_PASSPHRASE }}
