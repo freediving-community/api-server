@@ -2,9 +2,9 @@ name: CI & CD for gateway-service-gcp
 
 on:
   push:
-#    paths:
-#      - 'gateway-service/**'
-    branches: [ "main" ]
+    paths:
+      - 'gateway-service/**'
+    branches-ignore: [ "main" ]
 
 permissions:
   contents: read

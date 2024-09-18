@@ -2,9 +2,9 @@ name: CI & CD for community-service-gcp
 
 on:
   push:
-    #paths:
-    #- 'community-service/**'
-    branches: [ "main" ]
+    paths:
+    - 'community-service/**'
+    branches-ignore: [ "main" ]
 
 env:
   COMMUNITY_APPLICATION_DEV_GCP_YML: ${{ secrets.COMMUNITY_APPLICATION_DEV_GCP_YML }}

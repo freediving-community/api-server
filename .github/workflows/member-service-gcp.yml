@@ -2,11 +2,9 @@ name: CI & CD for member-service-gcp
 
 on:
   push:
-#    paths:
-#      - 'member-service/**'
-#    branches-ignore:
-#      - main
-    branches: [ "main" ]
+    paths:
+      - 'member-service/**'
+    branches-ignore: [ "main" ]
 
 env:
   MEMBER_APPLICATION_DEV_GCP_YML: ${{ secrets.MEMBER_APPLICATION_DEV_GCP_YML }}
